@@ -1,0 +1,12 @@
+# DataSource Config
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/aiflowy
+    username: root
+    password: 123456
+aiflowy:
+  jwt:
+    secret: 123123

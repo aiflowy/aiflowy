@@ -1,0 +1,65 @@
+/* styles.css */
+.app-container {
+    display: flex;
+    height: 100vh;
+}
+
+.menu-container {
+    width: 150px;
+    min-width: 150px;
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-right: 1px solid #ccc;
+
+}
+
+.menu-item {
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.menu-item:hover {
+    background-color: #e0e0e0;
+}
+
+.menu-item.active {
+    background-color: #d0d0d0;
+    font-weight: bold;
+}
+.content-container{
+    overflow: auto;
+}
+.file-container{
+    display: flex;
+}
+.file-content{
+    flex: 1;
+}
+.content {
+    padding: 10px;
+}
+
+/* 在document.css中添加 */
+.docx-content {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+.docx-content p {
+    margin-bottom: 1em;
+}
+
+.docx-content table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1em 0;
+}
+
+.docx-content table, .docx-content th, .docx-content td {
+    border: 1px solid #ddd;
+}
+
+.docx-content th, .docx-content td {
+    padding: 8px;
+}

@@ -1,0 +1,8 @@
+{
+  "page2": "PPage2",
+  "menu": {
+    "home": "Home",
+    "user management": "User Management",
+    "system management": "System Management"
+  }
+}

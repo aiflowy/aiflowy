@@ -1,0 +1,148 @@
+.file-import {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.custom{
+  color: red;
+}
+.options {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e8e8e8;
+
+  .option-group {
+    display: flex;
+    gap: 16px;
+  }
+
+  .option {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+
+    &:hover {
+      background-color: #f0f5ff;
+    }
+
+    &.active {
+      background-color: #e6f7ff;
+      border-color: #1890ff;
+    }
+
+    .icon {
+      font-size: 24px;
+      color: #1890ff;
+      margin-right: 8px;
+    }
+
+    .label {
+      font-size: 18px;
+      font-weight: 500;
+      color: #333;
+      margin-right: 8px;
+    }
+
+    .description {
+      font-size: 14px;
+      color: #666;
+    }
+  }
+}
+
+.content {
+  flex: 1;
+  padding: 10px;
+  background-color: #fafafa;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+upload-drag{
+  height: 200px;
+}
+.section-description {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.upload-area {
+  background-color: #fafafa;
+  border-radius: 8px;
+  margin-top: 12px;
+  text-align: center;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+
+  &:hover {
+    //border-color: #1890ff;
+    //background-color: #f0f5ff;
+  }
+
+  .upload-icon {
+    font-size: 24px;
+    color: #1890ff;
+    margin-bottom: 8px;
+  }
+
+  .upload-text {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 8px;
+  }
+
+  .upload-hint {
+    font-size: 12px;
+    color: #aaa;
+  }
+}
+
+.switch-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+
+  .switch-label {
+    font-size: 14px;
+    color: #333;
+  }
+
+  .info-icon {
+    font-style: normal;
+    font-size: 12px;
+    color: #aaa;
+    cursor: pointer;
+  }
+}
+
+.url-input {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.3s ease;
+
+  &:focus {
+    border-color: #1890ff;
+  }
+}
+
+.chunk-sty{
+  font-size: 15px;
+  display: flex;
+  align-items: center; // 垂直居中对齐
+  gap: 8px // 设置内容之间的间距
+}

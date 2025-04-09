@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>tech.aiflowy</groupId>
+        <artifactId>aiflowy-modules</artifactId>
+        <version>1.0.0-alpha.1</version>
+    </parent>
+
+    <artifactId>aiflowy-module-system</artifactId>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.mybatis-flex</groupId>
+            <artifactId>mybatis-flex-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>tech.aiflowy</groupId>
+            <artifactId>aiflowy-common-base</artifactId>
+            <version>1.0.0-alpha.1</version>
+        </dependency>
+        <dependency>
+            <groupId>tech.aiflowy</groupId>
+            <artifactId>aiflowy-module-core</artifactId>
+            <version>1.0.0-alpha.1</version>
+        </dependency>
+        <dependency>
+            <groupId>tech.aiflowy</groupId>
+            <artifactId>aiflowy-common-satoken</artifactId>
+            <version>1.0.0-alpha.1</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-crypto</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>tech.aiflowy</groupId>
+            <artifactId>aiflowy-common-web</artifactId>
+            <version>1.0.0-alpha.1</version>
+        </dependency>
+        <dependency>
+            <groupId>tech.aiflowy</groupId>
+            <artifactId>aiflowy-module-log</artifactId>
+            <version>1.0.0-alpha.1</version>
+        </dependency>
+    </dependencies>
+</project>

@@ -1,0 +1,57 @@
+package tech.aiflowy.system.entity.base;
+
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.KeyType;
+
+import java.io.Serializable;
+import java.math.BigInteger;
+
+
+public class SysAccountRoleBase implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * 主键
+     */
+    @Id(keyType = KeyType.Generator, value = "snowFlakeId", comment = "主键")
+    private BigInteger id;
+
+    /**
+     * 用户ID
+     */
+    @Column(comment = "用户ID")
+    private BigInteger accountId;
+
+    /**
+     * 角色ID
+     */
+    @Column(comment = "角色ID")
+    private BigInteger roleId;
+
+    public BigInteger getId() {
+        return id;
+    }
+
+    public void setId(BigInteger id) {
+        this.id = id;
+    }
+
+    public BigInteger getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(BigInteger accountId) {
+        this.accountId = accountId;
+    }
+
+    public BigInteger getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(BigInteger roleId) {
+        this.roleId = roleId;
+    }
+
+}
