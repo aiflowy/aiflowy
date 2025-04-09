@@ -10,7 +10,7 @@ AIFlowy 是一个使用 Java 开发的 AI 产品的底座和基石，对标字�
 ## 快速开始
 
 ```shell
-git clone https://github.com/aiflowy/aiflowy.git
+git clone https://gitee.com/aiflowy/aiflowy.git
 
 cd aiflowy
 mvn clean package
@@ -21,7 +21,7 @@ npm install
 
 ## 开发及产品文档
 
-https://aiflowy.tech
+https://aiflowy.tech (官网正在备案，还未上线)
 
 
 
