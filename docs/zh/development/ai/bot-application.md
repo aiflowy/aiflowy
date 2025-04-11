@@ -1,10 +1,11 @@
 # 提示词（Prompt）工程指南
 
-## 提示词 （Prompt）
 本章节旨在系统化介绍Prompt的概念、原理及高效使用方法，帮助用户实现更优质的人机交互体验。
 
-## 一、Prompt基础定义
-### 1. 什么是Prompt？
+## Prompt基础定义
+
+### 1.什么是Prompt？
+
 - **直译**：提示词/提示符（人类与AI大语言模型的交互语言）
 - **技术类比**：
   | 对象       | 执行单元       | 沟通媒介   |
@@ -12,12 +13,13 @@
   | 程序员      | CPU           | 代码       |
   | AI使用者    | 大语言模型     | Prompt     |
 
-### 2. Prompt的核心价值
+### 2.Prompt的核心价值
 ✅ 降低AI使用门槛  
 ✅ 提升模型输出准确性  
 ✅ 释放大模型深层能力（如复杂推理）
 
-## 二、Prompt设计原理
+## Prompt设计原理
+
 ### 1. 学术研究启示
 | 论文标题                                      | 核心发现                                                                 | 论文链接                                  |
 |-----------------------------------------------|--------------------------------------------------------------------------|-------------------------------------------|
@@ -51,7 +53,7 @@
 
 ---
 
-## 一、什么是 AI 智能体？
+### 1.什么是 AI 智能体？
 
 **AI 智能体** 是一个抽象的概念，目前业内有许多不同的定义和解读。
 
@@ -72,9 +74,9 @@
 
 ---
 
-## 二、智能体的架构设计
+### 2.智能体的架构设计
 
-在 **AIAdmin** 的底层框架 **Agents-Flex** 中，`Agent` 是这样定义的：
+在 **AIFlowy** 的底层框架 **Agents-Flex** 中，`Agent` 是这样定义的：
 ```java
 public abstract class Agent {
     private Object id;
@@ -90,7 +92,7 @@ public abstract class Agent {
 - **memory**: 记忆存储器。
 - **execute(Map<String, Object> variables, Chain chain)**: 执行方法，由子类实现。
 
-### 示例代码
+### 3.示例代码
 
 以下示例代码展示了一个最初级的智能体 `Text2DdlAgent`，它能够将人类自然语言描述的 DDL 转换为可执行的 DDL 语句：
 
@@ -149,7 +151,7 @@ CREATE TABLE `student` (
 在以上的例子中，只体现了一个最为简单的智能体的流程，在复杂的场景中，比如在某些业务查询下，我们可能需要 text2sql，也就是把人类的自然语言转换为 sql，然后再去数据库查询数据。
 那么在这个过程中，可能就会涉及到很多的安全问题，比如黑客会通过特定的语言，让大语言输出带有 delete 等危险操作的 SQL，那么这个时候，我们就需要用到多智能体协作，以及吴恩达老师提到的智能体反思（Reflection）等能力。这些知识内容，我们在 《执行链 Chain》 章节会有讲解。
 
-### 关于智能体设计的一些思考？
+### 4.关于智能体设计的一些思考？
 
 就目前而已，虽然已经提出了 “智能体” 的概念，但是都是一些非常抽象的概念，关于智能体应该有哪些属性、哪些具体的能力，并没有统一的定论。
 Agents-Flex 可能是世界上第一个拥有智能体定义的技术开发框架，因此我们无法从技术其他框架上获得指导以及参考（目前比如 LangChain 可能会有一些抽象概念，但为对其进行任何的定义）。
@@ -177,7 +179,7 @@ private String name;
 
 ## Function Calling
 
-## 一、什么是 Function Calling
+### 1.什么是 Function Calling
 Function Calling 指的是，用户在传入提示词 prompt 给大模型时，同时传入方法以及参数的定义信息，大模型会理解用户的提示词，返回应该调用哪个方法，以及返回该方法的对应参数。我们得到大模型返回的信息后，主动通过大模型返回的参数，在本地调用本地方法，得到执行的结果。最后使用该结果进行输出。
 
 
@@ -185,9 +187,9 @@ Function Calling 指的是，用户在传入提示词 prompt 给大模型时，�
 通过这个 json 信息，我们可以看出，用户进行了提问 What's the weather like in Boston today? 并传入了一个方法名称 get_current_weather ，以及这个方法的描述，以及相关参数的定义及其描述。
 此时，openai 返回的内容如下：
 返回的内容，告知了我们应该调用哪个方法，以及对应的参数 location 的值为 Boston，此时，我们就可以在本地调用 get_current_weather方法，得到执行结果。
-AIAdmin 的 Function Calling
-在以上的示例中，我们通过底层逻辑讲清楚了其原理，AIAdmin 就是基于以上的原理，进一步进行封装，通过几个注解使得我们的 java 方法可以转换为调用的 json 内容。同时在返回的结果中，我们可以通过返回的 json 内容执行本地方法得到结果。
-## 二、示例代码
+AIFlowy 的 Function Calling
+在以上的示例中，我们通过底层逻辑讲清楚了其原理，AIFlowy 就是基于以上的原理，进一步进行封装，通过几个注解使得我们的 java 方法可以转换为调用的 json 内容。同时在返回的结果中，我们可以通过返回的 json 内容执行本地方法得到结果。
+### 2.示例代码
 第一步：我们需要定义一个方法，如下代码所示：
 
 ```java
@@ -226,5 +228,5 @@ config.setApiKey("sk-rts5NF6n*******");
 }
 ```
 
-在以上的代码中，AIAdmin 的底层框架 AgentsFlex 会自动把 WeatherUtil.getWeatherInfo方法转换为大模型要求的 json 内容，以此同时，大模型响应的内容自动被封装到 FunctionResultResponse中，我们只需要调用 FunctionResultResponse.invoke() 方法，就会立即调用本地方法  WeatherUtil.getWeatherInfo 并得到结果。
+在以上的代码中，AIFlowy 的底层框架 AgentsFlex 会自动把 WeatherUtil.getWeatherInfo方法转换为大模型要求的 json 内容，以此同时，大模型响应的内容自动被封装到 FunctionResultResponse中，我们只需要调用 FunctionResultResponse.invoke() 方法，就会立即调用本地方法  WeatherUtil.getWeatherInfo 并得到结果。
 
