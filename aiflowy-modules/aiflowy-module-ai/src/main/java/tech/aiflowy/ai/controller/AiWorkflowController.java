@@ -1,14 +1,20 @@
 package tech.aiflowy.ai.controller;
 
+import com.agentsflex.core.document.Document;
 import com.agentsflex.core.llm.Llm;
+import com.agentsflex.core.store.DocumentStore;
+import com.agentsflex.core.store.SearchWrapper;
+import com.agentsflex.core.store.StoreOptions;
 import com.agentsflex.llm.spark.SparkLlm;
 import com.agentsflex.llm.spark.SparkLlmConfig;
 import dev.tinyflow.core.Tinyflow;
 import dev.tinyflow.core.knowledge.Knowledge;
 import dev.tinyflow.core.provider.KnowledgeProvider;
 import dev.tinyflow.core.provider.LlmProvider;
+import tech.aiflowy.ai.entity.AiKnowledge;
 import tech.aiflowy.ai.entity.AiLlm;
 import tech.aiflowy.ai.entity.AiWorkflow;
+import tech.aiflowy.ai.service.AiKnowledgeService;
 import tech.aiflowy.ai.service.AiLlmService;
 import tech.aiflowy.ai.service.AiWorkflowService;
 import tech.aiflowy.common.domain.Result;
@@ -17,6 +23,7 @@ import tech.aiflowy.common.web.jsonbody.JsonBody;
 import com.agentsflex.core.chain.*;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +38,9 @@ import java.util.Map;
 @RequestMapping("/api/v1/aiWorkflow")
 public class AiWorkflowController extends BaseCurdController<AiWorkflowService, AiWorkflow> {
     private final AiLlmService aiLlmService;
+
+    @Resource
+    private AiKnowledgeService aiKnowledgeService;
 
     public AiWorkflowController(AiWorkflowService service, AiLlmService aiLlmService) {
         super(service);
@@ -63,15 +73,36 @@ public class AiWorkflowController extends BaseCurdController<AiWorkflowService, 
         tinyflow.setLlmProvider(new LlmProvider() {
             @Override
             public Llm getLlm(Object id) {
-                AiLlm byId = aiLlmService.getById(new BigInteger(id.toString()));
-               return byId.toLlm();
+                AiLlm aiLlm = aiLlmService.getById(new BigInteger(id.toString()));
+               return aiLlm.toLlm();
             }
         });
 
         tinyflow.setKnowledgeProvider(new KnowledgeProvider() {
             @Override
             public Knowledge getKnowledge(Object o) {
-                return null;
+                AiKnowledge aiKnowledge = aiKnowledgeService.getById(new BigInteger(o.toString()));
+                return  new Knowledge() {
+                    @Override
+                    public List<Document> search(String keyword, int limit) {
+                        DocumentStore documentStore = aiKnowledge.toDocumentStore();
+                        if (documentStore == null){
+                            return null;
+                        }
+                        AiLlm aiLlm = aiLlmService.getById(aiKnowledge.getVectorEmbedLlmId());
+                        if (aiLlm == null){
+                            return null;
+                        }
+                        documentStore.setEmbeddingModel(aiLlm.toLlm());
+                        SearchWrapper wrapper = new SearchWrapper();
+                        wrapper.setMaxResults(Integer.valueOf(10));
+                        wrapper.setText(keyword);
+                        StoreOptions options = StoreOptions.ofCollectionName(aiKnowledge.getVectorStoreCollection());
+
+                        List<Document> results = documentStore.search(wrapper, options);
+                        return results;
+                    }
+                };
             }
         });
 

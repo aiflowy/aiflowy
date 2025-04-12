@@ -15,31 +15,26 @@ export const WorkflowDesign = () => {
     const {message} = App.useApp()
     const params = useParams();
 
-
-
     const {result: workflow} = useDetail("aiWorkflow", params.id);
     const {doUpdate} = useUpdate("aiWorkflow");
     const {result: llms} = useGet('/api/v1/aiLlm/list')
+    const {result: knowledge} = useGet('/api/v1/aiKnowledge/list')
     const [parameters, setParameters] = useState<any[]>()
-
-    const getLlms : () => (any) = ():any => {
-        if (llms?.data) {
-            return llms.data.map((item: any) => {
-                return {
-                    value: item.id,
-                    label: item.title,
-                }
-            })
+    const getOptions = (options: { id: any; title: any }[]): { value: any; label: any }[] => {
+        if (options) {
+            return options.map((item) => ({
+                value: item.id,
+                label: item.title,
+            }));
         }
-        return []
-    }
+        return [];
+    };
     const [executeResult, setExecuteResult] = useState<string>('')
 
     const provider = {
-        llm: ()  => getLlms(),
-        knowledge: () => [],
+        llm: ()  => getOptions(llms?.data),
+        knowledge: () : any => getOptions(knowledge?.data)
     }
-    console.log('provider, ', provider)
     const {setOptions} = useLayout();
     useEffect(() => {
         setOptions({leftMenuCollapsed: true, showBreadcrumb: false})
