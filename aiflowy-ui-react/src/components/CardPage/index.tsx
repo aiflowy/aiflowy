@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {ColumnsConfig} from "../AntdCrud";
-import {Avatar, Button, Card, Col, Dropdown, Modal, Row, Spin} from "antd";
+import {Avatar, Button, Card, Col, Dropdown, Modal, Pagination, Row, Spin} from "antd";
 import {
     DeleteOutlined,
     EditOutlined, EllipsisOutlined,
@@ -32,7 +32,7 @@ export type CardPageProps = {
 
 const CardPage: React.FC<CardPageProps> = ({
                                                tableAlias
-                                               , defaultPageSize = 10
+                                               , defaultPageSize = 12
                                                , editModalTitle
                                                , editLayout
                                                , addButtonText = "新增"
@@ -159,6 +159,20 @@ const CardPage: React.FC<CardPageProps> = ({
                         </Col>
                     )) : (<><Empty image={Empty.PRESENTED_IMAGE_SIMPLE} className={"empty-container"}/></>)}
                 </Row>
+                {result?.data?.records?.length > 0 &&
+                    <div style={{display: "flex", justifyContent: "center", paddingTop: "20px"}}>
+                        <Pagination
+                            showQuickJumper
+                            // showSizeChanger
+                            defaultCurrent={1}
+                            total={result?.data?.totalRow}
+                            pageSize={pageSize}
+                            showTotal={(total) => `共 ${total} 条数据`}
+                            onChange={(page) => {
+                                setLocalPageNumber(page)
+                            }}
+                        />
+                    </div>}
             </Spin>
         </>
     )
