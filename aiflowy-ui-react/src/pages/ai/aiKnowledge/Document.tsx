@@ -608,6 +608,6 @@ const Document: React.FC = () => {
 };
 
 export default {
-    path: "/ai/document/:kSlug/:dSlug; /ai/document/:kSlug;",
+    path: "/ai/knowledge/document/:kSlug/:dSlug; /ai/knowledge/document/:kSlug;",
     element: Document
 };

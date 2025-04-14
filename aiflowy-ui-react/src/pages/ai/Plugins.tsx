@@ -16,16 +16,25 @@ const columnsConfig: ColumnsConfig<any> = [
         dataIndex: "id",
         key: "id"
     },
-
+    {
+        title: 'Icon',
+        dataIndex: 'icon',
+        key: 'icon',
+        form: {
+            type: "image"
+        }
+    },
     {
         form: {
-            type: "input"
+            type: "input",
+            rules: [{required: true, message: '请输入知识库名称'}]
         },
         dataIndex: "pluginName",
         title: "插件名称",
         key: "pluginName",
         supportSearch: true,
         placeholder: "请输入插件名称",
+
     },
 
     {

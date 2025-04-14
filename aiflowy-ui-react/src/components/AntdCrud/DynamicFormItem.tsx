@@ -229,7 +229,7 @@ const DynamicFormItem: React.FC<{
     return (
         <Form.Item name={columnConfig.key! as string} label={columnConfig.title! as string}
                    style={{display: isHidden(columnConfig) || !show ? "none" : ""}}
-                   rules={columnConfig.form?.rules}
+                   rules={position == 'search' ? [] :columnConfig.form?.rules}
                    extra={columnConfig.form?.extra}
                    initialValue={onValueInit?.(columnConfig.key! as string)}
                    className={`aiadmin-form-item aiadmin-form-${columnConfig.form?.type || 'input'}`}

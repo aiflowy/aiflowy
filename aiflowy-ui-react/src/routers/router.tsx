@@ -59,7 +59,7 @@ const routers: RouteObject[] = [
         children: [
             {
                 path: "/",
-                element: <Navigate to={"/index"}/>,
+                element: <Navigate to={"/login"}/>,
             },
             ...portalRouters
         ],

@@ -28,6 +28,9 @@ const columnsColumns: ColumnsConfig<any> = [
         key: 'title',
         placeholder: "请输入 Bot 的名称",
         supportSearch: true,
+        form: {
+            rules: [{required: true, message: '请输入 Bot 的名称'}]
+        }
     },
     {
         title: '描述',

@@ -16,11 +16,22 @@ const columnsColumns: ColumnsConfig<any> = [
         }
     },
     {
+        title: 'Icon',
+        dataIndex: 'icon',
+        key: 'icon',
+        form: {
+            type: "image",
+        }
+    },
+    {
         title: '名称',
         dataIndex: 'title',
         key: 'title',
         placeholder: "请输入知识库名称",
         supportSearch: true,
+        form: {
+            rules: [{required: true, message: '请输入知识库名称'}]
+        }
     },
     {
         title: '描述',
@@ -179,7 +190,7 @@ const Knowledge: React.FC<{ paramsToUrl: boolean }> = () => {
                           return [
                               <MenuUnfoldOutlined title="文档列表" onClick={() => {
                                   // window.open(`/ai/knowledge/${item.slug || item.id}`)
-                                  window.open(`/ai/Document/${item.slug || item.id}`)
+                                  window.open(`/ai/knowledge/Document/${item.slug || item.id}`)
                               }}/>,
 
                               <SearchOutlined title="向量检索" onClick={() => {

@@ -32,6 +32,12 @@ public class AiPluginsBase extends DateEntity implements Serializable {
     private BigInteger tenantId;
 
     /**
+     * 插件图标
+     */
+    @Column(comment = "图标")
+    private String icon;
+
+    /**
      * 插件类型
      */
     @Column(comment = "插件类型")
@@ -209,4 +215,11 @@ public class AiPluginsBase extends DateEntity implements Serializable {
         this.isDeleted = isDeleted;
     }
 
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
 }

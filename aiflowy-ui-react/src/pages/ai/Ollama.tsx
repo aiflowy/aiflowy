@@ -194,8 +194,11 @@ const Ollama: React.FC = () => {
     }
     return <div style={{width: '100%'}}>
         <div style={{width: '50%', display: 'flex', alignItems: 'center',gap: '20px', margin: '10px', height: '40px'}}>
-            <Space.Compact>
-                <Input addonBefore="模型名称" placeholder="请输入模型名称" value={inputValue} onChange={handleChange}/>
+            <Space.Compact >
+                <div style={{display: 'flex', alignItems: 'center' }}>
+                    <p style={{width: '50px', margin: 0 }}>名称: &nbsp;</p> <Input placeholder="请输入模型名称" value={inputValue} onChange={handleChange}/>
+                </div>
+
             </Space.Compact>
             <div style={{width: '100px', display: 'flex', alignItems: 'center'}}>
                 <div>
