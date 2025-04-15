@@ -20,7 +20,9 @@ import {PluginModal} from "./Plugins.tsx";
 const colStyle: React.CSSProperties = {
     background: '#fafafa',
     padding: '8px',
-    border: "1px solid #eee"
+    border: "1px solid #eee",
+    height: 'calc(100vh - 68px)',
+    overflowY: 'auto'
 };
 
 
