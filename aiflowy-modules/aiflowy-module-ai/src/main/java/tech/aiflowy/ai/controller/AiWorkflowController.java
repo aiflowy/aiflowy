@@ -55,7 +55,12 @@ public class AiWorkflowController extends BaseCurdController<AiWorkflowService, 
             return Result.fail(1, "can not find the workflow by id: " + id);
         }
 
-        Chain chain = workflow.toTinyflow().toChain();
+        Tinyflow tinyflow = workflow.toTinyflow();
+        if (tinyflow == null) {
+            return Result.fail(2, "workflow content is empty! ");
+        }
+
+        Chain chain = tinyflow.toChain();
         List<Parameter> chainParameters = chain.getParameters();
         return Result.success("parameters", chainParameters);
     }
@@ -73,7 +78,7 @@ public class AiWorkflowController extends BaseCurdController<AiWorkflowService, 
             @Override
             public Llm getLlm(Object id) {
                 AiLlm aiLlm = aiLlmService.getById(new BigInteger(id.toString()));
-               return aiLlm.toLlm();
+                return aiLlm.toLlm();
             }
         });
 
@@ -81,15 +86,15 @@ public class AiWorkflowController extends BaseCurdController<AiWorkflowService, 
             @Override
             public Knowledge getKnowledge(Object o) {
                 AiKnowledge aiKnowledge = aiKnowledgeService.getById(new BigInteger(o.toString()));
-                return  new Knowledge() {
+                return new Knowledge() {
                     @Override
                     public List<Document> search(String keyword, int limit, KnowledgeNode knowledgeNode, Chain chain) {
                         DocumentStore documentStore = aiKnowledge.toDocumentStore();
-                        if (documentStore == null){
+                        if (documentStore == null) {
                             return null;
                         }
                         AiLlm aiLlm = aiLlmService.getById(aiKnowledge.getVectorEmbedLlmId());
-                        if (aiLlm == null){
+                        if (aiLlm == null) {
                             return null;
                         }
                         documentStore.setEmbeddingModel(aiLlm.toLlm());
@@ -104,8 +109,6 @@ public class AiWorkflowController extends BaseCurdController<AiWorkflowService, 
                 };
             }
         });
-
-
 
 
         Chain chain = tinyflow.toChain();
