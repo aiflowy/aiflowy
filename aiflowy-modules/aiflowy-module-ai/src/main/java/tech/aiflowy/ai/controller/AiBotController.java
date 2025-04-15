@@ -1,6 +1,7 @@
 package tech.aiflowy.ai.controller;
 
 import tech.aiflowy.ai.entity.*;
+import tech.aiflowy.ai.mapper.AiBotConversationMessageMapper;
 import tech.aiflowy.ai.service.*;
 import tech.aiflowy.common.ai.ChatManager;
 import tech.aiflowy.common.ai.MySseEmitter;
@@ -50,7 +51,10 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
     private final AiBotWorkflowService aiBotWorkflowService;
     private final AiBotKnowledgeService aiBotKnowledgeService;
     private final AiBotMessageService aiBotMessageService;
-
+    @Resource
+    private AiBotConversationMessageService aiBotConversationMessageService;
+    @Resource
+    private AiBotConversationMessageMapper aiBotConversationMessageMapper;
     public AiBotController(AiBotService service, AiLlmService aiLlmService, AiBotWorkflowService aiBotWorkflowService, AiBotKnowledgeService aiBotKnowledgeService, AiBotMessageService aiBotMessageService) {
         super(service);
         this.aiLlmService = aiLlmService;
@@ -116,7 +120,9 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
 
         Llm llm = aiLlm.toLlm();
 
-        AiBotMessageMemory memory = new AiBotMessageMemory(botId, SaTokenUtil.getLoginAccount().getId(), sessionId, aiBotMessageService);
+        AiBotMessageMemory memory = new AiBotMessageMemory(botId, SaTokenUtil.getLoginAccount().getId(),
+                sessionId, aiBotMessageService, aiBotConversationMessageMapper,
+                aiBotConversationMessageService);
 
         final HistoriesPrompt historiesPrompt = new HistoriesPrompt();
         historiesPrompt.setSystemMessage(SystemMessage.of((String) llmOptions.get("systemPrompt")));

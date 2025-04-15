@@ -9,13 +9,13 @@ import React, { useEffect, useState } from 'react';
 import {
     DownOutlined,
     PlusOutlined,
-    SmileOutlined,
 } from '@ant-design/icons';
 import { Button, Dropdown, type GetProp, MenuProps, Space } from 'antd';
 import { AiProChat, ChatMessage } from "../components/AiProChat/AiProChat.tsx";
 import { getSessionId } from "../libs/getSessionId.ts";
 import { useSse } from "../hooks/useSse.ts";
 import { useParams } from "react-router-dom";
+import {useGet} from "../hooks/useApis.ts";
 
 const defaultConversationsItems = [
     {
@@ -104,17 +104,7 @@ const useStyle = createStyles(({ token, css }) => {
 
 export const ExternalBot: React.FC = () => {
 
-    const modelItems: MenuProps['items'] = [
-        {
-            key: '1',
-            label: '通义千问',
-        },
-        {
-            key: '2',
-            label: '星火大模型',
-            icon: <SmileOutlined />
-        }
-    ];
+
     const [largeModel, setLargeModel] = useState("通义千问");
     // ==================== Style ====================
     const { styles } = useStyle();
@@ -124,12 +114,26 @@ export const ExternalBot: React.FC = () => {
     const [conversationsItems, setConversationsItems] = React.useState(defaultConversationsItems);
 
     const [activeKey, setActiveKey] = React.useState(defaultConversationsItems[0].key);
+    const params = useParams();
 
     const { start: startChat } = useSse("/api/v1/aiBot/chat");
 
+    const {result: llms} = useGet('/api/v1/aiLlm/list')
+    const {result: conversationResult} = useGet('/api/v1/aiBotMessage/externalList',{"botId": params?.id})
+    console.log('conversationResult',conversationResult)
+    const getOptions = (options: { id: any; title: any }[]): { key: any; label: any }[] => {
+        if (options) {
+            return options.map((item) => ({
+                key: item.id,
+                label: item.title,
+            }));
+        }
+        return [];
+    };
+    const modelItems: MenuProps['items'] = getOptions(llms?.data)
     const [chats, setChats] = useState<ChatMessage[]>([]);
 
-    const params = useParams();
+    console.log('params',params)
     // ==================== Runtime ====================
     const [agent] = useXAgent({
         request: async ({ message }, { onSuccess }) => {
@@ -197,28 +201,28 @@ export const ExternalBot: React.FC = () => {
                 />
             </div>
             <div className={styles.chat}>
-                <div>
-                    <Dropdown
-                        menu={{
-                            items: modelItems,
-                            onClick: (item) => {
-                                console.log('item',item);
-                                // 更新 largeModel 状态为选中的模型名称
-                                // @ts-ignore
-                                setLargeModel(item.domEvent.target.innerText);
-                            },
-                        }}
-                    >
-                        <a onClick={(e) => {
-                            e.preventDefault();
-                        }}>
-                            <Space>
-                                {largeModel} {/* 显示当前选中的模型名称 */}
-                                <DownOutlined />
-                            </Space>
-                        </a>
-                    </Dropdown>
-                </div>
+                {/*<div>*/}
+                {/*    <Dropdown*/}
+                {/*        menu={{*/}
+                {/*            items: modelItems,*/}
+                {/*            onClick: (item) => {*/}
+                {/*                console.log('item',item);*/}
+                {/*                // 更新 largeModel 状态为选中的模型名称*/}
+                {/*                // @ts-ignore*/}
+                {/*                setLargeModel(item.domEvent.target.innerText);*/}
+                {/*            },*/}
+                {/*        }}*/}
+                {/*    >*/}
+                {/*        <a onClick={(e) => {*/}
+                {/*            e.preventDefault();*/}
+                {/*        }}>*/}
+                {/*            <Space>*/}
+                {/*                {largeModel} /!* 显示当前选中的模型名称 *!/*/}
+                {/*                <DownOutlined />*/}
+                {/*            </Space>*/}
+                {/*        </a>*/}
+                {/*    </Dropdown>*/}
+                {/*</div>*/}
                 <AiProChat
                     chats={chats}
                     onChatsChange={setChats} // 确保正确传递 onChatsChange
@@ -251,4 +255,9 @@ export const ExternalBot: React.FC = () => {
     );
 };
 
-export default ExternalBot;
+
+export default {
+    path: "/ai/externalBot/:id",
+    element: ExternalBot,
+    frontEnable: true,
+};

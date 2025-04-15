@@ -1,5 +1,6 @@
 package tech.aiflowy.ai.controller;
 
+import org.springframework.web.bind.annotation.RequestParam;
 import tech.aiflowy.ai.entity.AiBotMessage;
 import tech.aiflowy.ai.service.AiBotMessageService;
 import tech.aiflowy.common.domain.Result;
@@ -11,7 +12,9 @@ import com.mybatisflex.core.query.QueryWrapper;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import tech.aiflowy.common.web.jsonbody.JsonBody;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,8 +27,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/aiBotMessage")
 public class AiBotMessageController extends BaseCurdController<AiBotMessageService, AiBotMessage> {
-    public AiBotMessageController(AiBotMessageService service) {
+    private final AiBotMessageService aiBotMessageService;
+
+    public AiBotMessageController(AiBotMessageService service, AiBotMessageService aiBotMessageService) {
         super(service);
+        this.aiBotMessageService = aiBotMessageService;
     }
 
 
@@ -33,7 +39,7 @@ public class AiBotMessageController extends BaseCurdController<AiBotMessageServi
     @Override
     public Result list(AiBotMessage entity, Boolean asTree, String sortKey, String sortType) {
 
-        if (entity.getBotId() == null || StringUtil.noText(entity.getSessionId())){
+        if (entity.getBotId() == null || StringUtil.noText(entity.getSessionId())) {
             return Result.fail();
         }
 
@@ -66,5 +72,11 @@ public class AiBotMessageController extends BaseCurdController<AiBotMessageServi
     protected Result onSaveOrUpdateBefore(AiBotMessage entity, boolean isSave) {
         entity.setAccountId(SaTokenUtil.getLoginAccount().getId());
         return super.onSaveOrUpdateBefore(entity, isSave);
+    }
+
+    @GetMapping("externalList")
+    public Result externalList(@RequestParam(value = "botId", required = true) BigInteger botId) {
+
+    return aiBotMessageService.externalList(botId);
     }
 }

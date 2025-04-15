@@ -405,7 +405,7 @@ const BotDesign: React.FC = () => {
                                     <div>
                                         <span>
                                             外部访问地址 <a
-                                            href={window.location.href.substring(0, window.location.href.indexOf('/ai')) + '/bot/chat/' + detail?.data.id}
+                                            href={window.location.href.substring(0, window.location.href.indexOf('/ai')) + '/ai/externalBot/' + detail?.data.id}
                                             target={"_blank"}>打开</a>
                                         </span>
                                         <TextArea readOnly disabled

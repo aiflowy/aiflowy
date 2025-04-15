@@ -74,7 +74,7 @@ const FileImportPanel: React.FC<FileImportPanelProps> = ({ data, maxCount = 1, a
             file.type === "application/markdown" ||
             file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" ||
             file.name.endsWith(".md");
-        const isLt15M = file.size / 1024 / 1024 < 15;
+        const isLt15M = file.size / 1024 / 1024 < 200;
 
         if (!isAllowedType) {
             message.error("仅支持 txt, pdf, md, docx 格式的文件！");
@@ -273,7 +273,7 @@ const FileImportPanel: React.FC<FileImportPanelProps> = ({ data, maxCount = 1, a
                             setDataPreView([]);
                             setFileList([]);
                         }}>取消导入</Button>
-                        <Button type="dashed" disabled={disabledConfirm} onClick={() => {
+                        <Button type="dashed"  onClick={() => {
                             setPreviewListLoading({ spinning: true,tip: "正在保存文件..."})
                             setDisabledConfirm(true)
                             // 构造 FormData 对象

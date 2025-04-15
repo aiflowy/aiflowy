@@ -1,5 +1,7 @@
 package tech.aiflowy.ai.entity;
 
+import tech.aiflowy.ai.mapper.AiBotConversationMessageMapper;
+import tech.aiflowy.ai.service.AiBotConversationMessageService;
 import tech.aiflowy.ai.service.AiBotMessageService;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
@@ -9,7 +11,9 @@ import com.agentsflex.core.message.*;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.mybatisflex.core.query.QueryWrapper;
+import tech.aiflowy.common.satoken.util.SaTokenUtil;
 
+import javax.annotation.Resource;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,12 +24,17 @@ public class AiBotMessageMemory implements ChatMemory {
     private final BigInteger accountId;
     private final String sessionId;
     private final AiBotMessageService messageService;
-
-    public AiBotMessageMemory(BigInteger botId, BigInteger accountId, String sessionId, AiBotMessageService messageService) {
+    private final AiBotConversationMessageMapper aiBotConversationMessageMapper;
+    private final AiBotConversationMessageService aiBotConversationService;
+    public AiBotMessageMemory(BigInteger botId, BigInteger accountId, String sessionId, AiBotMessageService messageService,
+                              AiBotConversationMessageMapper aiBotConversationMessageMapper,
+                              AiBotConversationMessageService aiBotConversationService ) {
         this.botId = botId;
         this.accountId = accountId;
         this.sessionId = sessionId;
         this.messageService = messageService;
+        this.aiBotConversationMessageMapper = aiBotConversationMessageMapper;
+        this.aiBotConversationService = aiBotConversationService;
     }
 
     @Override
@@ -79,6 +88,16 @@ public class AiBotMessageMemory implements ChatMemory {
             aiMessage.setContent(((SystemMessage) message).getContent());
         }
         if (StrUtil.isNotEmpty(aiMessage.getContent())) {
+            AiBotConversationMessage aiBotConversation = aiBotConversationMessageMapper.selectOneById(aiMessage.getSessionId());
+            if (aiBotConversation == null){
+                AiBotConversationMessage conversation = new AiBotConversationMessage();
+                conversation.setSessionId(aiMessage.getSessionId());
+                conversation.setTitle(aiMessage.getContent());
+                conversation.setBotId(aiMessage.getBotId());
+                conversation.setCreated(new Date());
+                conversation.setAccountId(SaTokenUtil.getLoginAccount().getId());
+                aiBotConversationService.save(conversation);
+            }
             messageService.save(aiMessage);
         }
     }

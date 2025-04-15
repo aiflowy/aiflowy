@@ -2,6 +2,9 @@ package tech.aiflowy.ai.service;
 
 import tech.aiflowy.ai.entity.AiBotMessage;
 import com.mybatisflex.core.service.IService;
+import tech.aiflowy.common.domain.Result;
+
+import java.math.BigInteger;
 
 /**
  * Bot 消息记录表 服务层。
@@ -11,4 +14,5 @@ import com.mybatisflex.core.service.IService;
  */
 public interface AiBotMessageService extends IService<AiBotMessage> {
 
+    Result externalList(BigInteger botId);
 }

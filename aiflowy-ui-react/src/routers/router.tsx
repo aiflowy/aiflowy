@@ -3,6 +3,7 @@ import Error404 from "../components/Error404";
 import Layout from "../components/Layout";
 import Login from "../pages/commons/login.tsx";
 import React from "react";
+import {ExternalBot} from "../pages/ExternalBot.tsx";
 
 /**
  * 登录成功之后的路由和菜单配置
@@ -69,6 +70,10 @@ const routers: RouteObject[] = [
     {
         path: "/login",
         element: <Login/>,
+    },
+    {
+        path: "/ai/externalBot",
+        element: <ExternalBot/>,
     },
     ...frontRouters
 ];
