@@ -125,6 +125,7 @@ export const AiProChat = ({
             }
         } catch (error) {
             console.error('Error:', error);
+            console.error('出错了:', error);
         } finally {
             setIsStreaming(false);
             setSendLoading(false);

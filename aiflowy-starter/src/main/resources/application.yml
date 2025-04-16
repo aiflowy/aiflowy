@@ -5,8 +5,8 @@ spring:
   profiles:
     active: dev
   datasource:
-#    url: jdbc:mysql://192.168.2.6:3306/aiflowy?useInformationSchema=true&characterEncoding=utf-8
-    url: jdbc:mysql://127.0.0.1:3306/aiflowy?useInformationSchema=true&characterEncoding=utf-8
+    url: jdbc:mysql://192.168.2.6:3306/aiflowy?useInformationSchema=true&characterEncoding=utf-8
+#    url: jdbc:mysql://127.0.0.1:3306/aiflowy?useInformationSchema=true&characterEncoding=utf-8
     username: root
     password: 123456
   servlet:
@@ -23,6 +23,6 @@ aiflowy:
     local:
       root: ''
   ollama:
-    host: http://127.0.0.1:11434
+    host: http://115.190.9.61:11434
   login:
     excludes: /api/v1/auth/**, /static/**

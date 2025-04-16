@@ -93,7 +93,8 @@ public class AiBotConversationMessageServiceImpl extends ServiceImpl<AiBotConver
                 .select("session_id","title", "bot_id") // 选择字段
                 .from("tb_ai_bot_conversation_message")
                 .where("bot_id = ?", botId)
-                .where("account_id = ? ", accountId);
+                .where("account_id = ? ", accountId)
+                .orderBy("created", false);
         List<AiBotConversationMessage> cons = aiBotMessageMapper.selectListByQueryAs(queryConversation, AiBotConversationMessage.class);
         Map<String, Object> result = new HashMap<>();
         result.put("cons", cons);

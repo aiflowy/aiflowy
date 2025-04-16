@@ -92,6 +92,7 @@ const useStyle = createStyles(({ token, css }) => {
 export const ExternalBot: React.FC = () => {
     const [largeModel, setLargeModel] = useState("通义千问");
     const [newTitle, setNewTitle] = useState<string>('');
+    const [isNewConversation, setIsNewConversation] = useState(false);
 
     // ==================== Style ====================
     const { styles } = useStyle();
@@ -99,6 +100,7 @@ export const ExternalBot: React.FC = () => {
     // ==================== State ====================
     const [conversationsItems, setConversationsItems] = React.useState<{ key: string; label: string }[]>([]);
     const [activeKey, setActiveKey] = React.useState('');
+    const [externalLlmId, setExternalLlmId] = React.useState('');
     const [open, setOpen] = useState(false);
     const params = useParams();
     const { start: startChat } = useSse("/api/v1/aiBot/chat");
@@ -214,14 +216,17 @@ export const ExternalBot: React.FC = () => {
     }, [conversationResult, newTitle]);
 
     const onAddConversation = () => {
-        // setConversationsItems(getConversations(conversationResult?.data.cons));
         setNewExternalSessionId();
+        setConversationsItems(prev => [ { key: getExternalSessionId(), label: '新建会话' }, ...prev]);
+        setActiveKey(getExternalSessionId());
         setChats([])
+        setIsNewConversation(true);
     };
 
     const onConversationClick: GetProp<typeof Conversations, 'onActiveChange'> = (key) => {
         setActiveKey(key);
         updateExternalSessionId(key);
+        setIsNewConversation(false);
         doGetManual({
             params: {
                 sessionId: key,
@@ -305,10 +310,10 @@ export const ExternalBot: React.FC = () => {
                         menu={{
                             items: modelItems,
                             onClick: (item) => {
-                                console.log('item', item);
                                 // 更新 largeModel 状态为选中的模型名称
                                 // @ts-ignore
                                 setLargeModel(item.domEvent.target.innerText);
+                                setExternalLlmId(item.key)
                             },
                         }}
                     >
@@ -335,7 +340,8 @@ export const ExternalBot: React.FC = () => {
                                         botId: params.id,
                                         sessionId: getExternalSessionId(),
                                         prompt: messages[messages.length - 1].content as string,
-                                        isExternalMsg: 1
+                                        isExternalMsg: 1,
+                                        externalLlmId: externalLlmId
                                     },
                                     onMessage: (msg) => {
                                         controller.enqueue(encoder.encode(msg));

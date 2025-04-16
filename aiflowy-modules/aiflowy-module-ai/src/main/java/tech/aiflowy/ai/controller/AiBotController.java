@@ -104,17 +104,22 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
                            @JsonBody(value = "botId", required = true) BigInteger botId,
                            @JsonBody(value = "sessionId", required = true) String sessionId,
                            @JsonBody(value = "isExternalMsg") int isExternalMsg,
+                           @JsonBody(value = "externalLlmId") BigInteger externalLlmId,
                            HttpServletResponse response) {
         response.setContentType("text/event-stream");
-
         AiBot aiBot = service.getById(botId);
         if (aiBot == null) {
             return ChatManager.getInstance().sseEmitterForContent("机器人不存在");
         }
 
         Map<String, Object> llmOptions = aiBot.getLlmOptions();
+        AiLlm aiLlm = new AiLlm();
+        if (externalLlmId != null){
+            aiLlm = aiLlmService.getById(externalLlmId);
+        } else {
+            aiLlm = aiLlmService.getById(aiBot.getLlmId());
 
-        AiLlm aiLlm = aiLlmService.getById(aiBot.getLlmId());
+        }
         if (aiLlm == null) {
             return ChatManager.getInstance().sseEmitterForContent("LLM不存在");
         }
