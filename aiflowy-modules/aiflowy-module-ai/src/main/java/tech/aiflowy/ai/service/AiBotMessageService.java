@@ -14,5 +14,7 @@ import java.math.BigInteger;
  */
 public interface AiBotMessageService extends IService<AiBotMessage> {
 
-    Result externalList(BigInteger botId);
+
+    Result messageList(String botId, String sessionId, int isExternalMsg);
+
 }

@@ -60,7 +60,7 @@ public class AiBotMessageController extends BaseCurdController<AiBotMessageServi
             maps.add(Maps.of("id", aiBotMessage.getId())
                     .set("content", aiBotMessage.getContent())
                     .set("role", aiBotMessage.getRole())
-                    .set("createAt", aiBotMessage.getCreated().getTime())
+                    .set("created", aiBotMessage.getCreated().getTime())
                     .set("updateAt", aiBotMessage.getCreated().getTime())
             );
         }
@@ -74,9 +74,16 @@ public class AiBotMessageController extends BaseCurdController<AiBotMessageServi
         return super.onSaveOrUpdateBefore(entity, isSave);
     }
 
-    @GetMapping("externalList")
-    public Result externalList(@RequestParam(value = "botId", required = true) BigInteger botId) {
 
-    return aiBotMessageService.externalList(botId);
+
+    @GetMapping("messageList")
+    public Result messageList(@RequestParam(value = "botId") String botId,
+                              @RequestParam(value = "sessionId") String sessionId,
+                              @RequestParam(value = "isExternalMsg") int isExternalMsg
+                              ) {
+
+        return aiBotMessageService.messageList(botId, sessionId, isExternalMsg);
     }
+
+
 }

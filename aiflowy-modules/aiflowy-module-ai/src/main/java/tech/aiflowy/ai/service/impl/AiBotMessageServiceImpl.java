@@ -29,27 +29,26 @@ public class AiBotMessageServiceImpl extends ServiceImpl<AiBotMessageMapper, AiB
     @Resource
     private AiBotMessageMapper aiBotMessageMapper;
 
+
+
+    /**
+     * 根据 botId 和 sessionId 查询当前对应的消息记录
+     * @param botId
+     * @param sessionId
+     * @return
+     */
     @Override
-    public Result externalList(BigInteger botId) {
-        LoginAccount loginUser = SaTokenUtil.getLoginAccount();
-        BigInteger accountId = loginUser.getId();
-        QueryWrapper query = QueryWrapper.create()
-                .select("session_id") // 选择字段
-                .from("tb_ai_bot_message")
-                .where("bot_id = ?", botId)
-                .where("account_id = ? ", accountId);
-        AiBotMessage aiBotMessage = aiBotMessageMapper.selectOneByQuery(query);
-        if (aiBotMessage == null){
-            return Result.fail();
-        }
+    public Result messageList(String botId, String sessionId, int isExternalMsg) {
         QueryWrapper queryConversation = QueryWrapper.create()
-                .select("session_id","title", "bot_id") // 选择字段
-                .from("tb_ai_bot_conversation_message")
-                .where("bot_id = ?", botId)
-                .where("account_id = ? ", accountId);
-        List<AiBotConversationMessage> cons = aiBotMessageMapper.selectListByQueryAs(queryConversation, AiBotConversationMessage.class);
-        Map<String, Object> result = new HashMap<>();
-        result.put("cons", cons);
-        return Result.success(result);
+                .select("id","bot_id","account_id","session_id","content","role","created")
+                .from("tb_ai_bot_message")
+                .where("bot_id = ? ", botId)
+                .where("session_id = ? ", sessionId)
+                .where("is_external_msg = ? ", isExternalMsg)
+                .where("account_id = ? ", SaTokenUtil.getLoginAccount().getId());
+        List<AiBotMessage> messages = aiBotMessageMapper.selectListByQueryAs(queryConversation, AiBotMessage.class);
+        return Result.success(messages);
     }
+
+
 }

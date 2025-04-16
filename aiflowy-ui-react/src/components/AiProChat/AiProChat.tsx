@@ -17,7 +17,7 @@ export type ChatMessage = {
     id: string;
     content: string;
     role: 'user' | 'assistant' | 'aiLoading';
-    createAt: number;
+    created: number;
     updateAt: number;
     loading?: boolean;
 };
@@ -78,7 +78,7 @@ export const AiProChat = ({
             role: 'user',
             id: Date.now().toString(),
             content,
-            createAt: Date.now(),
+            created: Date.now(),
             updateAt: Date.now(),
         };
         const aiMessage: ChatMessage = {
@@ -86,7 +86,7 @@ export const AiProChat = ({
             id: Date.now().toString(),
             content: '',
             loading: true,
-            createAt: Date.now(),
+            created: Date.now(),
             updateAt: Date.now(),
         };
         const temp = [userMessage, aiMessage];
@@ -139,7 +139,7 @@ export const AiProChat = ({
             id: Date.now().toString(),
             content: chats[index - 1].content,
             loading: false,
-            createAt: Date.now(),
+            created: Date.now(),
             updateAt: Date.now(),
         };
         setContent(prevMessage.content)
@@ -148,7 +148,7 @@ export const AiProChat = ({
             id: Date.now().toString(),
             content: '',
             loading: true,
-            createAt: Date.now(),
+            created: Date.now(),
             updateAt: Date.now(),
         };
         const temp = [prevMessage, aiMessage];
@@ -219,7 +219,7 @@ export const AiProChat = ({
                     typing: {suffix: <>💗</>},
                     header: (
                         <Space>
-                            {new Date(chat.createAt).toLocaleString()}
+                            {new Date(chat.created).toLocaleString()}
                         </Space>
                     ),
                     loading: chat.loading,

@@ -23,15 +23,18 @@ public class AiBotMessageMemory implements ChatMemory {
     private final BigInteger botId;
     private final BigInteger accountId;
     private final String sessionId;
+    private final int isExternalMsg;
     private final AiBotMessageService messageService;
     private final AiBotConversationMessageMapper aiBotConversationMessageMapper;
     private final AiBotConversationMessageService aiBotConversationService;
-    public AiBotMessageMemory(BigInteger botId, BigInteger accountId, String sessionId, AiBotMessageService messageService,
+    public AiBotMessageMemory(BigInteger botId, BigInteger accountId, String sessionId, int isExternalMsg,
+                              AiBotMessageService messageService,
                               AiBotConversationMessageMapper aiBotConversationMessageMapper,
                               AiBotConversationMessageService aiBotConversationService ) {
         this.botId = botId;
         this.accountId = accountId;
         this.sessionId = sessionId;
+        this.isExternalMsg = isExternalMsg;
         this.messageService = messageService;
         this.aiBotConversationMessageMapper = aiBotConversationMessageMapper;
         this.aiBotConversationService = aiBotConversationService;
@@ -43,6 +46,7 @@ public class AiBotMessageMemory implements ChatMemory {
                 .eq(AiBotMessage::getBotId, botId, true)
                 .eq(AiBotMessage::getAccountId, accountId, true)
                 .eq(AiBotMessage::getSessionId, sessionId, true)
+                .eq(AiBotMessage::getIsExternalMsg, isExternalMsg, true)
                 .orderBy(AiBotMessage::getCreated, true)
         );
 
@@ -65,7 +69,7 @@ public class AiBotMessageMemory implements ChatMemory {
         aiMessage.setBotId(botId);
         aiMessage.setAccountId(accountId);
         aiMessage.setSessionId(sessionId);
-
+        aiMessage.setIsExternalMsg(isExternalMsg);
         if (message instanceof AiMessage) {
             AiMessage m = (AiMessage) message;
             aiMessage.setContent(m.getFullContent());
@@ -89,7 +93,7 @@ public class AiBotMessageMemory implements ChatMemory {
         }
         if (StrUtil.isNotEmpty(aiMessage.getContent())) {
             AiBotConversationMessage aiBotConversation = aiBotConversationMessageMapper.selectOneById(aiMessage.getSessionId());
-            if (aiBotConversation == null){
+            if (aiBotConversation == null  && isExternalMsg == 1){
                 AiBotConversationMessage conversation = new AiBotConversationMessage();
                 conversation.setSessionId(aiMessage.getSessionId());
                 conversation.setTitle(aiMessage.getContent());

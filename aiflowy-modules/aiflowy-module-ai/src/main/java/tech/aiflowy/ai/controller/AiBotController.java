@@ -103,6 +103,7 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
     public SseEmitter chat(@JsonBody(value = "prompt", required = true) String prompt,
                            @JsonBody(value = "botId", required = true) BigInteger botId,
                            @JsonBody(value = "sessionId", required = true) String sessionId,
+                           @JsonBody(value = "isExternalMsg") int isExternalMsg,
                            HttpServletResponse response) {
         response.setContentType("text/event-stream");
 
@@ -121,7 +122,7 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
         Llm llm = aiLlm.toLlm();
 
         AiBotMessageMemory memory = new AiBotMessageMemory(botId, SaTokenUtil.getLoginAccount().getId(),
-                sessionId, aiBotMessageService, aiBotConversationMessageMapper,
+                sessionId, isExternalMsg, aiBotMessageService, aiBotConversationMessageMapper,
                 aiBotConversationMessageService);
 
         final HistoriesPrompt historiesPrompt = new HistoriesPrompt();

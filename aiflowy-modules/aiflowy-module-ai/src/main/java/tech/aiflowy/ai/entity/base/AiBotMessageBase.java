@@ -50,6 +50,12 @@ public class AiBotMessageBase extends DateEntity implements Serializable {
     private Integer totalTokens;
 
     /**
+     * 1是external 消息，0: bot页面消息
+     *
+     */
+    private int isExternalMsg;
+
+    /**
      * 方法定义
      */
     @Column(comment = "方法定义")
@@ -174,4 +180,11 @@ public class AiBotMessageBase extends DateEntity implements Serializable {
         this.modified = modified;
     }
 
+    public int getIsExternalMsg() {
+        return isExternalMsg;
+    }
+
+    public void setIsExternalMsg(int isExternalMsg) {
+        this.isExternalMsg = isExternalMsg;
+    }
 }
