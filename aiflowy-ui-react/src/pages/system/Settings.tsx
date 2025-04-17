@@ -1,12 +1,32 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Alert, Form, Input, Select} from "antd";
 import FormTitle from "../../components/FormTitle";
 import OptionsPage from "../../components/OptionsPage";
+import {useLayout} from "../../hooks/useLayout.tsx";
 
 const Settings: React.FC = () => {
+    const {setOptions} = useLayout();
+    useEffect(() => {
+        setOptions({
+            showBreadcrumb: true,
+            breadcrumbs: [
+                {title: '首页'},
+                {title: '系统设置'}
+            ],
+        })
 
+        return () => {
+            setOptions({
+                showBreadcrumb: true,
+                breadcrumbs: []
+            })
+        }
+    }, [])
     return (
-        <OptionsPage>
+        <OptionsPage style={{
+            border: "1px solid #eee",
+            height: 'calc(100vh - 68px)',
+            overflowY: 'auto'}}>
             <FormTitle style={{marginTop: "0"}}>大模型配置</FormTitle>
 
             <Form.Item label="对话模型" name="model_of_chat">
@@ -19,16 +39,6 @@ const Settings: React.FC = () => {
                     <Select.Option value="tongyi">通义大模型</Select.Option>
                 </Select>
             </Form.Item>
-
-
-            <Form.Item label="Function Calling 模型" name="model_of_funcation_calling">
-                <Select>
-                    <Select.Option value="openai">OpenAI</Select.Option>
-                    <Select.Option value="chatglm">智普 AI （ChatGLM） </Select.Option>
-                    <Select.Option value="spark">星火大模型</Select.Option>
-                </Select>
-            </Form.Item>
-
 
             <FormTitle>ChatGPT 配置</FormTitle>
 
