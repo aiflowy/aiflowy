@@ -104,7 +104,6 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
                            @JsonBody(value = "botId", required = true) BigInteger botId,
                            @JsonBody(value = "sessionId", required = true) String sessionId,
                            @JsonBody(value = "isExternalMsg") int isExternalMsg,
-                           @JsonBody(value = "externalLlmId") BigInteger externalLlmId,
                            HttpServletResponse response) {
         response.setContentType("text/event-stream");
         AiBot aiBot = service.getById(botId);
@@ -113,13 +112,8 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
         }
 
         Map<String, Object> llmOptions = aiBot.getLlmOptions();
-        AiLlm aiLlm = new AiLlm();
-        if (externalLlmId != null){
-            aiLlm = aiLlmService.getById(externalLlmId);
-        } else {
-            aiLlm = aiLlmService.getById(aiBot.getLlmId());
+        AiLlm aiLlm = aiLlmService.getById(aiBot.getLlmId());
 
-        }
         if (aiLlm == null) {
             return ChatManager.getInstance().sseEmitterForContent("LLM不存在");
         }
@@ -150,8 +144,7 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
         MySseEmitter emitter = new MySseEmitter((long) (1000 * 60 * 2));
 
         final Boolean[] needClose = {true};
-
-        if (!humanMessage.getFunctions().isEmpty()) {
+        if (humanMessage.getFunctions() != null && !humanMessage.getFunctions().isEmpty()) {
             try {
                 AiMessageResponse aiMessageResponse = llm.chat(historiesPrompt);
                 function_call(aiMessageResponse, emitter, needClose, historiesPrompt, llm, prompt);

@@ -4,16 +4,17 @@ import {
 import { createStyles } from 'antd-style';
 import React, { useEffect, useState } from 'react';
 import {
-    DeleteOutlined, DownOutlined,
+    DeleteOutlined,
     EditOutlined, ExclamationCircleFilled,
     PlusOutlined,
 } from '@ant-design/icons';
-import {Button, Dropdown, type GetProp, MenuProps, Space, Modal, Input, message} from 'antd';
+import {Button, type GetProp, Modal, Input, message} from 'antd';
 import { AiProChat, ChatMessage } from "../components/AiProChat/AiProChat.tsx";
 import {getExternalSessionId, setNewExternalSessionId, updateExternalSessionId} from "../libs/getExternalSessionId.ts";
 import { useSse } from "../hooks/useSse.ts";
 import { useParams } from "react-router-dom";
-import { useGet, useGetManual } from "../hooks/useApis.ts";
+import { useGetManual } from "../hooks/useApis.ts";
+import {uuid} from "../libs/uuid.ts";
 
 const useStyle = createStyles(({ token, css }) => {
     return {
@@ -91,9 +92,7 @@ const useStyle = createStyles(({ token, css }) => {
 });
 
 export const ExternalBot: React.FC = () => {
-    const [largeModel, setLargeModel] = useState("通义千问");
     const [newTitle, setNewTitle] = useState<string>('');
-    const [isNewConversation, setIsNewConversation] = useState(false);
 
     // ==================== Style ====================
     const { styles } = useStyle();
@@ -101,18 +100,15 @@ export const ExternalBot: React.FC = () => {
     // ==================== State ====================
     const [conversationsItems, setConversationsItems] = React.useState<{ key: string; label: string }[]>([]);
     const [activeKey, setActiveKey] = React.useState('');
-    const [externalLlmId, setExternalLlmId] = React.useState('');
     const [open, setOpen] = useState(false);
     const params = useParams();
     const { start: startChat } = useSse("/api/v1/aiBot/chat");
-    const { result: llms } = useGet('/api/v1/aiLlm/list');
     // 查询会话列表的数据
-    const { result: conversationResult, doGet: getConversationGet } = useGet('/api/v1/conversation/externalList', { "botId": params?.id });
+    const { doGet: getConversationManualGet } = useGetManual('/api/v1/conversation/externalList');
     const { doGet: doGetManual } = useGetManual("/api/v1/aiBotMessage/messageList");
     const { doGet: doGetConverManualDelete } = useGetManual("/api/v1/conversation/deleteConversation");
     const { doGet: doGetConverManualUpdate } = useGetManual("/api/v1/conversation/updateConversation");
-
-    const menuConfig: ConversationsProps['menu'] = (conversation) => ({
+    const menuConfig: ConversationsProps['menu'] = () => ({
         items: [
             {
                 label: '重命名',
@@ -127,7 +123,6 @@ export const ExternalBot: React.FC = () => {
             },
         ],
         onClick: (menuInfo) => {
-            console.log('menuInfo', menuInfo);
             if (menuInfo.key === 'delete') {
                 Modal.confirm({
                     title: '删除对话',
@@ -143,7 +138,7 @@ export const ExternalBot: React.FC = () => {
                             if (res.data.errorCode === 0){
                                 message.success('删除成功');
                                 setChats([])
-                                getConversationGet()
+                                getConversationManualGet()
                             }
                         });
                     },
@@ -154,52 +149,10 @@ export const ExternalBot: React.FC = () => {
 
             } else if (menuInfo.key === 'update') {
                 showModal()
-                // 弹出模态框，允许用户输入新的会话标题
-                Modal.confirm({
-                    title: '重命名会话',
-                    content: (
-                        <Input
-                            placeholder="请输入新的会话标题"
-                            defaultValue={conversation.title}
-                            onChange={(e) => {
-                                console.log('新的会话标题', e.target.value);
-                                setNewTitle(e.target.value)
-                            }}
-                        />
-                    ),
-                    onOk: () => {
-                        console.log('新的会话标题', newTitle);
-                        // 调用 API 更新会话标题
-                        doGetConverManualUpdate({
-                            params: {
-                                sessionId: activeKey,
-                                botId: params?.id,
-                                title: newTitle,
-                            },
-                        }).then((res: any) => {
-                            console.log('重命名结果', res);
-                            if (res.data.errorCode === 0){
-                                // 更新本地状态
-                                updateConversationTitle(activeKey, newTitle)
-                            }
-                        });
-                    },
-                });
             }
         },
     });
 
-    const getOptions = (options: { id: any; title: any }[]): { key: any; label: any }[] => {
-        if (options) {
-            return options.map((item) => ({
-                key: item.id,
-                label: item.title,
-            }));
-        }
-        return [];
-    };
-
-    const modelItems: MenuProps['items'] = getOptions(llms?.data);
 
     const [chats, setChats] = useState<ChatMessage[]>([]);
 
@@ -212,28 +165,38 @@ export const ExternalBot: React.FC = () => {
         }
         return [];
     };
+    useEffect(() => {
+        if (chats.length === 2 && chats[1].content.length < 1){
+            getConversationManualGet({
+                params:  { "botId": params?.id }
+            }).then((r: any) => {
+                setConversationsItems(getConversations(r?.data?.data?.cons));
+            });
+        }
+    }, [chats]);
 
     useEffect(() => {
-        setConversationsItems(getConversations(conversationResult?.data?.cons));
-        console.log('chats', chats);
-        if (chats.length === 2){
-            getConversationGet()
-        }
-    }, [conversationResult, chats]);
+        updateExternalSessionId(uuid())
+        getConversationManualGet(
+            {
+                params:  { "botId": params?.id }
+            }
+        ).then((r: any) => {
+            setActiveKey(getExternalSessionId());
+            setConversationsItems(getConversations(r?.data?.data?.cons));
+        });
+    }, []);
 
     const onAddConversation = () => {
         setNewExternalSessionId();
         // setConversationsItems(prev => [ { key: getExternalSessionId(), label: '新建会话' }, ...prev]);
         setActiveKey(getExternalSessionId());
         setChats([])
-        setIsNewConversation(true);
     };
 
     const onConversationClick: GetProp<typeof Conversations, 'onActiveChange'> = (key) => {
         setActiveKey(key);
-        console.log('删除', key);
         updateExternalSessionId(key);
-        setIsNewConversation(false);
         doGetManual({
             params: {
                 sessionId: key,
@@ -268,8 +231,25 @@ export const ExternalBot: React.FC = () => {
     };
     const showModal = () => {
         setOpen(true);
-    };
 
+    };
+    const updateTitle = () => {
+        doGetConverManualUpdate({
+            params: {
+                sessionId: activeKey,
+                botId: params?.id,
+                title: newTitle,
+            },
+        }).then((res: any) => {
+            if (res.data.errorCode === 0){
+                // 更新本地状态
+                updateConversationTitle(activeKey, newTitle)
+                message.success('更新成功');
+                setOpen(false);
+
+            }
+        });
+    };
     const hideModal = () => {
         setOpen(false);
     };
@@ -277,16 +257,19 @@ export const ExternalBot: React.FC = () => {
     return (
         <div className={styles.layout}>
             <Modal
-                title="Modal"
+                title="修改会话名称"
                 open={open}
-                onOk={hideModal}
+                onOk={updateTitle}
                 onCancel={hideModal}
                 okText="确认"
                 cancelText="取消"
             >
-                <p>Bla bla ...</p>
-                <p>Bla bla ...</p>
-                <p>Bla bla ...</p>
+                <Input placeholder="请输入新的会话标题"
+                            defaultValue={newTitle}
+                            onChange={(e) => {
+                                setNewTitle(e.target.value)
+                            }}
+                        />
             </Modal>
             <div className={styles.menu}>
                 {/* 🌟 Logo */}
@@ -312,28 +295,6 @@ export const ExternalBot: React.FC = () => {
                 )}
             </div>
             <div className={styles.chat}>
-                <div>
-                    <Dropdown
-                        menu={{
-                            items: modelItems,
-                            onClick: (item) => {
-                                // 更新 largeModel 状态为选中的模型名称
-                                // @ts-ignore
-                                setLargeModel(item.domEvent.target.innerText);
-                                setExternalLlmId(item.key)
-                            },
-                        }}
-                    >
-                        <a onClick={(e) => {
-                            e.preventDefault();
-                        }}>
-                            <Space>
-                                {largeModel} {/* 显示当前选中的模型名称 */}
-                                <DownOutlined />
-                            </Space>
-                        </a>
-                    </Dropdown>
-                </div>
                 <AiProChat
                     chats={chats}
                     onChatsChange={setChats} // 确保正确传递 onChatsChange
@@ -347,8 +308,7 @@ export const ExternalBot: React.FC = () => {
                                         botId: params.id,
                                         sessionId: getExternalSessionId(),
                                         prompt: messages[messages.length - 1].content as string,
-                                        isExternalMsg: 1,
-                                        externalLlmId: externalLlmId
+                                        isExternalMsg: 1
                                     },
                                     onMessage: (msg) => {
                                         controller.enqueue(encoder.encode(msg));
