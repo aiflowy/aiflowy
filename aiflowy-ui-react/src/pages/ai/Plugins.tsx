@@ -27,7 +27,7 @@ const columnsConfig: ColumnsConfig<any> = [
     {
         form: {
             type: "input",
-            rules: [{required: true, message: '请输入知识库名称'}]
+            rules: [{required: true, message: '请输入插件名称'}]
         },
         dataIndex: "pluginName",
         title: "插件名称",
@@ -40,6 +40,7 @@ const columnsConfig: ColumnsConfig<any> = [
     {
         form: {
             type: "TextArea",
+            rules: [{required: true, message: '请输入插件描述'}],
             attrs: {
                 rows: 3
             }
