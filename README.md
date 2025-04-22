@@ -51,7 +51,7 @@ npm run dev
 
 ## 开发及产品文档
 
-https://aiflowy.tech (官网正在备案中... 暂未上线)
+https://aiflowy.tech 
 
 
 ## Star 用户专属交流群
