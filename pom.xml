@@ -26,7 +26,7 @@
         <HikariCP.version>4.0.3</HikariCP.version>
         <druid.version>1.2.16</druid.version>
         <jjwt.version>0.9.1</jjwt.version>
-        <fastjson.version>2.0.47</fastjson.version>
+        <fastjson.version>2.0.57</fastjson.version>
         <jackson-databind.version>2.13.4.1</jackson-databind.version>
         <jackson.version>2.13.4</jackson.version>
         <caffeine.version>2.9.3</caffeine.version>
