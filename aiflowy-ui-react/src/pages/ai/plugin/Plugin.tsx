@@ -3,42 +3,39 @@ import {
 	DeleteOutlined,
 	EditOutlined,
 	EllipsisOutlined,
+	MenuUnfoldOutlined,
 	MinusCircleOutlined,
-	PlusOutlined,
-	SettingOutlined
+	PlusOutlined
 } from '@ant-design/icons';
 import {
 	Avatar,
 	Button,
 	Card,
-	Checkbox,
 	Col,
+	Dropdown,
 	Form,
 	FormProps,
 	Input,
+	message,
 	Modal,
 	Radio,
 	Row,
 	Select,
-	Space,
-	message,
-	Dropdown
+	Space
 } from 'antd';
-import {useGetManual, usePage, usePostManual} from "../../hooks/useApis.ts";
-import SearchForm from "../../components/AntdCrud/SearchForm.tsx";
-import {ColumnsConfig} from "../../components/AntdCrud";
-import {useBreadcrumbRightEl} from "../../hooks/useBreadcrumbRightEl.tsx";
-import ImageUploader from "../../components/ImageUploader";
+import {usePage, usePostManual} from "../../../hooks/useApis.ts";
+import SearchForm from "../../../components/AntdCrud/SearchForm.tsx";
+import {ColumnsConfig} from "../../../components/AntdCrud";
+import {useBreadcrumbRightEl} from "../../../hooks/useBreadcrumbRightEl.tsx";
+import ImageUploader from "../../../components/ImageUploader";
 import TextArea from "antd/es/input/TextArea";
 import {CheckboxGroupProps} from "antd/es/checkbox";
+import {useNavigate} from "react-router-dom";
 
-const actions: React.ReactNode[] = [
-	<EditOutlined key="edit" />,
-	<SettingOutlined key="setting" />,
-	<EllipsisOutlined key="ellipsis" />,
-];
 
 const Plugin: React.FC = () => {
+	const navigate = useNavigate();
+
 	const columnsConfig: ColumnsConfig<any> = [
 		{
 			hidden: true,
@@ -250,6 +247,14 @@ const Plugin: React.FC = () => {
 					<Col span={6}>
 						<Card  actions={
 							[
+								<MenuUnfoldOutlined title="工具列表" onClick={() => {
+									navigate('/ai/pluginTool', {
+										state: {
+											id: item.id,
+											pluginTitle: item.name
+										}
+									})
+								}}/>,
 								<EditOutlined key="edit" onClick={() =>{
 									console.log('item')
 									console.log(item)
@@ -273,7 +278,6 @@ const Plugin: React.FC = () => {
 									setAuthType(item.authType)
 									setAddPluginIsOpen(true)
 								}} />,
-								<SettingOutlined key="setting" />,
 								<Dropdown menu={{
 									items: [
 										{
