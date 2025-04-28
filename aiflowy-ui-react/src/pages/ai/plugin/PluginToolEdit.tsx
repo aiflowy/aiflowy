@@ -7,7 +7,7 @@ import './less/pluginToolEdit.less'
 import {DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 
-interface Parameter {
+interface inputDataParameter {
     key: string;
     name: string;
     description: string;
@@ -15,6 +15,14 @@ interface Parameter {
     method: string;
     required: boolean;
     defaultValue: string;
+    enabled: boolean;
+}
+interface outputDataParameter {
+    key: string;
+    name: string;
+    description: string;
+    type: string;
+    required: boolean;
     enabled: boolean;
 }
 const PluginToolEdit: React.FC = () => {
@@ -25,7 +33,9 @@ const PluginToolEdit: React.FC = () => {
     const {  doPost: doPostUpdate } = usePostManual('/api/v1/aiPluginTool/tool/update')
     const [showLoading, setShowLoading] = useState(true);
     const [isEditInput, setIsEditInput] = useState(false);
+    const [isEditOutput, setIsEditOutput] = useState(false);
     const [formInput] = Form.useForm();
+    const [formOutput] = Form.useForm();
 
     const [editStates, setEditStates] = useState({
         '1': false,
@@ -84,37 +94,152 @@ const PluginToolEdit: React.FC = () => {
     };
 
     const handleAdd = () => {
-        const newData: Parameter = {
-            key: Date.now().toString(),
-            name: '',
-            description: '',
-            type: 'String',
-            method: 'Query',
-            required: true,
-            defaultValue: '',
-            enabled: true,
-        };
-        setInputData([...inputData, newData]);
+            const newData: inputDataParameter = {
+                key: Date.now().toString(),
+                name: '',
+                description: '',
+                type: 'String',
+                method: 'Query',
+                required: true,
+                defaultValue: '',
+                enabled: true,
+            };
+            setInputData([...inputData, newData]);
+
     };
 
-    const handleDelete = (key: string) => {
+    const handleAddOutputData = () => {
+            const newData: outputDataParameter = {
+                key: Date.now().toString(),
+                name: '',
+                description: '',
+                type: 'String',
+                required: true,
+                enabled: true,
+            };
+            setOutputData([...outputData, newData]);
+    };
+
+    const handleDeleteInputData = (key: string) => {
         setInputData(inputData.filter((item) => item.key !== key));
     };
-    const [inputData, setInputData] = useState<Parameter[]>([
+    const handleDeleteOutputData = (key: string) => {
+        setOutputData(outputData.filter((item) => item.key !== key));
+    };
+    const [inputData, setInputData] = useState<inputDataParameter[]>([
+    ]);
+    const [outputData, setOutputData] = useState<outputDataParameter[]>([
     ]);
     useEffect(() => {
         if (pluginToolInfo?.data?.data?.inputData){
             setInputData(JSON.parse(pluginToolInfo?.data?.data?.inputData));
-            console.log(JSON.parse(pluginToolInfo?.data?.data?.inputData));
+        }
+        if(pluginToolInfo?.data?.data?.outputData){
+            setOutputData(JSON.parse(pluginToolInfo?.data?.data?.outputData));
         }
     }, [pluginToolInfo]);
+
+    const getColumnsOutput =()=>{
+        const columnsOutput = [
+            {
+                title: (
+                    <span>参数名称<span style={{ color: 'red', marginLeft: 4 }}>*</span></span>
+                ),
+                dataIndex: 'name',
+                key: 'name',
+                render: (text: string, record: outputDataParameter) => {
+                    return isEditOutput ? (
+                        <Form.Item
+                            name={[record.key, 'name']}
+                            initialValue={text}
+                            rules={[{ required: true, message: '请输入参数名称' }]}
+                        >
+                            <Input placeholder="参数名称" />
+                        </Form.Item>
+                    ) : (
+                        text
+                    );
+                },
+            },
+            {
+                title: (
+                    <span>参数描述<span style={{ color: 'red', marginLeft: 4 }}>*</span></span>
+                ),
+                dataIndex: 'description',
+                key: 'description',
+                render: (text: string, record: outputDataParameter) => {
+                    return isEditOutput ? (
+                        <Form.Item
+                            name={[record.key, 'description']}
+                            initialValue={text}
+                            rules={[{ required: true, message: '请输入参数描述' }]}
+                        >
+                            <Input placeholder="参数描述" />
+                        </Form.Item>
+                    ) : (
+                        text
+                    );
+                },
+            },
+            {
+                title: (
+                    <span>参数类型<span style={{ color: 'red', marginLeft: 4 }}>*</span></span>
+                ),
+                dataIndex: 'type',
+                key: 'type',
+                render: (text: string, record: outputDataParameter) => {
+                    return isEditOutput ? (
+                        <Form.Item name={[record.key, 'type']} initialValue={text}>
+                            <Select style={{ width: 120 }}>
+                                <Select.Option value="String">String</Select.Option>
+                                <Select.Option value="Number">Number</Select.Option>
+                                <Select.Option value="Boolean">Boolean</Select.Option>
+                                <Select.Option value="Object">Object</Select.Option>
+                                <Select.Option value="Array">Array</Select.Option>
+                            </Select>
+                        </Form.Item>
+                    ) : (
+                        text
+                    );
+                },
+            },
+            {
+                title: '开启',
+                dataIndex: 'enabled',
+                key: 'enabled',
+                render: (text: boolean, record: outputDataParameter) => {
+                    return isEditOutput ? (
+                        <Form.Item name={[record.key, 'enabled']} initialValue={text} valuePropName="checked" >
+                            <Switch />
+                        </Form.Item>
+                    ) : (
+                        <Switch checked={text} disabled />
+                    );
+                },
+            },
+            {
+                title: '操作',
+                key: 'operation',
+                render: (_: any, record: outputDataParameter) => (
+                    <Button
+                        type="text"
+                        icon={<DeleteOutlined />}
+                        onClick={() => handleDeleteOutputData(record.key)}
+                    />
+                ),
+            },
+        ];
+        return columnsOutput.filter(col => col.key !== 'operation' || isEditOutput);
+    }
     const getColumnsInput = ()=>{
         const columnsInput = [
             {
-                title: '参数名称*',
+                title: (
+                    <span>参数名称<span style={{ color: 'red', marginLeft: 4 }}>*</span></span>
+                ),
                 dataIndex: 'name',
                 key: 'name',
-                render: (text: string, record: Parameter) => {
+                render: (text: string, record: inputDataParameter) => {
                     return isEditInput ? (
                         <Form.Item
                             name={[record.key, 'name']}
@@ -129,10 +254,12 @@ const PluginToolEdit: React.FC = () => {
                 },
             },
             {
-                title: '参数描述*',
+                title: (
+                    <span>参数描述<span style={{ color: 'red', marginLeft: 4 }}>*</span></span>
+                ),
                 dataIndex: 'description',
                 key: 'description',
-                render: (text: string, record: Parameter) => {
+                render: (text: string, record: inputDataParameter) => {
                     return isEditInput ? (
                         <Form.Item
                             name={[record.key, 'description']}
@@ -147,10 +274,12 @@ const PluginToolEdit: React.FC = () => {
                 },
             },
             {
-                title: '参数类型*',
+                title: (
+                    <span>参数类型<span style={{ color: 'red', marginLeft: 4 }}>*</span></span>
+                ),
                 dataIndex: 'type',
                 key: 'type',
-                render: (text: string, record: Parameter) => {
+                render: (text: string, record: inputDataParameter) => {
                     return isEditInput ? (
                         <Form.Item name={[record.key, 'type']} initialValue={text}>
                             <Select style={{ width: 120 }}>
@@ -167,10 +296,12 @@ const PluginToolEdit: React.FC = () => {
                 },
             },
             {
-                title: '传入方法*',
+                title: (
+                    <span>传入方法<span style={{ color: 'red', marginLeft: 4 }}>*</span></span>
+                ),
                 dataIndex: 'method',
                 key: 'method',
-                render: (text: string, record: Parameter) => {
+                render: (text: string, record: inputDataParameter) => {
                     return isEditInput ? (
                         <Form.Item name={[record.key, 'method']} initialValue={text}>
                             <Select style={{ width: 120 }}>
@@ -190,7 +321,7 @@ const PluginToolEdit: React.FC = () => {
                 dataIndex: 'required',
                 width: 90,
                 key: 'required',
-                render: (text: boolean, record: Parameter) => {
+                render: (text: boolean, record: inputDataParameter) => {
                     return isEditInput ? (
                         <Form.Item name={[record.key, 'required']} initialValue={text} valuePropName="checked">
                             <Switch />
@@ -204,7 +335,7 @@ const PluginToolEdit: React.FC = () => {
                 title: '默认值',
                 dataIndex: 'defaultValue',
                 key: 'defaultValue',
-                render: (text: string, record: Parameter) => {
+                render: (text: string, record: inputDataParameter) => {
                     return isEditInput ? (
                         <Form.Item name={[record.key, 'defaultValue']} initialValue={text}>
                             <Input placeholder="默认值" size="small" />
@@ -218,7 +349,7 @@ const PluginToolEdit: React.FC = () => {
                 title: '开启',
                 dataIndex: 'enabled',
                 key: 'enabled',
-                render: (text: boolean, record: Parameter) => {
+                render: (text: boolean, record: inputDataParameter) => {
                     return isEditInput ? (
                         <Form.Item name={[record.key, 'enabled']} initialValue={text} valuePropName="checked" >
                             <Switch />
@@ -231,11 +362,11 @@ const PluginToolEdit: React.FC = () => {
             {
                 title: '操作',
                 key: 'operation',
-                render: (_: any, record: Parameter) => (
+                render: (_: any, record: inputDataParameter) => (
                     <Button
                         type="text"
                         icon={<DeleteOutlined />}
-                        onClick={() => handleDelete(record.key)}
+                        onClick={() => handleDeleteInputData(record.key)}
                     />
                 ),
             },
@@ -262,6 +393,8 @@ const PluginToolEdit: React.FC = () => {
                         <Button type="primary" size="small" onClick={() => {
                             if (index === '2'){
                                 setIsEditInput(false);
+                            } else if (index === '3'){
+                                setIsEditOutput(false);
                             }
                         }}>取消</Button>
                         <Button
@@ -290,7 +423,8 @@ const PluginToolEdit: React.FC = () => {
                                                 });
                                             }
                                         });
-                                    } else if (index === '2') {
+                                    }
+                                    else if (index === '2') {
                                         formInput.validateFields().then(() => {
                                             const formData = formInput.getFieldsValue();
                                             doPostUpdate({
@@ -313,9 +447,29 @@ const PluginToolEdit: React.FC = () => {
                                         });
 
                                     }
-
-
-                                    console.log('values', values);
+                                    // 保存输出参数
+                                    else if (index === '3') {
+                                        formOutput.validateFields().then(() => {
+                                            const formData = formOutput.getFieldsValue();
+                                            doPostUpdate({
+                                                data: {
+                                                    id: id,
+                                                    outputData: JSON.stringify(formData),
+                                                }
+                                            }).then((r) => {
+                                                if (r?.data?.errorCode === 0) {
+                                                    setIsEditOutput(false);
+                                                    setEditStates(prev => ({...prev, '3': false})); // 添加这行
+                                                    message.success('修改成功');
+                                                    doPostSearch({
+                                                        data: {
+                                                            aiPluginToolId: id
+                                                        }
+                                                    });
+                                                }
+                                            })
+                                        });
+                                    }
                                 });
                             }}
                         >
@@ -326,6 +480,8 @@ const PluginToolEdit: React.FC = () => {
                     <div style={{ display: 'flex', gap: '8px' }} onClick={()=>{
                         if (index === '2') {
                             setIsEditInput(true);
+                        } else if (index === '3'){
+                            setIsEditOutput(true);
                         }
                     }}>
                         <EditOutlined />
@@ -427,7 +583,34 @@ const PluginToolEdit: React.FC = () => {
         {
             key: '3',
             label: '配置输出参数',
-            children: <div className="compact-view">输出参数配置区域</div>,
+            children: (
+                <div>
+                    <Form form={formOutput} component={false} >
+                        <Table
+                            className="custom-table"
+                            bordered
+                            dataSource={outputData || []}
+                            columns={getColumnsOutput()}
+                            pagination={false}
+                            rowKey="key"
+                        />
+                    </Form>
+                    <Space style={{ marginTop: 16 }}>
+                        {
+                            isEditOutput ? ( <Button
+                                    type="dashed"
+                                    icon={<PlusOutlined />}
+                                    onClick={handleAddOutputData}
+                                >
+                                    新增参数
+                                </Button>
+                            ) : (<></>
+                            )
+                        }
+
+                    </Space>
+                </div>
+            ),
             extra: editPluginTool('3')
         },
     ];

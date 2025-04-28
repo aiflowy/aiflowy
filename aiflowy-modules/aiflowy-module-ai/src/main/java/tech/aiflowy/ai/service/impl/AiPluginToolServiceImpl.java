@@ -1,5 +1,6 @@
 package tech.aiflowy.ai.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -70,36 +71,48 @@ public class AiPluginToolServiceImpl extends ServiceImpl<AiPluginToolMapper, AiP
     @Override
     public Result updatePlugin(AiPluginTool aiPluginTool) {
         String inputData = null;
-        if (!StringUtil.isEmpty(aiPluginTool.getInputData())){
-            ObjectMapper mapper = new ObjectMapper();
-            String inputJson = aiPluginTool.getInputData();
-            // 1. 将JSON解析为Map<String, Parameter>
-            Map<String, Map<String, Object>> map = null;
-            try {
-                map = mapper.readValue(
-                        inputJson,
-                        new TypeReference<Map<String, Map<String, Object>>>(){}
-                );
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            }
-
-            // 2. 转换为目标结构
-            List<Map<String, Object>> result = map.entrySet().stream()
-                    .map(entry -> {
-                        Map<String, Object> param = entry.getValue();
-                        param.put("key", entry.getKey()); // 添加key字段
-                        return param;
-                    })
-                    .collect(Collectors.toList());
-            inputData = JSON.toString(result);
-            System.out.println("aaa");
+        String outputData = null;
+        if (!StrUtil.isEmpty(aiPluginTool.getInputData())){
+            inputData = switchParams(aiPluginTool.getInputData());
         }
-        aiPluginTool.setInputData(inputData);
+        if (!StrUtil.isEmpty(inputData)){
+            aiPluginTool.setInputData(inputData);
+        }
+        if (!StrUtil.isEmpty(aiPluginTool.getOutputData())){
+            outputData = switchParams(aiPluginTool.getOutputData());
+        }
+        if (!StrUtil.isEmpty(outputData)){
+            aiPluginTool.setOutputData(outputData);
+        }
+
         int update = aiPluginToolMapper.update(aiPluginTool);
         if (update <= 0){
             return Result.fail(1,"修改失败");
         }
         return Result.success();
+    }
+
+    public static String switchParams(String paramString){
+        ObjectMapper mapper = new ObjectMapper();
+        // 1. 将JSON解析为Map<String, Parameter>
+        Map<String, Map<String, Object>> map = null;
+        try {
+            map = mapper.readValue(
+                    paramString,
+                    new TypeReference<Map<String, Map<String, Object>>>(){}
+            );
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
+        // 2. 转换为目标结构
+        List<Map<String, Object>> result = map.entrySet().stream()
+                .map(entry -> {
+                    Map<String, Object> param = entry.getValue();
+                    param.put("key", entry.getKey()); // 添加key字段
+                    return param;
+                })
+                .collect(Collectors.toList());
+        return JSON.toString(result);
     }
 }
