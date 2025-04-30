@@ -243,16 +243,16 @@ export const WorkflowDesign = () => {
                     </div>
                     <Tinyflow ref={tinyflowRef} data={JSON.parse(workflow?.data?.content || '{}')}
                               provider={provider}
-                              onChange={(data: any) => {
-                                  console.log(data)
-                                  setWorkflow({
-                                      ...workflow,
-                                      data: {
-                                          ...workflow?.data,
-                                          content: JSON.stringify(data)
-                                      }
-                                  })
-                              }}
+                              // onChange={(data: any) => {
+                              //     console.log(data)
+                              //     setWorkflow({
+                              //         ...workflow,
+                              //         data: {
+                              //             ...workflow?.data,
+                              //             content: JSON.stringify(data)
+                              //         }
+                              //     })
+                              // }}
                               style={{height: 'calc(100vh - 110px)'}} customNodes={customNodes}/>
                 </div>
             </div>
