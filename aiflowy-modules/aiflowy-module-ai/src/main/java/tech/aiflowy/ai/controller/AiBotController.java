@@ -156,7 +156,7 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
         appendPluginToolFunction(botId, humanMessage);
 
         //添加工作流相关的 Function Calling
-//        appendWorkflowFunctions(botId, humanMessage);
+        appendWorkflowFunctions(botId, humanMessage);
 
         //添加知识库相关的 Function Calling
         appendKnowledgeFunctions(botId, humanMessage);
