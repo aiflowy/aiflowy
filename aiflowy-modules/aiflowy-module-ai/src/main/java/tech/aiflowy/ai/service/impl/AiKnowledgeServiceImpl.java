@@ -77,7 +77,7 @@ public class AiKnowledgeServiceImpl extends ServiceImpl<AiKnowledgeMapper, AiKno
             if (documentStore instanceof ElasticSearchVectorStore){
                 similarityScore = (Double) result.getMetadataMap().get("_score");
             } else {
-                similarityScore = ((Float) result.getMetadataMap().get("score")).doubleValue(); // 将 Float 转换为 Double
+                similarityScore = result.getScore();
             }
 
             // 使用 BigDecimal 保留小数点后四位
