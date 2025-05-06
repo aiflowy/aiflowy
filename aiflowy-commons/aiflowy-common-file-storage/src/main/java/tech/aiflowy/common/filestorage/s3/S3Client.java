@@ -20,6 +20,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.*;
+import com.amazonaws.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
@@ -119,8 +120,14 @@ public class S3Client {
         byte[] content = file.getBytes();
         String name = file.getOriginalFilename();
         String path = generatePath(content, name);
+        String baseUrl = properties.getEndpoint() + "/" + properties.getBucketName() + "/";
+
+        if (StringUtils.hasValue(properties.getPrefix())) {
+            path = properties.getPrefix() + "/" + path;
+        }
+        String completeUrl = baseUrl + path;
         upload(content, path, file.getContentType());
-        return path;
+        return completeUrl;
     }
 
     public static String generatePath(byte[] content, String originalName) throws Exception {

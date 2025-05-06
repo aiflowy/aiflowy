@@ -21,10 +21,14 @@ spring:
 aiflowy:
   storage:
     type: local
-    endpoint: http://localhost:9000
-    accessKey: minioadmin
-    secretKey: minioadmin
-    bucketName: mybucket
+    s3:
+      access-key: key
+      secret-key: secret
+      endpoint: your-endpoint
+      region: your-region
+      bucket-name: your-bucket-name
+      access-policy: 2
+      prefix: public
     local:
       root: ''
   ollama:
