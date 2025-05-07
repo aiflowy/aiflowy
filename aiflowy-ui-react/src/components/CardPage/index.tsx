@@ -152,7 +152,7 @@ const CardPage: React.FC<CardPageProps> = ({
                                     avatar={<Avatar src={item[avatarKey] || defaultAvatarSrc}/>}
                                     title={item[titleKey]}
                                     description={
-                                        <Tooltip title={item[descriptionKey] || "无描述"}>
+                                        <Tooltip title={item[descriptionKey] || "暂无描述"}>
                                             <div style={{
                                                 display: '-webkit-box',
                                                 WebkitLineClamp: 1,

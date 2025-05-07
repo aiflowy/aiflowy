@@ -220,9 +220,11 @@ export const ExternalBot: React.FC = () => {
     };
 
     const logoNode = (
+
         <div className={styles.logo}>
             <img
                 src={botInfo?.data?.icon || "/favicon.png"}
+                style={{ width: 32, height: 32, borderRadius: '50%' }}
                 draggable={false}
                 alt="logo"
             />

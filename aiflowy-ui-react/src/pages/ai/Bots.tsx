@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+    SendOutlined,
     SmileOutlined,
 } from "@ant-design/icons";
 import CardPage from "../../components/CardPage";
@@ -61,6 +62,9 @@ const Bots: React.FC<{ paramsToUrl: boolean }> = () => {
                           return [
                               <SmileOutlined title="Bot 设置" onClick={() => {
                                   window.open(`/ai/bot/design/${item.id}`, "_blank")
+                              }}/>,
+                              <SendOutlined title="外部地址" onClick={() => {
+                                  window.open(window.location.href.substring(0, window.location.href.indexOf('/ai')) + '/ai/externalBot/' + item.id, "_blank")
                               }}/>,
                               ...existNodes
                           ]
