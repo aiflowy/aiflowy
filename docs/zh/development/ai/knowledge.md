@@ -190,3 +190,33 @@ public class Document extends VectorData {
 - **SimpleDocumentSplitter**: 可以通过正则表达式进行分割
 - **MarkdownDocumentSplitter**: 对 Markdown 内容进行分割
 - **ParagraphDocumentSplitter**: 通过段落进行分割
+
+
+# 向量数据库配置样例
+
+## Redis向量数据库
+
+## 一、部署Redis向量数据库
+
+Redis向量数据库是包含redisSearch功能组件的Redis,这里使用docker版实现快速部署
+
+```java
+docker run --name  redis_stack  -e REDIS_ARGS="--requirepass Test2025L" -p 6379:6379  -d --restart=always redis/redis-stack-server:latest
+```
+
+## 二、知识库页面配置
+
+向量数据库类型选择Redis,向量数据库配置中填写uri = redis://:Test2025L@127.0.0.1:6379，向量数据库集合中填写知识库英文缩写如：redisKnowledge,Embedding 模型中选择一个模型（大模型菜单中能力是Embedding的模型）
+![输入图片说明](resource/ai_redis_knowledge.png)
+
+扩展：向量数据库配置中还可以增加storePrefix、defaultCollectionName 等配置，配置了defaultCollectionName 时新增/编辑知识库页面中的“向量数据库集合”可以为空。
+
+```java
+storePrefix = docs:
+defaultCollectionName = documents
+```
+## 三、文件导入
+![输入图片说明](resource/ai_redis_file_import.png)
+## 四、检索测试
+![输入图片说明](resource/ai_redis_search_test.png)
+
