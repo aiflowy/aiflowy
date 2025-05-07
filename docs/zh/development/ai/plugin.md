@@ -28,3 +28,17 @@ private void appendPluginFunctions(BigInteger botId, HumanMessage humanMessage) 
 ```
 
 ![plugin.png](resource/plugin.png)
+
+## 自定义插件
+
+![add_plugin_first.png](resource/add_plugin_first.png)
+
+![add_plugin_second.png](resource/add_plugin_second.png)
+
+![add_plugin_third.png](resource/add_plugin_third.png)
+
+![add_plugin_four.png](resource/add_plugin_four.png)
+
+![add_plugin_five.png](resource/add_plugin_five.png)
+
+![add_plugin_six.png](resource/add_plugin_six.png)

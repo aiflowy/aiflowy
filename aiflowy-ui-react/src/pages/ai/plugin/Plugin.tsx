@@ -523,16 +523,16 @@ const Plugin: React.FC = () => {
 
 						</Form.Item>
 						<Form.Item<FieldType>
-							label="Parameter name"
+							label="tokenKey"
 							name="tokenKey"
-							rules={[{ required: true, message: 'Parameter name!' }]}
+							rules={[{ required: true, message: '请输入tokenKey!' }]}
 						>
 							<Input maxLength={500} showCount/>
 						</Form.Item>
 						<Form.Item<FieldType>
-						label="Service token / API key"
+						label="tokenValue"
 						name="tokenValue"
-						rules={[{ required: true, message: 'Service token / API key!' }]}>
+						rules={[{ required: true, message: '请输入tokenValue' }]}>
 					<Input maxLength={2000} showCount/>
 					</Form.Item>
 						</>
