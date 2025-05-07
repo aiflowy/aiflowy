@@ -194,7 +194,7 @@ const Llms: React.FC<{ paramsToUrl: boolean }> = () => {
                   }}
                   onTreeSelect={setGroupId}>
             <CrudPage columnsConfig={columns} tableAlias="aiLlm" params={{brand: groupId}} key={groupId}
-                      editLayout={{openType: "drawer"}}/>
+                      editLayout={{openType: "modal"}}/>
         </TreePage>
     )
 };
