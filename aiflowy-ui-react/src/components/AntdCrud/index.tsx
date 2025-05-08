@@ -48,7 +48,7 @@ export type FormItemConfig = {
     rules?: Rule[],
 
     //备注说明
-    extra?: string,
+    extra?: string | JSX.Element,
 
     //提示信息，参考： https://ant-design.antgroup.com/components/form-cn#formitem
     tooltip?: LabelTooltipType

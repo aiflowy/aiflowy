@@ -86,19 +86,11 @@ const columnsColumns: ColumnsConfig<any> = [
                      <span style={{ fontSize: 12}}>serverUrl=http://127.0.0.1:9200</span><br/>
                      <span style={{ fontSize: 12}}>username=elastic</span><br/>
                      <span style={{ fontSize: 12}}>password=123456</span><br/>
-                     <p>3.  Milvus 数据库</p>
-                     <span style={{ fontSize: 12}}>uri=http://127.0.0.1:19530</span><br/>
-                     <span style={{ fontSize: 12}}>username=root</span><br/>
-                     <span style={{ fontSize: 12}}>password=123456</span><br/>
-                     <span style={{ fontSize: 12}}>对话地址：</span><br/>
-                     <span style={{ fontSize: 12}}>chatPath=/api/v3/chat/completions</span><br/>
-                     <span style={{ fontSize: 12}}>向量化地址：</span><br/>
-                     <span style={{ fontSize: 12}}>enbedPath=/v1/embeddings</span>
 
                 </span>
             ),
             type: 'TextArea',
-            extra: '一行一条配置，例如： host = 127.0.0.1',
+            extra: (<a target="_blank" href="https://aiflowy.tech/zh/development/ai/knowledge.html#redis向量数据库" style={{ fontSize: 12}}>更多配置参考地址</a>),
             attrs: {
                 rows: 5
             }
