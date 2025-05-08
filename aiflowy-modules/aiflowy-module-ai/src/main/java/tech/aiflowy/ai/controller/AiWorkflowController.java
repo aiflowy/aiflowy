@@ -1,6 +1,8 @@
 package tech.aiflowy.ai.controller;
 
+import cn.hutool.core.io.IoUtil;
 import dev.tinyflow.core.Tinyflow;
+import org.springframework.web.multipart.MultipartFile;
 import tech.aiflowy.ai.entity.AiWorkflow;
 import tech.aiflowy.ai.service.AiKnowledgeService;
 import tech.aiflowy.ai.service.AiLlmService;
@@ -13,7 +15,9 @@ import com.agentsflex.core.chain.*;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.io.InputStream;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +42,14 @@ public class AiWorkflowController extends BaseCurdController<AiWorkflowService, 
         this.aiLlmService = aiLlmService;
     }
 
+    @PostMapping("/importWorkFlow")
+    public Result importWorkFlow(AiWorkflow workflow, MultipartFile jsonFile) throws Exception {
+        InputStream is = jsonFile.getInputStream();
+        String content = IoUtil.read(is, StandardCharsets.UTF_8);
+        workflow.setContent(content);
+        save(workflow);
+        return Result.success();
+    }
 
     @GetMapping("getRunningParameters")
     public Result getRunningParameters(@RequestParam BigInteger id) {

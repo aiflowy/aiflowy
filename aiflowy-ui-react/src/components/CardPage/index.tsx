@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {forwardRef, useEffect, useImperativeHandle, useState} from 'react';
 import {ColumnsConfig} from "../AntdCrud";
 import {Avatar, Button, Card, Col, Dropdown, Modal, Pagination, Row, Spin, Tooltip} from "antd";
 import {
@@ -17,6 +17,7 @@ import {Page} from "../../types/Page.ts";
 import {useUrlParams} from "../../hooks/useUrlParams.ts";
 
 export type CardPageProps = {
+    ref?: any,
     tableAlias: string,
     defaultPageSize?: number,
     editModalTitle?: string,
@@ -27,10 +28,11 @@ export type CardPageProps = {
     defaultAvatarSrc?: string,
     titleKey?: string,
     descriptionKey?: string,
-    customActions?: (data: any, existNodes: React.ReactNode[]) => React.ReactNode[]
+    customActions?: (data: any, existNodes: React.ReactNode[]) => React.ReactNode[],
+    customHandleButton?:() => React.ReactNode[],
 }
 
-const CardPage: React.FC<CardPageProps> = ({
+const CardPage: React.FC<CardPageProps> = forwardRef(({
                                                tableAlias
                                                , defaultPageSize = 12
                                                , editModalTitle
@@ -41,8 +43,21 @@ const CardPage: React.FC<CardPageProps> = ({
                                                , defaultAvatarSrc
                                                , titleKey = "title"
                                                , descriptionKey = "description"
-                                               , customActions = (_data, existNodes) => existNodes,
-                                           }) => {
+                                               , customActions = (_data: any, existNodes: any) => existNodes
+                                               , customHandleButton = () => []
+                                           },ref) => {
+
+    useImperativeHandle(ref, () => ({
+        refresh: () => {
+            doGet({
+                params: {
+                    ...searchParams,
+                    pageNumber: localPageNumber,
+                    pageSize,
+                }
+            });
+        }
+    }));
 
     const {
         loading,
@@ -66,8 +81,19 @@ const CardPage: React.FC<CardPageProps> = ({
     // const [sortKey, setSortKey] = useState<string | undefined>()
     // const [sortType, setSortType] = useState<"asc" | "desc" | undefined>()
 
-    useBreadcrumbRightEl(<Button type={"primary"} onClick={() => setIsEditOpen(true)}>
-        <PlusOutlined/>{addButtonText}</Button>)
+    useBreadcrumbRightEl(
+        <>
+            <div>
+                {customHandleButton().map((item, index) =>
+                    (<div key={index}
+                          style={{display: "inline-block", marginRight: "5px", marginBottom: "5px"}}>{item}</div>))
+                }
+                <Button type={"primary"} onClick={() => setIsEditOpen(true)}>
+                    <PlusOutlined/>{addButtonText}
+                </Button>
+            </div>
+        </>
+    )
 
     const closeEdit = () => {
         setIsEditOpen(false)
@@ -88,7 +114,6 @@ const CardPage: React.FC<CardPageProps> = ({
 
     return (
         <>
-
             <EditPage modalTitle={editModalTitle || ""}
                       tableAlias={tableAlias}
                       open={isEditOpen}
@@ -187,6 +212,6 @@ const CardPage: React.FC<CardPageProps> = ({
             </Spin>
         </>
     )
-};
+})
 
 export default CardPage

@@ -173,6 +173,20 @@ export const useDetail = (tableAlias: string, id: any, options?: Options) => {
     }, options)
 }
 
+export const usePostFile = (url: string, options?: Options) => {
+    const [{loading},doPost] = useAxios({
+        url: url,
+        method: "POST",
+        headers: {
+            "Content-Type": "multipart/form-data"
+        },
+        ...options
+    });
+    return {
+        loading,
+        doPost
+    }
+}
 
 export const useUpload = () => {
     const result = usePost("/api/v1/commons/upload");
