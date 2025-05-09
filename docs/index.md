@@ -19,7 +19,7 @@ features:
     details: 助你快速搭建 AI 原始应用智能体
   - title: RAG 知识库
     details:  快速构建私有知识库，检索知识
-  - title: Bot 业务插件
+  - title: AI 扩展插件
     details: 链接、扩展 AI 能力，快速集成业务
   - title: AI workflow 编排
     details:  轻松编排 AI 应用工作流，构建复杂业务场景
