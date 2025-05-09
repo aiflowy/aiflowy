@@ -361,10 +361,14 @@ public class AiDocumentController extends BaseCurdController<AiDocumentService, 
         Document document = Document.of(entity.getContent());
 
         StoreResult result = documentStore.store(document, options);
-
         if (!result.isSuccess()) {
             LoggerFactory.getLogger(AiDocumentController.class).error("DocumentStore.store failed: " + result);
         }
+        AiKnowledge aiKnowledge = new AiKnowledge();
+        aiKnowledge.setId(entity.getKnowledgeId());
+        // CanUpdateEmbedLlm false: 不能修改知识库的大模型 true: 可以修改
+        aiKnowledge.setCanUpdateEmbedLlm(false);
+        knowledgeService.updateById(aiKnowledge);
         return Result.success();
     }
 

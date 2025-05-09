@@ -110,6 +110,13 @@ public class AiKnowledgeBase extends DateEntity implements Serializable {
     private BigInteger modifiedBy;
 
     /**
+     * 是否能修改Embendding 模型id  【如果用户成功将数据插入了向量数据库，那么这个知识库的向量模型就不允许再进行修改】
+     * false: 不能修改知识库的大模型 true: 可以修改
+     */
+    @Column(comment = "是否能修改Embendding")
+    private Boolean canUpdateEmbedLlm;
+
+    /**
      * 其他配置
      */
     @Column(typeHandler = FastjsonTypeHandler.class, comment = "其他配置")
@@ -251,4 +258,11 @@ public class AiKnowledgeBase extends DateEntity implements Serializable {
         this.options = options;
     }
 
+    public Boolean getCanUpdateEmbedLlm() {
+        return canUpdateEmbedLlm;
+    }
+
+    public void setCanUpdateEmbedLlm(Boolean canUpdateEmbedLlm) {
+        this.canUpdateEmbedLlm = canUpdateEmbedLlm;
+    }
 }

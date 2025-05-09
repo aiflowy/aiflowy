@@ -32,6 +32,14 @@ public class AiKnowledgeController extends BaseCurdController<AiKnowledgeService
         this.llmService = llmService;
     }
 
+    @Override
+    protected Result onSaveOrUpdateBefore(AiKnowledge entity, boolean isSave) {
+        if (isSave){
+            entity.setCanUpdateEmbedLlm(true);
+        }
+        return super.onSaveOrUpdateBefore(entity, isSave);
+    }
+
     @GetMapping("search")
     public Result search(@RequestParam BigInteger id, @RequestParam String keyword) {
         return service.search(id, keyword);

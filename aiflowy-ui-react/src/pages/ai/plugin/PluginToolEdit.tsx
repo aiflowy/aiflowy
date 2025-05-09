@@ -4,7 +4,14 @@ import {useLocation, useNavigate} from "react-router-dom";
 import {Button, Collapse, Form, Input, message, Select, Space, Spin, Switch, Table, Tooltip} from "antd";
 import {usePost, usePostManual} from "../../../hooks/useApis.ts";
 import './less/pluginToolEdit.less'
-import {ArrowLeftOutlined, DeleteOutlined, EditOutlined, PlusOutlined, QuestionCircleOutlined} from "@ant-design/icons";
+import {
+    ArrowLeftOutlined,
+    DeleteOutlined,
+    EditOutlined,
+    PlayCircleOutlined,
+    PlusOutlined,
+    QuestionCircleOutlined
+} from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import {useBreadcrumbRightEl} from "../../../hooks/useBreadcrumbRightEl.tsx";
 
@@ -55,6 +62,12 @@ const PluginToolEdit: React.FC = () => {
                 <Button onClick={() => navigate(-1)}  icon={<ArrowLeftOutlined />}>返回</Button>
                 {/* 其他内容 */}
             </div>
+            <Button
+                type="primary"
+                icon={<PlayCircleOutlined />}
+            >
+                试运行
+            </Button>
         </div>
     )
     const [editStates, setEditStates] = useState({
