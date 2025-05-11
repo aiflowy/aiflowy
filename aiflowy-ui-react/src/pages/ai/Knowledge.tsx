@@ -120,7 +120,7 @@ const columnsColumns: ColumnsConfig<any> = [
         key: 'vectorEmbedLlmId',
         dict: '/api/v1/aiLlm/list?supportEmbed=true',
         editCondition: (data: any) => {
-            return data?.canUpdateEmbedding;
+            return data?.canUpdateEmbedding != false;
         },
         form: {
             type: 'select',
