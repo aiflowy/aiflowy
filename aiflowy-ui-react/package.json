@@ -39,6 +39,7 @@
     "react-markdown": "^10.1.0",
     "react-router-dom": "^6.30.0",
     "react-to-print": "^3.0.5",
+    "react18-json-view": "^0.2.9",
     "rehype-highlight": "^7.0.2",
     "rehype-raw": "^7.0.0",
     "remark-breaks": "^4.0.0",

@@ -1,7 +1,7 @@
 import React, {useRef, useState} from 'react';
 import {
     DownloadOutlined,
-    NodeIndexOutlined, UploadOutlined,
+    NodeIndexOutlined, SendOutlined, UploadOutlined,
 } from "@ant-design/icons";
 import CardPage from "../../components/CardPage";
 import {ColumnsConfig} from "../../components/AntdCrud";
@@ -153,6 +153,9 @@ const Workflow: React.FC<{ paramsToUrl: boolean }> = () => {
                               <DownloadOutlined title="导出工作流" onClick={() => {
                                   exportWorkflow(item)
                               }} />,
+                              <SendOutlined title="外部地址" onClick={() => {
+                                  window.open(window.location.href.substring(0, window.location.href.indexOf('/ai')) + '/ai/workflow/external/' + item.id, "_blank")
+                              }}/>,
                               ...existNodes
                           ]
                       }}

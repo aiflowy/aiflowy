@@ -69,7 +69,10 @@ public class AiWorkflowController extends BaseCurdController<AiWorkflowService, 
             return Result.fail(2, "节点配置错误，请检查! ");
         }
         List<Parameter> chainParameters = chain.getParameters();
-        return Result.success("parameters", chainParameters);
+        return Result.success("parameters", chainParameters)
+                .set("title",  workflow.getTitle())
+                .set("description",  workflow.getDescription())
+                .set("icon", workflow.getIcon());
     }
 
     @PostMapping("tryRunning")

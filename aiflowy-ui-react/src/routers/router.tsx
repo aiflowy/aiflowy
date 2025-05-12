@@ -4,6 +4,7 @@ import Layout from "../components/Layout";
 import Login from "../pages/commons/login.tsx";
 import React from "react";
 import {ExternalBot} from "../pages/ExternalBot.tsx";
+import {ExternalPage} from "../pages/ai/workflowDesign/ExternalPage.tsx";
 
 /**
  * 登录成功之后的路由和菜单配置
@@ -74,6 +75,10 @@ const routers: RouteObject[] = [
     {
         path: "/ai/externalBot",
         element: <ExternalBot/>,
+    },
+    {
+        path: "/ai/workflow/external",
+        element: <ExternalPage/>,
     },
     ...frontRouters
 ];
