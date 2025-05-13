@@ -199,11 +199,19 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
                 {text: '什么是工作流', link: '/workflow/what_is_workflow'},
                 {text: '快速开始', link: '/workflow/quick_start'},
                 {text: '节点配置', collapsed: false, items: [
+                        {text: '大模型', link: '/workflow/nodes/llm'},
                         {text: '搜索引擎', link: '/workflow/nodes/search-engine'},
                         {text: '内容模板', link: '/workflow/nodes/template-node'},
                         {text: '文件内容提取', link: '/workflow/nodes/doc-content'},
                         {text: '文件生成', link: '/workflow/nodes/file-generator'},
                     ]},
+            ]
+        },
+        {
+            text: '大模型',
+            collapsed: false,
+            items: [
+                {text: '大模型管理', link: '/llm/llmList'},
             ]
         },
         {
