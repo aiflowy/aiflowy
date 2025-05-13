@@ -3,6 +3,7 @@ import {Button, Form, Input, Modal,  Space, Table, App} from 'antd';
 import {useGet, usePostManual} from '../../hooks/useApis'; // 确保路径正确
 import ModelInstallPage from '../ai/ModelInstallPage'
 import {RestOutlined} from "@ant-design/icons";
+import {isSupportChat, isSupportEmbed, isSupportFunctionCalling} from "../../libs/modelUtils";
 
 type LayoutType = Parameters<typeof Form>[0]['layout'];
 type ParaType = {
@@ -31,6 +32,9 @@ const Ollama: React.FC = () => {
                 title: 'ollama_'+record.name,
                 llmEndpoint: record.apiUrl,
                 llmModel: record.name,
+                supportEmbed: isSupportEmbed(record.name),
+                supportChat: isSupportChat(record.name),
+                supportFunctionCalling: isSupportFunctionCalling(record.name),
                 brand: 'ollama'
             }
         })
