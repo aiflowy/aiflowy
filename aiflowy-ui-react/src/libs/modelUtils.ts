@@ -148,16 +148,11 @@ const parseCoreModelName = (() => {
 // 通用模型属性查询
 const getModelSpec = (modelName: string): ModelSpec | undefined => {
     const coreName = parseCoreModelName(modelName);
-    console.log(`getModelSpec(${modelName})`); // 调试输出
-    console.log(`coreName(${coreName})`); // 调试输出
     return MODEL_MAP.get(coreName);
 };
 
 // 是对话模型
 export const isSupportChat = (modelName: string): boolean => {
-    console.log(`isChatModel(${modelName})`); // 调试输出
-    console.log(`getModelSpec(modelName):`+JSON.stringify(getModelSpec(modelName))); // 调试输出
-    console.log(`getModelSpec(modelName)?.supportChat:`+JSON.stringify(getModelSpec(modelName)?.supportChat)); // 调试输出
     return getModelSpec(modelName)?.supportChat ?? false;
 };
 
