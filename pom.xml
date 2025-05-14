@@ -19,7 +19,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mybatis-flex.version>1.10.9</mybatis-flex.version>
         <agents-flex.version>1.0.9</agents-flex.version>
-        <tinyflow-java.version>1.0.6</tinyflow-java.version>
+        <tinyflow-java.version>1.0.7</tinyflow-java.version>
         <okhttp.version>4.9.3</okhttp.version>
         <spring.version>5.3.25</spring.version>
         <spring-boot.version>2.7.18</spring-boot.version>
