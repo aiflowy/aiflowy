@@ -1,6 +1,6 @@
 # AIFlowy 更新记录
 
-## v1.0.2 2025-05-09
+## v1.0.2 2025-05-15
 - 新增：知识库增加excel文件导入 close #IC6IY6
 - 新增：工作流独立访问页面 close #IC63FS
 - 新增：工作流可通过API接口调用 close #IC3FNT
