@@ -1,7 +1,7 @@
 package tech.aiflowy.common;
 
 public class Consts {
-    public static final String VERSION = "v1.0.1";
+    public static final String VERSION = "v1.0.2";
 
     public static final String REQ_ATTR_ACCOUNT_ID = "loginAccountId";
     public static final String JWT_ATTR_SESSION_ID = "sessionId";

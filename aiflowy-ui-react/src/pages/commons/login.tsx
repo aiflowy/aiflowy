@@ -115,7 +115,7 @@ const Login: React.FC = () => {
                 </Form>
             </Flex>
 
-            <div style={{position:"absolute",bottom:"20px",right:"20px",color:"#fff",fontSize:"14px"}}><a href="https://aiflowy.tech" style={{color:"#fff"}} target="_blank">AIFlowy.tech</a> (v1.0.1)</div>
+            <div style={{position:"absolute",bottom:"20px",right:"20px",color:"#fff",fontSize:"14px"}}><a href="https://aiflowy.tech" style={{color:"#fff"}} target="_blank">AIFlowy.tech</a> (v1.0.2)</div>
         </div>
     )
 }
