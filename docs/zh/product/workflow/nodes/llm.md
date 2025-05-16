@@ -4,9 +4,7 @@
 
 ## 模型列表
 
-模型列表的数据来自大模型管理页面，具体请参考[大模型管理](../../../product/llm/llmList.md)
-
-![llmList.png](../resource/llmList.png)
+模型列表的数据来自大模型管理页面，具体请参考[大模型管理](../../llm/addLlm.md)
 
 ## 采样参数
 

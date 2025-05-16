@@ -216,20 +216,12 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
             ]
         },
         {
-            text: '大模型',
-            collapsed: false,
-            items: [
-                {text: '大模型管理', link: '/llm/llmList'},
-            ]
-        },
-        {
             text: '模型管理',
             collapsed: false,
             items: [
-                {text: '什么是 AIFlowy？', link: '/model-management/what-is-aiflowy'},
-                {text: '快速开始', link: '/model-management/quick-start'},
-                {text: '路由', link: '/model-management/route'},
-                {text: '部署', link: '/model-management/deploy'}
+                {text: '模型管理', link: '/llm/llmList'},
+                {text: '模型接入', link: '/llm/addLlm'},
+                {text: '添加供应商', link: '/llm/llmSuppliers.md'},
             ]
         },
     ]

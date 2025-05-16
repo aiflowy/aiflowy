@@ -1,22 +1,9 @@
-# 大模型列表
+# 模型管理
 
-## 添加大模型
+## 模型列表
+通过侧边栏的`大模型`菜单想进入模型列表
+![llmList.png](resource/llmList.png)
 
-我们添加一个模型作为示例。
+在这个页面对大模型进行搜索、新增、修改、删除等操作。
 
-比如，我们要添加一个`火山引擎`的 deepseek v3 模型，那么参数如下：
-
-![llmConfig.png](resource/llmConfig.png)
-
-因为品牌里并没有火山引擎，所以我们使用了兼容 `openai` 的接口。
-
-但是因为各家厂商的 `chatPath` 不一样，所以需要配置一下。
-
-如果品牌列表支持的厂商，那么只需配置该厂商所需的参数即可。
-
-比如星火大模型，除了 `apiKey`，还需要配置  `appId` 和 `apiSecret`，那么这些额外的参数也是要以 `property` 的形式来配置：
-```
-appId=xxx
-apiSecret=xxx
-```
-> 需要注意的是，只有 `openai` 方式才支持配置chatPath，其他厂商 `path` 都是固定的。
+![llmOperations.png](resource/llmOperations.png)

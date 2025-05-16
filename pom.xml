@@ -20,8 +20,8 @@
         <maven-flatten.version>1.3.0</maven-flatten.version>
         <revision>1.0.2</revision>
         <mybatis-flex.version>1.10.9</mybatis-flex.version>
-        <agents-flex.version>1.0.9</agents-flex.version>
-        <tinyflow-java.version>1.0.7</tinyflow-java.version>
+        <agents-flex.version>1.1.0</agents-flex.version>
+        <tinyflow-java.version>1.0.8</tinyflow-java.version>
         <okhttp.version>4.9.3</okhttp.version>
         <spring.version>5.3.25</spring.version>
         <spring-boot.version>2.7.18</spring-boot.version>
