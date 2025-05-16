@@ -4,7 +4,7 @@
     <parent>
         <groupId>tech.aiflowy</groupId>
         <artifactId>aiflowy-commons</artifactId>
-        <version>1.0.2</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>aiflowy-common-web</artifactId>
@@ -19,7 +19,6 @@
         <dependency>
             <groupId>tech.aiflowy</groupId>
             <artifactId>aiflowy-common-satoken</artifactId>
-            <version>1.0.2</version>
         </dependency>
         <dependency>
             <groupId>cn.dev33</groupId>
@@ -109,14 +108,11 @@
         <dependency>
             <groupId>tech.aiflowy</groupId>
             <artifactId>aiflowy-common-base</artifactId>
-            <version>1.0.2</version>
-            <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>tech.aiflowy</groupId>
             <artifactId>aiflowy-common-ai</artifactId>
-            <version>1.0.2</version>
         </dependency>
 
     </dependencies>

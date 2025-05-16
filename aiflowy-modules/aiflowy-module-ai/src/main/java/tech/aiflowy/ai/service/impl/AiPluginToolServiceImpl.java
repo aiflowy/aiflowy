@@ -22,13 +22,13 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- *  服务层实现。
+ * 服务层实现。
  *
  * @author WangGangqiang
  * @since 2025-04-27
  */
 @Service
-public class AiPluginToolServiceImpl extends ServiceImpl<AiPluginToolMapper, AiPluginTool>  implements AiPluginToolService{
+public class AiPluginToolServiceImpl extends ServiceImpl<AiPluginToolMapper, AiPluginTool> implements AiPluginToolService {
 
     @Resource
     private AiPluginToolMapper aiPluginToolMapper;
@@ -44,7 +44,7 @@ public class AiPluginToolServiceImpl extends ServiceImpl<AiPluginToolMapper, AiP
         aiPluginTool.setCreated(new Date());
         aiPluginTool.setRequestMethod("Post");
         int insert = aiPluginToolMapper.insert(aiPluginTool);
-        if (insert <= 0){
+        if (insert <= 0) {
             return Result.fail(1, "插入失败");
         }
         return Result.success();
@@ -74,22 +74,22 @@ public class AiPluginToolServiceImpl extends ServiceImpl<AiPluginToolMapper, AiP
     public Result updatePlugin(AiPluginTool aiPluginTool) {
         String inputData = null;
         String outputData = null;
-        if (!StrUtil.isEmpty(aiPluginTool.getInputData())){
+        if (!StrUtil.isEmpty(aiPluginTool.getInputData())) {
             inputData = switchParams(aiPluginTool.getInputData());
         }
-        if (!StrUtil.isEmpty(inputData)){
+        if (!StrUtil.isEmpty(inputData)) {
             aiPluginTool.setInputData(inputData);
         }
-        if (!StrUtil.isEmpty(aiPluginTool.getOutputData())){
+        if (!StrUtil.isEmpty(aiPluginTool.getOutputData())) {
             outputData = switchParams(aiPluginTool.getOutputData());
         }
-        if (!StrUtil.isEmpty(outputData)){
+        if (!StrUtil.isEmpty(outputData)) {
             aiPluginTool.setOutputData(outputData);
         }
 
         int update = aiPluginToolMapper.update(aiPluginTool);
-        if (update <= 0){
-            return Result.fail(1,"修改失败");
+        if (update <= 0) {
+            return Result.fail(1, "修改失败");
         }
         return Result.success();
     }
@@ -107,9 +107,9 @@ public class AiPluginToolServiceImpl extends ServiceImpl<AiPluginToolMapper, AiP
                 .from("tb_ai_bot_plugins")
                 .where("bot_id = ? ", botId);
         List<BigInteger> aiBotPluginToolIds = aiBotPluginsMapper.selectListWithRelationsByQueryAs(queryBotPluginTools, BigInteger.class);
-        aiBotPluginToolIds.forEach(botPluginTooId ->{
-            aiPluginTools.forEach(item ->{
-                if (Objects.equals(botPluginTooId, item.getId())){
+        aiBotPluginToolIds.forEach(botPluginTooId -> {
+            aiPluginTools.forEach(item -> {
+                if (Objects.equals(botPluginTooId, item.getId())) {
                     item.setJoinBot(true);
                 }
             });
@@ -124,7 +124,7 @@ public class AiPluginToolServiceImpl extends ServiceImpl<AiPluginToolMapper, AiP
                 .from("tb_ai_bot_plugins")
                 .where("bot_id = ? ", botId);
         List<BigInteger> pluginToolIds = aiBotPluginsMapper.selectListByQueryAs(queryAiPluginToolWrapper, BigInteger.class);
-        if (pluginToolIds.isEmpty()){
+        if (pluginToolIds == null || pluginToolIds.isEmpty()) {
             return Result.success();
         }
         // 查询当前bots对应的有哪些pluginTool
@@ -132,14 +132,15 @@ public class AiPluginToolServiceImpl extends ServiceImpl<AiPluginToolMapper, AiP
         return Result.success(aiPluginTools);
     }
 
-    public static String switchParams(String paramString){
+    public static String switchParams(String paramString) {
         ObjectMapper mapper = new ObjectMapper();
         // 1. 将JSON解析为Map<String, Parameter>
         Map<String, Map<String, Object>> map = null;
         try {
             map = mapper.readValue(
                     paramString,
-                    new TypeReference<Map<String, Map<String, Object>>>(){}
+                    new TypeReference<Map<String, Map<String, Object>>>() {
+                    }
             );
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

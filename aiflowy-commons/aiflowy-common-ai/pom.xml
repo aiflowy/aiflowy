@@ -5,9 +5,10 @@
     <parent>
         <groupId>tech.aiflowy</groupId>
         <artifactId>aiflowy-commons</artifactId>
-        <version>1.0.2</version>
+        <version>${revision}</version>
     </parent>
 
+    <name>aiflowy-common-ai</name>
     <artifactId>aiflowy-common-ai</artifactId>
 
     <properties>
@@ -97,14 +98,12 @@
         <dependency>
             <groupId>tech.aiflowy</groupId>
             <artifactId>aiflowy-common-base</artifactId>
-            <version>1.0.2</version>
             <scope>compile</scope>
         </dependency>
 
         <dependency>
             <groupId>tech.aiflowy</groupId>
             <artifactId>aiflowy-common-options</artifactId>
-            <version>1.0.2</version>
             <scope>compile</scope>
         </dependency>
 

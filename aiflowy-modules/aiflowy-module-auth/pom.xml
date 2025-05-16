@@ -1,33 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>tech.aiflowy</groupId>
-    <artifactId>aiflowy-modules</artifactId>
-    <version>1.0.2</version>
-  </parent>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>tech.aiflowy</groupId>
+        <artifactId>aiflowy-modules</artifactId>
+        <version>${revision}</version>
+    </parent>
 
-  <artifactId>aiflowy-module-auth</artifactId>
+    <name>aiflowy-module-auth</name>
+    <artifactId>aiflowy-module-auth</artifactId>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>tech.aiflowy</groupId>
-      <artifactId>aiflowy-common-satoken</artifactId>
-      <version>1.0.2</version>
-    </dependency>
-    <dependency>
-      <groupId>tech.aiflowy</groupId>
-      <artifactId>aiflowy-common-web</artifactId>
-      <version>1.0.2</version>
-    </dependency>
-    <dependency>
-      <groupId>tech.aiflowy</groupId>
-      <artifactId>aiflowy-module-system</artifactId>
-      <version>1.0.2</version>
-    </dependency>
-  </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>tech.aiflowy</groupId>
+            <artifactId>aiflowy-common-satoken</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>tech.aiflowy</groupId>
+            <artifactId>aiflowy-common-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>tech.aiflowy</groupId>
+            <artifactId>aiflowy-module-system</artifactId>
+        </dependency>
+    </dependencies>
 </project>

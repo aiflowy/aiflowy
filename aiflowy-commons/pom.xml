@@ -5,7 +5,7 @@
     <parent>
         <groupId>tech.aiflowy</groupId>
         <artifactId>aiflowy</artifactId>
-        <version>1.0.2</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>aiflowy-commons</artifactId>

@@ -4,9 +4,10 @@
     <parent>
         <groupId>tech.aiflowy</groupId>
         <artifactId>aiflowy-commons</artifactId>
-        <version>1.0.2</version>
+        <version>${revision}</version>
     </parent>
 
+    <name>aiflowy-common-base</name>
     <artifactId>aiflowy-common-base</artifactId>
 
     <properties>

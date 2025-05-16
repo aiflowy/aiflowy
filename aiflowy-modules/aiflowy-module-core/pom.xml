@@ -4,7 +4,7 @@
     <parent>
         <groupId>tech.aiflowy</groupId>
         <artifactId>aiflowy-modules</artifactId>
-        <version>1.0.2</version>
+        <version>${revision}</version>
     </parent>
 
     <artifactId>aiflowy-module-core</artifactId>
@@ -25,17 +25,14 @@
         <dependency>
             <groupId>tech.aiflowy</groupId>
             <artifactId>aiflowy-common-base</artifactId>
-            <version>1.0.2</version>
         </dependency>
         <dependency>
             <groupId>tech.aiflowy</groupId>
             <artifactId>aiflowy-common-tcaptcha</artifactId>
-            <version>1.0.2</version>
         </dependency>
         <dependency>
             <groupId>tech.aiflowy</groupId>
             <artifactId>aiflowy-common-web</artifactId>
-            <version>1.0.2</version>
         </dependency>
     </dependencies>
 </project>

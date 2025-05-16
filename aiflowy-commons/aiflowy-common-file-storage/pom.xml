@@ -5,9 +5,10 @@
     <parent>
         <groupId>tech.aiflowy</groupId>
         <artifactId>aiflowy-commons</artifactId>
-        <version>1.0.2</version>
+        <version>${revision}</version>
     </parent>
 
+    <name>aiflowy-common-file-storage</name>
     <artifactId>aiflowy-common-file-storage</artifactId>
 
     <properties>
@@ -25,7 +26,6 @@
         <dependency>
             <groupId>tech.aiflowy</groupId>
             <artifactId>aiflowy-common-base</artifactId>
-            <version>1.0.2</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
