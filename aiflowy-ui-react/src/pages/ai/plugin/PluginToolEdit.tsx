@@ -1,37 +1,16 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useLayout} from "../../../hooks/useLayout.tsx";
 import {useLocation, useNavigate} from "react-router-dom";
-import {Button, Collapse, Form, Input, message, Select, Space, Spin, Switch, Table, Tooltip} from "antd";
+import {Button, Collapse, Form, Input, message, Select, Spin} from "antd";
 import {usePost, usePostManual} from "../../../hooks/useApis.ts";
 import './less/pluginToolEdit.less'
 import {
     ArrowLeftOutlined,
-    DeleteOutlined,
     EditOutlined,
-    PlusOutlined,
-    QuestionCircleOutlined
 } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import {useBreadcrumbRightEl} from "../../../hooks/useBreadcrumbRightEl.tsx";
-
-interface inputDataParameter {
-    key: string;
-    name: string;
-    description: string;
-    type: string;
-    method: string;
-    required: boolean;
-    defaultValue: string;
-    enabled: boolean;
-}
-interface outputDataParameter {
-    key: string;
-    name: string;
-    description: string;
-    type: string;
-    required: boolean;
-    enabled: boolean;
-}
+import PluginInputAndOutputData, {TreeTableNode} from "./PluginInputAndOutputData.tsx";
 
 
 const PluginToolEdit: React.FC = () => {
@@ -50,11 +29,10 @@ const PluginToolEdit: React.FC = () => {
     const { id, pluginTitle, pluginToolTitle } = location.state || {};
     const { result: pluginToolInfo, doPost: doPostSearch } = usePost('/api/v1/aiPluginTool/tool/search');
     const {  doPost: doPostUpdate } = usePostManual('/api/v1/aiPluginTool/tool/update')
+    const pluginRef = useRef(null);
     const [showLoading, setShowLoading] = useState(true);
     const [isEditInput, setIsEditInput] = useState(false);
     const [isEditOutput, setIsEditOutput] = useState(false);
-    const [formInput] = Form.useForm();
-    const [formOutput] = Form.useForm();
     useBreadcrumbRightEl(
         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16}}>
             <div>
@@ -109,350 +87,19 @@ const PluginToolEdit: React.FC = () => {
 
     };
 
-    const handleAdd = () => {
-        const newData: inputDataParameter = {
-            key: Date.now().toString(),
-            name: '',
-            description: '',
-            type: 'String',
-            method: 'Query',
-            required: true,
-            defaultValue: '',
-            enabled: true,
-        };
-        setInputData([...inputData, newData]);
-
-    };
-
-    const handleAddOutputData = () => {
-        const newData: outputDataParameter = {
-            key: Date.now().toString(),
-            name: '',
-            description: '',
-            type: 'String',
-            required: true,
-            enabled: true,
-        };
-        setOutputData([...outputData, newData]);
-    };
-
-    const handleDeleteInputData = (key: string) => {
-        setInputData(inputData.filter((item) => item.key !== key));
-    };
-    const handleDeleteOutputData = (key: string) => {
-        setOutputData(outputData.filter((item) => item.key !== key));
-    };
-    const [inputData, setInputData] = useState<inputDataParameter[]>([
+    const [inputDataTree, setInputDataTree] = useState<TreeTableNode[]>([
     ]);
-    const [outputData, setOutputData] = useState<outputDataParameter[]>([
+    const [outputDataTree, setOutputDataTree] = useState<TreeTableNode[]>([
     ]);
     useEffect(() => {
         if (pluginToolInfo?.data?.data?.inputData){
-            setInputData(JSON.parse(pluginToolInfo?.data?.data?.inputData));
+            setInputDataTree(JSON.parse(pluginToolInfo?.data?.data?.inputData))
         }
         if(pluginToolInfo?.data?.data?.outputData){
-            setOutputData(JSON.parse(pluginToolInfo?.data?.data?.outputData));
+            setOutputDataTree(JSON.parse(pluginToolInfo?.data?.data?.outputData));
         }
     }, [pluginToolInfo]);
 
-    const getColumnsOutput =()=>{
-        const columnsOutput = [
-            {
-                title: (
-                    <div style={{display: 'flex'}}>
-                        <span>参数名称<span style={{ color: 'red', marginLeft: 4 }}>*</span></span>
-                        <div  style={{marginLeft: 5}}>
-                            <Tooltip title="当前工具返回的参数">
-                                <QuestionCircleOutlined/>
-                            </Tooltip>
-                        </div>
-                    </div>
-                ),
-                width: 150,
-                dataIndex: 'name',
-                key: 'name',
-                render: (text: string, record: outputDataParameter) => {
-                    return isEditOutput ? (
-                        <Form.Item
-                            className="tool-edit-item"
-                            name={[record.key, 'name']}
-                            initialValue={text}
-                            rules={[{ required: true, message: '请输入参数名称' }]}
-                        >
-                            <Input placeholder="参数名称" />
-                        </Form.Item>
-                    ) : (
-                        text
-                    );
-                },
-            },
-            {
-                title: (
-                    <div style={{display: 'flex'}}>
-                        <span>参数描述<span style={{ color: 'red', marginLeft: 4 }}>*</span></span>
-                        <div  style={{marginLeft: 5}}>
-                            <Tooltip title="当前工具返回的参数描述">
-                                <QuestionCircleOutlined/>
-                            </Tooltip>
-                        </div>
-                    </div>
-                ),
-                dataIndex: 'description',
-                key: 'description',
-                render: (text: string, record: outputDataParameter) => {
-                    return isEditOutput ? (
-                        <Form.Item
-                            className="tool-edit-item"
-                            name={[record.key, 'description']}
-                            initialValue={text}
-                            rules={[{ required: true, message: '请输入参数描述' }]}
-                        >
-                            <Input placeholder="参数描述" />
-                        </Form.Item>
-                    ) : (
-                        <Tooltip title={text}>
-                            <div style={{
-                                display: '-webkit-box',
-                                WebkitLineClamp: 1,      // 限制显示行数
-                                WebkitBoxOrient: 'vertical',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                            }}>
-                                {text}
-                            </div>
-                        </Tooltip>
-                    );
-                },
-            },
-            {
-                title: (
-                    <span>参数类型<span style={{ color: 'red', marginLeft: 4 }}>*</span></span>
-                ),
-                width: 130,
-                dataIndex: 'type',
-                key: 'type',
-                render: (text: string, record: outputDataParameter) => {
-                    return isEditOutput ? (
-                        <Form.Item name={[record.key, 'type']} initialValue={text} className="tool-edit-item">
-                            <Select style={{ width: 120 }}>
-                                <Select.Option value="String">String</Select.Option>
-                                <Select.Option value="Number">Number</Select.Option>
-                                <Select.Option value="Boolean">Boolean</Select.Option>
-                                <Select.Option value="Object">Object</Select.Option>
-                                <Select.Option value="Array">Array</Select.Option>
-                            </Select>
-                        </Form.Item>
-                    ) : (
-                        text
-                    );
-                },
-            },
-            {
-                title: '开启',
-                width: 80,
-                dataIndex: 'enabled',
-                key: 'enabled',
-                render: (text: boolean, record: outputDataParameter) => {
-                    return isEditOutput ? (
-                        <Form.Item  name={[record.key, 'enabled']} initialValue={text} valuePropName="checked" className="tool-edit-item">
-                            <Switch />
-                        </Form.Item>
-                    ) : (
-                        <Switch checked={text} disabled />
-                    );
-                },
-            },
-            {
-                title: '操作',
-                key: 'operation',
-                render: (_: any, record: outputDataParameter) => (
-                    <Form.Item className="tool-edit-item">
-                        <Button
-                            type="text"
-                            icon={<DeleteOutlined />}
-                            onClick={() => handleDeleteOutputData(record.key)}
-                        />
-                    </Form.Item>
-
-                ),
-            },
-        ];
-        return columnsOutput.filter(col => col.key !== 'operation' || isEditOutput);
-    }
-    const getColumnsInput = ()=>{
-        const columnsInput = [
-            {
-                title: (
-                    <div style={{display: 'flex'}}>
-                        <span>参数名称<span style={{ color: 'red', marginLeft: 4 }}>*</span></span>
-                        <div  style={{marginLeft: 5}}>
-                            <Tooltip title="当前工具请求的参数名称">
-                                <QuestionCircleOutlined/>
-                            </Tooltip>
-                        </div>
-                    </div>
-                ),
-                width: 150,
-                dataIndex: 'name',
-                key: 'name',
-                render: (text: string, record: inputDataParameter) => {
-                    return isEditInput ? (
-                        <Form.Item
-                            className="tool-edit-item"
-                            name={[record.key, 'name']}
-                            initialValue={text}
-                            rules={[{ required: true, message: '请输入参数名称' }]}
-                        >
-                            <Input placeholder="参数名称" />
-                        </Form.Item>
-                    ) : (
-                        text
-                    );
-                },
-            },
-            {
-                title: (
-                    <div style={{display: 'flex'}}>
-                        <span>参数描述<span style={{ color: 'red', marginLeft: 4 }}>*</span></span>
-                        <div  style={{marginLeft: 5}}>
-                            <Tooltip title="请描述参数的功能，帮助用户/大模型更好的理解。">
-                                <QuestionCircleOutlined/>
-                            </Tooltip>
-                        </div>
-                    </div>
-                ),
-                dataIndex: 'description',
-                key: 'description',
-                render: (text: string, record: inputDataParameter) => {
-                    return isEditInput ? (
-                        <Form.Item
-                            className="tool-edit-item"
-                            name={[record.key, 'description']}
-                            initialValue={text}
-                            rules={[{ required: true, message: '请输入参数描述' }]}
-                        >
-                            <Input placeholder="参数描述" />
-                        </Form.Item>
-                    ) : (
-                        <Tooltip title={text}>
-                            <div style={{
-                                display: '-webkit-box',
-                                WebkitLineClamp: 1,      // 限制显示行数
-                                WebkitBoxOrient: 'vertical',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                            }}>
-                                {text}
-                            </div>
-                        </Tooltip>
-                    );
-                },
-            },
-            {
-                title: (
-                    <span>参数类型<span style={{ color: 'red', marginLeft: 4 }}>*</span></span>
-                ),
-                width: 130,
-                dataIndex: 'type',
-                key: 'type',
-                render: (text: string, record: inputDataParameter) => {
-                    return isEditInput ? (
-                        <Form.Item name={[record.key, 'type']} initialValue={text} className="tool-edit-item">
-                            <Select style={{ width: 120 }}>
-                                <Select.Option value="String">String</Select.Option>
-                                <Select.Option value="Number">Number</Select.Option>
-                                <Select.Option value="Boolean">Boolean</Select.Option>
-                                <Select.Option value="Object">Object</Select.Option>
-                                <Select.Option value="Array">Array</Select.Option>
-                            </Select>
-                        </Form.Item>
-                    ) : (
-                        text
-                    );
-                },
-            },
-            {
-                title: (
-                    <span>传入方法<span style={{ color: 'red', marginLeft: 4 }}>*</span></span>
-                ),
-                width: 130,
-                dataIndex: 'method',
-                key: 'method',
-                render: (text: string, record: inputDataParameter) => {
-                    return isEditInput ? (
-                        <Form.Item name={[record.key, 'method']} initialValue={text} className="tool-edit-item">
-                            <Select style={{ width: 120 }}>
-                                <Select.Option value="Query">Query</Select.Option>
-                                <Select.Option value="Body">Body</Select.Option>
-                                <Select.Option value="Header">Header</Select.Option>
-                                <Select.Option value="Path">Path</Select.Option>
-                            </Select>
-                        </Form.Item>
-                    ) : (
-                        text
-                    );
-                },
-            },
-            {
-                title: '是否必须',
-                dataIndex: 'required',
-                width: 90,
-                key: 'required',
-                render: (text: boolean, record: inputDataParameter) => {
-                    return isEditInput ? (
-                        <Form.Item name={[record.key, 'required']} initialValue={text} valuePropName="checked" className="tool-edit-item">
-                            <Switch />
-                        </Form.Item>
-                    ) : (
-                        <Switch checked={text} disabled />
-                    );
-                },
-            },
-            {
-                title: '默认值',
-                width: 100,
-                dataIndex: 'defaultValue',
-                key: 'defaultValue',
-                render: (text: string, record: inputDataParameter) => {
-                    return isEditInput ? (
-                        <Form.Item name={[record.key, 'defaultValue']} initialValue={text} className="tool-edit-item">
-                            <Input placeholder="默认值" size="small" />
-                        </Form.Item>
-                    ) : (
-                        text
-                    );
-                },
-            },
-            {
-                title: '开启',
-                width: 80,
-                dataIndex: 'enabled',
-                key: 'enabled',
-                render: (text: boolean, record: inputDataParameter) => {
-                    return isEditInput ? (
-                        <Form.Item name={[record.key, 'enabled']} initialValue={text} valuePropName="checked" className="tool-edit-item">
-                            <Switch />
-                        </Form.Item>
-                    ) : (
-                        <Switch checked={text} disabled />
-                    );
-                },
-            },
-            {
-                title: '操作',
-                key: 'operation',
-                render: (_: any, record: inputDataParameter) => (
-                    <Button
-                        type="text"
-                        icon={<DeleteOutlined />}
-                        onClick={() => handleDeleteInputData(record.key)}
-                    />
-                ),
-            },
-        ];
-
-        return columnsInput.filter(col => col.key !== 'operation' || isEditInput);
-    }
     const editPluginTool = (index: string) => {
         // 可以在函数顶部添加条件判断
         if (!index) {
@@ -475,81 +122,52 @@ const PluginToolEdit: React.FC = () => {
                             } else if (index === '3') {
                                 setIsEditOutput(false);
                             }
+                            doPostSearch({
+                                data: {
+                                    aiPluginToolId: id
+                                }
+                            }).then(res => {
+                                setInputDataTree(JSON.parse(res?.data?.data?.data?.inputData))
+                                setOutputDataTree(JSON.parse(res?.data?.data?.data?.outputData));
+                            })
                         }}>取消</Button>
                         <Button
                             type="primary"
                             size="small"
                             onClick={(e) => {
                                 e.stopPropagation();
-                                formBasicInfo.validateFields().then((values) => {
-                                    if (index === '1') {
-                                        doPostUpdate({
-                                            data: {
-                                                id: values.id,
-                                                name: values.name,
-                                                description: values.description,
-                                                basePath: values.basePath,
-                                                requestMethod: values.requestMethod
-                                            }
-                                        }).then((r) => {
-                                            if (r?.data?.errorCode === 0) {
-                                                message.success('修改成功');
-                                                setEditStates(prev => ({...prev, '1': false})); // 添加这行
-                                                doPostSearch({
-                                                    data: {
-                                                        aiPluginToolId: id
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
-                                    else if (index === '2') {
-                                        formInput.validateFields().then(() => {
-                                            const formData = formInput.getFieldsValue();
-                                            doPostUpdate({
-                                                data: {
-                                                    id: id,
-                                                    inputData: JSON.stringify(formData),
-                                                }
-                                            }).then((r) => {
-                                                if (r?.data?.errorCode === 0) {
-                                                    setIsEditInput(false);
-                                                    setEditStates(prev => ({...prev, '2': false})); // 添加这行
-                                                    message.success('修改成功');
-                                                    doPostSearch({
-                                                        data: {
-                                                            aiPluginToolId: id
-                                                        }
-                                                    });
-                                                }
-                                            })
-                                        });
 
-                                    }
-                                    // 保存输出参数
-                                    else if (index === '3') {
-                                        formOutput.validateFields().then(() => {
-                                            const formData = formOutput.getFieldsValue();
+                                    if (index === '1') {
+                                        formBasicInfo.validateFields().then((values) => {
                                             doPostUpdate({
                                                 data: {
-                                                    id: id,
-                                                    outputData: JSON.stringify(formData),
+                                                    id: values.id,
+                                                    name: values.name,
+                                                    description: values.description,
+                                                    basePath: values.basePath,
+                                                    requestMethod: values.requestMethod
                                                 }
                                             }).then((r) => {
                                                 if (r?.data?.errorCode === 0) {
-                                                    setIsEditOutput(false);
-                                                    setEditStates(prev => ({...prev, '3': false})); // 添加这行
                                                     message.success('修改成功');
+                                                    setEditStates(prev => ({...prev, '1': false})); // 添加这行
                                                     doPostSearch({
                                                         data: {
                                                             aiPluginToolId: id
                                                         }
                                                     });
                                                 }
-                                            })
-                                        });
+                                            });
+                                    });
                                     }
-                                });
+                                    else if (index === '2' || index === '3') {
+                                        //@ts-ignore
+                                        if (pluginRef.current && pluginRef.current.handleSubmitParams) {
+                                            //@ts-ignore
+                                            pluginRef.current.handleSubmitParams(); // 主动触发子组件提交
+                                        }
+                                    }
+
                             }}
                         >
                             保存
@@ -581,7 +199,54 @@ const PluginToolEdit: React.FC = () => {
             </div>
         );
     };
+    const handleSubmit = (submittedParams: TreeTableNode[]) => {
+        console.log('isEditInput')
+        console.log(isEditInput)
+        console.log('isEditOutput')
+        console.log(isEditOutput)
+        console.log('父组件收到的参数:', submittedParams);
+        if (isEditInput){
+            setIsEditInput(false)
+                doPostUpdate({
+                    data: {
+                        id: id,
+                        inputData: JSON.stringify(submittedParams),
+                    }
+                }).then((r) => {
+                    if (r?.data?.errorCode === 0) {
+                        setIsEditInput(false);
+                        setEditStates(prev => ({...prev, '2': false})); // 添加这行
+                        message.success('修改成功');
+                        doPostSearch({
+                            data: {
+                                aiPluginToolId: id
+                            }
+                        });
+                    }
+                })
+        } else {
+            setIsEditOutput(false)
+                    doPostUpdate({
+                        data: {
+                            id: id,
+                            outputData: JSON.stringify(submittedParams),
+                        }
+                    }).then((r) => {
+                        if (r?.data?.errorCode === 0) {
+                            setIsEditOutput(false);
+                            setEditStates(prev => ({...prev, '3': false})); // 添加这行
+                            message.success('修改成功');
+                            doPostSearch({
+                                data: {
+                                    aiPluginToolId: id
+                                }
+                            });
+                        }
+                    })
+        }
 
+        // 这里可以执行提交到API等操作
+    };
     const collapseItems = [
         {
             key: '1',
@@ -640,32 +305,12 @@ const PluginToolEdit: React.FC = () => {
             key: '2',
             label: '配置输入参数',
             children:  (
-                <div>
-                    <Form form={formInput} component={false} >
-                        <Table
-                            className="custom-table"
-                            bordered
-                            dataSource={inputData || []}
-                            columns={getColumnsInput()}
-                            pagination={false}
-                            rowKey="key"
+                        <PluginInputAndOutputData
+                        value={inputDataTree}
+                        editable={isEditInput}
+                        ref={pluginRef}
+                        onSubmit={handleSubmit}
                         />
-                    </Form>
-                    <Space style={{ marginTop: 16 }}>
-                        {
-                            isEditInput ? ( <Button
-                                    type="dashed"
-                                    icon={<PlusOutlined />}
-                                    onClick={handleAdd}
-                                >
-                                    新增参数
-                                </Button>
-                            ) : (<></>
-                            )
-                        }
-
-                    </Space>
-                </div>
             ),
             extra: editPluginTool('2')
         },
@@ -673,32 +318,13 @@ const PluginToolEdit: React.FC = () => {
             key: '3',
             label: '配置输出参数',
             children: (
-                <div>
-                    <Form form={formOutput} component={false} >
-                        <Table
-                            className="custom-table"
-                            bordered
-                            dataSource={outputData || []}
-                            columns={getColumnsOutput()}
-                            pagination={false}
-                            rowKey="key"
-                        />
-                    </Form>
-                    <Space style={{ marginTop: 16 }}>
-                        {
-                            isEditOutput ? ( <Button
-                                    type="dashed"
-                                    icon={<PlusOutlined />}
-                                    onClick={handleAddOutputData}
-                                >
-                                    新增参数
-                                </Button>
-                            ) : (<></>
-                            )
-                        }
-
-                    </Space>
-                </div>
+                <PluginInputAndOutputData
+                    value={outputDataTree}
+                    editable={isEditOutput}
+                    ref={pluginRef}
+                    onSubmit={handleSubmit}
+                    isEditOutput={true}
+                />
             ),
             extra: editPluginTool('3')
         },

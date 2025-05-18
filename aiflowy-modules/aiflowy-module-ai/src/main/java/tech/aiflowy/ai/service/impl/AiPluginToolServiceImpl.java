@@ -72,21 +72,6 @@ public class AiPluginToolServiceImpl extends ServiceImpl<AiPluginToolMapper, AiP
 
     @Override
     public Result updatePlugin(AiPluginTool aiPluginTool) {
-        String inputData = null;
-        String outputData = null;
-        if (!StrUtil.isEmpty(aiPluginTool.getInputData())) {
-            inputData = switchParams(aiPluginTool.getInputData());
-        }
-        if (!StrUtil.isEmpty(inputData)) {
-            aiPluginTool.setInputData(inputData);
-        }
-        if (!StrUtil.isEmpty(aiPluginTool.getOutputData())) {
-            outputData = switchParams(aiPluginTool.getOutputData());
-        }
-        if (!StrUtil.isEmpty(outputData)) {
-            aiPluginTool.setOutputData(outputData);
-        }
-
         int update = aiPluginToolMapper.update(aiPluginTool);
         if (update <= 0) {
             return Result.fail(1, "修改失败");
