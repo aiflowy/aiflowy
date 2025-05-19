@@ -25,7 +25,7 @@
 
 7. 插件url 获取地址为 [插件url](https://console.qweather.com/setting?lang=zh)
 
-8. 在Headers 添加 X-QW-Api-Key: 你的API KEY
+8. 在Headers 添加 X-QW-Api-Key: 你的 API KEY
 
 9. 然后进入已经创建好的这个插件， 进入如图所示页面， 点击**创建工具**按钮
 ![img_7.png](resource/plugin-8.png)
@@ -37,7 +37,7 @@
 
 ## 2. 挂载插件
 
-进入Bot 详情页面，点击 **插件** 右上角的 **+** 按钮，选择刚才创建好的 插件**get_cityId**，点击 **选择**， 这样就给我们的智能机器人挂上了插件。
+进入 Bot 详情页面，点击 **插件** 右上角的 **+** 按钮，选择刚才创建好的 插件**get_cityId**，点击 **选择**， 这样就给我们的智能机器人挂上了插件。
 ![img_9.png](resource/plugin-10.png)
 
 ## 3. 插件测试
