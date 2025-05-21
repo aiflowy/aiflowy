@@ -66,4 +66,10 @@ public class AiPluginServiceImpl extends ServiceImpl<AiPluginMapper, AiPlugin>  
         List<AiPlugin> aiPlugins = aiPluginMapper.selectListByQueryAs(queryWrapper, AiPlugin.class);
         return Result.success(aiPlugins);
     }
+
+    @Override
+    public void pageByCategory(Long pageNumber, Long pageSize, int category) {
+    }
+
+
 }
