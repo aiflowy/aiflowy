@@ -1,9 +1,17 @@
-import {useEffect, useRef, useState} from 'react';
+// @ts-ignore
+import React, {useEffect, useRef, useState} from 'react';
 import {useLayout} from '../../../hooks/useLayout.tsx';
-import {App, Button, Drawer, Form, Input, Skeleton, Spin} from "antd";
+import {App, Button, Collapse, Drawer, Empty, Form, Input, Skeleton, Spin} from "antd";
 import {useParams} from "react-router-dom";
-import {useDetail, useGet, useGetManual, usePostManual, useUpdate} from "../../../hooks/useApis.ts";
-import {FormOutlined, SendOutlined, UploadOutlined} from "@ant-design/icons";
+import {useDetail, useGet, useGetManual, useUpdate} from "../../../hooks/useApis.ts";
+import {
+    CheckCircleOutlined,
+    CloseCircleOutlined, ExclamationCircleOutlined,
+    FormOutlined,
+    LoadingOutlined,
+    SendOutlined,
+    UploadOutlined
+} from "@ant-design/icons";
 import {Tinyflow, TinyflowHandle} from '@tinyflow-ai/react';
 import '@tinyflow-ai/react/dist/index.css'
 import {Uploader} from "../../../components/Uploader";
@@ -11,6 +19,9 @@ import customNode from './customNode/index.ts'
 import {PluginNode} from './customNode/pluginNode.ts'
 import {PluginTools} from "../botDesign/PluginTools.tsx";
 import {SingleRun} from "./SingleRun.tsx";
+import JsonView from "react18-json-view";
+import {useSse} from "../../../hooks/useSse.ts";
+import {sortNodes} from "../../../libs/workflowUtil";
 
 export const WorkflowDesign = () => {
 
@@ -25,12 +36,29 @@ export const WorkflowDesign = () => {
     const [workflowData, setWorkflowData] = useState<any>({})
     const [saveLoading, setSaveLoading] = useState(false);
     const [runLoading, setRunLoading] = useState(false);
+    const [collapseItems, setCollapseItems] = useState<any[]>([])
+
+    const {doGet: getWorkflowInfo} = useGetManual("/api/v1/aiWorkflow/detail")
+    const getNodesInfo = (workflowId: any) => {
+        setCollapseItems([])
+        setRunLoading(true)
+        getWorkflowInfo({
+            params: {
+                id: workflowId,
+            }
+        }).then(res => {
+            setRunLoading(false)
+            const nodeJson = JSON.parse(res.data?.data.content);
+            setCollapseItems(sortNodes(nodeJson))
+        })
+    }
 
     // 添加 useEffect 监听 workflow 变化
     useEffect(() => {
         if (workflow?.data?.content) {
             try {
-                setWorkflowData(JSON.parse(workflow.data.content))
+                const content = JSON.parse(workflow.data.content);
+                setWorkflowData(content)
             } catch (e) {
                 setWorkflowData({})
             }
@@ -109,7 +137,7 @@ export const WorkflowDesign = () => {
 
 
     const {doGet: getRunningParameters} = useGetManual("/api/v1/aiWorkflow/getRunningParameters");
-    const {doPost: tryRunning} = usePostManual("/api/v1/aiWorkflow/tryRunning");
+    //const {doPost: tryRunning} = usePostManual("/api/v1/aiWorkflow/tryRunning");
     const [selectedItem, setSelectedItem] = useState<any>([]);
     const showRunningParameters = async () => {
         setRunLoading(true)
@@ -130,13 +158,14 @@ export const WorkflowDesign = () => {
             }
             setRunLoading(false)
         })
+        getNodesInfo(params.id)
     }
 
     const [open, setOpen] = useState(false);
     const [singleRunOpen, setSingleRunOpen] = useState(false);
 
     const singleRunRef = useRef<any>(null)
-    const [currentNode,  setCurrentNode] = useState<any>(null)
+    const [currentNode, setCurrentNode] = useState<any>(null)
 
     const showDrawer = () => {
         setOpen(true);
@@ -146,37 +175,88 @@ export const WorkflowDesign = () => {
         setOpen(false);
     };
 
-    const onSingleRunClose  = () => {
+    const onSingleRunClose = () => {
         setSingleRunOpen(false);
         singleRunRef.current.resetForm()
     };
 
+    const {start: runWithStream} = useSse("/api/v1/aiWorkflow/tryRunningStream");
+
     const onFinish = (values: any) => {
         //console.log('submit', values)
         setSubmitLoading(true)
-        tryRunning({
+        // tryRunning({
+        //     data: {
+        //         id: params.id,
+        //         variables: values
+        //     }
+        // }).then((resp) => {
+        //     if (resp.data.errorCode === 0) {
+        //         message.success("成功")
+        //     }
+        //     setSubmitLoading(false)
+        //     setExecuteResult(JSON.stringify(resp.data))
+        // })
+        collapseItems.map((item: any) => {
+            item.extra = ""
+            item.children = ""
+        })
+        setCollapseItems([...collapseItems])
+        runWithStream({
             data: {
                 id: params.id,
                 variables: values
-            }
-        }).then((resp) => {
-            if (resp.data.errorCode === 0) {
-                message.success("成功")
-            }
-            setSubmitLoading(false)
-            setExecuteResult(JSON.stringify(resp.data))
+            },
+            onMessage: (msg: any) => {
+                //console.log(msg)
+                if (msg.execResult) {
+                    setExecuteResult(msg.execResult)
+                }
+                if (msg.status === 'error') {
+                    setExecuteResult(msg)
+                    collapseItems.map((item: any) => {
+                        item.extra = <Spin indicator={<ExclamationCircleOutlined style={{color: "#EABB00"}} />} />
+                    })
+                    setCollapseItems([...collapseItems])
+                }
+                if (msg.nodeId && msg.status) {
+                    collapseItems.map((item: any) => {
+                        if (item.key == msg.nodeId) {
+                            if (msg.status === 'start') {
+                                item.extra = <Spin indicator={<LoadingOutlined/>}/>
+                                item.children = ""
+                            }
+                            if (msg.status === 'end') {
+                                item.extra = <Spin indicator={<CheckCircleOutlined style={{color: 'green'}} />} />
+                                item.children = msg.res ?
+                                    <div style={{wordWrap: "break-word",}}>
+                                        <JsonView src={msg.res}/>
+                                    </div> : ""
+                            }
+                            if (msg.status === 'nodeError') {
+                                item.extra = <Spin indicator={<CloseCircleOutlined style={{color: 'red'}} />} />
+                                item.children = <JsonView src={msg.errorMsg}/>
+                            }
+                        }
+                    })
+                    setCollapseItems([...collapseItems])
+                }
+            },
+            onFinished: () => {
+                setSubmitLoading(false)
+            },
         })
     };
 
     const onFinishFailed = (errorInfo: any) => {
         setSubmitLoading(false)
-        message.error("失败：" + errorInfo)
+        //message.error("失败：" + errorInfo)
         console.log('Failed:', errorInfo);
     };
 
     const [changeNodeData, setChangeNodeData] = useState<any>()
 
-    const handleChosen = (updateNodeData: any,  value: any) => {
+    const handleChosen = (updateNodeData: any, value: any) => {
         if (value) {
             setSelectedItem([value])
         }
@@ -228,7 +308,7 @@ export const WorkflowDesign = () => {
                         changeNodeData({
                             pluginId: '',
                             pluginName: '',
-                            parameters:[],
+                            parameters: [],
                             outputDefs: []
                         })
                         setSelectedItem([])
@@ -267,7 +347,7 @@ export const WorkflowDesign = () => {
                                             if (file.status === 'done') {
                                                 let url = file.response?.response.url;
                                                 if (url.indexOf('http') < 0) {
-                                                    url  = window.location.origin + url;
+                                                    url = window.location.origin + url;
                                                 }
                                                 form.setFieldsValue({
                                                     [item.name]: url,
@@ -302,18 +382,26 @@ export const WorkflowDesign = () => {
                 </Form>
 
                 <div>
-                    <div>执行结果：</div>
+                    <div style={{marginBottom: "10px"}}>执行结果：</div>
                     <div style={{
-                        background: "#efefef",
-                        padding: "10px",
-                        height: "300px",
-                        marginTop: "10px",
-                        borderRadius: "7px",
-                    }}>
-                        <pre style={{whiteSpace: "pre-wrap",wordBreak: "break-all"}}>{executeResult || '暂无输出'}</pre>
+                        padding: "20px",
+                        backgroundColor: "#fafafa",
+                        textAlign: "center",
+                        wordWrap: "break-word",
+                    }}
+                    >
+                        {executeResult ?
+                            <JsonView src={executeResult}/> :
+                            <Empty description={'暂无内容'} image={Empty.PRESENTED_IMAGE_SIMPLE}/>
+                        }
                     </div>
                 </div>
-
+                <div style={{marginTop: "10px"}}>
+                    <div>执行步骤：</div>
+                    <div style={{marginTop: "10px"}}>
+                        <Collapse items={collapseItems}/>
+                    </div>
+                </div>
             </Drawer>
 
             <Drawer
@@ -324,7 +412,7 @@ export const WorkflowDesign = () => {
                 onClose={onSingleRunClose}
                 open={singleRunOpen}
             >
-                <SingleRun ref={singleRunRef} workflowId={params.id} node={currentNode} />
+            <SingleRun ref={singleRunRef} workflowId={params.id} node={currentNode} />
             </Drawer>
 
             <div style={{height: 'calc(100vh - 50px)', display: "flex"}} className={"agentsflow"}>
@@ -374,7 +462,7 @@ export const WorkflowDesign = () => {
                                       }}
                                       style={{height: 'calc(100vh - 10px)'}} customNodes={customNodes}/>
                         </Spin>
-                        : <div style={{padding: '20px'}}><Skeleton active /></div>
+                        : <div style={{padding: '20px'}}><Skeleton active/></div>
                     }
 
                 </div>

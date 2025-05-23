@@ -31,7 +31,6 @@ public class MakeFileNode extends BaseNode {
 
     @Override
     protected Map<String, Object> execute(Chain chain) {
-        System.out.println("===========make file==============");
         Map<String, Object> map = chain.getParameterValues(this);
 
         Map<String, Object> res = new HashMap<>();
