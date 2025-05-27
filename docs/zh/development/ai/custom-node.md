@@ -56,7 +56,8 @@ export default {
         },
         forms: [  // 节点表单
             {
-                type: 'heading', // 'input' | 'textarea' | 'select' | 'slider' | 'heading'
+                // 'input' | 'textarea' | 'select' | 'slider' | 'heading' | 'chosen'
+                type: 'heading', 
                 label: '表单头',
             },
             {
@@ -71,6 +72,22 @@ export default {
                         value: 'docx'
                     }
                 ]
+            },
+            {
+                // 用法可参考插件节点的代码
+                type: 'chosen',
+                label: '插件选择',
+                chosen: {
+                    // 节点自定义属性
+                    labelDataKey: 'pluginName',
+                    valueDataKey: 'pluginId',
+                    // updateNodeData 可动态更新节点属性
+                    // value 为选中的 value
+                    // label 为选中的 label
+                    onChosen: ((updateNodeData: (data: Record<string, any>) => void, value?: string, label?: string, event?: Event) => {
+                        console.warn('No onChosen handler provided for plugin-node');
+                    })
+                }
             }
         ],
     }
