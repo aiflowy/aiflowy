@@ -38,6 +38,24 @@ CREATE TABLE `tb_sys_token`  (
                                  UNIQUE INDEX `uk_token`(`token`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'iframe 嵌入用 Token 表' ROW_FORMAT = Dynamic;
 
+-- ----------------------------
+-- 修改 quartz 表前缀 开始
+-- ----------------------------
+RENAME TABLE qrtz_blob_triggers TO tb_qrtz_blob_triggers;
+RENAME TABLE qrtz_calendars TO tb_qrtz_calendars;
+RENAME TABLE qrtz_cron_triggers TO tb_qrtz_cron_triggers;
+RENAME TABLE qrtz_fired_triggers TO tb_qrtz_fired_triggers;
+RENAME TABLE qrtz_job_details TO tb_qrtz_job_details;
+RENAME TABLE qrtz_locks TO tb_qrtz_locks;
+RENAME TABLE qrtz_paused_trigger_grps TO tb_qrtz_paused_trigger_grps;
+RENAME TABLE qrtz_scheduler_state TO tb_qrtz_scheduler_state;
+RENAME TABLE qrtz_simple_triggers TO tb_qrtz_simple_triggers;
+RENAME TABLE qrtz_simprop_triggers TO tb_qrtz_simprop_triggers;
+RENAME TABLE qrtz_triggers TO tb_qrtz_triggers;
+-- ----------------------------
+-- 修改 quartz 表前缀 结束
+-- ----------------------------
+
 SET FOREIGN_KEY_CHECKS = 1;
 
 INSERT INTO `aiflowy-copy`.`tb_sys_menu`(`id`, `parent_id`, `menu_type`, `menu_title`, `menu_url`, `component`, `menu_icon`, `is_show`, `permission_tag`, `sort_no`, `status`, `created`, `created_by`, `modified`, `modified_by`, `remark`, `is_deleted`) VALUES (284467996239060992, 259168688849412096, 0, 'token', 'sys/sysToken', '', 'BarChartOutlined', 1, '', 31, 0, '2025-05-26 12:35:15', 1, '2025-05-28 09:23:15', 1, '', 0);
