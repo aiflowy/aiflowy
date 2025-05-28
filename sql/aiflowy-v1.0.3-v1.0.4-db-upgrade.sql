@@ -58,5 +58,5 @@ RENAME TABLE qrtz_triggers TO tb_qrtz_triggers;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
-INSERT INTO `aiflowy-copy`.`tb_sys_menu`(`id`, `parent_id`, `menu_type`, `menu_title`, `menu_url`, `component`, `menu_icon`, `is_show`, `permission_tag`, `sort_no`, `status`, `created`, `created_by`, `modified`, `modified_by`, `remark`, `is_deleted`) VALUES (284467996239060992, 259168688849412096, 0, 'token', 'sys/sysToken', '', 'BarChartOutlined', 1, '', 31, 0, '2025-05-26 12:35:15', 1, '2025-05-28 09:23:15', 1, '', 0);
+INSERT INTO `tb_sys_menu` VALUES (284467996239060992, 259168688849412096, 0, 'token', 'sys/sysToken', '', 'BarChartOutlined', 1, '', 31, 0, '2025-05-26 12:35:15', 1, '2025-05-28 09:23:15', 1, '', 0);
 
