@@ -36,7 +36,7 @@ const Login: React.FC = () => {
             if (loadedCount >= 2) {
                 setTimeout(() => {
                     setIsPageLoaded(true);
-                }, 1000); // 可选：加个小延迟让动画更自然
+                }, 2000); // 可选：加个小延迟让动画更自然
             }
         };
 
@@ -53,7 +53,6 @@ const Login: React.FC = () => {
     }, []);
 
     const onFinish = (values: any) => {
-        console.log("values", values);
         if (!values.agreement){
             message.error("请先阅读并同意用户服务协议和隐私政策");
             return

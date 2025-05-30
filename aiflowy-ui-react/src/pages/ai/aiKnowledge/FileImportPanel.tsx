@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Button, Input, List, message, Radio, Select, Upload, UploadProps,} from "antd";
 import {InboxOutlined, MinusCircleTwoTone, PlusCircleTwoTone} from "@ant-design/icons";
 import "../style/FileImportPanel.less";
@@ -45,6 +45,12 @@ const FileImportPanel: React.FC<FileImportPanelProps> = ({ data, maxCount = 1, a
         spinning: false,
         tip: '正在加载数据，请稍候...'
     })
+
+    const [contentHeight, setContentHeight] = useState(500); // 默认高度
+
+    useEffect(() => {
+        setContentHeight(window.innerHeight - 300);
+    }, []);
 
 
     interface PreviewItem {
@@ -215,7 +221,7 @@ const FileImportPanel: React.FC<FileImportPanelProps> = ({ data, maxCount = 1, a
     // 右侧内容映射
     const contentMapping: { [key: string]: JSX.Element } = {
         document: (
-            <div style={{width: "100%", display: "flex", flexDirection: "row"}}>
+            <div style={{width: "100%", height: "100%", display: "flex", flexDirection: "row"}}>
                 <div className="file-content">
                     {/* 导入方式 */}
                     <Radio.Group defaultValue="local">
@@ -395,8 +401,8 @@ const FileImportPanel: React.FC<FileImportPanelProps> = ({ data, maxCount = 1, a
                         </Upload.Dragger>
                     </div>
                 </div>
-                <div style={{display:"flex", flexDirection:"column", width:"60%"}}>
-                    <div style={{backgroundColor:"#f0f0f0", marginLeft:"20px", height:"700px", overflowY:"scroll", padding:"5px"}}>
+                <div style={{display:"flex", flexDirection:"column", width:"60%", height:"100%"}}>
+                    <div style={{backgroundColor:"#f0f0f0", marginLeft:"20px",  height: `${contentHeight}px`, overflowY:"scroll", padding:"5px"}}>
                         <List
                             itemLayout="horizontal"
                             dataSource={dataPreView}
@@ -547,7 +553,7 @@ const FileImportPanel: React.FC<FileImportPanelProps> = ({ data, maxCount = 1, a
                     </div>
                 </div>
                 <div style={{display:"flex", flexDirection:"column", width:"60%"}}>
-                    <div style={{backgroundColor:"#f0f0f0", marginLeft:"20px", height:"700px", overflowY:"scroll", padding:"5px"}}>
+                    <div style={{backgroundColor:"#f0f0f0", marginLeft:"20px", height: `${contentHeight}px`, overflowY:"scroll", padding:"5px"}}>
                         <List
                             itemLayout="horizontal"
                             dataSource={dataPreView}
