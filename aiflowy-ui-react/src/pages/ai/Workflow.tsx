@@ -18,6 +18,14 @@ const columnsColumns: ColumnsConfig<any> = [
         }
     },
     {
+        title: 'Icon',
+        dataIndex: 'icon',
+        key: 'icon',
+        form: {
+            type: "image",
+        }
+    },
+    {
         title: '名称',
         dataIndex: 'title',
         key: 'title',
