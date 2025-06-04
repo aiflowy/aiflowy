@@ -149,8 +149,6 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
         AiBot aiBot = service.getById(botId);
         boolean login = StpUtil.isLogin();
 
-
-
         if (!login) {
 
             Object o = aiBot.getOptions().get("anonymousEnabled");
@@ -161,44 +159,6 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
             boolean anonymousEnabled = (boolean) o;
             if (!anonymousEnabled) {
                 return ChatManager.getInstance().sseEmitterForContent(JSON.toJSONString(Maps.of("content","此bot不支持匿名访问")));
-            }
-
-
-            List<AiBotConversationMessage> result = (List<AiBotConversationMessage>)cache.get(tempUserId + ":" + botId);
-            AiBotMessage aiBotMessage = new AiBotMessage();
-            aiBotMessage.setBotId(botId);
-            aiBotMessage.setRole("user");
-            aiBotMessage.setContent(prompt);
-            aiBotMessage.setCreated(new Date());
-            List<AiBotMessage> messages = new ArrayList<>();
-            messages.add(aiBotMessage);
-            // 设置会话标题记录, 每个会话记录对应着相应的bot消息记录
-            List<AiBotConversationMessage> consversations = new ArrayList<>();
-            AiBotConversationMessage aiBotConversationMessage = new AiBotConversationMessage();
-            aiBotConversationMessage.setSessionId(sessionId);
-            aiBotConversationMessage.setTitle(prompt);
-            aiBotConversationMessage.setCreated(new Date());
-            aiBotConversationMessage.setAiBotMessageList(messages);
-            consversations.add(aiBotConversationMessage);
-            if (result == null) {
-                cache.put(tempUserId + ":" + botId, consversations);
-            } else {
-                AtomicInteger flag = new AtomicInteger();
-                result.forEach(consversation -> {
-                    if(consversation.getSessionId().equals(sessionId)){
-                        flag.set(1);
-                        List<AiBotMessage> aiBotMessageList = consversation.getAiBotMessageList();
-                        aiBotMessageList.add(aiBotMessage);
-                    }
-                });
-                // 意味着这是新的会话
-                if (flag.get() == 0){
-                    result.addAll(consversations);
-                    cache.put(tempUserId + ":" + botId, result);
-                } else {
-                    cache.put(tempUserId + ":" + botId, result);
-                }
-
             }
         }
 
@@ -230,7 +190,7 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
             historiesPrompt.setMemory(memory);
 
         } else {
-            AiBotMessageIframeMemory memory = new AiBotMessageIframeMemory(botId, tempUserId, sessionId, cache);
+            AiBotMessageIframeMemory memory = new AiBotMessageIframeMemory(botId, tempUserId, sessionId, cache,aiBotConversationMessageService,prompt);
             historiesPrompt.setMemory(memory);
 
         }

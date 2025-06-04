@@ -80,4 +80,5 @@ public class AiBotConversationMessageBase implements Serializable {
     public void setAccountId(BigInteger accountId) {
         this.accountId = accountId;
     }
+
 }

@@ -20,7 +20,7 @@ public class GlobalErrorResolver implements HandlerExceptionResolver {
 
     @Override
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-
+        ex.printStackTrace();
         Result error;
         if (ex instanceof MissingServletRequestParameterException) {
             error = Result.fail(1, ((MissingServletRequestParameterException) ex).getParameterName() + " 不能为空.");

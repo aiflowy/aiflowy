@@ -1,74 +1,142 @@
 package tech.aiflowy.ai.utils;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
+import com.agentsflex.core.llm.functions.Function;
 import com.agentsflex.core.memory.ChatMemory;
-import com.agentsflex.core.message.AiMessage;
-import com.agentsflex.core.message.FunctionCall;
-import com.agentsflex.core.message.Message;
+import com.agentsflex.core.message.*;
+import com.agentsflex.core.prompt.ToolPrompt;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alicp.jetcache.Cache;
 import tech.aiflowy.ai.entity.AiBotConversationMessage;
 import tech.aiflowy.ai.entity.AiBotMessage;
+import tech.aiflowy.ai.service.AiBotConversationMessageService;
+import tech.aiflowy.common.satoken.util.SaTokenUtil;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AiBotMessageIframeMemory implements ChatMemory {
     private final BigInteger botId;
-    private final  String tempUserId;
-    private final  String sessionId;
+    private final String tempUserId;
+    private final String sessionId;
+    private final String sessionTitle;
+
+    private final AiBotConversationMessageService aiBotConversationMessageService;
 
     private Cache<String, Object> cache;
 
-    public AiBotMessageIframeMemory(BigInteger botId, String tempUserId, String sessionId, Cache<String, Object> cache) {
+    public AiBotMessageIframeMemory(
+            BigInteger botId,
+            String tempUserId,
+            String sessionId,
+            Cache<String, Object> cache,
+            AiBotConversationMessageService aiBotConversationMessageService,
+            String sessionTitle
+    ) {
         this.botId = botId;
         this.tempUserId = tempUserId;
         this.sessionId = sessionId;
         this.cache = cache;
+        this.aiBotConversationMessageService = aiBotConversationMessageService;
+        this.sessionTitle = sessionTitle;
     }
 
     @Override
     public List<Message> getMessages() {
-        List<AiBotConversationMessage> result = (List<AiBotConversationMessage>)cache.get(tempUserId + ":" + botId);
-        List<AiBotMessage> aiBotMessages = null;
-        for (int i = 0; i < result.size(); i++) {
-            if (result.get(i).getSessionId().equals(sessionId)) {
-                aiBotMessages = result.get(i).getAiBotMessageList();
+        List<AiBotConversationMessage> result = (List<AiBotConversationMessage>) cache.get(tempUserId + ":" + botId);
+        if (result == null || result.isEmpty()) {
+            return null;
+        }
+
+        AiBotConversationMessage aiBotConversationMessage = result.stream().filter(messages -> messages.getSessionId().equals(sessionId)).findFirst().orElse(null);
+        if (aiBotConversationMessage == null) {
+            return null;
+        }
+
+        List<AiBotMessage> aiBotMessageList = aiBotConversationMessage.getAiBotMessageList();
+
+        if (aiBotMessageList == null || aiBotMessageList.isEmpty()) {
+            return null;
+        }
+
+        List<Message> messages = new ArrayList<>();
+        for (AiBotMessage aiBotMessage : aiBotMessageList) {
+            Message message1 = aiBotMessage.toMessage();
+            if (message1 != null) {
+                messages.add(message1);
             }
         }
-        List<Message> messages = new ArrayList<>(aiBotMessages.size());
-        for (AiBotMessage aiBotMessage : aiBotMessages) {
-            Message message = aiBotMessage.toMessage();
-            if (message != null) messages.add(message);
-        }
+
         return messages;
     }
 
     @Override
     public void addMessage(Message message) {
-        List<AiBotConversationMessage> result = (List<AiBotConversationMessage>)cache.get(tempUserId + ":" + botId);
+
+        AiBotMessage aiMessage = new AiBotMessage();
+        aiMessage.setCreated(new Date());
+        aiMessage.setBotId(botId);
+        aiMessage.setSessionId(sessionId);
+        aiMessage.setIsExternalMsg(1);
+
         if (message instanceof AiMessage) {
             AiMessage m = (AiMessage) message;
+            aiMessage.setContent(m.getFullContent());
+            aiMessage.setRole("assistant");
+            aiMessage.setTotalTokens(m.getTotalTokens());
+            aiMessage.setPromptTokens(m.getPromptTokens());
+            aiMessage.setCompletionTokens(m.getCompletionTokens());
             List<FunctionCall> calls = m.getCalls();
             if (CollectionUtil.isNotEmpty(calls)) {
                 return;
             }
-            for (int i = 0; i < result.size(); i++) {
-                if (result.get(i).getSessionId().equals(sessionId)) {
-                    List<AiBotMessage> aiBotMessageList = result.get(i).getAiBotMessageList();
-                    AiBotMessage aiBotMessage = new AiBotMessage();
-                    aiBotMessage.setRole("assistant");
-                    aiBotMessage.setCreated(new Date());
-                    aiBotMessage.setContent(m.getFullContent());
-                    aiBotMessage.setTotalTokens(m.getTotalTokens());
-                    aiBotMessage.setPromptTokens(m.getPromptTokens());
-                    aiBotMessage.setCompletionTokens(m.getCompletionTokens());
-                    aiBotMessageList.add(aiBotMessage);
-                    result.get(i).setAiBotMessageList(aiBotMessageList);
-                    cache.put(tempUserId + ":" + botId, result);
-                }
+        } else if (message instanceof HumanMessage) {
+            HumanMessage hm = (HumanMessage) message;
+            aiMessage.setContent(hm.getContent());
+            List<Function> functions = hm.getFunctions();
+            aiMessage.setFunctions(JSON.toJSONString(functions, SerializerFeature.WriteClassName));
+            aiMessage.setRole("user");
+        } else if (message instanceof SystemMessage) {
+            aiMessage.setRole("system");
+            aiMessage.setContent(((SystemMessage) message).getContent());
+        }
+        if (StrUtil.isNotEmpty(aiMessage.getContent())) {
+//            AiBotConversationMessage aiBotConversation = aiBotConversationMessageService.getById(aiMessage.getSessionId());
+//            if (aiBotConversation == null) {
+//                AiBotConversationMessage conversation = new AiBotConversationMessage();
+//                conversation.setSessionId(aiMessage.getSessionId());
+//                conversation.setTitle(aiMessage.getContent());
+//                conversation.setBotId(aiMessage.getBotId());
+//                conversation.setCreated(new Date());
+//                aiBotConversationMessageService.save(conversation);
+//            }
+
+            List<AiBotConversationMessage> aiBotConversationMessages = (List<AiBotConversationMessage>) cache.get(tempUserId + ":" + botId);
+            if (aiBotConversationMessages == null || aiBotConversationMessages.isEmpty()) {
+                aiBotConversationMessages = new ArrayList<>();
             }
+            AiBotConversationMessage aiBotConversationMessage = aiBotConversationMessages.stream().filter(conversation -> conversation.getSessionId().equals(sessionId)).findFirst().orElse(null);
+            if (aiBotConversationMessage == null) {
+                aiBotConversationMessage = new AiBotConversationMessage();
+                aiBotConversationMessage.setSessionId(sessionId);
+                aiBotConversationMessage.setTitle(sessionTitle);
+                aiBotConversationMessage.setCreated(new Date());
+                aiBotConversationMessages.add(aiBotConversationMessage);
+            }
+
+            List<AiBotMessage> aiBotMessageList = aiBotConversationMessage.getAiBotMessageList();
+            if (aiBotMessageList == null || aiBotMessageList.isEmpty()) {
+                aiBotMessageList = new ArrayList<>();
+            }
+            aiBotMessageList.add(aiMessage);
+            aiBotConversationMessage.setAiBotMessageList(aiBotMessageList);
+
+            cache.put(tempUserId + ":" + botId, aiBotConversationMessages);
         }
     }
 

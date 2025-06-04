@@ -70,7 +70,9 @@ public class AIBotConversationExternalMessageController extends BaseCurdControll
         }
 
         List<AiBotConversationMessage> messages = (List<AiBotConversationMessage>) cache.get(tempUserId + ":" + botId);
-
+        if (messages == null || messages.isEmpty()) {
+            return Result.success();
+        }
         List<AiBotConversationMessage> collect = messages.stream().filter(message -> !message.getSessionId().equals(sessionId)).collect(Collectors.toList());
 
         cache.put(tempUserId + ":" + botId, collect);
@@ -118,6 +120,9 @@ public class AIBotConversationExternalMessageController extends BaseCurdControll
         }
 
         List<AiBotConversationMessage> messages = (List<AiBotConversationMessage>) cache.get(tempUserId + ":" + botId);
+        if (messages == null || messages.isEmpty()) {
+            return Result.success();
+        }
         messages.forEach(message -> {
             if (message.getSessionId().equals(sessionId)) {
                 message.setAiBotMessageList(new ArrayList<>());

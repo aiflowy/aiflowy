@@ -26,4 +26,5 @@ public class AiBotConversationMessage extends AiBotConversationMessageBase {
     public void setAiBotMessageList(List<AiBotMessage> aiBotMessageList) {
         this.aiBotMessageList = aiBotMessageList;
     }
+
 }
