@@ -42,7 +42,9 @@ const columnsColumns: ColumnsConfig<any> = [
             type: "TextArea",
             attrs: {
                 rows: 3
-            }
+            },
+            rules: [{required: true, message: '请输入知识库描述'}]
+
         }
     },
     {
@@ -68,7 +70,9 @@ const columnsColumns: ColumnsConfig<any> = [
                     {value: 'aliyun', label: '阿里云'},
                     {value: 'qcloud', label: '腾讯云'},
                 ]
-            }
+            },
+            rules: [{required: true, message: '请选择向量数据库类型'}]
+
         }
     },
 
@@ -93,7 +97,8 @@ const columnsColumns: ColumnsConfig<any> = [
             extra: (<a target="_blank" href="https://aiflowy.tech/zh/development/ai/knowledge.html#redis向量数据库" style={{ fontSize: 12}}>更多配置参考地址</a>),
             attrs: {
                 rows: 5
-            }
+            },
+            rules: [{required: true, message: '请输入向量数据库配置'}]
         }
     },
 
@@ -105,13 +110,16 @@ const columnsColumns: ColumnsConfig<any> = [
         form: {
             type: 'input',
             rules: ([
+                    {required: true, message: '请输入向量数据库配置'}
+                ,
                 {
                     pattern: /^[a-zA-Z0-9_]{3,20}$/,  // 正则表达式
                     message: '向量数据库集合只能包含字母、数字和下划线,且长度在3-20个字符之间',  // 校验失败提示
                     validateTrigger: ['blur']
                 }
-            ])
-        }
+            ]),
+        },
+
     },
 
     {
@@ -129,7 +137,8 @@ const columnsColumns: ColumnsConfig<any> = [
                     label: 'title',
                     value: 'id'
                 }
-            }
+            },
+            rules: [{required: true, message: '请选择向量模型'}]
         }
     }
 ];

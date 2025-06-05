@@ -18,7 +18,6 @@ const columns: ColumnsConfig<any> = [
         title: 'Icon',
         dataIndex: 'icon',
         key: 'icon',
-        placeholder: "请输入名称",
         form: {
             type: "image",
         },
@@ -30,6 +29,10 @@ const columns: ColumnsConfig<any> = [
         key: 'title',
         placeholder: "请输入名称",
         supportSearch: true,
+        form: {
+            type: "input",
+            rules: [{required: true, message: '请输入名称'}],
+        }
     },
     {
         title: '品牌',
@@ -45,7 +48,8 @@ const columns: ColumnsConfig<any> = [
                     label: "title",
                     value: "key"
                 }
-            }
+            },
+            rules: [{required: true, message: '请选择品牌'}]
         }
     },
     {
@@ -59,6 +63,10 @@ const columns: ColumnsConfig<any> = [
         dataIndex: 'llmModel',
         key: 'llmModel',
         hidden: true,
+        form: {
+            type: "input",
+            rules: [{required: true, message: '请输入模型名称'}],
+        }
     },
     {
         title: 'API Key',
