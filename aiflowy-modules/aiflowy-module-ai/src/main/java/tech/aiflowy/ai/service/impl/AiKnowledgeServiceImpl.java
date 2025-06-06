@@ -76,7 +76,7 @@ public class AiKnowledgeServiceImpl extends ServiceImpl<AiKnowledgeMapper, AiKno
             Object resultId = result.getId();
             Double similarityScore = result.getScore();
             // 计算相似度并保留 4 位小数
-            BigDecimal similarity = BigDecimal.valueOf(1 - similarityScore)
+            BigDecimal similarity = BigDecimal.valueOf(similarityScore)
                     .setScale(4, RoundingMode.HALF_UP); // 四舍五入
             AiDocumentChunk documentChunk = chunkService.getMapper().selectOneWithRelationsByMap(
                     Maps.of("id", resultId));

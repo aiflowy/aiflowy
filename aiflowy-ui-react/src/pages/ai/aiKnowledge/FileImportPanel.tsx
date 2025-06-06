@@ -24,10 +24,22 @@ interface AiDocumentType {
     rowsPerChunk: string,
     splitterName: string
 }
+interface AiDocumentData {
+    chunkSize: number, // 分段大小
+    content: string, // 分段重叠大小
+    created: string,
+    documentPath: string,
+    documentType: string
+    modified: string
+    modifiedBy: string
+    overlapSize: string
+    title: string
+}
 // 文件导入页面组件
 const FileImportPanel: React.FC<FileImportPanelProps> = ({ data, maxCount = 1, action }) => {
     const [disabledConfirm, setDisabledConfirm] = useState<boolean>(false);
     const [dataPreView, setDataPreView] = useState<PreviewItem[]>([]);
+    const [aiDocumentData, setAiDocumentData] = useState<AiDocumentData>();
     const [confirmImport, setConfirmImport] = useState<boolean>(false);
     const [selectedSplitter, setSelectedSplitter] = useState<string>('SimpleDocumentSplitter');
     const [regex, setRegex] = useState<string>('');
@@ -58,8 +70,6 @@ const FileImportPanel: React.FC<FileImportPanelProps> = ({ data, maxCount = 1, a
         content: string; // 内容
     }
 
-    // 定义用户是预览还是保存上传的文件 true 用户保存当前分割的文档 false 用户当前的操作是预览文件分割的效果
-    // const {userWillSave, setUserWillSave} = useState<boolean>(true);
     const headers = {
         Authorization: token || "",
         [tokenKey]: token || ""
@@ -112,7 +122,6 @@ const FileImportPanel: React.FC<FileImportPanelProps> = ({ data, maxCount = 1, a
         }
 
         return isAllowedType && isLt20M;
-        return true;
     };
 
     const beforeUploadExcel = (file: File) => {
@@ -158,8 +167,9 @@ const FileImportPanel: React.FC<FileImportPanelProps> = ({ data, maxCount = 1, a
                 setPreviewListLoading({
                     spinning: false
                 })
-                //设置返回的分割别表
-                setDataPreView(newFileList[0].response?.data?.data);
+                //设置返回的分割列表
+                setDataPreView(newFileList[0].response?.data?.previewData);
+                setAiDocumentData(newFileList[0].response?.data?.aiDocumentData);
             }
 
             if (newFileList[0]?.response?.errorCode >= 1){
@@ -170,35 +180,19 @@ const FileImportPanel: React.FC<FileImportPanelProps> = ({ data, maxCount = 1, a
         setConfirmImport(true)
     };
     // 保存文件
-    const saveDocument = (saveType: string) => {
+    const saveDocument = () => {
         setPreviewListLoading({ spinning: true,tip: "正在保存文件..."})
         setDisabledConfirm(true)
         // 构造 FormData 对象
         const formData = new FormData();
-        const file = fileList[0].originFileObj; // 获取用户选择的文件
-        formData.append("file", file); // 添加文件
         formData.append("knowledgeId", uploadProps.knowledgeId as string); // 添加 knowledgeId
-        formData.append("splitterName", uploadProps.splitterName as string);
-
-
-        if (saveType === 'table'){
-            formData.append("rowsPerChunk", uploadProps.rowsPerChunk as string);
-        }
-
-        if (saveType === 'document'){
-            formData.append("regex", uploadProps.regex as string);
-            if (uploadProps.chunkSize !== undefined) {
-                formData.append("chunkSize", uploadProps.chunkSize);
-            }
-            if (uploadProps.overlapSize !== undefined) {
-                formData.append("overlapSize", uploadProps.overlapSize);
-            }
-        }
+        formData.append("aiDocumentData", JSON.stringify(aiDocumentData));
+        formData.append("previewData", JSON.stringify(dataPreView));
         uploadProps.userWillSave = 'true';
         formData.append("userWillSave", uploadProps.userWillSave);
         // 发起 POST 请求
         // 发起 POST 请求
-        axios.post("/api/v1/aiDocument/upload", formData, {
+        axios.post("/api/v1/aiDocument/saveText", formData, {
             headers: {
                 ...headers,
                 "Content-Type": "multipart/form-data",
@@ -435,7 +429,7 @@ const FileImportPanel: React.FC<FileImportPanelProps> = ({ data, maxCount = 1, a
                         <Button type="dashed"
                                 disabled={disabledConfirm}
                                 onClick={() => {
-                                    saveDocument('document')
+                                    saveDocument()
                                 }}>确认导入</Button>
                     </div>) : ''
                     }
@@ -586,7 +580,7 @@ const FileImportPanel: React.FC<FileImportPanelProps> = ({ data, maxCount = 1, a
                         <Button type="dashed"
                                 disabled={disabledConfirm}
                                 onClick={()=>{
-                                    saveDocument('table')
+                                    saveDocument()
                                 }}>确认导入</Button>
                     </div>) : ''
                     }

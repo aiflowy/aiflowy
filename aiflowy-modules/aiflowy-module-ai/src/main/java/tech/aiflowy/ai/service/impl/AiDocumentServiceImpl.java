@@ -1,15 +1,31 @@
 package tech.aiflowy.ai.service.impl;
 
+import cn.dev33.satoken.stp.StpUtil;
+import com.agentsflex.core.document.Document;
+import com.agentsflex.core.document.DocumentParser;
+import com.agentsflex.core.document.DocumentSplitter;
+import com.agentsflex.core.document.splitter.RegexDocumentSplitter;
+import com.agentsflex.core.document.splitter.SimpleDocumentSplitter;
+import com.agentsflex.core.document.splitter.SimpleTokenizeSplitter;
 import com.agentsflex.core.llm.embedding.EmbeddingOptions;
+import com.alibaba.fastjson.JSON;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import tech.aiflowy.ai.controller.AiDocumentController;
 import tech.aiflowy.ai.entity.AiDocument;
+import tech.aiflowy.ai.entity.AiDocumentChunk;
 import tech.aiflowy.ai.entity.AiKnowledge;
 import tech.aiflowy.ai.entity.AiLlm;
 import tech.aiflowy.ai.mapper.AiDocumentChunkMapper;
 import tech.aiflowy.ai.mapper.AiDocumentMapper;
+import tech.aiflowy.ai.service.AiDocumentChunkService;
 import tech.aiflowy.ai.service.AiDocumentService;
 import tech.aiflowy.ai.service.AiKnowledgeService;
 import tech.aiflowy.ai.service.AiLlmService;
+import tech.aiflowy.common.ai.DocumentParserFactory;
+import tech.aiflowy.common.ai.ExcelDocumentSplitter;
 import tech.aiflowy.common.ai.MarkdownParser;
 import com.agentsflex.core.llm.Llm;
 import com.agentsflex.core.store.DocumentStore;
@@ -24,9 +40,10 @@ import org.springframework.core.io.UrlResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import tech.aiflowy.common.filestorage.FileStorageManager;
+import tech.aiflowy.common.domain.Result;
 import tech.aiflowy.common.filestorage.FileStorageService;
 import tech.aiflowy.common.util.StringUtil;
+import tech.aiflowy.core.utils.JudgeFileTypeUtil;
 
 import javax.annotation.Resource;
 import java.io.File;
@@ -35,8 +52,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.nio.file.*;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *  服务层实现。
@@ -65,6 +82,10 @@ public class AiDocumentServiceImpl extends ServiceImpl<AiDocumentMapper, AiDocum
 
     @Resource(name = "default")
     FileStorageService storageService;
+
+    @Resource
+    private  AiDocumentChunkService documentChunkService;
+
 
     @Override
     public Page<AiDocument> getDocumentList(String knowledgeId, int pageSize, int pageNum, String fileName) {
@@ -240,6 +261,141 @@ public class AiDocumentServiceImpl extends ServiceImpl<AiDocumentMapper, AiDocum
                 // 其他文件类型：提示用户下载
                 return ResponseEntity.status(400).body("不支持预览的文件类型，请下载查看！");
         }
+    }
+
+    @Override
+    public Result textSplit(BigInteger knowledgeId, MultipartFile file, String splitterName, Integer chunkSize, Integer overlapSize, String regex, Integer rowsPerChunk) {
+        InputStream inputStream = null;
+        try {
+            inputStream = file.getInputStream();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        DocumentParser documentParser = DocumentParserFactory.getDocumentParser(file.getOriginalFilename());
+        AiDocument aiDocument = new AiDocument();
+        List<AiDocumentChunk> previewList = new ArrayList<>();
+        DocumentSplitter documentSplitter = getDocumentSplitter(splitterName, chunkSize, overlapSize, regex, rowsPerChunk);
+        com.agentsflex.core.document.Document document = null;
+        if (documentParser != null) {
+            document = documentParser.parse(inputStream);
+        }
+        List<com.agentsflex.core.document.Document> documents = documentSplitter.split(document);
+        int sort = 1;
+        for (Document value : documents) {
+            AiDocumentChunk chunk = new AiDocumentChunk();
+            chunk.setContent(value.getContent());
+            chunk.setSorting(sort);
+            sort++;
+            previewList.add(chunk);
+        }
+        String fileTypeByExtension = JudgeFileTypeUtil.getFileTypeByExtension(file.getOriginalFilename());
+        String filePath = storageService.save(file);
+        aiDocument.setDocumentType(fileTypeByExtension);
+        aiDocument.setKnowledgeId(knowledgeId);
+        aiDocument.setDocumentPath(filePath);
+        aiDocument.setCreated(new Date());
+        aiDocument.setModifiedBy(BigInteger.valueOf(StpUtil.getLoginIdAsLong()));
+        aiDocument.setModified(new Date());
+        aiDocument.setContent(document.getContent());
+        aiDocument.setChunkSize(chunkSize);
+        aiDocument.setOverlapSize(overlapSize);
+        aiDocument.setTitle(StringUtil.removeFileExtension(file.getOriginalFilename()));
+        Map<String, Object> res = new HashMap<>();
+        res.put("previewData", previewList);
+        res.put("aiDocumentData", aiDocument);
+        // 返回分割效果给用户
+        return Result.success(res);
+    }
+
+    @Override
+    @Transactional
+    public Result saveTextResult(BigInteger knowledgeId, String previewListStr, String aiDocumentStr) {
+        AiDocument aiDocument = JSON.parseObject(aiDocumentStr, AiDocument.class);
+        List<AiDocumentChunk> aiDocumentChunks = JSON.parseArray(previewListStr, AiDocumentChunk.class);
+        this.getMapper().insert(aiDocument);
+        AtomicInteger sort = new AtomicInteger(1);
+        aiDocumentChunks.forEach(item ->{
+            item.setKnowledgeId(aiDocument.getKnowledgeId());
+            item.setSorting(sort.get());
+            item.setDocumentId(aiDocument.getId());
+            sort.getAndIncrement();
+            documentChunkService.save(item);
+        });
+        return storeDocument(aiDocument, aiDocumentChunks);
+    }
+    protected Result storeDocument(AiDocument entity, List<AiDocumentChunk> aiDocumentChunks) {
+        AiKnowledge knowledge = knowledgeService.getById(entity.getKnowledgeId());
+        if (knowledge == null) {
+            return Result.fail(1, "知识库不存在");
+        }
+        DocumentStore documentStore = knowledge.toDocumentStore();
+        if (documentStore == null){
+            return Result.fail(2, "向量数据库类型未设置");
+        }
+        // 设置向量模型
+        AiLlm aiLlm = aiLlmService.getById(knowledge.getVectorEmbedLlmId());
+        if (aiLlm == null) {
+            return Result.fail(3, "该知识库未配置大模型");
+
+        }
+        // 设置向量模型
+        Llm embeddingModel = aiLlm.toLlm();
+        documentStore.setEmbeddingModel(embeddingModel);
+
+        StoreOptions options = StoreOptions.ofCollectionName(knowledge.getVectorStoreCollection());
+        EmbeddingOptions embeddingOptions = new EmbeddingOptions();
+        embeddingOptions.setModel(aiLlm.getLlmModel());
+        options.setEmbeddingOptions(embeddingOptions);
+        List<Document> documents = new ArrayList<>();
+        aiDocumentChunks.forEach(item ->{
+                    Document document = new Document();
+                    document.setId(item.getId());
+                    document.setContent(item.getContent());
+                    documents.add(document);
+                }
+        );
+        StoreResult result = documentStore.store(documents, options);
+        if (!result.isSuccess()) {
+            LoggerFactory.getLogger(AiDocumentController.class).error("DocumentStore.store failed: " + result);
+        }
+        AiKnowledge aiKnowledge = new AiKnowledge();
+        aiKnowledge.setId(entity.getKnowledgeId());
+        // CanUpdateEmbedLlm false: 不能修改知识库的大模型 true: 可以修改
+        AiKnowledge knowledge1 = knowledgeService.getById(entity.getKnowledgeId());
+        Map<String, Object> knowledgeoptions =  new HashMap<>();
+        if (knowledge1.getOptions() == null){
+            knowledgeoptions.put("canUpdateEmbedding", false);
+        } else {
+            knowledgeoptions = knowledge.getOptions();
+            knowledgeoptions.put("canUpdateEmbedding", false);
+        }
+        aiKnowledge.setOptions(knowledgeoptions);
+        knowledgeService.updateById(aiKnowledge);
+        return Result.success();
+    }
+
+    public DocumentSplitter getDocumentSplitter (String splitterName, int chunkSize, int overlapSize, String regex, int excelRows){
+
+        if (StringUtil.noText(splitterName)) {
+            return null;
+        }
+        switch (splitterName) {
+            case "SimpleDocumentSplitter":
+                return new SimpleDocumentSplitter(chunkSize, overlapSize);
+            case "RegexDocumentSplitter":
+                return new RegexDocumentSplitter(regex);
+            case "SimpleTokenizeSplitter":
+                if (overlapSize == 0){
+                    return new SimpleTokenizeSplitter(chunkSize);
+                } else {
+                    return new SimpleTokenizeSplitter(chunkSize, overlapSize);
+                }
+            case "ExcelDocumentSplitter":
+                return new ExcelDocumentSplitter(excelRows);
+            default:
+                return null;
+        }
+
     }
 
     public static boolean deleteFile(String filePath){

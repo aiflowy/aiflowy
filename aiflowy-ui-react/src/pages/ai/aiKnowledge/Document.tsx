@@ -432,69 +432,6 @@ const Document: React.FC = () => {
 
     };
 
-    // const fetchFilePreview = async (documentId: string) => {
-    //     setLoadingPreview(true);
-    //     setError(null);
-    //     try {
-    //         const response = await doPostDocPreview({data: {documentId: documentId}});
-    //         const contentType = response.data.data.headers['Content-Type'];
-    //         const data = response.data.data.body;
-    //
-    //         if (contentType.includes('text/html')) {
-    //             // 如果是HTML内容（可能是DOCX转换后的HTML）
-    //             setFileContent(data);
-    //             setIsDocPreviewContent(true)
-    //
-    //         } else if (contentType.includes('application/pdf')) {
-    //             window.open(data)
-    //         } else if (contentType.includes('application/vnd.openxmlformats-officedocument.wordprocessingml.document')) {
-    //             // 直接处理DOCX文件 - 使用Mammoth.js转换为HTML
-    //             setFileContent(await renderDocxAsHtml(data));
-    //             setIsDocPreviewContent(true);
-    //
-    //         } else if (contentType.includes('text/plain')) {
-    //             // 纯文本文件
-    //             setFileContent(data);
-    //             setIsDocPreviewContent(true);
-    //
-    //         }else if (contentType.includes('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) {
-    //             // 纯文本文件
-    //             setFileContent(data);
-    //             setIsDocPreviewContent(true);
-    //         }
-    //         else {
-    //             setError('不支持的文件类型');
-    //             setIsDocPreviewContent(true);
-    //
-    //         }
-    //     } catch (err: any) {
-    //         setError(err.response?.data || '无法加载文件内容');
-    //     } finally {
-    //         setLoadingPreview(false);
-    //     }
-    // };
-// 添加DOCX渲染函数
-//     const renderDocxAsHtml = async (base64Data: string) => {
-//         try {
-//             // 1. 首先添加Mammoth.js依赖（确保已安装）
-//             const mammoth = await import('mammoth');
-//
-//             // 2. 将Base64转换为ArrayBuffer
-//             const binaryString = atob(base64Data);
-//             const bytes = new Uint8Array(binaryString.length);
-//             for (let i = 0; i < binaryString.length; i++) {
-//                 bytes[i] = binaryString.charCodeAt(i);
-//             }
-//             const arrayBuffer = bytes.buffer;
-//
-//             // 3. 使用Mammoth转换DOCX为HTML
-//             const result = await mammoth?.convertToHtml({arrayBuffer});
-//             return result.value; // 返回HTML内容
-//         } catch (error: any) {
-//             console.error('DOCX转换错误:', error);
-//             return `<p>无法渲染DOCX文件: ${error.message}</p>`;
-//         }
-//     };
 
     const handleOk = () => {
         setIsDocChunkModalOpen(false);
@@ -524,10 +461,7 @@ const Document: React.FC = () => {
     const onEditChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setEditTxtBoxValue({...editTxtBoxValue, content: e.target.value})
     };
-    // const handleIsPreviewOk = () => {
-    //     setIsDocPreviewContent(false);
-    //     setFileContent(null)
-    // };
+
 
     // 根据选中的菜单项渲染不同的内容
     const renderContent = () => {
@@ -554,40 +488,7 @@ const Document: React.FC = () => {
                                     }}>
                                         重置
                                     </Button>
-                                    {/*<Modal title="文件预览" open={isDocPreviewContent} onOk={handleIsPreviewOk}*/}
-                                    {/*       onCancel={() => {*/}
-                                    {/*           setIsDocPreviewContent(false)*/}
-                                    {/*       }} width={1500}>*/}
-                                    {/*    <div>*/}
-                                    {/*        {loadingPreview && <p>加载中...</p>}*/}
-                                    {/*        {error && <p style={{color: 'red'}}>错误：{error}</p>}*/}
-                                    {/*        {fileContent && (*/}
-                                    {/*            <div>*/}
-                                    {/*                /!* 如果是 blob URL，则直接用 iframe 加载 *!/*/}
-                                    {/*                {fileContent.startsWith('blob:') ? (*/}
-                                    {/*                    <iframe src={fileContent} width="100%" height="600px"*/}
-                                    {/*                            title="PDF 预览"/>*/}
-                                    {/*                ) : (*/}
-                                    {/*                    // 其他情况（如 data URL 或纯文本）*/}
-                                    {/*                    <div>*/}
-                                    {/*                        {typeof fileContent === 'string' && fileContent.startsWith('data:image') ? (*/}
-                                    {/*                            <img src={fileContent} alt="预览"*/}
-                                    {/*                                 style={{maxWidth: '100%'}}/>*/}
-                                    {/*                        ) : typeof fileContent === 'string' && fileContent.startsWith('data:application/pdf') ? (*/}
-                                    {/*                            <iframe src={fileContent} width="100%" height="600px"*/}
-                                    {/*                                    title="PDF 预览"/>*/}
-                                    {/*                        ) : typeof fileContent === 'string' && !fileContent.startsWith('data:') ? (*/}
-                                    {/*                            // 渲染 HTML 内容*/}
-                                    {/*                            <div dangerouslySetInnerHTML={{__html: fileContent}}/>*/}
-                                    {/*                        ) : (*/}
-                                    {/*                            <pre>{fileContent}</pre>*/}
-                                    {/*                        )}*/}
-                                    {/*                    </div>*/}
-                                    {/*                )}*/}
-                                    {/*            </div>*/}
-                                    {/*        )}*/}
-                                    {/*    </div>*/}
-                                    {/*</Modal>*/}
+
                                     <Table columns={columns} dataSource={result?.data?.records} scroll={{x: 1000}}
                                            pagination={{
                                                current: pagination.current,
@@ -641,7 +542,7 @@ const Document: React.FC = () => {
                 return (
                     <div className="content">
                         <FileImportPanel data={{knowledgeId: params.id}} maxCount={1}
-                                         action="/api/v1/aiDocument/upload"/>
+                                         action="/api/v1/aiDocument/textSplit"/>
                     </div>
                 );
             case 'search-test':
