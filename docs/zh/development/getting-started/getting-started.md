@@ -53,6 +53,36 @@ spring:
  - username：数据库账号
  - password：数据库密码
 
+**修改文件存储信息（如需要）**
+- 本地存储
+```yaml
+spring:
+  web:
+    resources:
+      # 示例：windows【file: C:\aiflowy\file】 linux【file: /www/aiflowy/file】
+      static-locations: file:your_path
+aiflowy: 
+  storage:
+    local:
+      # 示例：windows【C:\aiflowy\file】 linux【file: /www/aiflowy/file】
+      root: your_path
+      # 后端接口地址
+      prefix: 'http://localhost:8080/static'
+```
+- s3存储
+```yml
+aiflowy:
+  storage:
+    type: s3
+    s3:
+      access-key: access
+      secret-key: secret
+      endpoint: "http://xxx.xxx"
+      region: "region"
+      bucket-name: "your_bucket_name"
+      access-policy: 2
+      prefix: public
+```
 ### 第四步：运行项目
 
 在开始运行 AIFlowy 之前，建议在终端（Terminal）下执行 Maven 编译命令：`mvn clean package`，对项目进行编译，如下图所示：

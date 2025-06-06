@@ -21,17 +21,35 @@ java -jar aiflowy-starter-x.x.x.jar --spring.profiles.active=prod
 
 ### 2、配置文件上传路径
 
+**本地储存**
 ```yml
 spring:
   web:
     resources:
-      static-locations: file:/your_path
+      # 示例：windows【file: C:\aiflowy\file】 linux【file: /www/aiflowy/file】
+      static-locations: file:your_path
 aiflowy: 
   storage:
     local:
-      root: /your_path
+      # 示例：windows【C:\aiflowy\file】 linux【file: /www/aiflowy/file】
+      root: your_path
+      # 后端接口地址
+      prefix: 'http://localhost:8080/static'
 ```
-
+**s3存储**
+```yml
+aiflowy:
+  storage:
+    type: s3
+    s3:
+      access-key: access
+      secret-key: secret
+      endpoint: "http://xxx.xxx"
+      region: "region"
+      bucket-name: "your_bucket_name"
+      access-policy: 2
+      prefix: public
+```
 ## 前端项目编译
 
 我们进入到项目的 `aiflowy-ui-react` 目录，修改 `.env.production` 文件下的 `VITE_APP_SERVER_ENDPOINT` 为你的后端项目的访问域名，如下图所示：
