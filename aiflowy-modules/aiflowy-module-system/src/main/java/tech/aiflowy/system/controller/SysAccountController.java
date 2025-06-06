@@ -77,6 +77,9 @@ public class SysAccountController extends BaseCurdController<SysAccountService, 
             if (record.getDeptId() != null && !record.getDeptId().equals(entity.getDeptId())) {
                 StpUtil.kickout(record.getId());
             }
+            // 不让修改用户名/密码，浏览器记住密码有可能会带上来
+            entity.setLoginName(null);
+            entity.setPassword(null);
             entity.setModified(new Date());
             entity.setModifiedBy(loginUser.getId());
         }
