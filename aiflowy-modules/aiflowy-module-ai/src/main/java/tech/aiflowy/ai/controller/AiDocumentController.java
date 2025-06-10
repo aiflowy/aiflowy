@@ -74,18 +74,6 @@ public class AiDocumentController extends BaseCurdController<AiDocumentService, 
         return Result.create(success);
     }
 
-    /**
-     *
-     * @param documentId 文档id
-     * @return
-     * @throws IOException
-     */
-    @PostMapping("docPreview")
-    public Result previewFile(@JsonBody(value = "documentId", required = true) String documentId) throws IOException {
-
-        return Result.success(aiDocumentService.previewFile(documentId));
-    }
-
 
     /**
      * 查询所有所有数据
