@@ -1,4 +1,5 @@
 import React from 'react';
+import '../style/document.css'; // 样式文件放这里
 
 interface MenuItem {
     id: string;
@@ -13,16 +14,18 @@ interface MenuProps {
 
 const DocumentMenu: React.FC<MenuProps> = ({ items, onSelect, selectedId }) => {
     return (
-        <div className="menu-container">
-            {items.map((item) => (
-                <div
-                    key={item.id}
-                    className={`menu-item ${selectedId === item.id ? 'active' : ''}`}
-                    onClick={() => onSelect(item.id)}
-                >
-                    {item.label}
-                </div>
-            ))}
+        <div className="document-menu">
+            <ul className="menu-list">
+                {items.map((item) => (
+                    <li
+                        key={item.id}
+                        className={`menu-item ${selectedId === item.id ? 'active' : ''}`}
+                        onClick={() => onSelect(item.id)}
+                    >
+                        {item.label}
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 };

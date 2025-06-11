@@ -1,9 +1,14 @@
-import React, {useEffect, useState} from "react";
-import {Button, Input, List, message, Radio, Select, Upload, UploadProps,} from "antd";
-import {InboxOutlined, MinusCircleTwoTone, PlusCircleTwoTone} from "@ant-design/icons";
+import React, { useState} from "react";
+import { Input,  message, Radio, Select, Upload, UploadProps,} from "antd";
+import {
+    InboxOutlined,
+    MinusCircleTwoTone,
+    PlusCircleTwoTone
+} from "@ant-design/icons";
 import "../style/FileImportPanel.less";
 import {isBrowser} from "../../../libs/ssr";
 import axios from "axios";
+import PreviewContainer from "./PreviewContainer.tsx";
 
 const authKey = `${import.meta.env.VITE_APP_AUTH_KEY || "authKey"}`;
 const tokenKey = `${import.meta.env.VITE_APP_TOKEN_KEY}`;
@@ -57,12 +62,6 @@ const FileImportPanel: React.FC<FileImportPanelProps> = ({ data, maxCount = 1, a
         spinning: false,
         tip: '正在加载数据，请稍候...'
     })
-
-    const [contentHeight, setContentHeight] = useState(500); // 默认高度
-
-    useEffect(() => {
-        setContentHeight(window.innerHeight - 300);
-    }, []);
 
 
     interface PreviewItem {
@@ -216,18 +215,18 @@ const FileImportPanel: React.FC<FileImportPanelProps> = ({ data, maxCount = 1, a
     const contentMapping: { [key: string]: JSX.Element } = {
         document: (
             <div style={{width: "100%", height: "100%", display: "flex", flexDirection: "row"}}>
-                <div className="file-content">
+                <div style={{width: "45%", height: "100%", display: "flex", flexDirection: "column"}}>
                     {/* 导入方式 */}
                     <Radio.Group defaultValue="local">
-                        <Radio value="local">导入本地文档</Radio>
+                        <Radio value="local">导入文本文档</Radio>
                     </Radio.Group>
 
                     {/* 上传文件 */}
                     <p className="section-description">
-                        支持 txt, pdf, docx, md, ppt, pptx 格式文件，单次最多上传 {maxCount} 个文件，单个大小不超过 20M。
+                        支持 TXT, PDF, DOCX, MD, PPT, PPTX 格式文件，单次最多上传 {maxCount} 个文件，单个大小不超过 20M。
                     </p>
 
-                    <div style={{display: "flex", flexDirection:"column", width:"500px", gap: "10px"}}>
+                    <div style={{display: "flex", flexDirection:"column", width:"100%", gap: "10px"}}>
                         {/* 分割器选择 */}
                         <div style={{
                             display: "flex",
@@ -372,75 +371,51 @@ const FileImportPanel: React.FC<FileImportPanelProps> = ({ data, maxCount = 1, a
                                 />
                             </div>
                         ) : null}
+                        <div style={{width: "500px"}}>
+                            {/* 上传区域 */}
+                            <Upload.Dragger
+                                name="file"
+                                multiple
+                                accept=".txt,.pdf,.md,.docx,.ppt,.pptx"
+                                beforeUpload={beforeUploadDocument}
+                                fileList={fileList}
+                                onChange={(info) => handleFileChange(info.fileList)}
+                                maxCount={1}
+                                data={uploadData}
+                                action={action}
+                                headers={headers}
+                                className="upload-area"
+                            >
+                                <p className="upload-icon">
+                                    <InboxOutlined />
+                                </p>
+                                <p className="upload-text" style={{ userSelect: "none" }}>点击或拖拽文件到此区域上传</p>
+                                <p className="upload-hint" style={{ userSelect: "none" }}>支持单次上传最多 {maxCount} 个文件。</p>
+                            </Upload.Dragger>
+                        </div>
 
-                        {/* 上传区域 */}
-                        <Upload.Dragger
-                            name="file"
-                            multiple
-                            accept=".txt,.pdf,.md,.docx,.ppt,.pptx"
-                            beforeUpload={beforeUploadDocument}
-                            fileList={fileList}
-                            onChange={(info) => handleFileChange(info.fileList)}
-                            maxCount={1}
-                            data={uploadData}
-                            action={action}
-                            headers={headers}
-                            className="upload-area"
-                        >
-                            <p className="upload-icon">
-                                <InboxOutlined />
-                            </p>
-                            <p className="upload-text" style={{ userSelect: "none" }}>点击或拖拽文件到此区域上传</p>
-                            <p className="upload-hint" style={{ userSelect: "none" }}>支持单次上传最多 {maxCount} 个文件。</p>
-                        </Upload.Dragger>
                     </div>
                 </div>
-                <div style={{display:"flex", flexDirection:"column", width:"60%", height:"100%"}}>
-                    <div style={{backgroundColor:"#f0f0f0", marginLeft:"20px",  height: `${contentHeight}px`, overflowY:"scroll", padding:"5px"}}>
-                        <List
-                            itemLayout="horizontal"
-                            dataSource={dataPreView}
-                            loading={previewListLoading}
-                            renderItem={(item) => (
-                                <List.Item>
-                                    <List.Item.Meta
-                                        title={<a href="https://ant.design">{`文本分段${item.sorting}:`}</a>}
-                                        description={item.content}
-                                    />
-                                </List.Item>
-                            )}
-                        />
-                    </div>
-                    {confirmImport?     (<div style={{
-                        display: "flex",
-                        justifyContent: "flex-end",
-                        gap: "20px",
-                        backgroundColor: "#f0f0f0", // 背景色与容器一致
-                        padding: "10px",   // 添加内边距
-                        borderTop: "1px solid #ccc", // 可选：添加分隔线
-                        textAlign: "center", // 文本居中
-                        marginLeft:"20px"
-                    }}>
-                        <Button type="dashed" onClick={() => {
+                <div style={{flex: 1}}>
+                    <PreviewContainer
+                        data={dataPreView}
+                        loading={previewListLoading.spinning}
+                        confirmImport={confirmImport}
+                        disabledConfirm={disabledConfirm}
+                        onCancel={() => {
                             setConfirmImport(false);
                             setDataPreView([]);
                             setFileList([]);
-                        }}>取消导入</Button>
-                        <Button type="dashed"
-                                disabled={disabledConfirm}
-                                onClick={() => {
-                                    saveDocument()
-                                }}>确认导入</Button>
-                    </div>) : ''
-                    }
-
+                        }}
+                        onConfirm={saveDocument}
+                    />
                 </div>
 
             </div>
         ),
         table: (
-            <div style={{width: "100%", display: "flex", flexDirection: "row"}}>
-                <div className="file-content">
+            <div style={{width: "100%", height: "100%", display: "flex", flexDirection: "row"}}>
+                <div style={{width: "45%", height: "100%", display: "flex", flexDirection: "column"}}>
                     {/* 导入方式 */}
                     <Radio.Group defaultValue="local">
                         <Radio value="local">导入Excel表格</Radio>
@@ -448,13 +423,12 @@ const FileImportPanel: React.FC<FileImportPanelProps> = ({ data, maxCount = 1, a
 
                     {/* 上传文件 */}
                     <p className="section-description">
-                        支持 xlsx 格式文件，单次最多上传 {maxCount} 个文件，单个大小不超过 20M。
+                        支持 XLSX 格式文件，单次最多上传 {maxCount} 个文件，单个大小不超过 20M。
                     </p>
                     <div style={{display: "flex",  flexDirection:"column", width:"500px", gap:"10px"}}>
                         <div style={{
                             display: "flex",
                             flexDirection: "row",
-                            width: "500px",
                             gap: "10px"
                         }}>
                             <p style={{
@@ -546,45 +520,19 @@ const FileImportPanel: React.FC<FileImportPanelProps> = ({ data, maxCount = 1, a
 
                     </div>
                 </div>
-                <div style={{display:"flex", flexDirection:"column", width:"60%"}}>
-                    <div style={{backgroundColor:"#f0f0f0", marginLeft:"20px", height: `${contentHeight}px`, overflowY:"scroll", padding:"5px"}}>
-                        <List
-                            itemLayout="horizontal"
-                            dataSource={dataPreView}
-                            loading={previewListLoading}
-                            renderItem={(item) => (
-                                <List.Item>
-                                    <List.Item.Meta
-                                        title={<a href="https://ant.design">{`文本分段${item.sorting}:`}</a>}
-                                        description={item.content}
-                                    />
-                                </List.Item>
-                            )}
-                        />
-                    </div>
-                    {confirmImport?     (<div style={{
-                        display: "flex",
-                        justifyContent: "flex-end",
-                        gap: "20px",
-                        backgroundColor: "#f0f0f0", // 背景色与容器一致
-                        padding: "10px",   // 添加内边距
-                        borderTop: "1px solid #ccc", // 可选：添加分隔线
-                        textAlign: "center", // 文本居中
-                        marginLeft:"20px"
-                    }}>
-                        <Button type="dashed" onClick={() => {
+                <div style={{flex:1}}>
+                    <PreviewContainer
+                        data={dataPreView}
+                        loading={previewListLoading.spinning}
+                        confirmImport={confirmImport}
+                        disabledConfirm={disabledConfirm}
+                        onCancel={() => {
                             setConfirmImport(false);
                             setDataPreView([]);
                             setFileList([]);
-                        }}>取消导入</Button>
-                        <Button type="dashed"
-                                disabled={disabledConfirm}
-                                onClick={()=>{
-                                    saveDocument()
-                                }}>确认导入</Button>
-                    </div>) : ''
-                    }
-
+                        }}
+                        onConfirm={saveDocument}
+                    />
                 </div>
 
             </div>
@@ -603,6 +551,7 @@ const FileImportPanel: React.FC<FileImportPanelProps> = ({ data, maxCount = 1, a
                             setSelectedSplitter("SimpleDocumentSplitter")
                             setAiDocument({...aiDocument, overlapSize: '100', chunkSize: '200'})
                             setFileList([])
+                            setConfirmImport(false)
                         }}
                     >
                         <span className="icon">📖</span>
@@ -617,11 +566,12 @@ const FileImportPanel: React.FC<FileImportPanelProps> = ({ data, maxCount = 1, a
                             setDataPreView([])
                             setAiDocument({...aiDocument, rowsPerChunk: '50'})
                             setFileList([])
+                            setConfirmImport(false)
                         }}
                     >
                         <span className="icon">📊</span>
                         <span className="label">表格</span>
-                        <span className="description">结构化表格导入，支持 xlsx 格式</span>
+                        <span className="description">结构化表格导入，支持 XLSX 格式</span>
                     </div>
                     <div
                         style={{visibility: 'hidden'}}

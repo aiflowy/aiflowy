@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import DocumentMenu from "./DocumentMenu";
 import '../style/document.css'
-import {Button, Form, Input, message, Popconfirm, Space, Spin, Table} from "antd";
+import {Button, Form, Input, message, Popconfirm, Space, Table} from "antd";
 import {useDetail, useGet, useGetManual, usePost} from "../../../hooks/useApis";
 import {useParams} from 'react-router-dom';
 import {convertDatetimeUtil} from "../../../libs/changeDatetimeUtil";
@@ -9,6 +9,7 @@ import Modal from "antd/es/modal/Modal";
 import FileImportPanel from "./FileImportPanel";
 import TextArea from "antd/es/input/TextArea";
 import {useLayout} from "../../../hooks/useLayout.tsx";
+import PreviewContainer from "./PreviewContainer.tsx";
 
 interface EditTxtBoxState {
     content: string; // 文本内容
@@ -59,22 +60,16 @@ const Document: React.FC = () => {
     // documentChunk查看弹框
     const [para] = useState();
     const [isDocChunkModalOpen, setIsDocChunkModalOpen] = useState(false);
-    // const [isDocPreviewContent, setIsDocPreviewContent] = useState(false);
     const {doPost, result: resultRemove} = usePost('/api/v1/aiDocument/removeDoc', para)
     const {doPost: doPostChunkRemove} = usePost('/api/v1/aiDocumentChunk/removeChunk', para)
-    // const {doPost: doPostDocPreview} = usePost('/api/v1/aiDocument/docPreview', para, {manual: true})
     const {doPost: doPostEditUpdate} = usePost('/api/v1/aiDocumentChunk/update', para, {manual: true})
     // documentChunk弹框绑定的值
     const [isDocChunkContent, setIsDocChunkContent] = useState('');
-    // const [fileContent, setFileContent] = useState<string | null>(null);
-    // const [loadingPreview, setLoadingPreview] = useState<boolean>(false);
-    // const [error, setError] = useState<string | null>(null);
     const [isConfirmDelete, setIsConfirmDelete] = useState(false);
     const [isTxtBoxEditModalOpen, setIsTxtBoxEditModalOpen] = useState(false);
     const [form] = Form.useForm();
     const [searchResult, setSearchResult] = useState<any[]>()
     const {doGet: doSearchGet, loading: searchLoading} = useGetManual("/api/v1/aiKnowledge/search");
-
     const onFinish = (values: any) => {
         doSearchGet({
             params: {
@@ -547,44 +542,28 @@ const Document: React.FC = () => {
                 );
             case 'search-test':
                 return (
-                    <div className="content" style={{width: '100%'}}>
-                        <div style={{minHeight: 500}}>
-                            <Form form={form} onFinish={onFinish} preserve={false}>
-                                <div style={{display: "flex", gap: 10}}>
-                                    <Form.Item
-                                        style={{flexGrow: 1}}
-                                        name="keyword"
-                                        rules={[{required: true, message: '请输入关键字!'}]}>
-                                        <TextArea style={{height: 50}} placeholder="请输入关键字"/>
-                                    </Form.Item>
-                                    <Button type="primary" htmlType="submit">
-                                        搜索
-                                    </Button>
-                                </div>
-                            </Form>
+                    <div className="content" style={{width: '100%', height: '100%'}}>
+                        <div style={{marginTop: 10, width: '100%',   display: 'flex', flexDirection: 'column'}}>
                             <div>
-                                {/*<div>搜索结果:</div>*/}
-
-                                {searchLoading ? <div style={{width: "100%", textAlign: "center"}}>
-                                        <Spin tip="Loading...">
-                                        </Spin>
-                                    </div> :
-                                    <div>
-                                        {searchResult?.map((item: any, index) => {
-                                            return <div key={item?.id || index} style={{
-                                                margin: "10px 0",
-                                                background: "#efefef",
-                                                padding: "5px 10px",
-                                                borderRadius: "7px"
-                                            }}>
-                                                <h3>相似度:{item.similarityScore}</h3>
-                                                <div dangerouslySetInnerHTML={{__html: item?.content}}></div>
-                                            </div>
-                                        })}
+                                <Form form={form} onFinish={onFinish} preserve={false}>
+                                    <div style={{display: "flex", gap: 10}}>
+                                        <Form.Item
+                                            style={{flexGrow: 1}}
+                                            name="keyword"
+                                            rules={[{required: true, message: '请输入关键字!'}]}>
+                                            <TextArea style={{height: 50}} placeholder="请输入关键字"/>
+                                        </Form.Item>
+                                        <Button type="primary" htmlType="submit">
+                                            搜索
+                                        </Button>
                                     </div>
-                                }
+                                </Form>
+                            </div>
 
-
+                            <div style={{height: 'calc(100vh - 260px)'}}>
+                                        <PreviewContainer data={searchResult} loading={searchLoading}
+                                                           isSearching={true}
+                                        />
                             </div>
                         </div>
                     </div>
