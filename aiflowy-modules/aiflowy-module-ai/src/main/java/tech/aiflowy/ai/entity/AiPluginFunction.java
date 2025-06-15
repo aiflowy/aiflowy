@@ -214,7 +214,7 @@ public class AiPluginFunction  implements Function {
             requestParam.setType(originalParam.getType());
             requestParam.setEnabled(originalParam.isEnabled());
             requestParam.setMethod(originalParam.getMethod());
-
+            requestParam.setChildren(originalParam.getChildren());
             // 优先级: argsMap值 < 参数默认值
             if (argsMap != null && argsMap.containsKey(paramName)) {
                 // 1. 优先检查是否有有效的默认值
