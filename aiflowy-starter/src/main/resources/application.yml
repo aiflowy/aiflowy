@@ -86,7 +86,7 @@ rag:
   searcher:
     # 搜索方式 默认lucene
     # type : elasticSearch / lucene
-    type: elasticSearch
+    type: lucene
     lucene:
       indexDirPath: ./luceneKnowledge
     elastic:

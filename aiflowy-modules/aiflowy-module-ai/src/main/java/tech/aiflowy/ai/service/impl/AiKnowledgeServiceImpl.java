@@ -117,31 +117,5 @@ public class AiKnowledgeServiceImpl extends ServiceImpl<AiKnowledgeMapper, AiKno
         return Result.success(filteredList);
     }
 
-    /**
-     * 根据 id 去重合并两个集合
-     * 默认后出现的会覆盖前面的（可改）
-     */
-    @SuppressWarnings("unchecked")
-    public static List<AiDocumentChunk> mergeAndDeduplicate(List<AiDocumentChunk>... lists) {
-        Map<String, AiDocumentChunk> map = new LinkedHashMap<>();
 
-        for (List<AiDocumentChunk> list : lists) {
-            for (AiDocumentChunk chunk : list) {
-                String id = String.valueOf(chunk.getId());
-
-                if (!map.containsKey(id)) {
-                    AiDocumentChunk newChunk = new AiDocumentChunk();
-                    newChunk.setId(chunk.getId());
-                    newChunk.setContent(chunk.getContent());
-                    newChunk.setVectorSimilarityScore(chunk.getVectorSimilarityScore());
-
-                    map.put(id, newChunk);
-                }
-
-                map.get(id).setElasticSimilarityScore(chunk.getElasticSimilarityScore());
-            }
-        }
-
-        return new ArrayList<>(map.values());
-    }
 }
