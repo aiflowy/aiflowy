@@ -42,7 +42,7 @@ aiflowy:
       access-policy: 2
       prefix: public
     local:
-      # 示例：windows【file: C:\aiflowy\file】 linux【file: /www/aiflowy/file】
+      # 示例：windows【C:\aiflowy\file】 linux【/www/aiflowy/file】
       root: 'C:\aiflowy\file'
       # 后端接口地址
       prefix: 'http://localhost:8080/static'
