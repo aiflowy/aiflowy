@@ -93,6 +93,15 @@ const SearchForm: React.FC<{
                     </Button>
                     <Button style={{margin: '0 5px'}} onClick={() => {
                         form.resetFields();
+                        const emptyValues: Record<string, any> = Object.keys(form.getFieldsValue()).reduce(
+                            (acc: Record<string, any>, key: string) => {
+                                acc[key] = undefined;
+                                return acc;
+                            },
+                            {}
+                        );
+                        form.setFieldsValue(emptyValues);
+                        onSearch(emptyValues);
                     }}>
                         重置
                     </Button>
