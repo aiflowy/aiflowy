@@ -78,7 +78,7 @@ public class AiKnowledgeServiceImpl extends ServiceImpl<AiKnowledgeMapper, AiKno
         );
 
         CompletableFuture<List<Document>> searcherFuture = CompletableFuture.supplyAsync(() -> {
-            if (!knowledge.getSearchEngineEnable() || searcherFactory.getSearcher() == null || searcherFactory.getSearcher().searchDocuments(keyword) == null) {
+            if (knowledge.getSearchEngineEnable() == null || !knowledge.getSearchEngineEnable() || searcherFactory.getSearcher() == null || searcherFactory.getSearcher().searchDocuments(keyword) == null) {
                 return Collections.emptyList(); // 如果未启用搜索引擎，返回空列表
             }
             return searcherFactory.getSearcher().searchDocuments(keyword);
