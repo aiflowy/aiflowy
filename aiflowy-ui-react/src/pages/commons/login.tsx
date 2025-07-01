@@ -141,6 +141,7 @@ const Login: React.FC = () => {
                         <Form.Item className={styles.agreement}>
                             <Form.Item name="agreement" valuePropName="checked" noStyle>
                                 <Checkbox style={{ color: "#757575 " }}>
+                                    我已阅读
                                     <a href="#">《用户服务协议》</a>
                                     以及
                                     <a href="#">《安全隐私协议》</a>

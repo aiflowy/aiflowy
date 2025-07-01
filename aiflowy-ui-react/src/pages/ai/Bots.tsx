@@ -1,8 +1,8 @@
 import React from 'react';
 import {
     PlayCircleOutlined,
-    SendOutlined, SettingOutlined,
-    SmileOutlined,
+    SettingOutlined,
+
 } from "@ant-design/icons";
 import CardPage from "../../components/CardPage";
 import {ColumnsConfig} from "../../components/AntdCrud";
@@ -59,7 +59,11 @@ const Bots: React.FC<{ paramsToUrl: boolean }> = () => {
                       avatarKey="icon"
                       defaultAvatarSrc={"/favicon.png"}
                       editLayout={{labelWidth: 80}}
-                      addCardTitle={"创建Bots"}
+                      optionsText={{
+                          addCardTitle: "创建Bots",
+                          noDataText: "你还没有Bots,快来创建你的Bots吧!",
+                          noDataAddButtonText: "创建Bots"
+                      }}
                       customActions={(item, existNodes) => {
                           return [
                               <SettingOutlined title="设置" onClick={() => {
