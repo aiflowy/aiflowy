@@ -246,7 +246,7 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
                                     ]),
                                 ]}>
                                 <Card.Meta
-                                    avatar={<Avatar src={item[avatarKey] || defaultAvatarSrc} style={{width: '52px', height: '52px'}}/>}
+                                    avatar={<Avatar src={item[avatarKey] || defaultAvatarSrc} style={{width: '48px', height: '48px'}}/>}
                                     title={item[titleKey]}
                                     description={
                                         <Tooltip title={item[descriptionKey] || "暂无描述"} placement="top" >

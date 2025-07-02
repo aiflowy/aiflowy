@@ -37,6 +37,7 @@ import {CheckboxGroupProps} from "antd/es/checkbox";
 import {useNavigate} from "react-router-dom";
 import './less/plugin.less'
 import CustomDeleteIcon from "../../../components/CustomIcon/CustomDeleteIcon.tsx";
+import "../../../components/CardPage/card_page.less"
 
 interface Category {
 	id: number;
@@ -479,8 +480,19 @@ const Plugin: React.FC = () => {
 
 					) : plugins.length > 0 && (
 						plugins.map((item: any) => (
-							<Col span={6} key={item.id}>
+							<Col span={6} key={item.id}
+								 xs={24}  // 在超小屏幕下占满一行
+								 sm={12}  // 在小屏幕下每行显示2个
+								 md={8}   // 在中等屏幕下每行显示3个
+								 lg={7}   // 在大屏幕下每行显示4个（保持原来的span={6}效果）
+							>
 								<Card
+									style={{
+										height: '100%',
+										display: 'flex',
+										flexDirection: 'column',
+										cursor: 'pointer',
+									}}
 									className={"card-hover"}
 									actions={[
 										<Space  onClick={() => {
@@ -573,10 +585,9 @@ const Plugin: React.FC = () => {
 											<EllipsisOutlined key="ellipsis" title="更多操作" />
 										</Dropdown>,
 									]}
-									style={{ padding: 8 }}
 								>
 									<Card.Meta
-										avatar={<Avatar src={item.icon || "/favicon.png"} />}
+										avatar={<Avatar src={item.icon || "/favicon.png"} style={{width: '48px', height: '48px'}} />}
 										title={item.name}
 										description={
 											<Tooltip title={item.description}>
