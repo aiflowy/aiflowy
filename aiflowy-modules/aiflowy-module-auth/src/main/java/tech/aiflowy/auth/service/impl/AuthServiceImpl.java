@@ -72,7 +72,10 @@ public class AuthServiceImpl implements AuthService, StpInterface {
     @Override
     public List<String> getPermissionList(Object loginId, String loginType) {
         List<SysMenu> menus = sysMenuService.getMenusByAccountId(new SysMenu(), BigInteger.valueOf(Long.parseLong(loginId.toString())));
-        return menus.stream().map(SysMenu::getPermissionTag).collect(Collectors.toList());
+        return menus.stream()
+                .map(SysMenu::getPermissionTag)
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     @Override

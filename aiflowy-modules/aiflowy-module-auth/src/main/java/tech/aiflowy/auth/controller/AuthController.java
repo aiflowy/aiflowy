@@ -1,5 +1,6 @@
 package tech.aiflowy.auth.controller;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import tech.aiflowy.auth.entity.LoginDTO;
 import tech.aiflowy.auth.entity.LoginVO;
 import tech.aiflowy.auth.service.AuthService;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/auth/")
@@ -29,5 +31,11 @@ public class AuthController {
     public Result logout() {
         StpUtil.logout();
         return Result.success();
+    }
+
+    @GetMapping("getPermissions")
+    public Result getPermissions() {
+        List<String> permissionList = StpUtil.getPermissionList();
+        return Result.success(permissionList);
     }
 }

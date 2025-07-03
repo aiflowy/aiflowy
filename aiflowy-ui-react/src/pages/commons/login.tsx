@@ -78,6 +78,8 @@ const Login: React.FC = () => {
                         appStore.setToken(resp.data.data.token);
                         appStore.setNickname(resp.data.data.nickname);
                         appStore.setAvatar(resp.data.data.avatar);
+                        // 刷新页面获取权限列表
+                        window.location.reload();
                     } else if (resp.data.message) {
                         message.error(resp.data.message);
                     }

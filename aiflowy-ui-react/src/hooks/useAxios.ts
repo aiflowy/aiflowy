@@ -73,3 +73,4 @@ export const useAxios =  makeUseAxios({
             autoCancel: true,
         },
     })
+export default Axios

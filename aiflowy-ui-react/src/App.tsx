@@ -11,6 +11,7 @@ import "./App.less"
 
 //init i18n
 import "./locales/i18n";
+import {PermissionsProvider} from "./hooks/usePermissions.tsx";
 
 dayjs.locale('zh');
 
@@ -21,9 +22,11 @@ function App() {
             ...appConfig.theme
         }} locale={appConfig.locale}>
             <MittProvider>
-                <AntdApp style={{fontSize: "medium"}}>
-                    <RouterProvider router={router}/>
-                </AntdApp>
+                <PermissionsProvider>
+                    <AntdApp style={{fontSize: "medium"}}>
+                        <RouterProvider router={router}/>
+                    </AntdApp>
+                </PermissionsProvider>
             </MittProvider>
         </ConfigProvider>
     )
