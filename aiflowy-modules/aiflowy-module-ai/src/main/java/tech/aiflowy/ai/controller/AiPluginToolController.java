@@ -1,5 +1,6 @@
 package tech.aiflowy.ai.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson2.JSON;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tech.aiflowy.ai.entity.AiPluginTool;
 import tech.aiflowy.ai.service.AiPluginToolService;
+import tech.aiflowy.common.annotation.UsePermission;
 import tech.aiflowy.common.domain.Result;
 import tech.aiflowy.common.web.controller.BaseCurdController;
 import tech.aiflowy.common.web.jsonbody.JsonBody;
@@ -26,6 +28,7 @@ import java.math.BigInteger;
  */
 @RestController
 @RequestMapping("/api/v1/aiPluginTool")
+@UsePermission(moduleName = "/api/v1/aiPlugin")
 public class AiPluginToolController extends BaseCurdController<AiPluginToolService, AiPluginTool> {
     public AiPluginToolController(AiPluginToolService service) {
         super(service);
@@ -35,6 +38,7 @@ public class AiPluginToolController extends BaseCurdController<AiPluginToolServi
     private AiPluginToolService aiPluginToolService;
 
     @PostMapping("/tool/save")
+    @SaCheckPermission("/api/v1/aiPlugin/save")
     public Result savePlugin(@JsonBody AiPluginTool aiPluginTool){
 
         return aiPluginToolService.savePluginTool(aiPluginTool);
@@ -42,29 +46,34 @@ public class AiPluginToolController extends BaseCurdController<AiPluginToolServi
 
     // 插件工具修改页面查询
     @PostMapping("/tool/search")
+    @SaCheckPermission("/api/v1/aiPlugin/query")
     public Result searchPlugin(@JsonBody(value = "aiPluginToolId", required = true) BigInteger aiPluginToolId){
         return aiPluginToolService.searchPlugin(aiPluginToolId);
     }
 
     @PostMapping("/toolsList")
+    @SaCheckPermission("/api/v1/aiPlugin/query")
     public Result searchPluginToolByPluginId(@JsonBody(value = "pluginId", required = true) BigInteger pluginId,
                                              @JsonBody(value = "botId", required = false) BigInteger botId){
         return aiPluginToolService.searchPluginToolByPluginId(pluginId, botId);
     }
 
     @PostMapping("/tool/update")
+    @SaCheckPermission("/api/v1/aiPlugin/save")
     public Result updatePlugin(@JsonBody AiPluginTool aiPluginTool){
 
         return aiPluginToolService.updatePlugin(aiPluginTool);
     }
 
     @PostMapping("/tool/list")
+    @SaCheckPermission("/api/v1/aiPlugin/query")
     public Result getPluginToolList(@JsonBody(value = "botId", required = true) BigInteger botId){
 
         return aiPluginToolService.getPluginToolList(botId);
     }
 
     @GetMapping("/getTinyFlowData")
+    @SaCheckPermission("/api/v1/aiPlugin/query")
     public Result getTinyFlowData(BigInteger id) {
         JSONObject nodeData = new JSONObject();
         AiPluginTool record = aiPluginToolService.getById(id);

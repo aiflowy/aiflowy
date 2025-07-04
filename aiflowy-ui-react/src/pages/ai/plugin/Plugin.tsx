@@ -15,7 +15,7 @@ import {
 	Col,
 	Dropdown, Empty,
 	Form,
-	FormProps,
+	FormProps, Image,
 	Input,
 	message,
 	Modal,
@@ -25,12 +25,11 @@ import {
 	Select, SelectProps,
 	Space,
 	Spin,
-	Tooltip,
+	Tooltip, Typography,
 } from 'antd';
 import {useGetManual, usePostManual} from '../../../hooks/useApis.ts';
 import SearchForm from '../../../components/AntdCrud/SearchForm.tsx';
 import { ColumnsConfig } from '../../../components/AntdCrud';
-import { useBreadcrumbRightEl } from '../../../hooks/useBreadcrumbRightEl.tsx';
 import ImageUploader from '../../../components/ImageUploader';
 import TextArea from 'antd/es/input/TextArea';
 import {CheckboxGroupProps} from "antd/es/checkbox";
@@ -38,6 +37,8 @@ import {useNavigate} from "react-router-dom";
 import './less/plugin.less'
 import CustomDeleteIcon from "../../../components/CustomIcon/CustomDeleteIcon.tsx";
 import "../../../components/CardPage/card_page.less"
+import {useCheckPermission} from "../../../hooks/usePermissions.tsx";
+import addCardIcon from "../../../assets/addCardIcon.png";
 
 interface Category {
 	id: number;
@@ -110,15 +111,7 @@ const Plugin: React.FC = () => {
 		tokenKey?: string;
 		tokenValue?: string;
 	};
-	// 设置面包屑右侧按钮
-	useBreadcrumbRightEl(
-		<Button type={'primary'} onClick={() => {
-			setAddPluginIsOpen(true);
-			setIsSaveOrUpdate(true);
-		}}>
-			<PlusOutlined /> 新增插件
-		</Button>
-	);
+
 	// 处理表单提交
 	const onFinish: FormProps<FieldType>['onFinish'] = (values) => {
 		if (isSaveOrUpdate) {
@@ -234,6 +227,8 @@ const Plugin: React.FC = () => {
 
 	const {doGet: doGetPluginCategory} = useGetManual('/api/v1/aiPluginCategoryRelation/getPluginCategories')
 
+	const hasRemovePermission = useCheckPermission('/api/v1/aiPlugin/remove')
+	const hasSavePermission = useCheckPermission('/api/v1/aiPlugin/save')
 
 	// 初始化加载插件和分类数据
 	useEffect(() => {
@@ -471,14 +466,50 @@ const Plugin: React.FC = () => {
 				<SearchForm columns={columnsConfig} colSpan={6} onSearch={handleSearch} />
 				<Spin spinning={loading} >
 				<Row className={"card-row"} gutter={[16, 16]}>
-
+					{
+						(!loading && plugins.length > 0  && useCheckPermission(`/api/v1/aiPlugin/save`)) &&  <Col span={6} key={"add-card"} xs={24} sm={12} md={8} lg={7} >
+							<Card
+								style={{
+									height: '100%',
+									display: 'flex',
+									flexDirection: 'row',
+									cursor: 'pointer',
+									border: '1px solid #0066FF',
+								}}
+								bodyStyle={{
+									flex: 1,
+									display: 'flex',
+									alignItems: 'center',
+									justifyContent: 'center',
+									padding: '24px',
+								}}
+								actions={[]}
+								onClick={() => {
+									setAddPluginIsOpen(true)
+								}}
+							>
+								<Image
+									src={addCardIcon}
+									preview={false}
+									style={{
+										height: '20px',
+										width: '20px',
+										borderRadius: '50%',
+										marginRight: '10px'
+									}}
+								/>
+								<span style={{fontSize: '16px', color: '#0066FF '}}>{"创建插件"}</span>
+							</Card>
+						</Col>
+					}
 					{loading ? (
 						<div style={{ display: 'flex', flexDirection: 'row',  justifyContent: 'center',
 							alignItems: 'center',  height: '100%', width: '100%' }}>
 								<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} className={"empty-container"}/>
 						</div>
 
-					) : plugins.length > 0 && (
+					) : plugins.length > 0 ? (
+
 						plugins.map((item: any) => (
 							<Col span={6} key={item.id}
 								 xs={24}  // 在超小屏幕下占满一行
@@ -495,65 +526,73 @@ const Plugin: React.FC = () => {
 									}}
 									className={"card-hover"}
 									actions={[
-										<Space  onClick={() => {
-											navigate('/ai/pluginTool', {
-												state: {
-													id: item.id,
-													pluginTitle: item.name,
-												}
-											});
-										}}>
-											<MenuUnfoldOutlined title="工具列表" />
-											<span>工具</span>
-										</Space>
+										(hasSavePermission &&
+											<Space  onClick={() => {
+												navigate('/ai/pluginTool', {
+													state: {
+														id: item.id,
+														pluginTitle: item.name,
+													}
+												});
+											}}>
+												<MenuUnfoldOutlined title="工具列表" />
+												<span>工具</span>
+											</Space>
+										)
+
 									,
-										<Space onClick={() => {
-											setIsSaveOrUpdate(false);
-											form.setFieldsValue({
-												id: item.id,
-												icon: item.icon,
-												name: item.name,
-												description: item.description,
-												baseUrl: item.baseUrl,
-												headers: item.headers ? JSON.parse(item.headers) : [],
-												authData: item.authData,
-												authType: item.authType,
-												position: item.position,
-												tokenKey: item.tokenKey,
-												tokenValue: item.tokenValue,
-											});
-											setIconPath(item.icon);
-											setAuthType(item.authType);
-											setAddPluginIsOpen(true);
-										}} >
-											<EditOutlined key="edit" />
-											<span>编辑</span>
-										</Space>
+										(
+											hasSavePermission &&
+											<Space onClick={() => {
+												setIsSaveOrUpdate(false);
+												form.setFieldsValue({
+													id: item.id,
+													icon: item.icon,
+													name: item.name,
+													description: item.description,
+													baseUrl: item.baseUrl,
+													headers: item.headers ? JSON.parse(item.headers) : [],
+													authData: item.authData,
+													authType: item.authType,
+													position: item.position,
+													tokenKey: item.tokenKey,
+													tokenValue: item.tokenValue,
+												});
+												setIconPath(item.icon);
+												setAuthType(item.authType);
+												setAddPluginIsOpen(true);
+											}} >
+												<EditOutlined key="edit" />
+												<span>编辑</span>
+											</Space>
+										)
+
 									,
 										<Dropdown menu={{
 											items: [
-												{
-												key: 'delete',
-												label: '删除',
-												icon: <CustomDeleteIcon />,
-												danger: true,
-												onClick: () => {
-													Modal.confirm({
-														title: '确定要删除吗?',
-														content: '此操作不可逆，请谨慎操作。',
-														onOk() {
-															doRemove({ data: { id: item.id } }).then((r) => {
-																if (r.data.errorCode === 0) {
-																	message.success("删除成功！");
-																	doSearchPlugins({categoryId: 0});
-																} else {
-																	message.error(r.data.message);
-																}
-															});
-														},
-													});
-												},
-											},
+												...(hasRemovePermission ? [	{
+													key: 'delete',
+													label: '删除',
+													icon: <CustomDeleteIcon />,
+													danger: true,
+													onClick: () => {
+														Modal.confirm({
+															title: '确定要删除吗?',
+															content: '此操作不可逆，请谨慎操作。',
+															onOk() {
+																doRemove({ data: { id: item.id } }).then((r) => {
+																	if (r.data.errorCode === 0) {
+																		message.success("删除成功！");
+																		doSearchPlugins({categoryId: 0});
+																	} else {
+																		message.error(r.data.message);
+																	}
+																});
+															},
+														});
+													},
+												},] : []),
+
 												{
 													key: 'classify',
 													label: '归类',
@@ -604,7 +643,32 @@ const Plugin: React.FC = () => {
 								</Card>
 							</Col>
 						))
-					) }
+					)
+					:
+						(<>
+							<Empty
+								image={Empty.PRESENTED_IMAGE_SIMPLE}
+								className={"empty-container"}
+								description={
+									<Typography.Text style={{color: '#969799'}}>
+										{"暂无数据"}
+									</Typography.Text>
+								}
+							>
+
+								{useCheckPermission(`/api/v1/aiPlugin/save`) && (
+									<Button  style={{borderColor: '#0066FF', color: '#0066FF', width: '195px', height: '48px'}}
+											 onClick={() => {
+												 setAddPluginIsOpen(true)
+											 }}>
+										{"创建插件"}
+									</Button>
+								)}
+
+							</Empty>
+
+						</>)
+					}
 				</Row>
 
 				<Pagination

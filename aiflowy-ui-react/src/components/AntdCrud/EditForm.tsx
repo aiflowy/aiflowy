@@ -146,8 +146,7 @@ const EditForm = <T, >({
 
     return (
         <>
-            <Modal title="智能填充" open={openIntelligentFilling} onOk={startFilling} confirmLoading={loading}
-                   onCancel={() => {
+            <Modal title="智能填充" open={openIntelligentFilling} onOk={startFilling} confirmLoading={loading}  onCancel={() => {
                        setOpenIntelligentFilling(false)
                    }}>
                 <TextArea placeholder="点击这里，开始输入内容" value={textAreaValue}
@@ -161,6 +160,7 @@ const EditForm = <T, >({
                 type={layout?.openType || "modal"}
                 title={title}
                 open={open}
+                centered={true}
                 placement="right"
                 onOk={form.submit}
                 onClose={onCancelClick}
@@ -184,74 +184,77 @@ const EditForm = <T, >({
                 </Space>
                 }
                 width={"40%"}>
-                <Form form={form} style={formStyle} onFinish={onFinish} labelAlign={"right"}
-                      onValuesChange={onValuesChange}
-                      layout={layout?.labelLayout || "horizontal"}
-                      labelCol={layout?.labelLayout !== "vertical" ? {
-                          flex: `0 0 ${layout?.labelWidth || 100}px`
-                      } : {}}
-                >
-                    <Row gutter={24}>
-                        {groups && groups.map((group) => {
-                            return (
-                                <Fragment key={group.key}>
-                                    <Divider orientation="left">{group.title}</Divider>
-                                    {columns.filter((columnConfig) => columnConfig.groupKey == group.key)
-                                        .map((columnConfig) => {
-                                            const wrapCol = columnConfig.form?.wrapCol;
-                                            return (
-                                                isHidden(columnConfig) || wrapCol === false ?
-                                                    (<DynamicFormItem columnConfig={columnConfig}
-                                                                      readOnly={formReadOnly}
-                                                                      form={form}
-                                                                      key={columnConfig.key}
-                                                                      position="edit"
-                                                                      data={row}
-                                                                      formRenderFactory={formRenderFactory}/>
-                                                    ) :
-                                                    (<Col span={colSpan}
-                                                          offset={colOffset}
-                                                          key={columnConfig.key}>
-                                                        <DynamicFormItem columnConfig={columnConfig}
-                                                                         readOnly={formReadOnly}
-                                                                         form={form}
-                                                                         position="edit" data={row}
-                                                                         formRenderFactory={formRenderFactory}/>
-                                                    </Col>)
-                                            )
-                                        })}
-                                </Fragment>
-                            )
-                        })}
-
-                        {columns.filter((columnConfig) => !columnConfig.groupKey)
-                            .map((columnConfig) => {
-                                const wrapCol = columnConfig.form?.wrapCol;
+                <div style={{maxHeight: "80vh", overflowY: "auto"}}>
+                    <Form form={form} style={formStyle} onFinish={onFinish} labelAlign={"right"}
+                          onValuesChange={onValuesChange}
+                          layout={layout?.labelLayout || "horizontal"}
+                          labelCol={layout?.labelLayout !== "vertical" ? {
+                              flex: `0 0 ${layout?.labelWidth || 100}px`
+                          } : {}}
+                    >
+                        <Row gutter={24}>
+                            {groups && groups.map((group) => {
                                 return (
-                                    isHidden(columnConfig) || wrapCol === false ?
-                                        (<DynamicFormItem columnConfig={columnConfig}
-                                                          readOnly={formReadOnly}
-                                                          position="edit"
-                                                          key={columnConfig.key}
-                                                          form={form}
-                                                          data={row}
-                                                          formRenderFactory={formRenderFactory}/>
-                                        ) :
-                                        (<Col span={colSpan}
-                                              offset={colOffset}
-                                              key={columnConfig.key}>
-                                            <DynamicFormItem columnConfig={columnConfig}
-                                                             readOnly={formReadOnly}
-                                                             position="edit"
-                                                             form={form}
-                                                             data={row}
-                                                             formRenderFactory={formRenderFactory}/>
-                                        </Col>)
+                                    <Fragment key={group.key}>
+                                        <Divider orientation="left">{group.title}</Divider>
+                                        {columns.filter((columnConfig) => columnConfig.groupKey == group.key)
+                                            .map((columnConfig) => {
+                                                const wrapCol = columnConfig.form?.wrapCol;
+                                                return (
+                                                    isHidden(columnConfig) || wrapCol === false ?
+                                                        (<DynamicFormItem columnConfig={columnConfig}
+                                                                          readOnly={formReadOnly}
+                                                                          form={form}
+                                                                          key={columnConfig.key}
+                                                                          position="edit"
+                                                                          data={row}
+                                                                          formRenderFactory={formRenderFactory}/>
+                                                        ) :
+                                                        (<Col span={colSpan}
+                                                              offset={colOffset}
+                                                              key={columnConfig.key}>
+                                                            <DynamicFormItem columnConfig={columnConfig}
+                                                                             readOnly={formReadOnly}
+                                                                             form={form}
+                                                                             position="edit" data={row}
+                                                                             formRenderFactory={formRenderFactory}/>
+                                                        </Col>)
+                                                )
+                                            })}
+                                    </Fragment>
                                 )
                             })}
 
-                    </Row>
-                </Form>
+                            {columns.filter((columnConfig) => !columnConfig.groupKey)
+                                .map((columnConfig) => {
+                                    const wrapCol = columnConfig.form?.wrapCol;
+                                    return (
+                                        isHidden(columnConfig) || wrapCol === false ?
+                                            (<DynamicFormItem columnConfig={columnConfig}
+                                                              readOnly={formReadOnly}
+                                                              position="edit"
+                                                              key={columnConfig.key}
+                                                              form={form}
+                                                              data={row}
+                                                              formRenderFactory={formRenderFactory}/>
+                                            ) :
+                                            (<Col span={colSpan}
+                                                  offset={colOffset}
+                                                  key={columnConfig.key}>
+                                                <DynamicFormItem columnConfig={columnConfig}
+                                                                 readOnly={formReadOnly}
+                                                                 position="edit"
+                                                                 form={form}
+                                                                 data={row}
+                                                                 formRenderFactory={formRenderFactory}/>
+                                            </Col>)
+                                    )
+                                })}
+
+                        </Row>
+                    </Form>
+                </div>
+
             </EditFormContainer>
         </>
     );

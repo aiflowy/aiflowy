@@ -30,6 +30,7 @@ import {useUrlParams} from "../../hooks/useUrlParams.ts";
 import addCardIcon from "../../../src/assets/addCardIcon.png"
 import "../../pages/commons/commonStyle.less"
 import CustomDeleteIcon from "../CustomIcon/CustomDeleteIcon.tsx";
+import {useCheckPermission} from "../../hooks/usePermissions.tsx";
 export type CardPageProps = {
     ref?: any,
     tableAlias: string,
@@ -161,7 +162,7 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
 
                 <Row className={"card-row"} gutter={[16, 16]}>
                     {
-                        result?.data?.records?.length > 0 &&   <Col span={6} key={"add-card"} xs={24} sm={12} md={8} lg={6} >
+                        (result?.data?.records?.length > 0 && useCheckPermission(`/api/v1/${tableAlias}/save`)) &&  <Col span={6} key={"add-card"} xs={24} sm={12} md={8} lg={6} >
                             <Card
                                 style={{
                                     height: '100%',
@@ -210,35 +211,40 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
                                 className={"card-hover"}
                                 actions={[
                                     ...customActions(item, [
-                                        <Space onClick={() => {
-                                            setEditData(item)
-                                            setIsEditOpen(true)
-                                        }}>
-                                        <EditOutlined key="edit" />
-                                            <span>编辑</span>
-                                        </Space>,
+                                        useCheckPermission(`/api/v1/${tableAlias}/save`) && (
+                                            <Space onClick={() => {
+                                                setEditData(item)
+                                                setIsEditOpen(true)
+                                            }}>
+
+                                                <EditOutlined key="edit" />
+                                                <span>编辑</span>
+                                            </Space>
+                                        )
+                                       ,
                                         <Dropdown menu={{
                                             items: [
-                                                {
-                                                    key: 'delete',
-                                                    label: '删除',
-                                                    icon: <CustomDeleteIcon />,
-                                                    onClick: () => {
-                                                        Modal.confirm({
-                                                            title: '确定要删除吗?',
-                                                            content: '此操作不可逆，请谨慎操作。',
-                                                            onOk() {
-                                                                doRemove({
-                                                                    data: {
-                                                                        id: item.id
-                                                                    }
-                                                                }).then(doGet)
+
+                                                ...(
+                                                    useCheckPermission(`/api/v1/${tableAlias}/remove`)
+                                                        ? [{
+                                                            key: 'delete',
+                                                            label: '删除',
+                                                            icon: <CustomDeleteIcon />,
+                                                            onClick: () => {
+                                                                Modal.confirm({
+                                                                    title: '确定要删除吗?',
+                                                                    content: '此操作不可逆，请谨慎操作。',
+                                                                    onOk() {
+                                                                        doRemove({ data: { id: item.id } }).then(doGet)
+                                                                    },
+                                                                    onCancel() {},
+                                                                });
                                                             },
-                                                            onCancel() {
-                                                            },
-                                                        });
-                                                    },
-                                                }
+                                                        }]
+                                                        : []
+                                                )
+
                                             ],
                                         }}>
                                             <EllipsisOutlined key="ellipsis" title="更多操作"/>
@@ -275,12 +281,16 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
                                 </Typography.Text>
                             }
                         >
-                            <Button  style={{borderColor: '#0066FF', color: '#0066FF', width: '195px', height: '48px'}}
-                                     onClick={() => {
-                                         setIsEditOpen(true)
-                                     }}>
-                                {optionsText.noDataAddButtonText || "创建"}
-                            </Button>
+
+                            {useCheckPermission(`/api/v1/${tableAlias}/save`) && (
+                                <Button  style={{borderColor: '#0066FF', color: '#0066FF', width: '195px', height: '48px'}}
+                                         onClick={() => {
+                                             setIsEditOpen(true)
+                                         }}>
+                                    {optionsText.noDataAddButtonText || "创建"}
+                                </Button>
+                            )}
+
                         </Empty>
 
                     </>)}

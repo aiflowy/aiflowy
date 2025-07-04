@@ -1,11 +1,13 @@
 package tech.aiflowy.ai.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import tech.aiflowy.ai.entity.AiDocumentChunk;
 import tech.aiflowy.ai.entity.AiKnowledge;
 import tech.aiflowy.ai.entity.AiLlm;
 import tech.aiflowy.ai.service.AiDocumentChunkService;
 import tech.aiflowy.ai.service.AiKnowledgeService;
 import tech.aiflowy.ai.service.AiLlmService;
+import tech.aiflowy.common.annotation.UsePermission;
 import tech.aiflowy.common.domain.Result;
 import tech.aiflowy.common.web.controller.BaseCurdController;
 import tech.aiflowy.common.web.jsonbody.JsonBody;
@@ -33,6 +35,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/v1/aiDocumentChunk")
+@UsePermission(moduleName = "/api/v1/aiKnowledge")
 public class AiDocumentChunkController extends BaseCurdController<AiDocumentChunkService, AiDocumentChunk> {
 
     @Resource
@@ -49,6 +52,7 @@ public class AiDocumentChunkController extends BaseCurdController<AiDocumentChun
     }
 
     @PostMapping("update")
+    @SaCheckPermission("/api/v1/aiKnowledge/save")
     public Result update(@JsonBody AiDocumentChunk aiDocumentChunk) {
         boolean success = service.updateById(aiDocumentChunk);
         if (success){
@@ -82,6 +86,7 @@ public class AiDocumentChunkController extends BaseCurdController<AiDocumentChun
     }
 
     @PostMapping("removeChunk")
+    @SaCheckPermission("/api/v1/aiKnowledge/remove")
     public Result remove(@JsonBody(value = "id", required = true) BigInteger chunkId) {
         AiDocumentChunk docChunk =  aiDocumentChunkService.getById(chunkId);
         if (docChunk == null) {

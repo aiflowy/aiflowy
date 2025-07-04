@@ -126,6 +126,7 @@ const CrudPage: React.FC<CurdPageProps> = forwardRef(({
 
     return (
         <AntdCrud columns={columnsConfig}
+                  tableAlias={tableAlias}
                   defaultExpandedAllRow={defaultExpandedAllRow}
                   editLayout={editLayout}
                   dataSource={isPage ? ((result?.data) as Page<any>)?.records : result?.data}

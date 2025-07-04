@@ -22,6 +22,7 @@ import {
 } from "../../libs/utils.ts";
 import {Key} from "rc-table/lib/interface";
 import {LabelTooltipType} from "antd/es/form/FormItemLabel";
+import {useCheckPermission} from "../../hooks/usePermissions.tsx";
 
 export type DictConfig = {
     url?: string,
@@ -168,6 +169,8 @@ export type AntdCrudProps<T> = {
     onSearchValueInit?: (key: string) => any,
 
     editLayout?: EditLayout,
+
+    tableAlias?: string,
 }
 
 
@@ -223,6 +226,7 @@ function AntdCrud<T>({
                          initSearchParams,
                          onSearchValueInit,
                          editLayout,
+                         tableAlias,
                      }: AntdCrudProps<T>) {
 
     const tableRef = useRef<any>(null);
@@ -290,7 +294,7 @@ function AntdCrud<T>({
             <Space size="middle">
 
                 {actionConfig?.customActions && actionConfig.customActions(row)}
-                {actionConfig?.detailButtonEnable && <a onClick={() => {
+                {(actionConfig?.detailButtonEnable && useCheckPermission(`/api/v1/${tableAlias}/query`)) && <a onClick={() => {
                     setModalRow(row)
                     setModalTitle("查看")
                     setIsModalOpen(true)
@@ -298,14 +302,14 @@ function AntdCrud<T>({
                 }}> <EyeOutlined/> 查看 </a>}
 
 
-                {actionConfig?.editButtonEnable && <a onClick={() => {
+                {(actionConfig?.editButtonEnable && useCheckPermission(`/api/v1/${tableAlias}/save`)) && <a onClick={() => {
                     setModalRow(row)
                     setModalTitle("编辑")
                     setIsModalOpen(true)
                 }}> <EditOutlined/> 编辑 </a>}
 
 
-                {actionConfig?.deleteButtonEnable && <Popconfirm
+                {(actionConfig?.deleteButtonEnable && useCheckPermission(`/api/v1/${tableAlias}/remove`)) && <Popconfirm
                     title="确定删除？"
                     description="您确定要删除这条数据吗？"
                     okButtonProps={{loading: confirmLoading}}
@@ -410,7 +414,7 @@ function AntdCrud<T>({
 
                     {customButton?.()}
 
-                    {addButtonEnable && <Button type="primary" onClick={() => {
+                    {(addButtonEnable && useCheckPermission(`/api/v1/${tableAlias}/save`)) && <Button type="primary" onClick={() => {
                         setModalRow(null);
                         setModalTitle("新增")
                         setIsModalOpen(!isModalOpen)

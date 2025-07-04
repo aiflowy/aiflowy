@@ -5,6 +5,7 @@ import tech.aiflowy.ai.entity.AiKnowledge;
 import tech.aiflowy.ai.service.AiDocumentChunkService;
 import tech.aiflowy.ai.service.AiKnowledgeService;
 import tech.aiflowy.ai.service.AiLlmService;
+import tech.aiflowy.common.annotation.UsePermission;
 import tech.aiflowy.common.domain.Result;
 import tech.aiflowy.common.web.controller.BaseCurdController;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/v1/aiKnowledge")
+@UsePermission(moduleName = "/api/v1/aiLlm")
 public class AiKnowledgeController extends BaseCurdController<AiKnowledgeService, AiKnowledge> {
 
     private final AiDocumentChunkService chunkService;
