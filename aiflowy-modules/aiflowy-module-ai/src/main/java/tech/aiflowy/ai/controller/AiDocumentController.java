@@ -1,5 +1,6 @@
 package tech.aiflowy.ai.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaIgnore;
 import com.amazonaws.util.IOUtils;
 import com.mybatisflex.core.paginate.Page;
@@ -18,6 +19,7 @@ import tech.aiflowy.ai.service.AiDocumentChunkService;
 import tech.aiflowy.ai.service.AiDocumentService;
 import tech.aiflowy.ai.service.AiKnowledgeService;
 import tech.aiflowy.ai.service.AiLlmService;
+import tech.aiflowy.common.annotation.UsePermission;
 import tech.aiflowy.common.domain.Result;
 import tech.aiflowy.common.tree.Tree;
 import tech.aiflowy.common.util.RequestUtil;
@@ -40,6 +42,7 @@ import java.util.*;
  */
 @RestController
 @RequestMapping("/api/v1/aiDocument")
+@UsePermission(moduleName = "/api/v1/aiKnowledge")
 public class AiDocumentController extends BaseCurdController<AiDocumentService, AiDocument> {
 
     private final AiKnowledgeService knowledgeService;
@@ -61,6 +64,7 @@ public class AiDocumentController extends BaseCurdController<AiDocumentService, 
     }
     @PostMapping("removeDoc")
     @Transactional
+    @SaCheckPermission("/api/v1/aiKnowledge/remove")
     public Result remove(@JsonBody(value = "id", required = true) String id) {
         List<Serializable> ids = Collections.singletonList(id);
         Result result = onRemoveBefore(ids);
@@ -86,6 +90,7 @@ public class AiDocumentController extends BaseCurdController<AiDocumentService, 
      */
     @GetMapping("list")
     @Override
+    @SaCheckPermission("/api/v1/aiKnowledge/query")
     public Result list(AiDocument entity, Boolean asTree, String sortKey, String sortType) {
         String kbSlug = RequestUtil.getParamAsString("id");
         if (StringUtil.noText(kbSlug)) {
@@ -109,6 +114,7 @@ public class AiDocumentController extends BaseCurdController<AiDocumentService, 
     }
 
     @GetMapping("documentList")
+    @SaCheckPermission("/api/v1/aiKnowledge/query")
     public Result documentList(@RequestParam(name="fileName", required = false) String fileName, @RequestParam(name="pageSize") int pageSize, @RequestParam(name = "current") int current) {
         String kbSlug = RequestUtil.getParamAsString("id");
         if (StringUtil.noText(kbSlug)) {
@@ -127,6 +133,7 @@ public class AiDocumentController extends BaseCurdController<AiDocumentService, 
 
     @PostMapping("update")
     @Override
+    @SaCheckPermission("/api/v1/aiKnowledge/save")
     public Result update(@JsonBody AiDocument entity) {
         super.update(entity);
         return updatePosition(entity);
@@ -142,6 +149,7 @@ public class AiDocumentController extends BaseCurdController<AiDocumentService, 
      * @param rowsPerChunk excel 分割段数
      */
     @PostMapping(value = "textSplit", produces = MediaType.APPLICATION_JSON_VALUE)
+    @SaCheckPermission("/api/v1/aiKnowledge/save")
     public Result textSplit(
                               @RequestParam("file") MultipartFile file,
                               @RequestParam(name="knowledgeId") BigInteger knowledgeId,
@@ -173,6 +181,7 @@ public class AiDocumentController extends BaseCurdController<AiDocumentService, 
      * @throws IOException
      */
     @PostMapping(value = "saveText")
+    @SaCheckPermission("/api/v1/aiKnowledge/save")
     public Result saveTextResult(
                          @RequestParam("knowledgeId") BigInteger knowledgeId,
                          @RequestParam(name="previewData") String previewList,

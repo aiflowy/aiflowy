@@ -1,5 +1,6 @@
 package tech.aiflowy.ai.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,29 +41,34 @@ public class AiPluginController extends BaseCurdController<AiPluginService, AiPl
     }
 
     @PostMapping("/plugin/save")
+    @SaCheckPermission("/api/v1/aiPlugin/save")
     public Result savePlugin(@JsonBody AiPlugin aiPlugin){
 
         return aiPluginService.savePlugin(aiPlugin);
     }
 
     @PostMapping("/plugin/remove")
+    @SaCheckPermission("/api/v1/aiPlugin/remove")
     public Result removePlugin(@JsonBody(value = "id", required = true) String id){
 
         return aiPluginService.removePlugin(id);
     }
 
     @PostMapping("/plugin/update")
+    @SaCheckPermission("/api/v1/aiPlugin/save")
     public Result updatePlugin(@JsonBody AiPlugin aiPlugin){
 
         return aiPluginService.updatePlugin(aiPlugin);
     }
 
     @PostMapping("/getList")
+    @SaCheckPermission("/api/v1/aiPlugin/query")
     public Result getList(){
         return aiPluginService.getList();
     }
 
     @GetMapping("/pageByCategory")
+    @SaCheckPermission("/api/v1/aiPlugin/query")
     public Result pageByCategory(HttpServletRequest request, String sortKey, String sortType, Long pageNumber, Long pageSize, int category) {
         if (pageNumber == null || pageNumber < 1) {
             pageNumber = 1L;

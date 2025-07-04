@@ -10,6 +10,7 @@ import FileImportPanel from "./FileImportPanel";
 import TextArea from "antd/es/input/TextArea";
 import {useLayout} from "../../../hooks/useLayout.tsx";
 import PreviewContainer from "./PreviewContainer.tsx";
+import {useCheckPermission} from "../../../hooks/usePermissions.tsx";
 
 interface EditTxtBoxState {
     content: string; // 文本内容
@@ -129,6 +130,7 @@ const Document: React.FC = () => {
             width: 150,
             render: (_: any, record: any) => (
                 <Space size="middle">
+                    { useCheckPermission('/api/v1/aiKnowledge/query') &&
                     <a onClick={() => {
                         setIsOpenDocChunk(!isOpenDocChunk)
                         const param = {
@@ -140,33 +142,36 @@ const Document: React.FC = () => {
                         }
                         setQueryParams(param)
                     }}>查看 {record.name}</a>
-                    {/*<a onClick={() => {*/}
-                    {/*    fetchFilePreview(record.id).then(r => console.log(r))*/}
-                    {/*}}>预览</a>*/}
+                    }
+
                     <a onClick={() => {
                         fetchFileDownload(record).then(r => console.log(r))
                     }}>下载</a>
-                    <Popconfirm
-                        title="确定删除"
-                        description="您确定要删除这条数据吗？"
-                        onConfirm={() => {
-                            setIsConfirmDelete(true)
-                            doPost({data: {id: record.id}}).then((res) => {
-                                if (res.data.errorCode === 0) {
-                                    message.success('删除成功')
-                                } else {
-                                    message.error('删除失败')
-                                }
-                            })
-                        }}
-                        onCancel={() => {
 
-                        }}
-                        okText="确定"
-                        cancelText="取消"
-                    >
-                        <a style={{color: 'red'}}>删除</a>
-                    </Popconfirm>
+                    { useCheckPermission('/api/v1/aiKnowledge/remove') &&
+                        <Popconfirm
+                            title="确定删除"
+                            description="您确定要删除这条数据吗？"
+                            onConfirm={() => {
+                                setIsConfirmDelete(true)
+                                doPost({data: {id: record.id}}).then((res) => {
+                                    if (res.data.errorCode === 0) {
+                                        message.success('删除成功')
+                                    } else {
+                                        message.error('删除失败')
+                                    }
+                                })
+                            }}
+                            onCancel={() => {
+
+                            }}
+                            okText="确定"
+                            cancelText="取消"
+                        >
+                            <a style={{color: 'red'}}>删除</a>
+                        </Popconfirm>
+                    }
+
 
                 </Space>
             ),
@@ -236,7 +241,7 @@ const Document: React.FC = () => {
 // 定义菜单项
     const menuItems = [
         {id: 'file-management', label: '文件管理'},
-        {id: 'file-import', label: '文件导入'},
+        ...(useCheckPermission('/api/v1/aiKnowledge/save') ? [{id: 'file-import', label: '文件导入'}] : []),
         {id: 'search-test', label: '检索测试'},
     ];
 

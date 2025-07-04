@@ -3,6 +3,7 @@ package tech.aiflowy.ai.controller;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import tech.aiflowy.ai.entity.AiLlm;
 import tech.aiflowy.ai.service.AiLlmService;
+import tech.aiflowy.common.annotation.UsePermission;
 import tech.aiflowy.common.domain.Result;
 import tech.aiflowy.common.entity.LoginAccount;
 import tech.aiflowy.common.web.controller.BaseCurdController;
@@ -33,6 +34,7 @@ public class AiLlmController extends BaseCurdController<AiLlmService, AiLlm> {
     @GetMapping("list")
     @SaCheckPermission("/api/v1/aiLlm/query")
     @Override
+    @SaCheckPermission("/api/v1/aiLlm/query")
     public Result list(AiLlm entity, Boolean asTree, String sortKey, String sortType) {
         return super.list(entity, asTree, sortKey, sortType);
     }
