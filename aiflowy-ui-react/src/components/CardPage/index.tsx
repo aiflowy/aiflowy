@@ -6,7 +6,6 @@ import {
     Card,
     Col,
     Dropdown,
-    Image,
     Modal,
     Pagination,
     Row,
@@ -16,7 +15,7 @@ import {
     Typography
 } from "antd";
 import {
-    EditOutlined, EllipsisOutlined,
+    EditOutlined, EllipsisOutlined, PlusOutlined,
 } from "@ant-design/icons";
 import {usePage, useRemove} from "../../hooks/useApis.ts";
 import EditPage from "../EditPage";
@@ -27,7 +26,6 @@ import "./card_page.less"
 import SearchForm from "../AntdCrud/SearchForm.tsx";
 import {Page} from "../../types/Page.ts";
 import {useUrlParams} from "../../hooks/useUrlParams.ts";
-import addCardIcon from "../../../src/assets/addCardIcon.png"
 import "../../pages/commons/commonStyle.less"
 import CustomDeleteIcon from "../CustomIcon/CustomDeleteIcon.tsx";
 import {useCheckPermission} from "../../hooks/usePermissions.tsx";
@@ -64,6 +62,7 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
                                                           , columnsConfig
                                                           , avatarKey = "avatar"
                                                           , defaultAvatarSrc
+                                                          , addButtonText = "新增"
                                                           , titleKey = "title"
                                                           , descriptionKey = "description"
                                                           , customActions = (_data: any, existNodes: any) => existNodes
@@ -83,6 +82,7 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
             });
         }
     }));
+
 
     const {
         loading,
@@ -106,6 +106,8 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
     // const [sortKey, setSortKey] = useState<string | undefined>()
     // const [sortType, setSortType] = useState<"asc" | "desc" | undefined>()
 
+    const savePermission = useCheckPermission(`/api/v1/${tableAlias}/save`)
+    const removePermission = useCheckPermission(`/api/v1/${tableAlias}/remove`)
     useBreadcrumbRightEl(
         <>
             <div>
@@ -113,11 +115,13 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
                     (<div key={index}
                           style={{display: "inline-block", marginRight: "5px", marginBottom: "5px"}}>{item}</div>))
                 }
-                {/*<Button type={"primary"} onClick={() => setIsEditOpen(true)}>*/}
-                {/*    <PlusOutlined/>{addButtonText}*/}
-                {/*</Button>*/}
+                {savePermission &&
+                    <Button type={"primary"} onClick={() => setIsEditOpen(true)}>
+                        <PlusOutlined/>{addButtonText}
+                    </Button>}
             </div>
-        </>
+        </>,
+        [savePermission]
     )
 
     const closeEdit = () => {
@@ -137,15 +141,14 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
     }, [localPageNumber, searchParams])
 
 
-    const editPermission = useCheckPermission(`/api/v1/${tableAlias}/save`);
-    const removePermission = useCheckPermission(`/api/v1/${tableAlias}/remove`);
+
 
     const buildActions = (item:any) => {
 
         const actionsArr:ReactNode[] = [];
 
         const editNode = (
-            editPermission ?
+            savePermission ?
                 <Space onClick={() => {
                     setEditData(item)
                     setIsEditOpen(true)
@@ -226,42 +229,6 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
                 />
 
                 <Row className={"card-row"} gutter={[16, 16]}>
-                    {
-                        (result?.data?.records?.length > 0 && useCheckPermission(`/api/v1/${tableAlias}/save`)) &&  <Col span={6} key={"add-card"} xs={24} sm={12} md={8} lg={6} >
-                            <Card
-                                style={{
-                                    height: '100%',
-                                    display: 'flex',
-                                    flexDirection: 'row',
-                                    cursor: 'pointer',
-                                    border: '1px solid #0066FF',
-                                }}
-                                bodyStyle={{
-                                    flex: 1,
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    padding: '24px',
-                                }}
-                                actions={[]}
-                                onClick={() => {
-                                    setIsEditOpen(true)
-                                }}
-                            >
-                                <Image
-                                    src={addCardIcon}
-                                    preview={false}
-                                    style={{
-                                        height: '20px',
-                                        width: '20px',
-                                        borderRadius: '50%',
-                                        marginRight: '10px'
-                                    }}
-                                />
-                                <span style={{fontSize: '16px', color: '#0066FF '}}>{optionsText.addCardTitle || "添加"}</span>
-                            </Card>
-                        </Col>
-                    }
 
                     {result?.data?.records?.length > 0 ? result?.data?.records?.map((item: any) => (
                         <Col span={6} key={item.id}

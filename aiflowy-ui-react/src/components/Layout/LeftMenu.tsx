@@ -5,12 +5,34 @@ import Sider from "antd/es/layout/Sider";
 import logo from "/favicon.svg";
 import tabIcon from "/tabIcon.svg";
 import { useMenus } from "../../hooks/useMenus.tsx";
-
+import './left-ment.less'
 const LeftMenu: React.FC<{ collapsed: boolean }> = ({ collapsed }) => {
     const navigate = useNavigate();
     const { loading, menuItems, selectItems } = useMenus();
     const selectMenuKeys: string[] = selectItems.map((item) => item.key as string);
 
+
+    // 🌟 动态处理菜单项
+    const processedMenuItems = React.useMemo(() => {
+        return menuItems?.map(item => {
+            // 如果有子菜单，继续处理子菜单
+            if (item.children) {
+                return {
+                    ...item,
+                    children: item.children.map(child => ({
+                        ...child,
+                        label: !collapsed && child.label ? child.label : null,
+                    })),
+                };
+            }
+
+            // 普通菜单项
+            return {
+                ...item,
+                label: !collapsed && item.label ? item.label : null,
+            };
+        });
+    }, [menuItems, collapsed]);
     return (
         <Sider
             width={280}
@@ -89,17 +111,18 @@ const LeftMenu: React.FC<{ collapsed: boolean }> = ({ collapsed }) => {
                 >
                     {!loading ? (
                         <Menu
+                            className="custom-menu"
                             mode="inline"
                             defaultSelectedKeys={selectMenuKeys}
                             defaultOpenKeys={selectMenuKeys}
-                            items={menuItems}
+                            items={processedMenuItems}
                             onClick={(item) => {
                                 navigate(item.key)
                             }}
                             style={{
                                 borderRight: 'none',
                                 // 确保菜单项不会太靠近滚动条
-                                paddingRight: '4px'
+                                paddingRight: '4px',
                             }}
                         />
                     ) : <>loading...</>}

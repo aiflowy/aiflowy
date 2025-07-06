@@ -26,7 +26,6 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/v1/aiKnowledge")
-@UsePermission(moduleName = "/api/v1/aiLlm")
 public class AiKnowledgeController extends BaseCurdController<AiKnowledgeService, AiKnowledge> {
 
     private final AiDocumentChunkService chunkService;
