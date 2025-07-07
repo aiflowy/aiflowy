@@ -15,7 +15,7 @@ import {
 	Col,
 	Dropdown, Empty,
 	Form,
-	FormProps, Image,
+	FormProps,
 	Input,
 	message,
 	Modal,
@@ -38,7 +38,7 @@ import './less/plugin.less'
 import CustomDeleteIcon from "../../../components/CustomIcon/CustomDeleteIcon.tsx";
 import "../../../components/CardPage/card_page.less"
 import {useCheckPermission} from "../../../hooks/usePermissions.tsx";
-import addCardIcon from "../../../assets/addCardIcon.png";
+import {useBreadcrumbRightEl} from "../../../hooks/useBreadcrumbRightEl.tsx";
 
 interface Category {
 	id: number;
@@ -229,6 +229,18 @@ const Plugin: React.FC = () => {
 
 	const hasRemovePermission = useCheckPermission('/api/v1/aiPlugin/remove')
 	const hasSavePermission = useCheckPermission('/api/v1/aiPlugin/save')
+
+	// 设置面包屑右侧按钮
+	useBreadcrumbRightEl(
+		<>
+			{hasSavePermission && <Button type={'primary'} onClick={() => {
+				setAddPluginIsOpen(true);
+				setIsSaveOrUpdate(true);
+			}}>
+				<PlusOutlined /> 新增插件
+			</Button>}
+		</>, [hasSavePermission]
+	);
 
 	// 初始化加载插件和分类数据
 	useEffect(() => {
@@ -466,42 +478,7 @@ const Plugin: React.FC = () => {
 				<SearchForm columns={columnsConfig} colSpan={6} onSearch={handleSearch} />
 				<Spin spinning={loading} >
 				<Row className={"card-row"} gutter={[16, 16]}>
-					{
-						(!loading && plugins.length > 0  && useCheckPermission(`/api/v1/aiPlugin/save`)) &&  <Col span={6} key={"add-card"} xs={24} sm={12} md={8} lg={7} >
-							<Card
-								style={{
-									height: '100%',
-									display: 'flex',
-									flexDirection: 'row',
-									cursor: 'pointer',
-									border: '1px solid #0066FF',
-								}}
-								bodyStyle={{
-									flex: 1,
-									display: 'flex',
-									alignItems: 'center',
-									justifyContent: 'center',
-									padding: '24px',
-								}}
-								actions={[]}
-								onClick={() => {
-									setAddPluginIsOpen(true)
-								}}
-							>
-								<Image
-									src={addCardIcon}
-									preview={false}
-									style={{
-										height: '20px',
-										width: '20px',
-										borderRadius: '50%',
-										marginRight: '10px'
-									}}
-								/>
-								<span style={{fontSize: '16px', color: '#0066FF '}}>{"创建插件"}</span>
-							</Card>
-						</Col>
-					}
+
 					{loading ? (
 						<div style={{ display: 'flex', flexDirection: 'row',  justifyContent: 'center',
 							alignItems: 'center',  height: '100%', width: '100%' }}>
@@ -656,7 +633,7 @@ const Plugin: React.FC = () => {
 								}
 							>
 
-								{useCheckPermission(`/api/v1/aiPlugin/save`) && (
+								{hasSavePermission && (
 									<Button  style={{borderColor: '#0066FF', color: '#0066FF', width: '195px', height: '48px'}}
 											 onClick={() => {
 												 setAddPluginIsOpen(true)
