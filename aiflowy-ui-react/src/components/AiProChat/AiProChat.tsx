@@ -1,5 +1,7 @@
 import React, {useLayoutEffect, useMemo, useRef, useState} from 'react';
 import {
+    Attachments,
+    AttachmentsProps,
     Bubble,
     Prompts,
     Sender,
@@ -7,13 +9,15 @@ import {
     ThoughtChainItem,
     Welcome
 } from '@ant-design/x';
-import {Button, GetProp, GetRef, message, Space, Spin, Typography} from 'antd';
+import {Badge, Button, GetProp, GetRef, Image, message, Space, Spin, Typography, UploadFile} from 'antd';
 import {
+    CloudUploadOutlined,
     CopyOutlined,
-    FolderAddOutlined,
+    FolderAddOutlined, LinkOutlined,
     OpenAIOutlined,
     SyncOutlined,
-    UserOutlined
+    UserOutlined,
+    PictureOutlined
 } from '@ant-design/icons';
 // import ReactMarkdown from 'react-markdown';
 // import remarkGfm from 'remark-gfm';
@@ -31,6 +35,7 @@ const fooAvatar: React.CSSProperties = {
 export type ChatMessage = {
     id: string;
     content: string;
+    files?:Array<string>;
     role: 'user' | 'assistant' | 'aiLoading' | string;
     created: number;
     updateAt?: number;
@@ -73,12 +78,14 @@ export type AiProChatProps = {
     onCustomEventComplete?: EventHandler;
 };
 
-export const RenderMarkdown: React.FC<{ content: string }> = ({content}) => {
+export const RenderMarkdown: React.FC<{ content: string,fileList?:Array<string> }> = ({content,fileList}) => {
 
     const md = markdownit({html: true, breaks: true});
-
     return (
         <Typography>
+            {fileList && fileList.length && fileList.map(file => {
+                return <Image height={50} src={file}></Image>
+            })}
             {/* biome-ignore lint/security/noDangerouslySetInnerHtml: used in demo */}
             <div dangerouslySetInnerHTML={{__html: md.render(content)}}/>
         </Typography>
@@ -324,14 +331,16 @@ export const AiProChat = ({
 
         const messageContent = newMessage?.trim() || content.trim();
 
-        // if (!messageContent && !fileUrlList.length) return;
 
         setSendLoading(true);
         setIsStreaming(true);
 
+        const files = fileUrlList.map(file => file.url);
+
         const userMessage: ChatMessage = {
             role: 'user',
             id: Date.now().toString(),
+            files:files,
             content: messageContent,
             created: Date.now(),
             updateAt: Date.now(),
@@ -347,10 +356,14 @@ export const AiProChat = ({
         };
 
         const temp = [userMessage, aiMessage];
+
+
         setChats?.((prev: ChatMessage[]) => [...(prev || []), ...temp]);
         setTimeout(scrollToBottom, 50);
         setContent('');
-        // setFileItems([]);
+        setFileItems([]);
+        setFileUrlList([]);
+        setHeaderOpen(false)
 
         try {
             const response = await request([...(chats || []), userMessage]);
@@ -763,7 +776,7 @@ export const AiProChat = ({
                                             await navigator.clipboard.writeText(chat.content);
                                             message.success('复制成功');
                                         } catch (error) {
-                                            console.log(error);
+                                            console.error(error);
                                             message.error('复制失败');
                                         }
                                     }}
@@ -793,9 +806,9 @@ export const AiProChat = ({
                             )}
 
                             {/* 🌟 渲染主要内容 */}
-                            <RenderMarkdown content={chat.content}/>
+                            <RenderMarkdown content={chat.content} fileList={chat.files}/>
                         </div>
-                    ) : chat.content,
+                    ) : <RenderMarkdown content={chat.content} fileList={chat.files}/>,
                     avatar: chat.role === 'assistant' ? (
                         <img
                             src={botAvatar}
@@ -832,123 +845,124 @@ export const AiProChat = ({
 
     const senderRef = React.useRef<GetRef<typeof Sender>>(null);
 
-    // const [headerOpen, setHeaderOpen] = React.useState(false);
-    // const [fileItems, setFileItems] = React.useState<GetProp<AttachmentsProps, 'items'>>([]);
-    // const [fileUrlList, setFileUrlList] = useState<Array<{ uid: string, url: string }>>([])
-    //
-    // const {doPost: uploadFile} = usePost("/api/v1/commons/uploadPrePath");
-    //
-    // const imageExtensions = [
-    //     '.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp',
-    //     '.svg', '.ico', '.tiff', '.tif', '.avif', '.heic', '.heif'
-    // ];
+    const [headerOpen, setHeaderOpen] = React.useState(false);
+    const [fileItems, setFileItems] = React.useState<GetProp<AttachmentsProps, 'items'>>([]);
+    const [fileUrlList, setFileUrlList] = useState<Array<{ uid: string, url: string }>>([])
 
-    // const senderHeader = (
-    //     <Sender.Header
-    //         title={"文件上传"}
-    //         open={headerOpen}
-    //         onOpenChange={setHeaderOpen}
-    //         styles={{
-    //             content: {
-    //                 padding: 0,
-    //             },
-    //         }}
-    //     >
-    //         <Attachments
-    //             items={fileItems}
-    //             overflow={"scrollX"}
-    //             customRequest={async ({file, onSuccess}) => {
-    //
-    //                 const uFile = file as UploadFile;
-    //
-    //                 const fileData = new FormData();
-    //                 fileData.append("file", file)
-    //
-    //
-    //                 try {
-    //                     const resp = await uploadFile({
-    //                         params: {
-    //                             prePath: "aibot/files/"
-    //                         },
-    //                         data: fileData
-    //                     })
-    //
-    //                     if (resp.data.errorCode !== 0) {
-    //                         setFileItems((prev) => {
-    //                             return prev.filter(fileItem => fileItem.originFileObj?.uid !== uFile.uid);
-    //                         })
-    //                         return;
-    //                     }
-    //
-    //                     const uid: string = uFile.uid;
-    //                     const url: string = resp.data.data as string;
-    //
-    //                     const fileUrlObj = {uid, url}
-    //
-    //                     setFileUrlList((prev) => {
-    //                         const fileUrlList = [];
-    //                         prev.forEach(fileUrl => fileUrlList.push(fileUrl))
-    //                         fileUrlList.push(fileUrlObj)
-    //                         return fileUrlList;
-    //                     })
-    //                     onSuccess?.(resp.data.data, file)
-    //                 } catch (e) {
-    //                     setFileItems((prev) => {
-    //                         return prev.filter(fileItem => fileItem.originFileObj?.uid !== uFile.uid);
-    //                     })
-    //                 }
-    //
-    //             }}
-    //             onChange={({file, fileList}) => {
-    //
-    //                 const isAdd = fileItems.length < fileList.length
-    //
-    //                 const isDelete = fileItems.length > fileList.length
-    //
-    //
-    //                 if (isAdd) {
-    //                     const extension = file.name.toLowerCase().substring(file.name.lastIndexOf("."));
-    //
-    //                     if (!imageExtensions.includes(extension)) {
-    //                         message.error("仅支持图片文件!")
-    //                         return;
-    //                     }
-    //
-    //                 }
-    //
-    //                 if (isDelete){
-    //                     setFileUrlList((prev) => {
-    //                         const newFileUrlList: { uid: string; url: string; }[] = [];
-    //                         prev.forEach(fileUrl => {
-    //                             if (fileUrl.uid !== file.originFileObj?.uid) {
-    //                                 newFileUrlList.push(fileUrl)
-    //                             }
-    //                         })
-    //                         return newFileUrlList
-    //                     })
-    //                 }
-    //
-    //
-    //
-    //                 setFileItems(fileList)
-    //
-    //
-    //             }}
-    //             placeholder={(type) =>
-    //                 type === 'drop'
-    //                     ? {
-    //                         title: 'Drop file here',
-    //                     }
-    //                     : {
-    //                         icon: <CloudUploadOutlined/>,
-    //                         title: 'Upload files',
-    //                         description: 'Click or drag files to this area to upload',
-    //                     }
-    //             }
-    //             getDropContainer={() => senderRef.current?.nativeElement}
-    //         />
-    //     </Sender.Header>
-    // )
+    const {doPost: uploadFile} = usePost("/api/v1/commons/uploadPrePath");
+
+    const imageExtensions = [
+        '.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp',
+        '.svg', '.ico', '.tiff', '.tif', '.avif', '.heic', '.heif'
+    ];
+
+    const senderHeader = (
+        <Sender.Header
+            title={"文件上传"}
+            open={headerOpen}
+            onOpenChange={setHeaderOpen}
+            styles={{
+                content: {
+                    padding: 0,
+                },
+            }}
+        >
+            <Attachments
+                items={fileItems}
+                overflow={"scrollX"}
+                imageProps={{height:"100%",width:"100%"}}
+                customRequest={async ({file, onSuccess}) => {
+
+                    const uFile = file as UploadFile;
+
+                    const fileData = new FormData();
+                    fileData.append("file", file)
+
+
+                    try {
+                        const resp = await uploadFile({
+                            params: {
+                                prePath: "aibot/files/"
+                            },
+                            data: fileData
+                        })
+
+                        if (resp.data.errorCode !== 0) {
+                            setFileItems((prev) => {
+                                return prev.filter(fileItem => fileItem.originFileObj?.uid !== uFile.uid);
+                            })
+                            return;
+                        }
+
+                        const uid: string = uFile.uid;
+                        const url: string = resp.data.data as string;
+
+                        const fileUrlObj = {uid, url}
+
+                        setFileUrlList((prev) => {
+                            const fileUrlList = [];
+                            prev.forEach(fileUrl => fileUrlList.push(fileUrl))
+                            fileUrlList.push(fileUrlObj)
+                            return fileUrlList;
+                        })
+                        onSuccess?.(resp.data.data, file)
+                    } catch (e) {
+                        setFileItems((prev) => {
+                            return prev.filter(fileItem => fileItem.originFileObj?.uid !== uFile.uid);
+                        })
+                    }
+
+                }}
+                onChange={({file, fileList}) => {
+
+                    const isAdd = fileItems.length < fileList.length
+
+                    const isDelete = fileItems.length > fileList.length
+
+
+                    if (isAdd) {
+                        const extension = file.name.toLowerCase().substring(file.name.lastIndexOf("."));
+
+                        if (!imageExtensions.includes(extension)) {
+                            message.error("仅支持图片文件!")
+                            return;
+                        }
+
+                    }
+
+                    if (isDelete){
+                        setFileUrlList((prev) => {
+                            const newFileUrlList: { uid: string; url: string; }[] = [];
+                            prev.forEach(fileUrl => {
+                                if (fileUrl.uid !== file.originFileObj?.uid) {
+                                    newFileUrlList.push(fileUrl)
+                                }
+                            })
+                            return newFileUrlList
+                        })
+                    }
+
+
+
+                    setFileItems(fileList)
+
+
+                }}
+                placeholder={(type) =>
+                    type === 'drop'
+                        ? {
+                            title: 'Drop file here',
+                        }
+                        : {
+                            icon: <PictureOutlined />,
+                            title: '上传文件',
+                            description: '点击或拖拽上传，目前仅支持图片',
+                        }
+                }
+                getDropContainer={() => senderRef.current?.nativeElement}
+            />
+        </Sender.Header>
+    )
 
 
     const mediaStreamRef = useRef<MediaStream | null>(null);
@@ -999,7 +1013,6 @@ export const AiProChat = ({
             source.connect(processor);
             processor.connect(audioContext.destination);
 
-            console.log('PCM录音开始');
 
         } catch (error) {
             console.error('录制启动失败:', error);
@@ -1074,8 +1087,6 @@ export const AiProChat = ({
             const response = await voiceInput({
                 data:formData
             })
-
-            console.log(response)
 
             return response;
 
@@ -1212,12 +1223,12 @@ export const AiProChat = ({
                     }}
                     loading={sendLoading || isStreaming}
                     disabled={inputDisabled}
-                    // header={senderHeader}
-                    // prefix={
-                    //     <Badge dot={fileItems.length > 0 && !headerOpen}>
-                    //         <Button onClick={() => setHeaderOpen(!headerOpen)} icon={<LinkOutlined/>}/>
-                    //     </Badge>
-                    // }
+                    header={senderHeader}
+                    prefix={
+                        <Badge dot={fileItems.length > 0 && !headerOpen}>
+                            <Button onClick={() => setHeaderOpen(!headerOpen)} icon={<LinkOutlined/>}/>
+                        </Badge>
+                    }
                     actions={(_, info) => {
 
 

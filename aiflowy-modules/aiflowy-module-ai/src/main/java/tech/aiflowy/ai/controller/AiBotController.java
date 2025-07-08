@@ -25,9 +25,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alicp.jetcache.Cache;
 import com.mybatisflex.core.query.QueryWrapper;
-import okhttp3.Headers;
-import okhttp3.Request;
-import okhttp3.WebSocketListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,7 +60,6 @@ import java.io.IOException;
 import java.math.BigInteger;
 import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 import com.agentsflex.core.llm.client.OkHttpClientUtil;
 import okhttp3.OkHttpClient;

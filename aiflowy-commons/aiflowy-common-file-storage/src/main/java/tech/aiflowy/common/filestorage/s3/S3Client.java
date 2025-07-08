@@ -139,9 +139,7 @@ public class S3Client {
         String path = generatePath(content, name);
         String baseUrl = properties.getEndpoint() + "/" + properties.getBucketName() + "/";
 
-        if (StringUtils.hasValue(properties.getPrefix())) {
-            path = properties.getPrefix()  + path;
-        }
+
 
         if (StringUtils.hasValue(prePath)) {
 
@@ -156,6 +154,11 @@ public class S3Client {
 
             path = prePath + "/" + path;
         }
+
+        if (StringUtils.hasValue(properties.getPrefix())) {
+            path =  (properties.getPrefix().endsWith("/") ? properties.getPrefix() : properties.getPrefix() + "/") + path ;
+        }
+
         String completeUrl = baseUrl + path;
         upload(content, path, file.getContentType());
         return completeUrl;
@@ -165,7 +168,7 @@ public class S3Client {
         byte[] bytes = Files.readAllBytes(file.toPath());
         String name = file.getName();
         String hashName = generatePath(bytes,name);
-        String completeUrl = (StringUtils.hasValue(prePath) ? prePath + "/" : "") + hashName;
+        String completeUrl = (StringUtils.hasValue(prePath) ? prePath + "/" : "/") + hashName;
         upload(bytes,completeUrl,Files.probeContentType(file.toPath()));
         return generateAccessUrl(completeUrl);
     }
