@@ -12,7 +12,7 @@ export type CardItemProps = {
 
 export const CardItem: React.FC<CardItemProps> = (props) => {
 
-    const getResourceTypeTag = (item: any)=> {
+    const getResourceTypeTag = (item: any) => {
         let res;
         switch (item.resourceType) {
             case 0:
@@ -34,8 +34,8 @@ export const CardItem: React.FC<CardItemProps> = (props) => {
         return res;
     }
 
-    const getOringTypeTag = (item: any)=> {
-        let res ;
+    const getOringTypeTag = (item: any) => {
+        let res;
         switch (item.origin) {
             case 0:
                 res = <Tag color="#E6FEFC"><span style={{color: "#00B8A9"}}>系统上传</span></Tag>
@@ -68,21 +68,30 @@ export const CardItem: React.FC<CardItemProps> = (props) => {
         return res;
     }
 
-    return(
+    return (
         <>
-            <Card hoverable style={{
-                marginBottom: "24px",
-                borderRadius: "0",
-                padding: "-12px -12px -12px -16px"
-            }}>
+            <Card
+                hoverable
+                style={{
+                    marginBottom: "24px",
+                    borderRadius: "0",
+                }} styles={{
+                body: {padding: '12px 12px 16px 12px'},
+            }}
+            >
                 <div className={"card-item-content"}
-                onClick={()=>{
-                    props.onPreview(props.item)
-                }}>
-                    {props.item.resourceType === 0 && <img src={props.item.resourceUrl} style={{width: "100%", height: "100%",borderRadius: "8px"}} />}
-                    {props.item.resourceType !== 0 && <img src={getSrc(props.item)} style={{width: "100px", height: "100px"}} />}
+                     onClick={() => {
+                         props.onPreview(props.item)
+                     }}>
+                    {props.item.resourceType === 0 && <img src={props.item.resourceUrl} style={{
+                        width: "100%",
+                        height: "100%",
+                        borderRadius: "8px"
+                    }}/>}
+                    {props.item.resourceType !== 0 &&
+                        <img src={getSrc(props.item)} style={{width: "100px", height: "100px"}}/>}
                 </div>
-                <div style={{marginTop: "10px",marginBottom: "12px"}}>
+                <div style={{marginTop: "10px", marginBottom: "12px"}}>
                     <Tooltip title={props.item.resourceName}>
                         <div style={{
                             whiteSpace: "nowrap",

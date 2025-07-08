@@ -2,6 +2,7 @@ package tech.aiflowy.ai.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaIgnore;
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.IoUtil;
@@ -22,7 +23,9 @@ import tech.aiflowy.ai.entity.AiWorkflow;
 import tech.aiflowy.ai.service.AiLlmService;
 import tech.aiflowy.ai.service.AiWorkflowService;
 import tech.aiflowy.common.ai.MySseEmitter;
+import tech.aiflowy.common.constant.Constants;
 import tech.aiflowy.common.domain.Result;
+import tech.aiflowy.common.satoken.util.SaTokenUtil;
 import tech.aiflowy.common.web.controller.BaseCurdController;
 import tech.aiflowy.common.web.jsonbody.JsonBody;
 import tech.aiflowy.system.service.SysApiKeyService;
@@ -111,6 +114,10 @@ public class AiWorkflowController extends BaseCurdController<AiWorkflowService, 
         Tinyflow tinyflow = workflow.toTinyflow();
         Chain chain = tinyflow.toChain();
 
+        if (StpUtil.isLogin()) {
+            chain.getMemory().put(Constants.LOGIN_USER_KEY, SaTokenUtil.getLoginAccount());
+        }
+
         Map<String, Object> result = chain.executeForResult(variables);
 
         return Result.success("result", result).set("message", chain.getMessage());
@@ -134,6 +141,10 @@ public class AiWorkflowController extends BaseCurdController<AiWorkflowService, 
 
         Tinyflow tinyflow = workflow.toTinyflow();
         Chain chain = tinyflow.toChain();
+
+        if (StpUtil.isLogin()) {
+            chain.getMemory().put(Constants.LOGIN_USER_KEY, SaTokenUtil.getLoginAccount());
+        }
 
         JSONObject json = new JSONObject();
 
@@ -247,6 +258,11 @@ public class AiWorkflowController extends BaseCurdController<AiWorkflowService, 
         currentNode.setOutwardEdges(null);
         fixParamType(nodes, currentNode);
         Chain chain = new Chain();
+
+        if (StpUtil.isLogin()) {
+            chain.getMemory().put(Constants.LOGIN_USER_KEY, SaTokenUtil.getLoginAccount());
+        }
+
         chain.addNode(currentNode);
         Map<String, Object> res = chain.executeForResult(variables);
         return Result.success(res);

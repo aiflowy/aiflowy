@@ -261,6 +261,27 @@ export const SysJobModal: React.FC<SysJobModalProps> = forwardRef((props, ref) =
                                 </Form.Item>
                             )
                         })}
+
+                        <Form.Item
+                            extra={"某些场景需要对任务结果进行数据归属"}
+                            label="归属者"
+                            name={["jobParams", "accountId"]}
+                        >
+                            <DictSelect
+                                style={{width: '100%'}}
+                                code={"sysAccount"}
+                                initvalue={formData?.jobParams?.accountId}
+                                onChange={(v) => {
+                                    setFormData({
+                                        ...formData,
+                                        jobParams: {
+                                            ...formData.jobParams,
+                                            accountId: v
+                                        }
+                                    })
+                                }}
+                            />
+                        </Form.Item>
                     </Form>
                 </Spin>
             </Modal>

@@ -73,12 +73,15 @@ public class TinyFlowConfigService {
         PluginToolNodeParser pluginToolNodeParser = new PluginToolNodeParser();
         // SQL查询
         SqlNodeParser sqlNodeParser = new SqlNodeParser();
+        // 下载文件节点
+        DownloadNodeParser downloadNodeParser = new DownloadNodeParser(storageService);
 
         ChainParser chainParser = tinyflow.getChainParser();
         chainParser.addNodeParser(docNodeParser.getNodeName(), docNodeParser);
         chainParser.addNodeParser(makeFileNodeParser.getNodeName(), makeFileNodeParser);
         chainParser.addNodeParser(pluginToolNodeParser.getNodeName(), pluginToolNodeParser);
         chainParser.addNodeParser(sqlNodeParser.getNodeName(), sqlNodeParser);
+        chainParser.addNodeParser(downloadNodeParser.getNodeName(), downloadNodeParser);
     }
 
     public void setSearchEngineProvider(Tinyflow tinyflow) {

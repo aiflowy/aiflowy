@@ -1,0 +1,31 @@
+.tree-item {
+    display: flex;
+    align-items: center;              /* 垂直居中 */
+    justify-content: flex-start;      /* 默认靠左排列 */
+    gap: 8px;                         /* 图标与文字间距 */
+    padding: 4px 4px 4px 16px;                /* 内边距 */
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    height: 40px;
+    box-sizing: border-box;
+}
+
+/* 折叠时：只显示图标并居中 */
+.tree-item.collapsed-only-icon {
+    justify-content: center;          /* 水平居中 */
+    gap: 0;                           /* 折叠时不需要间距 */
+    padding: 4px 0;                   /* 调整内边距使图标更居中 */
+}
+
+.tree-item:hover {
+    background-color: #f5f5f5;
+}
+
+.tree-item-selected {
+    background-color: #E6F4FF;
+}
+
+.header-container .ant-card-head{
+    border-bottom: 0;
+}

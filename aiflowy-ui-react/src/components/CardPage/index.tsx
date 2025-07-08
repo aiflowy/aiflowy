@@ -99,6 +99,9 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
     const pageNumber = +(urlParams.pageNumber || ((result?.data) as Page<any>)?.pageNumber || 1)
     let pageSize = +(urlParams.pageSize || ((result?.data) as Page<any>)?.pageSize || defaultPageSize)
 
+    const [localPageSize, setLocalPageSize] = useState(
+        +(urlParams.pageSize || ((result?.data) as Page<any>)?.pageSize || defaultPageSize)
+    );
 
     const [localPageNumber, setLocalPageNumber] = useState(pageNumber)
     const [searchParams, setSearchParams] = useState(urlParams)
@@ -129,18 +132,15 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
         setEditData(null)
     }
 
-
     useEffect(() => {
         doGet({
             params: {
                 ...searchParams,
                 pageNumber: localPageNumber,
-                pageSize,
+                pageSize: localPageSize, // 使用状态值
             }
         })
-    }, [localPageNumber, searchParams])
-
-
+    }, [localPageNumber, localPageSize, searchParams])
 
 
     const buildActions = (item:any) => {
@@ -292,12 +292,22 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
                             showSizeChanger
                             align="center"
                             defaultCurrent={1}
+                            current={localPageNumber}
                             pageSizeOptions={["12", "24", "48", "96"]}
                             total={result?.data?.totalRow}
-                            pageSize={pageSize}
+                            pageSize={localPageSize}
                             hideOnSinglePage={true}
-                            onChange={(page) => {
+                            onChange={(page, size) => {
                                 setLocalPageNumber(page)
+                                if (size !== localPageSize) {
+                                    setLocalPageSize(size)
+                                    setUrlParams({...urlParams, pageSize: size})
+                                }
+                            }}
+                            onShowSizeChange={(_, size) => {
+                                setLocalPageSize(size)
+                                setLocalPageNumber(1) // 通常改变每页条数会回到第一页
+                                setUrlParams({...urlParams, pageSize: size, pageNumber: 1})
                             }}
                         />
                     </div>}

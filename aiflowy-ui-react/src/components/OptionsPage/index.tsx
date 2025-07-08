@@ -34,19 +34,21 @@ const OptionsPage: React.FC<Props> = ({children, style}) => {
 
 
     return (
-        <div style={{padding: "30px", ...style}}>
+        <div style={{padding: "30px 143px 30px 143px", ...style}}>
             <Form
-                labelCol={{span: 4}}
-                wrapperCol={{span: 12}}
                 layout="horizontal"
                 form={form}
+                labelCol={{span: 2}}
+                wrapperCol={{span: 22}}
                 onFinish={onFinish}
             >
                 {children}
+                <div style={{display: "flex", justifyContent: "flex-end", marginTop: "20px"}}>
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit" loading={loading}>保存</Button>
+                    </Form.Item>
+                </div>
 
-                <Form.Item wrapperCol={{span: 14, offset: 4}}>
-                    <Button type="primary" htmlType="submit" loading={loading}>保存</Button>
-                </Form.Item>
             </Form>
         </div>
     );

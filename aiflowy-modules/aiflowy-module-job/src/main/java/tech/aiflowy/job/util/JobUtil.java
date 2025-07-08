@@ -4,15 +4,20 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
 import com.agentsflex.core.chain.Chain;
 import com.alibaba.fastjson2.JSONObject;
+import com.mybatisflex.core.tenant.TenantManager;
 import dev.tinyflow.core.Tinyflow;
 import org.quartz.JobKey;
 import org.quartz.TriggerKey;
 import tech.aiflowy.ai.entity.AiWorkflow;
 import tech.aiflowy.ai.service.AiWorkflowService;
+import tech.aiflowy.common.constant.Constants;
 import tech.aiflowy.common.constant.enums.EnumJobType;
+import tech.aiflowy.common.entity.LoginAccount;
 import tech.aiflowy.common.util.SpringContextUtil;
 import tech.aiflowy.job.entity.SysJob;
 import tech.aiflowy.job.job.JobConstant;
+import tech.aiflowy.system.entity.SysAccount;
+import tech.aiflowy.system.service.SysAccountService;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -69,11 +74,30 @@ public class JobUtil {
         String workflowId = obj.getString(JobConstant.WORKFLOW_KEY);
         JSONObject params = obj.getJSONObject(JobConstant.WORKFLOW_PARAMS_KEY);
         AiWorkflowService service = SpringContextUtil.getBean(AiWorkflowService.class);
-        AiWorkflow workflow = service.getById(workflowId);
-        if (workflow != null) {
-            Tinyflow tinyflow = workflow.toTinyflow();
-            Chain chain = tinyflow.toChain();
-            return chain.executeForResult(params);
+
+        Object accountId = obj.get(JobConstant.ACCOUNT_ID);
+        SysAccountService accountService = SpringContextUtil.getBean(SysAccountService.class);
+
+        try {
+            TenantManager.ignoreTenantCondition();
+
+            AiWorkflow workflow = service.getById(workflowId);
+            if (workflow != null) {
+                Tinyflow tinyflow = workflow.toTinyflow();
+                Chain chain = tinyflow.toChain();
+
+                if (accountId != null) {
+                    // 设置的归属者
+                    SysAccount account = accountService.getById(accountId.toString());
+                    if (account != null) {
+                        chain.getMemory().put(Constants.LOGIN_USER_KEY,account.toLoginAccount());
+                    }
+                }
+
+                return chain.executeForResult(params);
+            }
+        } finally {
+            TenantManager.restoreTenantCondition();
         }
         return null;
     }

@@ -6,7 +6,7 @@ import CrudPage from "../../components/CrudPage";
 import {EditLayout} from "../../components/AntdCrud/EditForm.tsx";
 import {useLocation} from "react-router-dom";
 import {useLayout} from "../../hooks/useLayout.tsx";
-import {Button} from "antd";
+import {Button, Tooltip} from "antd";
 import {ArrowLeftOutlined} from "@ant-design/icons";
 
 
@@ -28,7 +28,7 @@ const columnsConfig: ColumnsConfig<any> = [
 		dataIndex: "jobName",
 		title: "任务名称",
 		key: "jobName",
-		width: "100px"
+		width: "120px"
 	},
 
 	{
@@ -38,7 +38,19 @@ const columnsConfig: ColumnsConfig<any> = [
 		dataIndex: "jobParams",
 		title: "任务参数",
 		key: "jobParams",
-		width: "200px"
+		render: (_,item) => {
+			return (
+				<Tooltip title={item.jobParams}>
+					<div style={{
+						whiteSpace: "nowrap",
+						overflow: "hidden",
+						textOverflow: "ellipsis",
+						maxWidth: "260px",
+						display: "inline-block",
+					}}>{item.jobParams}</div>
+				</Tooltip>
+			)
+		}
 	},
 
 	{
@@ -48,7 +60,19 @@ const columnsConfig: ColumnsConfig<any> = [
 		dataIndex: "jobResult",
 		title: "执行结果",
 		key: "jobResult",
-		width: "100px"
+		render: (_,item) => {
+			return (
+				<Tooltip title={item.jobResult}>
+					<div style={{
+						whiteSpace: "nowrap",
+						overflow: "hidden",
+						textOverflow: "ellipsis",
+						maxWidth: "260px",
+						display: "inline-block",
+					}}>{item.jobResult}</div>
+				</Tooltip>
+			)
+		}
 	},
 
 	{

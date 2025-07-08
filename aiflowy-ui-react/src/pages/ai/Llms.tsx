@@ -1,8 +1,9 @@
 import React, {useState} from 'react';
-import TreePage from "../../components/TreePage";
+import TreeClassifiedPage from "../../components/TreeClassifiedPage";
 import CrudPage from "../../components/CrudPage";
 import {ColumnsConfig} from "../../components/AntdCrud";
-import {Tag} from "antd";
+import { Tag} from "antd";
+import CustomLeftArrowIcon from "../../components/CustomIcon/CustomLeftArrowIcon.tsx";
 
 
 const columns: ColumnsConfig<any> = [
@@ -198,7 +199,8 @@ const Llms: React.FC<{ paramsToUrl: boolean }> = () => {
     const [groupId, setGroupId] = useState('')
 
     return (
-        <TreePage treeTableAlias="aiLlmBrand"
+        <TreeClassifiedPage treeTableAlias="aiLlmBrand"
+                  treeCardTitle={"接入平台"}
                   treeEditable={false}
                   treeTitleIconRender={(item) => {
                       if (typeof item.icon === "string" && (item.icon.startsWith("http") || item.icon.startsWith("/"))) {
@@ -208,10 +210,13 @@ const Llms: React.FC<{ paramsToUrl: boolean }> = () => {
                           ? item.icon
                           : <div dangerouslySetInnerHTML={{__html: item.icon || ""}} style={{padding: "3px"}}/>
                   }}
+                  treeCardExtra={
+                    <CustomLeftArrowIcon/>
+                  }
                   onTreeSelect={setGroupId}>
             <CrudPage columnsConfig={columns} tableAlias="aiLlm" params={{brand: groupId}} key={groupId}
                       editLayout={{openType: "modal"}}/>
-        </TreePage>
+        </TreeClassifiedPage>
     )
 };
 

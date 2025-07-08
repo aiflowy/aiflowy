@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
-	ClusterOutlined,
 	EditOutlined,
 	EllipsisOutlined,
-	MenuUnfoldOutlined,
 	MinusCircleOutlined,
 	PlusOutlined,
 	QuestionCircleOutlined,
@@ -39,6 +37,10 @@ import CustomDeleteIcon from "../../../components/CustomIcon/CustomDeleteIcon.ts
 import "../../../components/CardPage/card_page.less"
 import {useCheckPermission} from "../../../hooks/usePermissions.tsx";
 import {useBreadcrumbRightEl} from "../../../hooks/useBreadcrumbRightEl.tsx";
+import Sider from "antd/es/layout/Sider";
+import Layout from "antd/es/layout/layout";
+import CustomToolIcon from "../../../components/CustomIcon/CustomToolIcon.tsx";
+import CustomClassifyIcon from "../../../components/CustomIcon/CustomClassifyIcon.tsx";
 
 interface Category {
 	id: number;
@@ -230,6 +232,8 @@ const Plugin: React.FC = () => {
 	const hasRemovePermission = useCheckPermission('/api/v1/aiPlugin/remove')
 	const hasSavePermission = useCheckPermission('/api/v1/aiPlugin/save')
 
+	const [collapsed] = useState(false);
+
 	// 设置面包屑右侧按钮
 	useBreadcrumbRightEl(
 		<>
@@ -399,33 +403,91 @@ const Plugin: React.FC = () => {
 		});
 	};
 	return (
-		<div style={{  width: '100%', display: 'flex', flexDirection: 'row'}}>
+		<Layout
+			style={{background: "#f5f5f5", height: "100%", width: '100%'}}
+		>
+
+			<div style={{  width: '100%', display: 'flex', flexDirection: 'row'}}>
 			{/* 左侧分类导航 */}
-			<div style={{ width: 240, paddingLeft: 8, paddingRight: 8, paddingTop: 16, borderRight: '1px solid #e8e8e8', backgroundColor: '#f8f9fa'}}>
-				<div style={{ backgroundColor: "white", height: '100%'}}>
 
-				<Button  block icon={<PlusOutlined />} onClick={openAddCategoryModal} style={{ marginBottom: 16 }}>
-					新增分类
-				</Button>
-					{loadingCategories? (
+			<Sider style={{background: "white",  borderRadius: '8px 8px 8px 8px', height: "100%"}} width={220}  className="header-container"
+					   collapsed={collapsed}>
+					<Card title='插件'
+						  bordered={false}
+						  style={{
+							  height: "100%",
+							  borderRadius: '8px 8px 8px 8px'
+						  }}
+						  styles={{
+							  body: {
+							  }
+						  }}
+						  extra={<Space>
+							  <div style={{width: "100%", display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", gap: "10px"}}>
+								  {!collapsed &&
+									  <>
+                                 		 <Button size={"small"} onClick={openAddCategoryModal}>
+											 新增分类
+										 </Button>
 
-						<div style={{   width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-							<Spin spinning={loadingCategories} />
-						</div>
-					):(
-						<div style={{}}>
-					{categories.map((cat) => (
-						<div
-							key={cat.id}
-							className={`category-item ${selectedCategoryId === cat.id ? 'selected' : ''}`}
-							style={{ position: 'relative'}}
-							onClick={() => handleSelectCategory(cat.id)}
-						>
-								<span  style={{ cursor: 'pointer', flex: 1 }}>
-        						{cat.name}
-      							</span>
-							{
-								cat.id != 0 ? <span style={{position: 'absolute', right: '10px'}}>
+									  </>
+
+								  }
+
+								  {/*{*/}
+									{/*  collapsed ?*/}
+									{/*	  (*/}
+									{/*		  <span onClick={() => setCollapsed(!collapsed)} style={{cursor: "pointer"}}>*/}
+                                  {/*       <DoubleRightOutlined />*/}
+                                  {/*    </span>*/}
+									{/*	  )*/}
+									{/*	  :*/}
+									{/*	  (*/}
+									{/*		  <span onClick={() => setCollapsed(!collapsed)} style={{cursor: "pointer"}}>*/}
+                                  {/*             <DoubleLeftOutlined />*/}
+                                  {/*        </span>*/}
+									{/*	  )*/}
+
+								  {/*}*/}
+
+							  </div>
+						  </Space>}
+					>
+					<div style={{ backgroundColor: "white", height: '100%'}}>
+
+						{loadingCategories? (
+
+							<div style={{   width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+								<Spin spinning={loadingCategories} />
+							</div>
+						):(
+
+							<div>
+								{categories.map((cat) => (
+									<div
+										key={cat.id}
+										className={`category-item ${selectedCategoryId === cat.id ? 'selected' : ''}`}
+										style={{
+											position: 'relative',
+											// 新增样式：收起时限制宽度
+											width: collapsed ? '80px' : '100%',
+											whiteSpace: 'nowrap',
+											overflow: 'hidden',
+											textOverflow: collapsed ? 'ellipsis' : 'clip',
+										}}
+										onClick={() => handleSelectCategory(cat.id)}
+									>
+									<span style={{ cursor: 'pointer', flex: 1 }}>
+  									  {cat.name}
+  									</span>
+									{!collapsed && cat.id !== 0 && (
+									<span style={{ position: 'absolute', right: '10px' }}>
+  									    <Dropdown menu={{ /* ... */ }}>
+  									      <EllipsisOutlined style={{ fontSize: '18px', cursor: 'pointer' }} />
+  									    </Dropdown>
+  									  </span>
+										)}
+										{ !collapsed && cat.id != 0 ? <span style={{position: 'absolute', right: '10px'}}>
 										<Dropdown
 											menu={{
 												items: [
@@ -461,120 +523,91 @@ const Plugin: React.FC = () => {
 									/>
 								</Dropdown>
 								</span>
-									: ''
-							}
+												: ''
+										}
 
 
-						</div>
-					))}
-				</div>)}
+									</div>
+								))}
+							</div>)}
 
 
-				</div>
-			</div>
+					</div>
+					</Card>
+				</Sider>
 
 			{/* 右侧插件内容 */}
-			<div style={{ flex: 1}}>
+			<div style={{ flex: 1, maxWidth: 'calc(100% - 230px)'}}>
 				<SearchForm columns={columnsConfig} colSpan={6} onSearch={handleSearch} />
 				<Spin spinning={loading} >
-				<Row className={"card-row"} gutter={[16, 16]}>
+					<Row className={"card-row"} gutter={[16, 16]}>
 
-					{loading ? (
-						<div style={{ display: 'flex', flexDirection: 'row',  justifyContent: 'center',
-							alignItems: 'center',  height: '100%', width: '100%' }}>
+						{loading ? (
+							<div style={{ display: 'flex', flexDirection: 'row',  justifyContent: 'center',
+								alignItems: 'center',  height: '100%', width: '100%' }}>
 								<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} className={"empty-container"}/>
-						</div>
+							</div>
 
-					) : plugins.length > 0 ? (
+						) : plugins.length > 0 ? (
 
-						plugins.map((item: any) => (
-							<Col span={6} key={item.id}
-								 xs={24}  // 在超小屏幕下占满一行
-								 sm={12}  // 在小屏幕下每行显示2个
-								 md={8}   // 在中等屏幕下每行显示3个
-								 lg={7}   // 在大屏幕下每行显示4个（保持原来的span={6}效果）
-							>
-								<Card
-									style={{
-										height: '100%',
-										display: 'flex',
-										flexDirection: 'column',
-										cursor: 'pointer',
-									}}
-									className={"card-hover"}
-									actions={[
-										(hasSavePermission &&
-											<Space  onClick={() => {
-												navigate('/ai/pluginTool', {
-													state: {
-														id: item.id,
-														pluginTitle: item.name,
-													}
-												});
-											}}>
-												<MenuUnfoldOutlined title="工具列表" />
-												<span>工具</span>
-											</Space>
-										)
-
-									,
-										(
-											hasSavePermission &&
-											<Space onClick={() => {
-												setIsSaveOrUpdate(false);
-												form.setFieldsValue({
-													id: item.id,
-													icon: item.icon,
-													name: item.name,
-													description: item.description,
-													baseUrl: item.baseUrl,
-													headers: item.headers ? JSON.parse(item.headers) : [],
-													authData: item.authData,
-													authType: item.authType,
-													position: item.position,
-													tokenKey: item.tokenKey,
-													tokenValue: item.tokenValue,
-												});
-												setIconPath(item.icon);
-												setAuthType(item.authType);
-												setAddPluginIsOpen(true);
-											}} >
-												<EditOutlined key="edit" />
-												<span>编辑</span>
-											</Space>
-										)
-
-									,
-										<Dropdown menu={{
-											items: [
-												...(hasRemovePermission ? [	{
-													key: 'delete',
-													label: '删除',
-													icon: <CustomDeleteIcon />,
-													danger: true,
-													onClick: () => {
-														Modal.confirm({
-															title: '确定要删除吗?',
-															content: '此操作不可逆，请谨慎操作。',
-															onOk() {
-																doRemove({ data: { id: item.id } }).then((r) => {
-																	if (r.data.errorCode === 0) {
-																		message.success("删除成功！");
-																		doSearchPlugins({categoryId: 0});
-																	} else {
-																		message.error(r.data.message);
-																	}
-																});
-															},
+								plugins.map((item: any) => (
+									<Col span={6} key={item.id}
+										 xs={24}
+										 sm={12}
+										 md={8}
+										 lg={6}
+									>
+										<Card
+											style={{
+												height: '100%',
+												display: 'flex',
+												flexDirection: 'column',
+												cursor: 'pointer',
+											}}
+											className={"card-hover"}
+											actions={[
+												(hasSavePermission &&
+													<Space  onClick={() => {
+														navigate('/ai/pluginTool', {
+															state: {
+																id: item.id,
+																pluginTitle: item.name,
+															}
 														});
-													},
-												},] : []),
+													}}>
+														<CustomToolIcon/>
+														<span>工具</span>
+													</Space>
+												)
 
-												{
-													key: 'classify',
-													label: '归类',
-													icon: <ClusterOutlined/>,
-													onClick: () => {
+												,
+												(
+													hasSavePermission &&
+													<Space onClick={() => {
+														setIsSaveOrUpdate(false);
+														form.setFieldsValue({
+															id: item.id,
+															icon: item.icon,
+															name: item.name,
+															description: item.description,
+															baseUrl: item.baseUrl,
+															headers: item.headers ? JSON.parse(item.headers) : [],
+															authData: item.authData,
+															authType: item.authType,
+															position: item.position,
+															tokenKey: item.tokenKey,
+															tokenValue: item.tokenValue,
+														});
+														setIconPath(item.icon);
+														setAuthType(item.authType);
+														setAddPluginIsOpen(true);
+													}} >
+														<EditOutlined key="edit" />
+														<span>编辑</span>
+													</Space>
+												),
+												(hasSavePermission &&
+													<Space  onClick={() => {
 														setSelectedPluginId(item.id);
 														// 查询当前插件的分类
 														doGetPluginCategory({
@@ -593,74 +626,104 @@ const Plugin: React.FC = () => {
 															}
 														});
 
-													}
+													}}>
+														<CustomClassifyIcon/>
+														<span>归类</span>
+													</Space>
+												)
+												,
+												<Dropdown menu={{
+													items: [
+														...(hasRemovePermission ? [	{
+															key: 'delete',
+															label: '删除',
+															icon: <CustomDeleteIcon />,
+															danger: true,
+															onClick: () => {
+																Modal.confirm({
+																	title: '确定要删除吗?',
+																	content: '此操作不可逆，请谨慎操作。',
+																	onOk() {
+																		doRemove({ data: { id: item.id } }).then((r) => {
+																			if (r.data.errorCode === 0) {
+																				message.success("删除成功！");
+																				doSearchPlugins({categoryId: 0});
+																			} else {
+																				message.error(r.data.message);
+																			}
+																		});
+																	},
+																});
+															},
+														},] : []),
+
+													],
+												}}>
+
+													<EllipsisOutlined key="ellipsis" title="更多操作" />
+												</Dropdown>,
+											]}
+										>
+											<Card.Meta
+												avatar={<Avatar src={item.icon || "/src/assets/pluginIcon.png"} style={{width: '48px', height: '48px'}} />}
+												title={item.name}
+												description={
+													<Tooltip title={item.description}>
+														<div style={{
+															display: '-webkit-box',
+															WebkitLineClamp: 1,
+															WebkitBoxOrient: 'vertical',
+															overflow: 'hidden',
+															textOverflow: 'ellipsis',
+														}}>{item.description}</div>
+													</Tooltip>
 												}
-											],
-										}}>
-
-											<EllipsisOutlined key="ellipsis" title="更多操作" />
-										</Dropdown>,
-									]}
+											/>
+										</Card>
+									</Col>
+								))
+							)
+							:
+							(<>
+								<Empty
+									image={Empty.PRESENTED_IMAGE_SIMPLE}
+									className={"empty-container"}
+									description={
+										<Typography.Text style={{color: '#969799'}}>
+											{"暂无数据"}
+										</Typography.Text>
+									}
 								>
-									<Card.Meta
-										avatar={<Avatar src={item.icon || "/src/assets/pluginIcon.png"} style={{width: '48px', height: '48px'}} />}
-										title={item.name}
-										description={
-											<Tooltip title={item.description}>
-												<div style={{
-													display: '-webkit-box',
-													WebkitLineClamp: 1,
-													WebkitBoxOrient: 'vertical',
-													overflow: 'hidden',
-													textOverflow: 'ellipsis',
-												}}>{item.description}</div>
-											</Tooltip>
-										}
-									/>
-								</Card>
-							</Col>
-						))
-					)
-					:
-						(<>
-							<Empty
-								image={Empty.PRESENTED_IMAGE_SIMPLE}
-								className={"empty-container"}
-								description={
-									<Typography.Text style={{color: '#969799'}}>
-										{"暂无数据"}
-									</Typography.Text>
-								}
-							>
 
-								{hasSavePermission && (
-									<Button  style={{borderColor: '#0066FF', color: '#0066FF', width: '195px', height: '48px'}}
-											 onClick={() => {
-												 setAddPluginIsOpen(true)
-											 }}>
-										{"创建插件"}
-									</Button>
-								)}
+									{hasSavePermission && (
+										<Button  style={{borderColor: '#0066FF', color: '#0066FF', width: '195px', height: '48px'}}
+												 onClick={() => {
+													 setAddPluginIsOpen(true)
+												 }}>
+											{"创建插件"}
+										</Button>
+									)}
 
-							</Empty>
+								</Empty>
 
-						</>)
-					}
-				</Row>
+							</>)
+						}
+					</Row>
 
-				<Pagination
-					total={pagination.total}
-					align="center"
-					showTotal={(total) => `共 ${total} 条数据`}
-					onChange={(page, pageSize) => {
-						setPagination({ ...pagination, current: page, pageSize });
-						doSearchPlugins({ pageNumber: page, pageSize });
-					}}
-					current={pagination.current}
-					showQuickJumper={true}
-					defaultCurrent={1}
-					defaultPageSize={10}
-				/>
+					<Pagination
+						total={pagination.total}
+						align="center"
+						onChange={(page, pageSize) => {
+							setPagination({ ...pagination, current: page, pageSize });
+							doSearchPlugins({ pageNumber: page, pageSize });
+						}}
+						pageSizeOptions={["10", "20", "50", "100"]}
+						showSizeChanger={true}
+						hideOnSinglePage={true}
+						current={pagination.current}
+						defaultCurrent={1}
+						defaultPageSize={10}
+					/>
 				</Spin>
 			</div>
 
@@ -836,6 +899,8 @@ const Plugin: React.FC = () => {
 				</Form>
 			</Modal>
 		</div>
+
+		</Layout>
 	);
 };
 

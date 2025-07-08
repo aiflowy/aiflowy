@@ -1,5 +1,7 @@
 package tech.aiflowy.system.entity;
 
+import cn.hutool.core.bean.BeanUtil;
+import tech.aiflowy.common.entity.LoginAccount;
 import tech.aiflowy.system.entity.base.SysAccountBase;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.mybatisflex.annotation.RelationManyToMany;
@@ -56,5 +58,14 @@ public class SysAccount extends SysAccountBase {
     @JSONField(serialize = false)
     public String getPassword() {
         return super.getPassword();
+    }
+
+    /**
+     * 转为登录用户
+     */
+    public LoginAccount toLoginAccount() {
+        LoginAccount loginAccount = new LoginAccount();
+        BeanUtil.copyProperties(this, loginAccount);
+        return loginAccount;
     }
 }

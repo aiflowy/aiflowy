@@ -7,7 +7,7 @@ import {
 import CardPage from "../../components/CardPage";
 import {ColumnsConfig} from "../../components/AntdCrud";
 import {Space} from "antd";
-import noDataIcon from "../../../src/assets/noData.png"
+import noDataIcon from "../../assets/BotNoData.png"
 
 
 const columnsColumns: ColumnsConfig<any> = [

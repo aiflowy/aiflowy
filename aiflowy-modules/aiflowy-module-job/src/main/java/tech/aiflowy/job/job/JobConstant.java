@@ -9,4 +9,5 @@ public interface JobConstant {
     String JAVA_METHOD_KEY = "javaMethod";
     String WORKFLOW_KEY = "workflowId";
     String WORKFLOW_PARAMS_KEY = "workflowParams";
+    String ACCOUNT_ID = "accountId";
 }

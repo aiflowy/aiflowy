@@ -51,8 +51,8 @@ public class SysAccountController extends BaseCurdController<SysAccountService, 
     protected Result onSaveOrUpdateBefore(SysAccount entity, boolean isSave) {
         LoginAccount loginUser = SaTokenUtil.getLoginAccount();
         BigInteger tenantId = loginUser.getTenantId();
-        commonFiled(entity, loginUser.getId(), tenantId, loginUser.getDeptId());
         if (isSave) {
+            commonFiled(entity, loginUser.getId(), tenantId, loginUser.getDeptId());
             // 查询用户名是否存在
             // long count = Db.selectCount(SqlPrepare.COUNT_ACCOUNT_BY_UNI_KEY, entity.getLoginName(), tenantId);
             QueryWrapper w = QueryWrapper.create();

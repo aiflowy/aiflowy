@@ -1,0 +1,18 @@
+.settings-model-container{
+    padding: 24px;
+    border-radius: 8px;
+    background-color: #FFFFFF;
+}
+
+.settings-model-title{
+    font-family: PingFangSC, PingFang SC;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 22px;
+    text-align: left;
+    font-style: normal;
+}
+
+.settings-model-item{
+    margin-top: 29px;
+}

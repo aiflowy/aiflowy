@@ -235,4 +235,17 @@ DELETE FROM `tb_sys_menu` WHERE `id` = 269220820365377536;
 DELETE FROM `tb_sys_role_menu` WHERE `menu_id` = 269220820365377536;
 DELETE FROM `tb_sys_menu` WHERE `id` = 269221948243083264;
 DELETE FROM `tb_sys_role_menu` WHERE `menu_id` = 269221948243083264;
+
+---- 素材库相关菜单 start ----
+INSERT INTO `tb_sys_menu` (`id`, `parent_id`, `menu_type`, `menu_title`, `menu_url`, `component`, `menu_icon`, `is_show`, `permission_tag`, `sort_no`, `status`, `created`, `created_by`, `modified`, `modified_by`, `remark`, `is_deleted`) VALUES (300008008381800448, 259169540360232960, 0, '素材库', '/ai/aiResource', '', 'FolderOpenFilled', 1, '', 52, 0, '2025-07-08 09:45:43', 1, '2025-07-08 09:45:43', 1, '', 0);
+INSERT INTO `tb_sys_menu` (`id`, `parent_id`, `menu_type`, `menu_title`, `menu_url`, `component`, `menu_icon`, `is_show`, `permission_tag`, `sort_no`, `status`, `created`, `created_by`, `modified`, `modified_by`, `remark`, `is_deleted`) VALUES (300008359986110464, 300008008381800448, 1, '查询', '', '', '', 0, '/api/v1/aiResource/query', 0, 0, '2025-07-08 09:47:07', 1, '2025-07-08 09:47:07', 1, '', 0);
+INSERT INTO `tb_sys_menu` (`id`, `parent_id`, `menu_type`, `menu_title`, `menu_url`, `component`, `menu_icon`, `is_show`, `permission_tag`, `sort_no`, `status`, `created`, `created_by`, `modified`, `modified_by`, `remark`, `is_deleted`) VALUES (300012644643815424, 300008008381800448, 1, '保存', '', '', '', 0, '/api/v1/aiResource/save', 0, 0, '2025-07-08 10:04:08', 1, '2025-07-08 10:04:08', 1, '', 0);
+INSERT INTO `tb_sys_menu` (`id`, `parent_id`, `menu_type`, `menu_title`, `menu_url`, `component`, `menu_icon`, `is_show`, `permission_tag`, `sort_no`, `status`, `created`, `created_by`, `modified`, `modified_by`, `remark`, `is_deleted`) VALUES (300013092268326912, 300008008381800448, 1, '删除', '', '', '', 1, '/api/v1/aiResource/remove', 0, 0, '2025-07-08 10:05:55', 1, '2025-07-08 10:05:55', 1, '', 0);
+
+INSERT INTO `tb_sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES (300008008490852352, 1, 300008008381800448);
+INSERT INTO `tb_sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES (300008360078385152, 1, 300008359986110464);
+INSERT INTO `tb_sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES (300012644702535680, 1, 300012644643815424);
+INSERT INTO `tb_sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES (300013092310269952, 1, 300013092268326912);
+---- 素材库相关菜单 end ----
+
 -- v1.1.0 data end --

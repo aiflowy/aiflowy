@@ -849,4 +849,26 @@ CREATE TABLE `tb_sys_token`  (
   UNIQUE INDEX `uk_token`(`token`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8mb4 COMMENT = 'iframe 嵌入用 Token 表' ROW_FORMAT = Dynamic;
 
+-- ----------------------------
+-- Table structure for tb_ai_resource. since v1.1.0
+-- ----------------------------
+CREATE TABLE `tb_ai_resource` (
+  `id` bigint unsigned NOT NULL COMMENT '主键',
+  `dept_id` bigint unsigned NOT NULL COMMENT '部门ID',
+  `tenant_id` bigint unsigned NOT NULL COMMENT '租户ID',
+  `resource_type` int NOT NULL COMMENT '素材类型',
+  `resource_name` varchar(100) NOT NULL COMMENT '素材名称',
+  `suffix` varchar(10) NOT NULL COMMENT '后缀',
+  `resource_url` varchar(200) NOT NULL COMMENT '素材地址',
+  `origin` int NOT NULL DEFAULT '0' COMMENT '素材来源',
+  `status` tinyint NOT NULL DEFAULT '0' COMMENT '数据状态',
+  `created` datetime NOT NULL COMMENT '创建时间',
+  `created_by` bigint unsigned NOT NULL COMMENT '创建者',
+  `modified` datetime NOT NULL COMMENT '修改时间',
+  `modified_by` bigint unsigned NOT NULL COMMENT '修改者',
+  `options` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci COMMENT '扩展项',
+  `is_deleted` tinyint DEFAULT '0' COMMENT '删除标识',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='素材库';
+
 SET FOREIGN_KEY_CHECKS = 1;

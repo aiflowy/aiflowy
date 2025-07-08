@@ -4,10 +4,7 @@ import tech.aiflowy.common.util.SpringContextUtil;
 import tech.aiflowy.core.dict.DictManager;
 import tech.aiflowy.core.dict.loader.DbDataLoader;
 import tech.aiflowy.system.entity.SysDict;
-import tech.aiflowy.system.mapper.SysDeptMapper;
-import tech.aiflowy.system.mapper.SysMenuMapper;
-import tech.aiflowy.system.mapper.SysPositionMapper;
-import tech.aiflowy.system.mapper.SysRoleMapper;
+import tech.aiflowy.system.mapper.*;
 import tech.aiflowy.system.service.SysDictService;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Configuration;
@@ -29,6 +26,8 @@ public class SysDictAutoConfig {
     private SysRoleMapper sysRoleMapper;
     @Resource
     private SysPositionMapper sysPositionMapper;
+    @Resource
+    private SysAccountMapper sysAccountMapper;
 
     public SysDictAutoConfig(SysDictService service) {
         this.service = service;
@@ -46,6 +45,8 @@ public class SysDictAutoConfig {
         dictManager.putLoader(new DbDataLoader<>("sysRole", sysRoleMapper, "id", "role_name", null, null, true));
         // 职位字典
         dictManager.putLoader(new DbDataLoader<>("sysPosition", sysPositionMapper, "id", "position_name", null, null, true));
+        // 用户字典
+        dictManager.putLoader(new DbDataLoader<>("sysAccount", sysAccountMapper, "id", "login_name", null, null, true));
 
         List<SysDict> sysDicts = service.list();
         if (sysDicts != null) {
