@@ -81,6 +81,9 @@ const CrudPage: React.FC<CurdPageProps> = forwardRef(({
             })
         },
         onCreate: (item) => {
+
+           convertAttrsToObject(item);
+
             doSave({
                 data: {
                     ...params,
@@ -109,6 +112,8 @@ const CrudPage: React.FC<CurdPageProps> = forwardRef(({
             })
         }
     };
+
+
 
     // const pageNumber = +(((result?.data) as Page<any>)?.pageNumber || urlParams.pageNumber || 1)
     // const pageSize = +(((result?.data) as Page<any>)?.pageSize || urlParams.pageSize || defaultPageSize)
