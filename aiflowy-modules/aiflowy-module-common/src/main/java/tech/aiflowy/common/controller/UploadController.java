@@ -1,5 +1,6 @@
 package tech.aiflowy.common.controller;
 
+import cn.dev33.satoken.annotation.SaIgnore;
 import tech.aiflowy.common.domain.Result;
 
 import tech.aiflowy.common.filestorage.FileStorageService;
@@ -37,6 +38,7 @@ public class UploadController {
     }
 
     @PostMapping(value = "/uploadPrePath",produces = MediaType.APPLICATION_JSON_VALUE)
+    @SaIgnore
     public Result uploadPrePath(MultipartFile file, String prePath) {
         System.out.println(file.getOriginalFilename());
         System.out.println(prePath);

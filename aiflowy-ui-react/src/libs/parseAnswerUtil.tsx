@@ -128,6 +128,7 @@ export function processArray(arr: any[]): ChatMessage[] {
         const userMessage = group[0];
         result.push({
             content: userMessage.content || '',
+            files:userMessage.files,
             created: userMessage.created || Date.now(),
             id: userMessage.id || '',
             role: 'user' as const,

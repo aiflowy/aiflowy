@@ -183,7 +183,7 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
                            @JsonBody(value = "sessionId", required = true) String sessionId,
                            @JsonBody(value = "isExternalMsg") int isExternalMsg,
                            @JsonBody(value = "tempUserId") String tempUserId,
-                           @JsonBody(value = "fileList")List<String> fileList,
+                           @JsonBody(value = "fileList") List<String> fileList,
                            HttpServletResponse response) {
         response.setContentType("text/event-stream");
         AiBot aiBot = service.getById(botId);
@@ -267,10 +267,8 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
                 "2. 在未收到工具执行结果前，不要自行假设其输出。\n" +
                 "3. 不得编造工具或参数，所有工具均列于下方。\n" +
                 "4. 输出顺序必须为：Thought → Action → Action Input。\n" +
-                "5. **严禁以任何形式询问、建议、猜测用户后续操作或步骤**\n" +
-                "6. **回答完用户问题后立即结束，不得添加任何延伸建议、分析选项或询问**\n" +
-                "7. **禁止使用\"如果需要...\"、\"您是否需要...\"、\"可以进一步...\"等表述**\n" +
-                "8. 回复前需判断当前输出是否为Final Answer，**必须严格遵守：当需要回复的内容是Final Answer时，禁止输出Thought、Action、Action Input**，示例：\n" +
+                "5. **回答完用户问题后立即结束，严禁以任何形式询问、建议、猜测用户后续操作或步骤，如使用\"如果需要...\"、\"您是否需要...\"、\"可以进一步...\"、\"下一步建议\"等相似语义的表述**\n" +
+                "6. 回复前需判断当前输出是否为Final Answer，**必须严格遵守：当需要回复的内容是Final Answer时，禁止输出Thought、Action、Action Input**，示例：\n" +
                 "\t[正确示例1]\n" +
                 "\t\tFinal Answer:张三的年龄是35岁\n\n" +
                 "\t[正确示例2]\n" +
@@ -291,8 +289,8 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
                 "{user_input}";
 
         HashMap<String, Object> promptMap = new HashMap<>();
-        promptMap.put("prompt",promptTemplate);
-        promptMap.put("fileList",fileList);
+        promptMap.put("prompt", promptTemplate);
+        promptMap.put("fileList", fileList);
 
         String promptJson = JSON.toJSONString(promptMap);
 
@@ -304,22 +302,22 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
         reActAgent.setStreamable(true);
         ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                RequestContextHolder.setRequestAttributes(sra, true);
-                Boolean needRefresh = aiBotConversationMessageService.needRefreshConversationTitle(sessionId,
-                        prompt,
-                        llm, botId, isExternalMsg);
-                if (needRefresh) {
-                    try {
-                        emitter.send(SseEmitter.event().name("refreshSession"));
-                    } catch (IOException e) {
-                        logger.error("创建会话报错", e);
-                    }
-                }
-            }
-        }).start();
+        aiBotConversationMessageService.needRefreshConversationTitle(sessionId,
+                prompt,
+                llm, botId, isExternalMsg);
+        try {
+            emitter.send(SseEmitter.event().name("refreshSession").data(JSON.toJSONString(Maps.of("content", ""))));
+        } catch (IOException e) {
+            logger.error("创建会话报错", e);
+        }
+
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                RequestContextHolder.setRequestAttributes(sra, true);
+//
+//            }
+//        }).start();
 
         AiMessage thinkingMessage = new AiMessage();
         Map<String, Object> thinkingIdMap = new HashMap<>();
@@ -877,6 +875,7 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
     }
 
     @Override
+    @SaIgnore
     public Result detail(String id) {
         Result detail = super.detail(id);
         AiBot data = detail.get("data");

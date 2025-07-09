@@ -1,6 +1,7 @@
 package tech.aiflowy.ai.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
+import com.agentsflex.core.util.Maps;
 import com.alicp.jetcache.Cache;
 import com.mybatisflex.core.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +55,7 @@ public class AiBotMessageServiceImpl extends ServiceImpl<AiBotMessageMapper, AiB
                     .where("is_external_msg = ? ", isExternalMsg)
                     .where("account_id = ? ", SaTokenUtil.getLoginAccount().getId());
             List<AiBotMessage> messages = aiBotMessageMapper.selectListByQueryAs(queryConversation, AiBotMessage.class);
-            List<AiBotMessage> finalMessages = new ArrayList<>();
+            List<Maps> finalMessages = new ArrayList<>();
             for (AiBotMessage message : messages){
                 Map<String, Object> options = message.getOptions();
                 if (options != null && (Integer) options.get("type") == 2) {
@@ -65,14 +66,25 @@ public class AiBotMessageServiceImpl extends ServiceImpl<AiBotMessageMapper, AiB
                     message.setContent((String) options.get("user_input"));
                 }
 
-                finalMessages.add(message);
+                Maps maps = Maps.of("id", message.getId())
+                        .set("content", message.getContent())
+                        .set("role", message.getRole())
+                        .set("options", message.getOptions())
+                        .set("created", message.getCreated().getTime())
+                        .set("updateAt", message.getCreated().getTime());
+
+                if (options != null && options.get("fileList") != null){
+                    maps.set("files", options.get("fileList"));
+                }
+
+                finalMessages.add(maps);
             }
 
 
 
             return Result.success(finalMessages);
         } else {
-            AtomicReference<List<AiBotMessage>> messages = new AtomicReference<>(new ArrayList<>());
+            AtomicReference<List<Maps>> messages = new AtomicReference<>(new ArrayList<>());
             List<AiBotConversationMessage> result = (List<AiBotConversationMessage>)cache.get(tempUserId + ":" + botId);
             if (result == null || result.isEmpty()) {
                 return Result.success(new ArrayList<>());
@@ -80,7 +92,7 @@ public class AiBotMessageServiceImpl extends ServiceImpl<AiBotMessageMapper, AiB
             result.forEach(conversationMessage -> {
                 if (conversationMessage.getSessionId().equals(sessionId)) {
                     List<AiBotMessage> aiBotMessageList = conversationMessage.getAiBotMessageList();
-                    List<AiBotMessage> finalMessageList = new ArrayList<>();
+                    List<Maps> finalMessageList = new ArrayList<>();
                     for (AiBotMessage aiBotMessage : aiBotMessageList) {
                         Map<String, Object> options = aiBotMessage.getOptions();
                         if (options != null && (Integer) options.get("type") == 2) {
@@ -91,7 +103,18 @@ public class AiBotMessageServiceImpl extends ServiceImpl<AiBotMessageMapper, AiB
                             aiBotMessage.setContent((String) options.get("user_input"));
                         }
 
-                        finalMessageList.add(aiBotMessage);
+                        Maps maps = Maps.of("id", aiBotMessage.getId())
+                                .set("content", aiBotMessage.getContent())
+                                .set("role", aiBotMessage.getRole())
+                                .set("options", aiBotMessage.getOptions())
+                                .set("created", aiBotMessage.getCreated().getTime())
+                                .set("updateAt", aiBotMessage.getCreated().getTime());
+
+                        if (options != null && options.get("fileList") != null){
+                            maps.set("files", options.get("fileList"));
+                        }
+
+                        finalMessageList.add(maps);
                     }
                     messages.set(finalMessageList);
                 }

@@ -15,7 +15,7 @@ import { useParams } from "react-router-dom";
 import {useGetManual, usePostManual} from "../hooks/useApis.ts";
 import {uuid} from "../libs/uuid.ts";
 import {PresetQuestion} from "./ai/botDesign/BotDesign.tsx";
-import {parseAnswerUtil, processArray} from "../libs/parseAnswerUtil.tsx";
+import { processArray} from "../libs/parseAnswerUtil.tsx";
 import {useSseWithEvent} from "../hooks/useSseWithEvent.ts";
 
 const useStyle = createStyles(({token, css}) => {
@@ -151,7 +151,7 @@ export const ExternalBot: React.FC = () => {
     const [conversationsItems, setConversationsItems] = React.useState<{ key: string; label: string }[]>([]);
     const [activeKey, setActiveKey] = React.useState('');
     const [open, setOpen] = useState(false);
-    const { doGet: doGetBotInfo, result: botInfo} =useGetManual("/api/v1/aiBot/getDetail")
+    const { doGet: doGetBotInfo, result: botInfo} =useGetManual("/api/v1/aiBot/detail")
     const { start: startChat } = useSseWithEvent("/api/v1/aiBot/chat");
     // 查询会话列表的数据
     const {doGet: getConversationManualGet} = useGetManual('/api/v1/conversation/externalList');
@@ -287,37 +287,9 @@ export const ExternalBot: React.FC = () => {
             if (resp.data.errorCode === 0) {
 
                 const messageList = resp.data.data;
-                console.log(messageList)
+                const processedItems = processArray(messageList);
 
-                const formatList = messageList.map((message: { role: string; content: string; }) => {
-                    if (message.role === "user"){
-                        return message;
-                    }
-
-                    const result = parseAnswerUtil(message.content);
-
-                    const originContent = message.content;
-
-
-                    message.content = '';
-
-                    if (result.thought) {
-                        message.content += `${result.thought}\n\n`;
-                    }
-
-                    if (result.finalAnswer) {
-                        message.content += `${result.finalAnswer}\n`;
-                    }
-
-                    if (!message.content.trim()) {
-                        message.content = originContent;
-                    }
-                    return message;
-                })
-
-                const processArr = processArray(formatList);
-
-                setChats(processArr);
+                setChats(processedItems);
             }
 
         });
@@ -451,7 +423,9 @@ export const ExternalBot: React.FC = () => {
                     prompts={presetQuestions}
                     // setNewConversation={onAddConversation}
                     onCustomEvent={(eventType) => {
+                        console.log("收到收到事件：",eventType)
                         if (eventType === "refreshSession") {
+                            console.log(111)
                             getConversationManualGet(
                                 {
                                     params: {"botId": params?.id, "tempUserId": localStorage.getItem("tempUserId")}
@@ -478,6 +452,7 @@ export const ExternalBot: React.FC = () => {
                                         botId: params.id,
                                         sessionId: getExternalSessionId(),
                                         prompt: messages[messages.length - 1].content as string,
+                                        fileList:messages[messages.length - 1].files as Array<string>,
                                         isExternalMsg: 1,
                                         tempUserId: localStorage.getItem("tempUserId")
                                     },

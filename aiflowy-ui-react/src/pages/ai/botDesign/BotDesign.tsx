@@ -758,8 +758,8 @@ const BotDesign: React.FC = () => {
                                             href={window.location.href.substring(0, window.location.href.indexOf('/ai')) + '/ai/externalBot/' + detail?.data?.id}
                                             target={"_blank"}>打开</a>
                                         </span>
-                                        <TextArea readOnly disabled
-                                                  value={window.location.href.substring(0, window.location.href.indexOf('/ai')) + '/bot/chat/' + detail?.data?.id}></TextArea>
+                                        <TextArea readOnly disabled style={{resize:"none"}}
+                                                  value={window.location.href.substring(0, window.location.href.indexOf('/ai')) + '/ai/externalBot/' + detail?.data?.id}></TextArea>
                                     </div>
                                 </div>,
                             },
@@ -774,7 +774,7 @@ const BotDesign: React.FC = () => {
                                             href={'https://aiflowy.tech/zh/development/ai/apiKey.html'}
                                             target={"_blank"}>打开</a>
                                         </span>
-                                        <TextArea readOnly disabled
+                                        <TextArea readOnly disabled style={{resize:"none"}}
                                                   value={'https://aiflowy.tech/zh/development/ai/apiKey.html'}></TextArea>
                                     </div>
                                 </div>

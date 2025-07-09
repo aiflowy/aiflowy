@@ -110,9 +110,7 @@ public class AiBotMessageIframeMemory implements ChatMemory {
             Object type = metadataMap.get("type");
             if (type != null) {
                 String t = type.toString();
-                if ("reActWrapper".equals(type)){
-                    metadataMap.put("type",1);
-                }else{
+                if (!t.equals("1")){
                     metadataMap.put("type",2);
                 }
             }else {

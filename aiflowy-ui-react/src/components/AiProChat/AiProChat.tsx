@@ -82,13 +82,17 @@ export const RenderMarkdown: React.FC<{ content: string, fileList?: Array<string
 
     const md = markdownit({html: true, breaks: true});
     return (
-        <Typography>
-            {fileList && fileList.length > 0 && fileList.map(file => {
-                return <Image height={50} src={file}></Image>
-            })}
-            {/* biome-ignore lint/security/noDangerouslySetInnerHtml: used in demo */}
-            <div dangerouslySetInnerHTML={{__html: md.render(content)}}/>
-        </Typography>
+        <>
+            <div style={{display:"flex",flexDirection:"column",gap:"10px"}}>
+                {fileList && fileList.length > 0 && fileList.map(file => {
+                    return <Image height={300} src={file} key={Date.now().toString()}></Image>
+                })}
+            </div>
+            <Typography>
+                <div dangerouslySetInnerHTML={{__html: md.render(content)}}/>
+            </Typography>
+        </>
+
     );
 };
 
@@ -180,7 +184,7 @@ export const AiProChat = ({
     const handleEventProgress = async (eventType: EventType, eventData: any): Promise<boolean> => {
         if (onCustomEvent) {
             try {
-
+                console.log("自定义事件处理")
                 const result = await onCustomEvent(eventType, eventData, {
                     chats,
                     setChats,
@@ -547,6 +551,7 @@ export const AiProChat = ({
             role: 'user',
             id: Date.now().toString(),
             content: chats[index - 1].content,
+            files: chats[index - 1].files,
             loading: false,
             created: Date.now(),
             updateAt: Date.now(),
@@ -654,7 +659,17 @@ export const AiProChat = ({
                     }
 
                     // 处理内容更新
-                    partial += respData.content || '';
+                    const newContent = respData.content || '';
+                    if (newContent && !partial.endsWith(newContent)) {
+                        partial += newContent;
+                    } else if (newContent && partial.endsWith(newContent)) {
+                        console.warn('🚨 检测到重复内容，跳过累积:', newContent);
+                    }
+
+                    console.log('📚 累积内容:', {
+                        partialLength: partial.length,
+                        partialContent: partial.substring(Math.max(0, partial.length - 50))
+                    });
                 } catch (error) {
                     //  如果解析失败，当作普通内容处理（兼容旧格式）
                     partial += decode;
