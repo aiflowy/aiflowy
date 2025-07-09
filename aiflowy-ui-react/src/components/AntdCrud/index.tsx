@@ -377,7 +377,7 @@ function AntdCrud<T>({
     }, []);
 
     return (
-        <div>
+        <div style={{padding: "8px"}}>
             {contextHolder}
             <SearchForm columns={columns} colSpan={6}
                         onSearch={(values: any) => {

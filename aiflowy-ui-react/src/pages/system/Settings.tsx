@@ -109,7 +109,7 @@ const Settings: React.FC = () => {
                     <Input placeholder="请输入星火大模型 ApiSecret"/>
                 </Form.Item>
 
-                <Form.Item label="星火大模型版本" name="spark_ai_version">
+                <Form.Item label="星火版本" name="spark_ai_version">
                     <Select>
                         <Select.Option value="v3.5">v3.5</Select.Option>
                         <Select.Option value="v3.0">v3.0</Select.Option>

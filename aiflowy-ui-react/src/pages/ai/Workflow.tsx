@@ -5,7 +5,7 @@ import {
 } from "@ant-design/icons";
 import CardPage from "../../components/CardPage";
 import {ColumnsConfig} from "../../components/AntdCrud";
-import {Button, Form, Input, message, Modal, Space, Spin, Upload} from "antd";
+import {Button, Form, Input, MenuProps, message, Modal, Space, Spin, Upload} from "antd";
 import TextArea from "antd/es/input/TextArea";
 import {useGetManual, usePostFile} from "../../hooks/useApis.ts";
 import {useCheckPermission} from "../../hooks/usePermissions.tsx";
@@ -144,13 +144,17 @@ const Workflow: React.FC<{ paramsToUrl: boolean }> = () => {
         return arr;
     }
 
-    const getCustomHandleButton = () => {
-        const arr = []
-        if (canSave) {
-            arr.push(<Button type={"primary"} onClick={() => {setIsModalOpen(true)}}><UploadOutlined />导入工作流</Button>)
-        }
-        return arr;
-    }
+    const menuItems: MenuProps['items'] = [
+        ...(canSave ? [{
+            key: 'import-workflow',
+            label: (
+                <Space onClick={() => setIsModalOpen(true)}>
+                    <UploadOutlined />
+                    <span>导入工作流</span>
+                </Space>
+            ),
+        }] : [])
+    ];
 
     return (
         <>
@@ -209,6 +213,7 @@ const Workflow: React.FC<{ paramsToUrl: boolean }> = () => {
                               noDataText: "你还没有工作流，快来创建你的工作流吧!",
                               noDataAddButtonText: "创建工作流"
                           }}
+                          customMenuItems={menuItems}
                           customActions={(item, existNodes) => {
                               return [
                                   ...getCustomActions(item),
@@ -222,11 +227,11 @@ const Workflow: React.FC<{ paramsToUrl: boolean }> = () => {
                                   ...existNodes
                               ]
                           }}
-                          customHandleButton={() => {
-                              return [
-                                  ...getCustomHandleButton()
-                              ]
-                          }}
+                          // customHandleButton={() => {
+                          //     return [
+                          //         ...getCustomHandleButton()
+                          //     ]
+                          // }}
                 />
             </Spin>
         </>

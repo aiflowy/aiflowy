@@ -2,9 +2,9 @@ import React, {useState} from 'react';
 import {MenuUnfoldOutlined, SearchOutlined} from "@ant-design/icons";
 import {ColumnsConfig} from "../../components/AntdCrud";
 import CardPage from "../../components/CardPage";
-import DraggableModal from "../../components/DraggableModal";
-import {Button, Form, Input, Space, Spin} from "antd";
+import {Button, Form, Input, Modal, Space} from "antd";
 import {useGetManual} from "../../hooks/useApis.ts";
+import PreviewContainer from "./aiKnowledge/PreviewContainer.tsx";
 
 
 const columnsColumns: ColumnsConfig<any> = [
@@ -214,7 +214,7 @@ const Knowledge: React.FC<{ paramsToUrl: boolean }> = () => {
 
     return (
         <>
-            <DraggableModal title="向量检索" open={isModalOpen} onCancel={onClose} footer={""}
+            <Modal title="向量检索" open={isModalOpen} onCancel={onClose} footer={""} width={"50%"}
                             destroyOnClose>
                 <div style={{minHeight: 500}}>
                     <Form form={form} onFinish={onFinish} preserve={false}>
@@ -231,27 +231,12 @@ const Knowledge: React.FC<{ paramsToUrl: boolean }> = () => {
                         </div>
                     </Form>
                     <div>
-                        {/*<div>搜索结果:</div>*/}
-
-                        {searchLoading ?  <div style={{width:"100%", textAlign: "center"}}>
-                              <Spin tip="Loading...">
-                                </Spin>
-                                </div>:
-                                <div>
-                                    {searchResult?.map((item: any, index) => {
-                                        return <div key={item?.id || index} style={{margin:"10px 0",background:"#efefef",padding:"5px 10px",borderRadius:"7px"}}>
-                                            <h3>相似度:{item.similarityScore}</h3>
-                                            <div dangerouslySetInnerHTML={{__html: item?.content}}></div>
-                                        </div>
-                                    })}
-                                </div>
-                            }
-
-
-
+                        <PreviewContainer data={searchResult} loading={searchLoading}
+                                          isSearching={true}
+                        />
                     </div>
                 </div>
-            </DraggableModal>
+            </Modal>
             <CardPage tableAlias={"aiKnowledge"}
                       editModalTitle={"新增/编辑知识库"}
                       columnsConfig={columnsColumns}

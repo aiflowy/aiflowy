@@ -1,29 +1,38 @@
 import React, {useState} from 'react';
-import {Button, Col, Form, Input, Row} from 'antd';
-import {PlusOutlined} from '@ant-design/icons';
+import {Button, Col, Dropdown, Form, Input, Row} from 'antd';
+import {EllipsisOutlined, PlusOutlined} from '@ant-design/icons';
 import {ColumnsConfig} from "./index.tsx";
+import {useCheckPermission} from "../../hooks/usePermissions.tsx";
 
 interface KeywordSearchFormProps {
+    tableAlias?: string;
     onSearch: (params: Record<string, string>) => void,
     placeholder?: string,
     resetText?: string,
     columns: ColumnsConfig<any>,
     addButtonText?: string,
+    // 自定义按钮
     customHandleButton?: any[],
-    setIsEditOpen: (open: boolean) => void
+    setIsEditOpen: (open: boolean) => void,
+    // 自定义下拉菜单
+    customMenuItems?: any[]
 }
 
 const KeywordSearchForm: React.FC<KeywordSearchFormProps> = ({
+                                                                 tableAlias,
                                                                  onSearch,
                                                                  placeholder = '请输入搜索关键词',
                                                                  resetText = '重置',
                                                                  columns,
                                                                  addButtonText = '新增',
                                                                  customHandleButton,
-                                                                 setIsEditOpen
+                                                                 setIsEditOpen,
+                                                                 customMenuItems
                                                              }) => {
     const [form] = Form.useForm();
     const [keywords, setKeywords] = useState('');
+
+    const hasSavePermission = useCheckPermission(`/api/v1/${tableAlias}/save`)
 
     const onFinish = () => {
         const trimmedKeywords = keywords.trim();
@@ -84,11 +93,23 @@ const KeywordSearchForm: React.FC<KeywordSearchFormProps> = ({
                         justifyContent: 'flex-end',
                         flex: 1
                     }}>
-                        <Button type="primary" onClick={() => {setIsEditOpen(true)}}>
-                            <PlusOutlined/> {addButtonText}
 
-                        </Button>
+                        {hasSavePermission &&
+                            <Button type="primary" onClick={() => {
+                                setIsEditOpen(true)
+                            }}>
+                                <PlusOutlined/> {addButtonText}
+                            </Button>
+                        }
                         {customHandleButton}
+                        {customMenuItems && customMenuItems.length > 0 && <div>
+                            <Dropdown menu={{items: customMenuItems}} placement="bottomLeft">
+                                <Button>
+                                    <EllipsisOutlined/>
+                                </Button>
+                            </Dropdown>
+                        </div>}
+
                     </div>
                 </div>
             </Row>

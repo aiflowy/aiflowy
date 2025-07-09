@@ -5,7 +5,7 @@ import {
     Button,
     Card,
     Col,
-    Dropdown,
+    Dropdown, MenuProps,
     Modal,
     Pagination,
     Row,
@@ -28,12 +28,14 @@ import "../../pages/commons/commonStyle.less"
 import CustomDeleteIcon from "../CustomIcon/CustomDeleteIcon.tsx";
 import {useCheckPermission} from "../../hooks/usePermissions.tsx";
 import KeywordSearchForm from "../AntdCrud/KeywordSearchForm.tsx";
+import defaultNoDataLogo from '../../assets/defaultNoData.png'
+
 export type CardPageProps = {
     ref?: any,
     tableAlias: string,
     defaultPageSize?: number,
     editModalTitle?: string,
-    editLayout?: EditLayout
+    editLayout?: EditLayout,
     addButtonText?: string,
     columnsConfig: ColumnsConfig<any>,
     avatarKey?: string,
@@ -41,7 +43,7 @@ export type CardPageProps = {
     titleKey?: string,
     descriptionKey?: string,
     customActions?: (data: any, existNodes: React.ReactNode[]) => React.ReactNode[],
-    customHandleButton?:() => React.ReactNode[],
+    customHandleButton?: () => React.ReactNode[],
     addCardTitle?: string,
     optionsText?: {
         addCardTitle?: string, // 新增按钮的文本
@@ -50,25 +52,27 @@ export type CardPageProps = {
     },
     optionIconPath?: {
         noDataIconPath?: string, // 无任何数据时的图标
-    }
+    },
+    customMenuItems?: MenuProps['items']
 }
 
 const CardPage: React.FC<CardPageProps> = forwardRef(({
-                                                          tableAlias
-                                                          , defaultPageSize = 12
-                                                          , editModalTitle
-                                                          , editLayout
-                                                          , columnsConfig
-                                                          , avatarKey = "avatar"
-                                                          , defaultAvatarSrc
-                                                          , addButtonText = "新增"
-                                                          , titleKey = "title"
-                                                          , descriptionKey = "description"
-                                                          , customActions = (_data: any, existNodes: any) => existNodes
-                                                          , customHandleButton = () => []
-                                                          , optionsText = {}
-                                                          , optionIconPath={},
-                                                      },ref) => {
+                                                          tableAlias,
+                                                          defaultPageSize = 12,
+                                                          editModalTitle,
+                                                          editLayout,
+                                                          columnsConfig,
+                                                          avatarKey = "avatar",
+                                                          defaultAvatarSrc,
+                                                          addButtonText = "新增",
+                                                          titleKey = "title",
+                                                          descriptionKey = "description",
+                                                          customActions = (_data: any, existNodes: any) => existNodes,
+                                                          customHandleButton = () => [],
+                                                          optionsText = {},
+                                                          optionIconPath = {},
+                                                          customMenuItems = []
+                                                      }, ref) => {
 
     useImperativeHandle(ref, () => ({
         refresh: () => {
@@ -137,7 +141,7 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
                 setEditData(item);
                 setIsEditOpen(true);
             }}>
-                <EditOutlined key="edit" />
+                <EditOutlined key="edit"/>
                 <span>编辑</span>
             </Space>
         ) : null;
@@ -171,11 +175,11 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
                         title: '确定要删除吗?',
                         content: '此操作不可逆，请谨慎操作。',
                         onOk() {
-                            doRemove({ data: { id: item.id } }).then(doGet);
+                            doRemove({data: {id: item.id}}).then(doGet);
                         },
                     });
                 }}>
-                    <CustomDeleteIcon key="delete-icon" />
+                    <CustomDeleteIcon key="delete-icon"/>
                     <span>删除</span>
                 </Space>
             );
@@ -193,7 +197,7 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
                         })),
                     }}
                 >
-                    <EllipsisOutlined key="ellipsis" title="更多操作" />
+                    <EllipsisOutlined key="ellipsis" title="更多操作"/>
                 </Dropdown>
             );
         }
@@ -203,7 +207,7 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
     };
 
     return (
-        <>
+        <div style={{padding: "8px"}}>
             <EditPage modalTitle={editModalTitle || ""}
                       tableAlias={tableAlias}
                       open={isEditOpen}
@@ -217,14 +221,18 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
             <Spin spinning={loading}>
 
                 <KeywordSearchForm
+                    tableAlias={tableAlias}
                     onSearch={(values: any) => {
-                    setLocalPageNumber(1);
-                    setSearchParams(values);
-                    setUrlParams(values);
-                        }}
-                   columns={columnsConfig} addButtonText={addButtonText}
-                   customHandleButton={customHandleButton()}
-                   setIsEditOpen={() =>{setIsEditOpen(true)}}
+                        setLocalPageNumber(1);
+                        setSearchParams(values);
+                        setUrlParams(values);
+                    }}
+                    customMenuItems={customMenuItems}
+                    columns={columnsConfig} addButtonText={addButtonText}
+                    customHandleButton={customHandleButton()}
+                    setIsEditOpen={() => {
+                        setIsEditOpen(true)
+                    }}
                 />
 
                 <Row className={"card-row"} gutter={[16, 16]}>
@@ -242,10 +250,11 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
                                 className={"card-hover"}
                                 actions={buildActions(item)}>
                                 <Card.Meta
-                                    avatar={<Avatar src={item[avatarKey] || defaultAvatarSrc} style={{width: '48px', height: '48px'}}/>}
+                                    avatar={<Avatar src={item[avatarKey] || defaultAvatarSrc}
+                                                    style={{width: '48px', height: '48px'}}/>}
                                     title={item[titleKey]}
                                     description={
-                                        <Tooltip title={item[descriptionKey] || "暂无描述"} placement="top" >
+                                        <Tooltip title={item[descriptionKey] || "暂无描述"} placement="top">
                                             <div style={{
                                                 display: '-webkit-box',
                                                 WebkitLineClamp: 1,
@@ -263,7 +272,7 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
                         </Col>
                     )) : (<>
                         <Empty
-                            image={optionIconPath?.noDataIconPath ? optionIconPath.noDataIconPath : Empty.PRESENTED_IMAGE_SIMPLE}
+                            image={optionIconPath?.noDataIconPath ? optionIconPath.noDataIconPath : defaultNoDataLogo}
                             className={"empty-container"}
                             description={
                                 <Typography.Text style={{color: '#969799'}}>
@@ -273,10 +282,11 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
                         >
 
                             {useCheckPermission(`/api/v1/${tableAlias}/save`) && (
-                                <Button  style={{borderColor: '#0066FF', color: '#0066FF', width: '195px', height: '48px'}}
-                                         onClick={() => {
-                                             setIsEditOpen(true)
-                                         }}>
+                                <Button
+                                    style={{borderColor: '#0066FF', color: '#0066FF', width: '195px', height: '48px'}}
+                                    onClick={() => {
+                                        setIsEditOpen(true)
+                                    }}>
                                     {optionsText.noDataAddButtonText || "创建"}
                                 </Button>
                             )}
@@ -311,7 +321,7 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
                         />
                     </div>}
             </Spin>
-        </>
+        </div>
     )
 })
 

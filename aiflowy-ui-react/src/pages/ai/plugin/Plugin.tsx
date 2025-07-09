@@ -41,6 +41,7 @@ import Sider from "antd/es/layout/Sider";
 import Layout from "antd/es/layout/layout";
 import CustomToolIcon from "../../../components/CustomIcon/CustomToolIcon.tsx";
 import CustomClassifyIcon from "../../../components/CustomIcon/CustomClassifyIcon.tsx";
+import pluginNoDataLogon from '../../../assets/pluginNoData.png'
 
 interface Category {
 	id: number;
@@ -686,7 +687,7 @@ const Plugin: React.FC = () => {
 							:
 							(<>
 								<Empty
-									image={Empty.PRESENTED_IMAGE_SIMPLE}
+									image={pluginNoDataLogon}
 									className={"empty-container"}
 									description={
 										<Typography.Text style={{color: '#969799'}}>
