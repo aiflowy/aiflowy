@@ -17,6 +17,7 @@ _result 中存储的数据都可作为节点的输出参数。
 
 QLExpress 是由阿里的电商业务规则演化而来的嵌入式 Java 动态脚本工具，在阿里集团有很强的影响力，
 同时为了自身不断优化、发扬开源贡献精神，于2012年开源。
+
 在基本的表达式计算的基础上，增加以下特色功能：
 - 灵活的自定义能力，通过 Java API 自定义函数和操作符，可以快速实现业务规则的 DSL。
 - 兼容Java语法，最新的 QLExpress4 可以兼容 Java8 语法，方便 Java 程序员快速熟悉。
@@ -40,7 +41,6 @@ function add(int a, int b) {
 res = add(num,2);
 
 _result.put("addResult",res);
-
 _result.put("resStr","返回常量");
 ```
 运行结果：
