@@ -5,8 +5,7 @@ spring:
   profiles:
     active: dev
   datasource:
-    url: jdbc:mysql://192.168.2.10:3306/aiflowy?useInformationSchema=true&characterEncoding=utf-8
-#    url: jdbc:mysql://127.0.0.1:3306/aiflowy_copy?useInformationSchema=true&characterEncoding=utf-8
+    url: jdbc:mysql://127.0.0.1:3306/?useInformationSchema=true&characterEncoding=utf-8
     username: root
     password: 123456
   servlet:
