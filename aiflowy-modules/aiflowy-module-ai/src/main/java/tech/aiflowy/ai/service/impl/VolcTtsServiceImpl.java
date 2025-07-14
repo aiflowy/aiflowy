@@ -3,29 +3,16 @@ package tech.aiflowy.ai.service.impl;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import okhttp3.*;
-import okhttp3.logging.HttpLoggingInterceptor;
 import okio.ByteString;
-import org.apache.parquet.filter2.predicate.Operators;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import tech.aiflowy.ai.service.TtsService;
-import tech.aiflowy.common.web.exceptions.BusinessException;
 
-import java.io.*;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 /**
  * 火山引擎双向流式TTS服务实现
@@ -72,24 +59,27 @@ public class VolcTtsServiceImpl implements TtsService {
 
 
     @Override
-    public WebSocket init(String connectId, String sessionId,Consumer<String> responseHandler,Consumer<String> sessionFinishHandler){
+    public WebSocket init(String connectId, String sessionId,
+        Consumer<String> responseHandler,
+            Consumer<String> sessionFinishHandler,
+            Runnable connectionReadyCallback){ 
 
-        StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
 
         final Request request = new Request.Builder()
-                .url(url)
-                .header("X-Api-App-Key", appId)
-                .header("X-Api-Access-Key", token)
-                .header("X-Api-Resource-Id", "volc.service_type.10029")
-                .header("X-Api-Connect-Id", connectId)
-                .build();
+            .url(url)
+            .header("X-Api-App-Key", appId)
+            .header("X-Api-Access-Key", token)
+            .header("X-Api-Resource-Id", "volc.service_type.10029")
+            .header("X-Api-Connect-Id", connectId)
+            .build();
 
         final OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .readTimeout(100, TimeUnit.SECONDS)
-                .writeTimeout(100, TimeUnit.SECONDS)
-                .build();
+        .readTimeout(100, TimeUnit.SECONDS)
+        .writeTimeout(100, TimeUnit.SECONDS)
+        .build();
 
-       return okHttpClient.newWebSocket(request, new WebSocketListener() {
+        return okHttpClient.newWebSocket(request, new WebSocketListener() {
 
             @Override
             public void onOpen(WebSocket webSocket, Response response) {
@@ -100,20 +90,25 @@ public class VolcTtsServiceImpl implements TtsService {
             @Override
             public void onMessage(WebSocket webSocket, ByteString bytes) {
                 TTSResponse response = parserResponse(bytes.toByteArray());
-                log.info("===>response:" + response);
+                // log.info("===>response:" + response);
                 switch (response.optional.event) {
                     case EVENT_ConnectionFailed:
                     case EVENT_SessionFailed: {
                         log.error("tts 连接失败：event{}",response.optional.event);
+                        break;
                     }
                     case EVENT_ConnectionStarted:
-                        startTTSSession(webSocket, sessionId, speaker);
-                        break;
+                    startTTSSession(webSocket, sessionId, speaker);
+                    break;
                     case EVENT_TTSSentenceStart:
                     case EVENT_TTSSentenceEnd:
-                        break;
+                    break;
                     case EVENT_SessionStarted:
-                        break;
+                    // 会话开始后调用连接就绪回调
+                    if (connectionReadyCallback != null) {
+                        connectionReadyCallback.run();
+                    }
+                    break;
                     case EVENT_TTSResponse: {
                         if (response.payload == null) {
                             return;
@@ -123,32 +118,31 @@ public class VolcTtsServiceImpl implements TtsService {
                             responseHandler.accept(Base64.getEncoder().encodeToString(response.payload));
                             sb.append(Base64.getEncoder().encodeToString(response.payload));
                         }
-
                         break;
                     }
                     case EVENT_ConnectionFinished:
-                        sessionFinishHandler.accept(sb.toString());
-                        break;
+                    sessionFinishHandler.accept(sb.toString());
+                    break;
                     case EVENT_SessionFinished:
-                        finishConnection(webSocket);
-                        break;
+                    finishConnection(webSocket);
+                    break;
                     default:
-                        break;
+                    break;
                 }
             }
 
             @Override
             public void onMessage(WebSocket webSocket, String text) {
-                log.info("===> onMessage<UNK> text:" + text);
+                // log.info("===> onMessage<UNK> text:" + text);
             }
 
             public void onClosing(WebSocket webSocket, int code, String reason) {
-                log.info("===> onClosing<UNK> code:" + code + " reason:" + reason);
+                // log.info("===> onClosing<UNK> code:" + code + " reason:" + reason);
             }
 
             @Override
             public void onClosed(WebSocket webSocket, int code, String reason) {
-                log.info("===> onClosed<UNK> code:" + code + " reason:" + reason);
+                // log.info("===> onClosed<UNK> code:" + code + " reason:" + reason);
             }
 
             @Override
@@ -156,12 +150,7 @@ public class VolcTtsServiceImpl implements TtsService {
                 log.error("===> onFailure tts ", t);
             }
         });
-
-
-
-
     }
-
     @Override
     public void sendTTSMessage(WebSocket webSocket, String sessionId,String text){
 
