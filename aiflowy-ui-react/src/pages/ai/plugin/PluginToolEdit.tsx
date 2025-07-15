@@ -5,11 +5,9 @@ import {Button, Collapse, Form, Input, message, Modal, Select, Spin} from "antd"
 import {usePost, usePostManual} from "../../../hooks/useApis.ts";
 import './less/pluginToolEdit.less'
 import {
-    ArrowLeftOutlined,
-    EditOutlined,
+    EditOutlined, LeftOutlined,
 } from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
-import {useBreadcrumbRightEl} from "../../../hooks/useBreadcrumbRightEl.tsx";
 import PluginInputAndOutputData, {TreeTableNode} from "./PluginInputAndOutputData.tsx";
 import CustomTable from "./CustomTable.tsx";
 import {DataType as TestDataType} from "./CustomTable.tsx";
@@ -17,14 +15,6 @@ import {DataType as TestDataType} from "./CustomTable.tsx";
 const PluginToolEdit: React.FC = () => {
     const navigate = useNavigate();
 
-    useBreadcrumbRightEl(
-        <div>
-            <div>
-                <button onClick={() => navigate(-1)}>返回</button>
-                {/* 其他内容 */}
-            </div>
-        </div>
-    )
     const { setOptions } = useLayout();
     const location = useLocation();
     const { id, pluginTitle, pluginToolTitle } = location.state || {};
@@ -36,25 +26,6 @@ const PluginToolEdit: React.FC = () => {
     const [isEditOutput, setIsEditOutput] = useState(false);
     const [isRunModalOpen, setIsRunModalOpen] = useState(false);
     const [testData, settTestData] = useState<TestDataType[]>([])
-    useBreadcrumbRightEl(
-        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16}}>
-            <div>
-                <Button onClick={() => navigate(-1)}  icon={<ArrowLeftOutlined />}>返回</Button>
-            </div>
-            <div>
-                <Button onClick={() => {
-                    doPostSearch(
-                        {  data: {
-                                aiPluginToolId: id
-                            }}
-                    ).then(res => {
-                        settTestData(JSON.parse(res.data.data.data.inputData))
-                        showModal()
-                    })
-                }}  type="primary" >试运行</Button>
-            </div>
-        </div>
-    )
     const [editStates, setEditStates] = useState({
         '1': false,
         '2': false,
@@ -362,18 +333,38 @@ const PluginToolEdit: React.FC = () => {
 
     return (
         <>
-            <div style={{ backgroundColor: '#F5F5F5',height: '100vh', overflow: 'auto' }}>
-                <Collapse
-                    bordered={false}
-                    defaultActiveKey={['1', '2', '3']}
-                    items={collapseItems.map(item => ({
-                        ...item,
-                        style: {
-                            header: { backgroundColor: '#F7F7FA' },
-                            body: { backgroundColor: '#F5F5F5' },
-                        },
-                    }))}
-                />
+            <div style={{ backgroundColor: '#F7F7F7',height: '100vh', overflow: 'auto', padding: '24px' }}>
+
+                <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16, paddingBottom: '24px'}}>
+                    <div>
+                        <Button onClick={() => navigate(-1)}  icon={<LeftOutlined/>}>返回</Button>
+                    </div>
+                    <div>
+                        <Button onClick={() => {
+                            doPostSearch(
+                                {  data: {
+                                        aiPluginToolId: id
+                                    }}
+                            ).then(res => {
+                                settTestData(JSON.parse(res.data.data.data.inputData))
+                                showModal()
+                            })
+                        }}  type="primary" >试运行</Button>
+                    </div>
+                </div>
+
+                <div>
+                    <Collapse
+                        bordered={false}
+                        defaultActiveKey={['1', '2', '3']}
+                        items={collapseItems.map(item => ({
+                            ...item,
+                        }))}
+
+                        style={{ backgroundColor: '#F7F7F7' }} // 整体背景色（可选）
+                    />
+                </div>
+
             </div>
                 {/*    试运行模态框*/}
             <Modal

@@ -25,10 +25,10 @@ import "./card_page.less"
 import {Page} from "../../types/Page.ts";
 import {useUrlParams} from "../../hooks/useUrlParams.ts";
 import "../../pages/commons/commonStyle.less"
-import CustomDeleteIcon from "../CustomIcon/CustomDeleteIcon.tsx";
 import {useCheckPermission} from "../../hooks/usePermissions.tsx";
 import KeywordSearchForm from "../AntdCrud/KeywordSearchForm.tsx";
 import defaultNoDataLogo from '../../assets/defaultNoData.png'
+import CustomCardDropdownMenuDeleteIcon from "../CustomIcon/CustomCardDropdownMenuDeleteIcon.tsx";
 
 export type CardPageProps = {
     ref?: any,
@@ -179,8 +179,8 @@ const CardPage: React.FC<CardPageProps> = forwardRef(({
                         },
                     });
                 }}>
-                    <CustomDeleteIcon key="delete-icon"/>
-                    <span>删除</span>
+                    <CustomCardDropdownMenuDeleteIcon key="delete-icon"/>
+                    <span style={{color: "red"}}>删除</span>
                 </Space>
             );
         }

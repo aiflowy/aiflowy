@@ -17,7 +17,7 @@ import {
     EditOutlined,
     EyeOutlined, FormatPainterOutlined, PlusOutlined,
     ReloadOutlined,
-    RestOutlined, SearchOutlined
+    SearchOutlined
 } from "@ant-design/icons";
 import EditForm, {EditFormProps, EditLayout} from "./EditForm.tsx";
 import {useReactToPrint} from "react-to-print";
@@ -31,6 +31,7 @@ import {
 import {Key} from "rc-table/lib/interface";
 import {LabelTooltipType} from "antd/es/form/FormItemLabel";
 import {useCheckPermission} from "../../hooks/usePermissions.tsx";
+import CustomDeleteIcon from "../CustomIcon/CustomDeleteIcon.tsx";
 
 export type DictConfig = {
     url?: string,
@@ -341,7 +342,7 @@ const AntdCrud = forwardRef(function AntdCrud<T>({
                     okText="确定"
                     cancelText="取消"
                 >
-                    <a> <RestOutlined/> 删除 </a>
+                    <a style={{color: "red"}}> <CustomDeleteIcon/> 删除 </a>
                 </Popconfirm>}
 
             </Space>

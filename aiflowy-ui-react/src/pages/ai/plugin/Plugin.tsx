@@ -32,7 +32,6 @@ import TextArea from 'antd/es/input/TextArea';
 import {CheckboxGroupProps} from "antd/es/checkbox";
 import {useNavigate} from "react-router-dom";
 import './less/plugin.less'
-import CustomDeleteIcon from "../../../components/CustomIcon/CustomDeleteIcon.tsx";
 import "../../../components/CardPage/card_page.less"
 import {useCheckPermission} from "../../../hooks/usePermissions.tsx";
 import Sider from "antd/es/layout/Sider";
@@ -41,6 +40,7 @@ import CustomToolIcon from "../../../components/CustomIcon/CustomToolIcon.tsx";
 import CustomClassifyIcon from "../../../components/CustomIcon/CustomClassifyIcon.tsx";
 import pluginNoDataLogon from '../../../assets/pluginNoData.png'
 import KeywordSearchForm from "../../../components/AntdCrud/KeywordSearchForm.tsx";
+import CustomCardDropdownMenuDeleteIcon from "../../../components/CustomIcon/CustomCardDropdownMenuDeleteIcon.tsx";
 
 interface Category {
 	id: number;
@@ -488,8 +488,8 @@ const Plugin: React.FC = () => {
 													},
 													{
 														key: 'delete',
-														icon: <CustomDeleteIcon />,
-														label: '删除',
+														icon: <span style={{marginRight: '8px'}}><CustomCardDropdownMenuDeleteIcon /></span>,
+														label: <span style={{ color: 'red' }}>删除</span>,
 														danger: true,
 														onClick: (e) => {
 															e.domEvent.stopPropagation(); // 阻止事件冒泡
@@ -621,8 +621,8 @@ const Plugin: React.FC = () => {
 															items: [
 																...(hasRemovePermission ? [	{
 																	key: 'delete',
-																	label: '删除',
-																	icon: <CustomDeleteIcon />,
+																	label: <span style={{ color: 'red'}} > 删除 </span>,
+																	icon: <span style={{ marginLeft: '8px' }}><CustomCardDropdownMenuDeleteIcon  /></span>,
 																	danger: true,
 																	onClick: () => {
 																		Modal.confirm({

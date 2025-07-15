@@ -1,6 +1,5 @@
 import React from 'react';
 import Icon from '@ant-design/icons';
-import { Space } from 'antd';
 import type { GetProps } from 'antd';
 
 type CustomIconComponentProps = GetProps<typeof Icon>;
@@ -22,9 +21,7 @@ const DeleteIcon = (props: Partial<CustomIconComponentProps>) => (
 );
 
 const CustomDeleteIcon: React.FC = () => (
-    <Space>
         <DeleteIcon />
-    </Space>
 );
 
 export default CustomDeleteIcon;

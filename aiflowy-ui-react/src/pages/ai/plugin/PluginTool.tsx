@@ -2,13 +2,13 @@ import React, {useEffect, useState} from 'react';
 import {Button, Form, FormProps, Input, message, Modal, Space, Table, TableProps, Tooltip} from 'antd';
 import {useLocation, useNavigate} from "react-router-dom";
 import {useLayout} from "../../../hooks/useLayout.tsx";
-import {useBreadcrumbRightEl} from "../../../hooks/useBreadcrumbRightEl.tsx";
-import {ArrowLeftOutlined, EditOutlined, PlusOutlined, RestOutlined} from "@ant-design/icons";
+import {EditOutlined, LeftOutlined, PlusOutlined} from "@ant-design/icons";
 import TextArea from "antd/es/input/TextArea";
 import {usePage, usePostManual} from "../../../hooks/useApis.ts";
 import {convertDatetimeUtil} from "../../../libs/changeDatetimeUtil.tsx";
-import SearchForm from "../../../components/AntdCrud/SearchForm.tsx";
 import {ColumnsConfig} from "../../../components/AntdCrud";
+import KeywordSearchForm from "../../../components/AntdCrud/KeywordSearchForm.tsx";
+import CustomDeleteIcon from "../../../components/CustomIcon/CustomDeleteIcon.tsx";
 
 interface DataType {
     id: string;
@@ -39,20 +39,20 @@ const PluginTool: React.FC = () =>{
 
     // 控制创建工具模态框的显示与隐藏
     const [isAddPluginToolModalOpen, setAddPluginToolIsOpen] = React.useState(false);
-    useBreadcrumbRightEl(
-        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16}}>
-            <div>
-                <Button onClick={() => navigate(-1)}  icon={<ArrowLeftOutlined />}>返回</Button>
-                {/* 其他内容 */}
-            </div>
-            <div>
-                <Button type={"primary"} onClick={() => {
-                    setAddPluginToolIsOpen(true);
-                }}>
-                    <PlusOutlined/>创建工具</Button>
-            </div>
-        </div>
-    )
+    // useBreadcrumbRightEl(
+    //     <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16}}>
+    //         <div>
+    //             <Button onClick={() => navigate(-1)}  icon={<ArrowLeftOutlined />}>返回</Button>
+    //             {/* 其他内容 */}
+    //         </div>
+    //         <div>
+    //             <Button type={"primary"} onClick={() => {
+    //                 setAddPluginToolIsOpen(true);
+    //             }}>
+    //                 <PlusOutlined/>创建工具</Button>
+    //         </div>
+    //     </div>
+    // )
 
     const {
         loading,
@@ -120,24 +120,7 @@ const PluginTool: React.FC = () =>{
                 </Tooltip>
             ),
         },
-        // {
-        //     title: '输入参数',
-        //     dataIndex: 'inputParams',
-        //     key: 'inputParams',
-        // },
-        // {
-        //     title: '调试状态',
-        //     dataIndex: 'debugStatus',
-        //     key: 'debugStatus',
-        //     render: (item: number) =>{
-        //         if (item === 0){
-        //             return  <Tag color="error">失败</Tag>
-        //         }  else if(item === 1){
-        //             return  <Tag color="success">成功</Tag>
-        //         }
-        //
-        //     }
-        // },
+
         {
             title: '创建时间',
             dataIndex: 'created',
@@ -163,7 +146,7 @@ const PluginTool: React.FC = () =>{
                         })
                     }}> <EditOutlined /> 修改 </a>
 
-                    <a onClick={() =>{
+                    <a style={{color: 'red'}} onClick={() =>{
                         Modal.confirm({
                             title: '确认删除？',
                             content: '确认删除？',
@@ -184,7 +167,7 @@ const PluginTool: React.FC = () =>{
                                 })
                             },
                         });
-                    }}> <RestOutlined /> 删除 </a>
+                    }}> <CustomDeleteIcon /> 删除 </a>
 
                 </Space>
             ),
@@ -253,20 +236,47 @@ const PluginTool: React.FC = () =>{
         })
     };
     return (
-        <div>
-            <SearchForm columns={columnsSearchConfig} colSpan={6}
-                        onSearch={(values: any) => {
-                          doGetPage({
-                              params: {
-                                  ...values,
-                                  pluginId: id
-                              }
-                          })
-                        }}
-            />
+        <div style={{padding: "24px"}}>
+             <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 16}}>
+                 <div style={{paddingBottom: 24}}>
+                     <Button onClick={() => navigate(-1)}  icon={<LeftOutlined/>}>返回</Button>
+                 </div>
+                 {/*<div>*/}
+                 {/*    <Button type={"primary"} onClick={() => {*/}
+                 {/*        setAddPluginToolIsOpen(true);*/}
+                 {/*    }}>*/}
+                 {/*        <PlusOutlined/>创建工具</Button>*/}
+                 {/*   </div>*/}
+             </div>
+            {/*<SearchForm columns={columnsSearchConfig} colSpan={6}*/}
+            {/*            onSearch={(values: any) => {*/}
+            {/*              doGetPage({*/}
+            {/*                  params: {*/}
+            {/*                      ...values,*/}
+            {/*                      pluginId: id*/}
+            {/*                  }*/}
+            {/*              })*/}
+            {/*            }}*/}
+            {/*/>*/}
+            <KeywordSearchForm tableAlias={"aiPluginTool"} columns={columnsSearchConfig} onSearch={(searchParams: any)=>{
+                doGetPage({
+                    params: {
+                        ...searchParams,
+                        pluginId: id
+                    }
+                })
+            }} hiddenAddButton={true} customHandleButton=
+                {  <div>
+                <Button type={"primary"} onClick={() => {
+                    setAddPluginToolIsOpen(true);
+                }}>
+                    <PlusOutlined/>创建工具</Button>
+            </div>}/>
             <Table<DataType> columns={columns} dataSource={result?.data?.records} rowKey="id"
                              loading={loading}
                              pagination={{
+                                 position: ['bottomCenter'],
+                                 hideOnSinglePage: true,
                                  current: pagination.current,
                                  pageSize: pagination.pageSize,
                                  total: pagination.total,

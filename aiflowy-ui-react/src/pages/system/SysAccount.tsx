@@ -9,7 +9,7 @@ import {useGetManual, usePostManual} from "../../hooks/useApis.ts";
 import {Key} from "rc-table/lib/interface";
 import {DictSelect} from "../../components/DictSelect";
 import {useCheckPermission} from "../../hooks/usePermissions.tsx";
-
+import defaultUserAvatar from '../../assets/defaultUserAvatar.png'
 //编辑页面设置
 const editLayout = {
     labelLayout: "horizontal",
@@ -95,7 +95,8 @@ export const SysAccount: React.FC = () => {
             title: "账户头像",
             key: "avatar",
             render: (value) => {
-                return value ? <Avatar src={value}/> : <></>
+                return value ? <Avatar src={value} style={{width: '32px', height: '32px'}}/> :
+                    <Avatar src={defaultUserAvatar} style={{width: '32px', height: '32px'}}></Avatar>
             },
         },
 

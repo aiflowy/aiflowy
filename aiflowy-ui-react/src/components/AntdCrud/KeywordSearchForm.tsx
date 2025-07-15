@@ -13,7 +13,8 @@ interface KeywordSearchFormProps {
     addButtonText?: string,
     customHandleButton?: React.ReactNode,
     setIsEditOpen?: (open: boolean) => void,
-    customMenuItems?: any[]
+    customMenuItems?: any[],
+    hiddenAddButton?: boolean
 }
 
 const KeywordSearchForm: React.FC<KeywordSearchFormProps> = ({
@@ -25,7 +26,8 @@ const KeywordSearchForm: React.FC<KeywordSearchFormProps> = ({
                                                                  addButtonText = '新增',
                                                                  customHandleButton,
                                                                  setIsEditOpen,
-                                                                 customMenuItems
+                                                                 customMenuItems,
+                                                                 hiddenAddButton = false
                                                              }) => {
     const [form] = Form.useForm();
     const hasSavePermission = useCheckPermission(`/api/v1/${tableAlias}/save`);
@@ -89,7 +91,7 @@ const KeywordSearchForm: React.FC<KeywordSearchFormProps> = ({
                         justifyContent: 'flex-end',
                         flex: 1
                     }}>
-                        {hasSavePermission &&
+                        {hasSavePermission && !hiddenAddButton &&
                             <Button type="primary" onClick={() => setIsEditOpen?.(true)}>
                                 <PlusOutlined /> {addButtonText}
                             </Button>
