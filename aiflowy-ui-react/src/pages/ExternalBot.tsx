@@ -423,6 +423,10 @@ export const ExternalBot: React.FC = () => {
                     clearMessage={() => clearMessage(params.id, getExternalSessionId(), localStorage.getItem("tempUserId"))}
                     inputDisabled={inputDisabled}
                     prompts={presetQuestions}
+                    options={{
+                        botTitle: botInfo?.data?.title,
+                        botDescription: botInfo?.data?.description
+                    }}
                     // setNewConversation={onAddConversation}
                     onCustomEvent={(eventType) => {
                         console.log("收到收到事件：",eventType)

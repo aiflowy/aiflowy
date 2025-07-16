@@ -7,9 +7,8 @@ import {
     Sender,
     ThoughtChain,
     ThoughtChainItem,
-    Welcome
 } from '@ant-design/x';
-import {Badge, Button, GetProp, GetRef, Image, message, Space, Spin, Typography, UploadFile} from 'antd';
+import {Avatar, Badge, Button, GetProp, GetRef, Image, message, Space, Spin, Typography, UploadFile} from 'antd';
 import {
     CopyOutlined,
     FolderAddOutlined,
@@ -34,7 +33,9 @@ import fileIcon from "../../assets/fileLink.png"
 // };
 
 export interface ChatOptions {
-    messageSessionId: string;
+    messageSessionId?: string;
+    botTitle?: string;
+    botDescription?: string;
 }
 
 export type ChatMessage = {
@@ -87,6 +88,7 @@ export type AiProChatProps = {
     onCustomEventComplete?: EventHandler;
     llmDetail?: any;
     sessionId?: string;
+    options?: any;
 };
 
 export const RenderMarkdown: React.FC<{ content: string, fileList?: Array<string> }> = ({content, fileList}) => {
@@ -114,6 +116,7 @@ export const AiProChat = ({
                               onChatsChange: parentOnChatsChange,
                               style = {},
                               appStyle = {},
+                              // @ts-ignore
                               helloMessage = '欢迎使用 AIFlowy',
                               // @ts-ignore
                               botAvatar = `${logo}`,
@@ -128,7 +131,8 @@ export const AiProChat = ({
                               onCustomEvent,
                               onCustomEventComplete,
                               llmDetail = {},
-                              sessionId
+                              sessionId,
+                              options
                           }: AiProChatProps) => {
     const isControlled = parentChats !== undefined && parentOnChatsChange !== undefined;
     const [internalChats, setInternalChats] = useState<ChatMessage[]>([]);
@@ -977,18 +981,20 @@ export const AiProChat = ({
     const renderMessages = () => {
         if (!chats?.length) {
             return (
-                <Welcome
-                    variant="borderless"
-                    // icon={<img
-                    //     src={botAvatar}
-                    //     style={{width: 32, height: 32, borderRadius: '50%'}}
-                    //     alt="AI Avatar"
-                    // />}
-                    description={helloMessage}
-                    styles={{icon: {width: 40, height: 40}}}
-                />
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    paddingTop: '103px'
+                }}>
+                    <Avatar size={88} src={botAvatar} style={{marginBottom: '10px'}}/>
+                    <div className={"bot-chat-title"}>{options?.botTitle}</div>
+                    <div className={"bot-chat-description"}>{options?.botDescription}</div>
+                </div>
             );
         }
+
         return (
             <Bubble.List
                 autoScroll={true}

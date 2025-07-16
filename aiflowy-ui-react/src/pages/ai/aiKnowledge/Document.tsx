@@ -27,6 +27,7 @@ type queryParamsType = {
 };
 
 const Document: React.FC = () => {
+    const baseUrl = `${import.meta.env.VITE_APP_SERVER_ENDPOINT}`;
 
     const [pagination, setPagination] = useState({
         current: 1, // 当前页码
@@ -566,7 +567,7 @@ const Document: React.FC = () => {
                 return (
                     <div className="content">
                         <FileImportPanel data={{knowledgeId: params.id}} maxCount={1}
-                                         action="/api/v1/commons/upload"/>
+                                         action={`${baseUrl}/api/v1/commons/upload`}/>
                     </div>
                 );
             case 'search-test':
