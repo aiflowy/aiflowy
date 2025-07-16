@@ -242,6 +242,7 @@ export const WorkflowDesign = () => {
                         item.children = <JsonView src={msg.errorMsg}/>
                     }
                     if (msg.status === 'confirm') {
+                        message.success("有待确认的内容，请先确认！")
                         setActiveCol(msg.nodeId)
                         handleConfirmStep(msg, item)
                     }
