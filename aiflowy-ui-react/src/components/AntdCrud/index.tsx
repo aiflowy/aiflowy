@@ -7,7 +7,7 @@ import React, {
     useRef,
     useState
 } from "react";
-import {Button, Dropdown, MenuProps, message, Popconfirm, Space, Table, TableProps, Tooltip} from "antd";
+import {Button, Dropdown, FormInstance, MenuProps, message, Popconfirm, Space, Table, TableProps, Tooltip} from "antd";
 import {ColumnGroupType, ColumnType, SorterResult, TableRowSelection} from "antd/es/table/interface";
 import SearchForm from "./SearchForm";
 import {
@@ -146,7 +146,7 @@ export type AntdCrudProps<T> = {
     actionConfig?: ActionConfig<T>,
 
     //自定义form 表单渲染器
-    formRenderFactory?: (position: "edit" | "search", columnConfig: ColumnConfig) => JSX.Element | null
+    formRenderFactory?: (position: "edit" | "search", columnConfig: ColumnConfig,form:FormInstance) => JSX.Element | null
 
     customButton?: () => React.ReactNode | null,
 

@@ -1,11 +1,12 @@
 import React, {forwardRef, useEffect, useImperativeHandle} from 'react';
 import {useList, usePage, useRemove, useRemoveBatch, useSave, useUpdate} from "../../hooks/useApis.ts";
-import AntdCrud, {ActionConfig, Actions, ColumnsConfig} from "../AntdCrud";
+import AntdCrud, {ActionConfig, Actions, ColumnConfig, ColumnsConfig} from "../AntdCrud";
 import {Page} from "../../types/Page.ts";
 import {convertAttrsToObject} from "../../libs/utils.ts";
 
 import {useUrlParams} from "../../hooks/useUrlParams.ts";
 import {EditLayout} from "../AntdCrud/EditForm.tsx";
+import {FormInstance} from "antd";
 
 interface CurdPageProps {
     ref?: any,
@@ -25,25 +26,28 @@ interface CurdPageProps {
     externalRefreshTrigger?: number; // 当这个值变化时触发刷新
     needHideSearchForm?: boolean;
     usePermission?: string;
+    //自定义form 表单渲染器
+    formRenderFactory?: (position: "edit" | "search", columnConfig: ColumnConfig,form:FormInstance) => JSX.Element | null
 }
 
 const CrudPage: React.FC<CurdPageProps> = forwardRef(({
-                                               tableAlias,
-                                               showType = "page",
-                                               defaultPageSize = 10,
-                                               defaultExpandedAllRow = true,
-                                               columnsConfig,
-                                               actionConfig,
-                                               addButtonEnable = true,
-                                               customButton,
-                                               rowSelectEnable = true,
-                                               params,
-                                               paramsToUrl = false,
-                                               editLayout,
-                                               externalRefreshTrigger,
-                                               needHideSearchForm,
-                                               usePermission
-                                           },ref) => {
+                                                          tableAlias,
+                                                          showType = "page",
+                                                          defaultPageSize = 10,
+                                                          defaultExpandedAllRow = true,
+                                                          columnsConfig,
+                                                          actionConfig,
+                                                          addButtonEnable = true,
+                                                          customButton,
+                                                          rowSelectEnable = true,
+                                                          params,
+                                                          paramsToUrl = false,
+                                                          editLayout,
+                                                          externalRefreshTrigger,
+                                                          needHideSearchForm,
+                                                          usePermission,
+                                                          formRenderFactory
+                                                      }, ref) => {
 
     useImperativeHandle(ref, () => ({
         refresh: () => {
@@ -87,7 +91,7 @@ const CrudPage: React.FC<CurdPageProps> = forwardRef(({
         },
         onCreate: (item) => {
 
-           convertAttrsToObject(item);
+            convertAttrsToObject(item);
 
             doSave({
                 data: {
@@ -117,7 +121,6 @@ const CrudPage: React.FC<CurdPageProps> = forwardRef(({
             })
         }
     };
-
 
 
     // const pageNumber = +(((result?.data) as Page<any>)?.pageNumber || urlParams.pageNumber || 1)
@@ -158,6 +161,7 @@ const CrudPage: React.FC<CurdPageProps> = forwardRef(({
                   ref={ref}
                   needHideSearchForm={needHideSearchForm}
                   usePermission={usePermission}
+                  formRenderFactory={formRenderFactory}
         />
     )
 });

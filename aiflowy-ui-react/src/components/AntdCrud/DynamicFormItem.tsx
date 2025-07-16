@@ -21,7 +21,7 @@ const DynamicFormItem: React.FC<{
     position: "edit" | "search",
     columnConfig: ColumnConfig<any>,
     onValueInit?: (key: string) => any,
-    formRenderFactory?: (position: "edit" | "search", columnConfig: ColumnConfig) => JSX.Element | null
+    formRenderFactory?: (position: "edit" | "search", columnConfig: ColumnConfig, form: FormInstance) => JSX.Element | null
     readOnly?: boolean,
     data?: any,
     form: FormInstance,
@@ -29,10 +29,10 @@ const DynamicFormItem: React.FC<{
           position,
           columnConfig,
           onValueInit,
-          formRenderFactory = () => null,
+          formRenderFactory = (_position: any, _column: ColumnConfig, _form: any) => null,
           readOnly = false,
           data,
-          form
+          form,
       }) => {
 
 
@@ -95,10 +95,11 @@ const DynamicFormItem: React.FC<{
     }
     if (queryDict && !loading && dictData?.data) {
         dictData.data = dictData.data.map((item: { [x: string]: any; options: any; }) => {
-            const { options, ...rest } = item; // 移除options属性
+            const {options, ...rest} = item; // 移除options属性
             return rest;
         });
     }
+
     function renderInput(column: ColumnConfig) {
 
         if (queryDict && loading) {
@@ -106,7 +107,7 @@ const DynamicFormItem: React.FC<{
         }
 
         if (formRenderFactory) {
-            const element = formRenderFactory(position, column);
+            const element = formRenderFactory(position, column, form);
             if (element) return element;
         }
         switch (column.form?.type?.toLowerCase()) {
@@ -234,7 +235,7 @@ const DynamicFormItem: React.FC<{
     return (
         <Form.Item name={columnConfig.key! as string} label={columnConfig.title! as string}
                    style={{display: isHidden(columnConfig) || !show ? "none" : ""}}
-                   rules={position == 'search' ? [] :columnConfig.form?.rules}
+                   rules={position == 'search' ? [] : columnConfig.form?.rules}
                    extra={columnConfig.form?.extra}
                    tooltip={columnConfig.form?.tooltip}
                    initialValue={onValueInit?.(columnConfig.key! as string)}

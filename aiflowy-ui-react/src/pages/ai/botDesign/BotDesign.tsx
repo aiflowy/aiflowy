@@ -439,16 +439,8 @@ const BotDesign: React.FC = () => {
                                 placeholder="请选择大模型"
                                 allowClear
                                 disabled={!llmQueryPermission || !botSavePermission}
-                                // fieldNames={{label: 'title', value: 'id'}}
-                                // options={[
-                                //     ...llmResult?.data || []
-                                // ]}
-
                                 value={llmQueryPermission ? detail?.data?.llmId : "no_access"}
                                 onChange={(value: any) => {
-
-                                    console.log(value)
-
                                     value = value || ''
                                     updateBot({ llmId: value === 'no_access' ? '' : value || '' });
                                 }}

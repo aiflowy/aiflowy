@@ -2,7 +2,7 @@ import React, {JSX, useState} from 'react';
 import {
     Button,
     Col,
-    Form,
+    Form, FormInstance,
     Row,
 } from 'antd';
 import {ColumnConfig, ColumnsConfig} from "./index";
@@ -22,7 +22,7 @@ const removeEmpty = (obj: any) => {
 const SearchForm: React.FC<{
     onSearch: (values: any) => void,
     onSearchValueInit?: (key: string) => any,
-    formRenderFactory?: (position: "edit" | "search", columnConfig: ColumnConfig) => JSX.Element | null
+    formRenderFactory?: (position: "edit" | "search", columnConfig: ColumnConfig,form:FormInstance) => JSX.Element | null
     columns: ColumnsConfig<any>
     colSpan: number
 }> = ({

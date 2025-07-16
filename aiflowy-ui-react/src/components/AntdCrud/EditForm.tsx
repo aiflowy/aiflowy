@@ -3,7 +3,7 @@ import {
     Button,
     Col,
     Divider,
-    Form, Modal,
+    Form, FormInstance, Modal,
     Row, Space,
     theme,
 } from 'antd';
@@ -13,7 +13,7 @@ import EditFormContainer from "./EditFormContainer.tsx";
 import {isHidden} from "../../libs/utils.ts";
 import TextArea from "antd/es/input/TextArea";
 import {usePost} from "../../hooks/useApis.ts";
-import { convertRowDataToDayjs } from './dayjsUtil.ts';
+import {convertRowDataToDayjs} from './dayjsUtil.ts';
 
 export type EditLayout = {
     openType?: "modal" | "drawer",
@@ -29,7 +29,7 @@ export type EditFormProps<T> = {
     onCancel: () => void,
     actions: Actions<T>,
     onActionsInvokeAfter?: () => void,
-    formRenderFactory?: (position: "edit" | "search", columnConfig: ColumnConfig) => JSX.Element | null
+    formRenderFactory?: (position: "edit" | "search", columnConfig: ColumnConfig, form: FormInstance) => JSX.Element | null
     row?: T,
     open: boolean
     title: string,
@@ -38,7 +38,7 @@ export type EditFormProps<T> = {
     layout?: EditLayout
     intelligentFilling?: {
         url: string,
-    }
+    },
 }
 
 const EditForm = <T, >({
@@ -146,7 +146,8 @@ const EditForm = <T, >({
 
     return (
         <>
-            <Modal title="智能填充" open={openIntelligentFilling} onOk={startFilling} confirmLoading={loading}  onCancel={() => {
+            <Modal title="智能填充" open={openIntelligentFilling} onOk={startFilling} confirmLoading={loading}
+                   onCancel={() => {
                        setOpenIntelligentFilling(false)
                    }}>
                 <TextArea placeholder="点击这里，开始输入内容" value={textAreaValue}

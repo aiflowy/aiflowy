@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {ColumnsConfig} from "../AntdCrud";
 import {Card, Popconfirm, Space, theme } from "antd";
 import {
@@ -26,6 +26,7 @@ export type TreePageProps = {
     onTreeSelect: (value: any) => void,
     queryParams?: Record<string, any>,
     children: React.ReactNode,
+    onTreeDataLoaded?: (data: any[]) => void,
 }
 
 const TreePage: React.FC<TreePageProps> = ({
@@ -39,7 +40,8 @@ const TreePage: React.FC<TreePageProps> = ({
                                                treeEditable = true,
                                                onTreeSelect,
                                                queryParams,
-                                               children
+                                               children,
+                                               onTreeDataLoaded,
                                            }) => {
 
     const {loading, result, doGet} = useList(treeTableAlias, {asTree: true, ...queryParams});
@@ -50,6 +52,13 @@ const TreePage: React.FC<TreePageProps> = ({
     const [editData, setEditData] = useState(null);
     const [collapsed, setCollapsed] = useState(false);
     const [selectedKey, setSelectedKey] = useState('');
+
+    // 当数据加载完成时，通知父组件
+    useEffect(() => {
+        if (result?.data && onTreeDataLoaded) {
+            onTreeDataLoaded(result.data);
+        }
+    }, [result, onTreeDataLoaded]);
 
     // 处理列表项的操作按钮
     const processListItems = useCallback((items: any[]) => {
