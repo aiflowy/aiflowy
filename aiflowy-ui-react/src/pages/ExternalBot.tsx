@@ -36,6 +36,7 @@ const useStyle = createStyles(({token, css}) => {
         menu: css`
             background: ${token.colorBgLayout}80;
             width: 239px;
+            min-width: 239px;
             display: flex;
             flex-direction: column;
         `,
@@ -422,7 +423,6 @@ export const ExternalBot: React.FC = () => {
                     clearMessage={() => clearMessage(params.id, getExternalSessionId(), localStorage.getItem("tempUserId"))}
                     inputDisabled={inputDisabled}
                     prompts={presetQuestions}
-                    sessionId={getExternalSessionId()}
                     // setNewConversation={onAddConversation}
                     onCustomEvent={(eventType) => {
                         console.log("收到收到事件：",eventType)
