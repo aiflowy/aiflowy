@@ -14,7 +14,6 @@ import {
     CopyOutlined,
     FolderAddOutlined,
     LinkOutlined,
-    OpenAIOutlined,
     PauseCircleOutlined,
     PictureOutlined,
     PlayCircleOutlined,
@@ -28,7 +27,8 @@ import logo from "/favicon.png";
 import './aiprochat.less'
 import markdownit from 'markdown-it';
 import {usePost, usePostManual} from "../../hooks/useApis.ts";
-
+import senderIcon from "../../assets/senderIcon.png"
+import clearButtonIcon from "../../assets/clearButton.png"
 const fooAvatar: React.CSSProperties = {
     color: '#fff',
     backgroundColor: '#87d068',
@@ -1426,7 +1426,6 @@ export const AiProChat = ({
                 display: 'flex',
                 flexDirection: 'column',
                 background: '#fff',
-                border: '1px solid #f3f3f3',
                 ...appStyle,
                 ...style,
             }}
@@ -1455,7 +1454,6 @@ export const AiProChat = ({
 
             <div
                 style={{
-                    borderTop: '1px solid #eee',
                     padding: '12px',
                     display: 'flex',
                     flexDirection: "column",
@@ -1464,15 +1462,41 @@ export const AiProChat = ({
             >
 
                 {/* 🌟 提示词 */}
-                <Prompts
-                    items={SENDER_PROMPTS}
-                    onItemClick={(info) => {
-                        handleSubmit(info.data.description as string)
-                    }}
-                    styles={{
-                        item: {padding: '6px 12px'},
-                    }}
-                />
+                <div style={{display: "flex", flexDirection: "row", gap: "8px", justifyContent: "space-between"}}>
+                    <Prompts
+                        items={SENDER_PROMPTS}
+                        onItemClick={(info) => {
+                            handleSubmit(info.data.description as string)
+                        }}
+                        styles={{
+                            item: {padding: '6px 12px'},
+                        }}
+                    />
+                    <div>
+                        { chats?.length > 0 &&
+                            <Button
+                                // disabled={(sendLoading || isStreaming || recording || fileUploading) ? true : !fileItems.length && !chats?.length}  // 强制不禁用
+                                onClick={async (e: any) => {
+                                    e.preventDefault();  // 阻止默认行为（如果有）
+                                    setSendLoading(true)
+                                    await clearMessage?.();
+                                    setSendLoading(false)
+                                    setFileItems([])
+                                    setFileUrlList([])
+                                    setHeaderOpen(false)
+                                }}
+                            >
+                                <img src={clearButtonIcon} style={{width: 24, height: 24}} alt="delete"/>
+                                <span className={"chat-clear-button-text"}>
+                                    清除上下文
+                                </span>
+                            </Button>
+                        }
+
+                    </div>
+
+                </div>
+
 
                 {customToolBarr ?
                     <div style={{
@@ -1551,37 +1575,24 @@ export const AiProChat = ({
                             <Button onClick={() => setHeaderOpen(!headerOpen)} icon={<LinkOutlined/>}/>
                         </Badge>
                     }
-                    actions={(_, info) => {
-
-
-                        const {SendButton, ClearButton, SpeechButton} = info.components;
-
-                        return <Space size="small">
-                            <ClearButton
-                                disabled={(sendLoading || isStreaming || recording || fileUploading) ? true : !fileItems.length && !chats?.length}  // 强制不禁用
-                                title="删除对话记录"
-                                style={{fontSize: 20}}
-                                onClick={async (e) => {
-                                    e.preventDefault();  // 阻止默认行为（如果有）
-                                    setSendLoading(true)
-                                    await clearMessage?.();
-                                    setSendLoading(false)
-                                    setFileItems([])
-                                    setFileUrlList([])
-                                    setHeaderOpen(false)
-                                }}
-                            />
-                            <SpeechButton
-                                disabled={sendLoading || isStreaming || fileUploading}
-                            />
-                            <SendButton
-                                type="primary"
-                                // onClick={() => handleSubmit(content)}
-                                disabled={inputDisabled || recording || fileUploading}
-                                icon={<OpenAIOutlined/>}
-                                loading={sendLoading || isStreaming}
-                            />
-                        </Space>
+                    actions={false}
+                    autoSize={{ minRows: 4, maxRows: 4}}
+                    footer={({ components }) => {
+                        const {SendButton, SpeechButton} = components ;
+                        return (
+                            <Space size="small" style={{display: "flex", justifyContent: "flex-end"}}>
+                                <SpeechButton className={"speech-button"}
+                                    disabled={sendLoading || isStreaming || fileUploading}
+                                />
+                                <SendButton
+                                    type="primary"
+                                    // onClick={() => handleSubmit(content)}
+                                    disabled={inputDisabled || recording || fileUploading}
+                                    icon={<img alt="" src={senderIcon} style={{width: 30, height: 30}}/>}
+                                    loading={sendLoading || isStreaming}
+                                />
+                            </Space>
+                        );
                     }}
                 />
             </div>
