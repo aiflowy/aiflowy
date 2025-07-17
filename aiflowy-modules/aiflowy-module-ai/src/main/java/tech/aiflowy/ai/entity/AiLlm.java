@@ -103,30 +103,13 @@ public class AiLlm extends AiLlmBase {
         }
     }
 
-    private Llm giteeLlm() {
-        GiteeAiLlmConfig giteeAiLlmConfig = new GiteeAiLlmConfig();
-        giteeAiLlmConfig.setEndpoint(getLlmEndpoint());
-        giteeAiLlmConfig.setApiKey(getLlmApiKey());
-        giteeAiLlmConfig.setModel(getLlmModel());
-//        giteeAiLlmConfig.setDebug(true);
-        return new GiteeAiLlm(giteeAiLlmConfig);
-    }
-
-    private Llm qwenLlm() {
-        QwenLlmConfig qwenLlmConfig = new QwenLlmConfig();
-        qwenLlmConfig.setEndpoint(getLlmEndpoint());
-        qwenLlmConfig.setApiKey(getLlmApiKey());
-        qwenLlmConfig.setModel(getLlmModel());
-//        qwenLlmConfig.setDebug(true);
-        return new QwenLlm(qwenLlmConfig);
-    }
 
     private Llm ollamaLlm() {
         OllamaLlmConfig ollamaLlmConfig = new OllamaLlmConfig();
         ollamaLlmConfig.setEndpoint(getLlmEndpoint());
         ollamaLlmConfig.setApiKey(getLlmApiKey());
         ollamaLlmConfig.setModel(getLlmModel());
-//        ollamaLlmConfig.setDebug(true);
+       //        ollamaLlmConfig.setDebug(true);
         return new OllamaLlm(ollamaLlmConfig);
     }
 
@@ -137,7 +120,7 @@ public class AiLlm extends AiLlmBase {
         openAiLlmConfig.setModel(getLlmModel());
         openAiLlmConfig.setDefaultEmbeddingModel(getLlmModel());
         openAiLlmConfig.setDebug(true);
-        Properties properties = PropertiesUtil.textToProperties(getLlmExtraConfig());
+        Properties properties = PropertiesUtil.textToProperties(getLlmExtraConfig() == null ? "" : getLlmExtraConfig());
         String chatPath = properties.getProperty("chatPath");
         String embedPath = properties.getProperty("embedPath");
 
@@ -168,19 +151,7 @@ public class AiLlm extends AiLlmBase {
             }
 
         }
-        // if (llmExtraConfig != null && !llmExtraConfig.isEmpty()) {
-        //     Properties prop = PropertiesUtil.textToProperties(llmExtraConfig);
-        //     String chatPath = prop.getProperty("chatPath");
-        //     String embedPath = prop.getProperty("embedPath");
-        //     System.out.println("chatPath" + chatPath);
-        //     System.out.println("embdaPath" + embedPath);
-        //     if (chatPath != null && !chatPath.isEmpty()) {
-        //         openAiLlmConfig.setChatPath(chatPath);
-        //     }
-        //     if (embedPath != null && !embedPath.isEmpty()) {
-        //         openAiLlmConfig.setEmbedPath(embedPath);
-        //     }
-        // }
+
         return new OpenAILlm(openAiLlmConfig);
     }
 
@@ -188,7 +159,7 @@ public class AiLlm extends AiLlmBase {
 
         SparkLlmConfig sparkLlmConfig = new SparkLlmConfig();
 
-        Properties properties = PropertiesUtil.textToProperties(getLlmExtraConfig());
+        Properties properties = PropertiesUtil.textToProperties(getLlmExtraConfig() == null ? "" : getLlmExtraConfig());
         String version = properties.getProperty("version");
         String appId = properties.getProperty("appId");
         String apiSecret = properties.getProperty("apiSecret");
@@ -217,26 +188,12 @@ public class AiLlm extends AiLlmBase {
             }
         }
 
-
-
         sparkLlmConfig.setApiSecret(apiSecret);
         sparkLlmConfig.setVersion(version);
         sparkLlmConfig.setAppId(appId);
         sparkLlmConfig.setApiKey(getLlmApiKey());
 
-        // SparkLlmConfig sparkLlmConfig = PropertiesUtil.propertiesTextToEntity(getLlmExtraConfig(),
-        //     SparkLlmConfig.class);
-        
-//        sparkLlmConfig.setDebug(true);
         return new SparkLlm(sparkLlmConfig);
     }
 
-    private Llm deepseekLlm() {
-        DeepseekConfig config = new DeepseekConfig();
-        config.setModel(getLlmModel());
-        config.setEndpoint(getLlmEndpoint());
-        config.setApiKey(getLlmApiKey());
-//        config.setDebug(true);
-        return new DeepseekLlm(config);
-    }
 }

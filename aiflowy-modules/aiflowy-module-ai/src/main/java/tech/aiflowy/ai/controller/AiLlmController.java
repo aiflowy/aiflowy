@@ -17,6 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import org.springframework.web.bind.annotation.RequestBody;
+import tech.aiflowy.common.util.StringUtil;
+import org.springframework.util.StringUtils;
+import tech.aiflowy.common.web.exceptions.BusinessException;
 
 /**
  * 控制层。
@@ -47,5 +51,15 @@ public class AiLlmController extends BaseCurdController<AiLlmService, AiLlm> {
         LoginAccount account = SaTokenUtil.getLoginAccount();
         commonFiled(entity, account.getId(), account.getTenantId(), account.getDeptId());
         return aiLlmService.addAiLlm(entity);
+    }
+
+
+    @PostMapping("verifyLlmConfig")
+    @SaCheckPermission("/api/v1/aiLlm/save")
+    public Result verifyLlmConfig(@RequestBody AiLlm llm) {
+
+        service.verifyLlmConfig(llm);
+
+        return Result.success();
     }
 }
