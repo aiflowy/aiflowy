@@ -24,10 +24,10 @@ public class RagRerankModelUtil {
         if (aiLlmRerank.getLlmEndpoint() != null && !aiLlmRerank.getLlmEndpoint().isEmpty()){
             defaultRerankModelConfig.setEndpoint(aiLlmRerank.getLlmEndpoint());
         }
-        Map<String,Object> llmExtraConfig = aiLlmRerank.getLlmExtraConfig();
+        String llmExtraConfig = aiLlmRerank.getLlmExtraConfig();
         if (llmExtraConfig != null && !llmExtraConfig.isEmpty()){
-            // Properties prop = PropertiesUtil.textToProperties(llmExtraConfig);
-            String basePath = (String)llmExtraConfig.get("basePath");
+            Properties prop = PropertiesUtil.textToProperties(llmExtraConfig);
+            String basePath = prop.getProperty("basePath");
             if (basePath != null && !basePath.isEmpty()) {
                 defaultRerankModelConfig.setBasePath(basePath);
             }

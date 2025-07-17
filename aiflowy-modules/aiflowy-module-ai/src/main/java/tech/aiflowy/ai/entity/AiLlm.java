@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.Properties;
 import org.springframework.util.StringUtils;
 import java.util.Map;
+import tech.aiflowy.common.util.PropertiesUtil;
+import com.alibaba.fastjson2.JSON;
 
 /**
  * 实体类。
@@ -135,15 +137,30 @@ public class AiLlm extends AiLlmBase {
         openAiLlmConfig.setModel(getLlmModel());
         openAiLlmConfig.setDefaultEmbeddingModel(getLlmModel());
         openAiLlmConfig.setDebug(true);
-        Map<String,Object> extraConfigMap = getLlmExtraConfig();
-        String chatPath = (String)extraConfigMap.get("chatPath");
-        String embedPath = (String)extraConfigMap.get("embedPath");
+        Properties properties = PropertiesUtil.textToProperties(getLlmExtraConfig());
+        String chatPath = properties.getProperty("chatPath");
+        String embedPath = properties.getProperty("embedPath");
+
+        Map<String, Object> options = getOptions();
+
         if (StringUtils.hasLength(chatPath)){
             openAiLlmConfig.setChatPath(chatPath);
+        }else {
+            String chatPathFromOptions = (String)options.get("chatPath");
+            if (StringUtils.hasLength(chatPathFromOptions)){
+                chatPath = chatPathFromOptions;
+                openAiLlmConfig.setChatPath(chatPath);
+            };
         }
 
         if (StringUtils.hasLength(embedPath)){
             openAiLlmConfig.setEmbedPath(embedPath);
+        }else {
+            String embedPathFromOptions = (String)options.get("embedPath");
+            if (StringUtils.hasLength(embedPathFromOptions)){
+                embedPath = embedPathFromOptions;
+                openAiLlmConfig.setEmbedPath(embedPath);
+            }
         }
         // if (llmExtraConfig != null && !llmExtraConfig.isEmpty()) {
         //     Properties prop = PropertiesUtil.textToProperties(llmExtraConfig);
@@ -165,10 +182,37 @@ public class AiLlm extends AiLlmBase {
 
         SparkLlmConfig sparkLlmConfig = new SparkLlmConfig();
 
-        Map<String,Object> extraConfigMap = getLlmExtraConfig();
-        String version = (String)extraConfigMap.get("version");
-        String appId = (String)extraConfigMap.get("appId");
-        String apiSecret = (String)extraConfigMap.get("apiSecret");
+        Properties properties = PropertiesUtil.textToProperties(getLlmExtraConfig());
+        String version = properties.getProperty("version");
+        String appId = properties.getProperty("appId");
+        String apiSecret = properties.getProperty("apiSecret");
+
+        Map<String,Object> options = getOptions();
+
+        if (!StringUtils.hasLength(version)){
+            String versionFromOptions = (String)options.get("version");
+            if (StringUtils.hasLength(versionFromOptions)){
+                version = versionFromOptions;
+            }
+        }
+
+        if (!StringUtils.hasLength(appId)){
+            String appIdFromOptions = (String)options.get("appId");
+            if (StringUtils.hasLength(appIdFromOptions)){
+                appId = appIdFromOptions;
+            }
+        }
+
+
+        if (!StringUtils.hasLength(apiSecret)){
+            String apiSecretFromOptions = (String)options.get("apiSecret");
+            if (StringUtils.hasLength(apiSecretFromOptions)){
+                apiSecret = apiSecretFromOptions;
+            }
+        }
+
+
+
         sparkLlmConfig.setApiSecret(apiSecret);
         sparkLlmConfig.setVersion(version);
         sparkLlmConfig.setAppId(appId);

@@ -134,8 +134,7 @@ public class AiLlmBase implements Serializable {
     /**
      * 大模型其他属性配置
      */
-    @Column(typeHandler = FastjsonTypeHandler.class, comment = "大模型其他属性配置")
-    private Map<String,Object>  llmExtraConfig;
+    private String llmExtraConfig;
 
     /**
      * 其他配置内容
@@ -303,11 +302,11 @@ public class AiLlmBase implements Serializable {
         this.llmApiKey = llmApiKey;
     }
 
-    public Map<String,Object> getLlmExtraConfig() {
+    public String getLlmExtraConfig() {
         return llmExtraConfig;
     }
 
-    public void setLlmExtraConfig(Map<String,Object>  llmExtraConfig) {
+    public void setLlmExtraConfig(String  llmExtraConfig) {
         this.llmExtraConfig = llmExtraConfig;
     }
 
