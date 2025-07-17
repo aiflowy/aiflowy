@@ -7,6 +7,7 @@ import tech.aiflowy.common.util.PropertiesUtil;
 
 import java.util.Properties;
 import java.util.Map;
+import org.springframework.util.StringUtils;
 
 public class RagRerankModelUtil {
 
@@ -28,9 +29,19 @@ public class RagRerankModelUtil {
         if (llmExtraConfig != null && !llmExtraConfig.isEmpty()){
             Properties prop = PropertiesUtil.textToProperties(llmExtraConfig);
             String basePath = prop.getProperty("basePath");
-            if (basePath != null && !basePath.isEmpty()) {
-                defaultRerankModelConfig.setBasePath(basePath);
+            if (!StringUtils.hasLength(basePath)) {
+
+                Map<String, Object> options = aiLlmRerank.getOptions();
+                if (options != null) {
+                    String rerankPath = (String)options.get("rerankPath");
+                    if (StringUtils.hasLength(rerankPath)){
+                        basePath = rerankPath;
+                    }
+                }
+
             }
+
+            defaultRerankModelConfig.setBasePath(basePath);
         }
 
         return new DefaultRerankModel(defaultRerankModelConfig);

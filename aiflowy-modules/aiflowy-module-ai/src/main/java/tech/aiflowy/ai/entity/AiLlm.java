@@ -146,21 +146,27 @@ public class AiLlm extends AiLlmBase {
         if (StringUtils.hasLength(chatPath)){
             openAiLlmConfig.setChatPath(chatPath);
         }else {
-            String chatPathFromOptions = (String)options.get("chatPath");
-            if (StringUtils.hasLength(chatPathFromOptions)){
-                chatPath = chatPathFromOptions;
-                openAiLlmConfig.setChatPath(chatPath);
-            };
+            if (options != null){
+                String chatPathFromOptions = (String)options.get("chatPath");
+                if (StringUtils.hasLength(chatPathFromOptions)){
+                    chatPath = chatPathFromOptions;
+                    openAiLlmConfig.setChatPath(chatPath);
+                };
+            }
+
         }
 
         if (StringUtils.hasLength(embedPath)){
             openAiLlmConfig.setEmbedPath(embedPath);
         }else {
-            String embedPathFromOptions = (String)options.get("embedPath");
-            if (StringUtils.hasLength(embedPathFromOptions)){
-                embedPath = embedPathFromOptions;
-                openAiLlmConfig.setEmbedPath(embedPath);
+            if (options != null) {
+                String embedPathFromOptions = (String)options.get("embedPath");
+                if (StringUtils.hasLength(embedPathFromOptions)){
+                    embedPath = embedPathFromOptions;
+                    openAiLlmConfig.setEmbedPath(embedPath);
+                }
             }
+
         }
         // if (llmExtraConfig != null && !llmExtraConfig.isEmpty()) {
         //     Properties prop = PropertiesUtil.textToProperties(llmExtraConfig);
@@ -189,14 +195,14 @@ public class AiLlm extends AiLlmBase {
 
         Map<String,Object> options = getOptions();
 
-        if (!StringUtils.hasLength(version)){
+        if (!StringUtils.hasLength(version) && options != null){
             String versionFromOptions = (String)options.get("version");
             if (StringUtils.hasLength(versionFromOptions)){
                 version = versionFromOptions;
             }
         }
 
-        if (!StringUtils.hasLength(appId)){
+        if (!StringUtils.hasLength(appId) && options != null){
             String appIdFromOptions = (String)options.get("appId");
             if (StringUtils.hasLength(appIdFromOptions)){
                 appId = appIdFromOptions;
@@ -204,7 +210,7 @@ public class AiLlm extends AiLlmBase {
         }
 
 
-        if (!StringUtils.hasLength(apiSecret)){
+        if (!StringUtils.hasLength(apiSecret) && options != null){
             String apiSecretFromOptions = (String)options.get("apiSecret");
             if (StringUtils.hasLength(apiSecretFromOptions)){
                 apiSecret = apiSecretFromOptions;
