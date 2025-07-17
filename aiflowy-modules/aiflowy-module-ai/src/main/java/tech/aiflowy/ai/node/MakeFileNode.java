@@ -11,7 +11,9 @@ import org.apache.poi.xwpf.usermodel.XWPFStyle;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTInd;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTPPrGeneral;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTStyle;
+import tech.aiflowy.common.filestorage.FileStorageManager;
 import tech.aiflowy.common.filestorage.FileStorageService;
+import tech.aiflowy.common.util.SpringContextUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -21,11 +23,12 @@ import java.util.Map;
 
 public class MakeFileNode extends BaseNode {
 
-    private final FileStorageService fileStorageService;
-    private final String suffix;
+    private String suffix;
 
-    public MakeFileNode(FileStorageService fileStorageService, String suffix) {
-        this.fileStorageService = fileStorageService;
+    public MakeFileNode() {
+    }
+
+    public MakeFileNode(String suffix) {
         this.suffix = suffix;
     }
 
@@ -41,7 +44,10 @@ public class MakeFileNode extends BaseNode {
 
         String fileName = IdUtil.fastSimpleUUID() + "." + suffix;
         CustomFile file = new CustomFile(fileName, os.toByteArray());
-        String url = fileStorageService.save(file);
+
+        FileStorageManager manager = SpringContextUtil.getBean(FileStorageManager.class);
+
+        String url = manager.save(file);
         res.put("url", url);
         return res;
     }
@@ -84,5 +90,13 @@ public class MakeFileNode extends BaseNode {
                 System.out.println("关闭流异常" + e.getMessage());
             }
         }
+    }
+
+    public String getSuffix() {
+        return suffix;
+    }
+
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
     }
 }

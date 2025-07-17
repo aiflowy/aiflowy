@@ -10,19 +10,13 @@ import tech.aiflowy.common.filestorage.FileStorageService;
 
 public class MakeFileNodeParser extends BaseNodeParser {
 
-    private final FileStorageService fileStorageService;
-
-    public MakeFileNodeParser(FileStorageService fileStorageService) {
-        this.fileStorageService = fileStorageService;
-    }
-
     @Override
     public BaseNode doParse(JSONObject root, JSONObject data, Tinyflow tinyflow) {
         String suffix = data.getString("suffix");
         if (StrUtil.isEmpty(suffix)) {
             suffix = "docx";
         }
-        return new MakeFileNode(fileStorageService, suffix);
+        return new MakeFileNode(suffix);
     }
 
     public String getNodeName() {

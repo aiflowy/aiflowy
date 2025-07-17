@@ -68,9 +68,6 @@ public class AiLlmBrand implements Serializable {
             }
 
             String json = jsonString.toString().trim();
-            System.out.println("*******************************************************************************");
-            System.out.println(json);
-            System.out.println("*******************************************************************************");
             if (StringUtil.hasText(json)) {
                 JSONArray jsonArray = JSON.parseArray(json);
                 return jsonArray.toJavaList(AiLlmBrand.class);

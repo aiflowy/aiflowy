@@ -29,22 +29,28 @@ const Layout: React.FC = () => {
             <LayoutContext.Provider value={{options, setOptions}}>
                 <div style={{display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden'}}>
                     <AntdLayout style={{height: '100vh',display: 'flex',alignItems:'stretch'}}>
-                        {options.showLeftMenu && <LeftMenu collapsed={options.leftMenuCollapsed ?? false}/>}
+                        <div>
+                            {options.showLeftMenu && <LeftMenu collapsed={options.leftMenuCollapsed ?? false}/>}
+                        </div>
+
                         <AntdLayout>
                             <div style={{position: 'sticky', top: 0, zIndex: 1}}>
                                 <Header collapsed={options.leftMenuCollapsed ?? false}/>
                             </div>
-                            <AntdLayout>
-                                {options.showBreadcrumb && <Breadcrumb/>}
-                                <div style={{height: '100%',  overflow: 'auto'}}>
-                                    <Content style={{ borderRadius: '3px'}}>
-                                        {/*<CheckPerms>*/}
-                                        <Outlet/>
-                                        {/*</CheckPerms>*/}
-                                    </Content>
-                                </div>
+                            <div>
+                                <AntdLayout>
+                                    {options.showBreadcrumb && <Breadcrumb/>}
+                                    <div style={{height: '100%',  overflow: 'auto'}}>
+                                        <Content style={{ borderRadius: '3px'}}>
+                                            {/*<CheckPerms>*/}
+                                            <Outlet/>
+                                            {/*</CheckPerms>*/}
+                                        </Content>
+                                    </div>
 
-                            </AntdLayout>
+                                </AntdLayout>
+                            </div>
+
                         </AntdLayout>
                     </AntdLayout>
                 </div>

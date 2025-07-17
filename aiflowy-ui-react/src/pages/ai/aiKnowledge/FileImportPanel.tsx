@@ -293,7 +293,6 @@ const FileImportPanel: React.FC<FileImportPanelProps> = ({ data, action, onBack,
         if (info.fileList.length > 0){
                 fileUploadPercentData.splice(0); // 清空旧数据
                 info.fileList.forEach((file) => {
-                    console.log(file);
                     setFileUploadPercentData([
                         {
                             key: file.uid,
@@ -624,6 +623,10 @@ const FileImportPanel: React.FC<FileImportPanelProps> = ({ data, action, onBack,
                                         message.error("请上传文件")
                                         return
                                     }
+                                    if (fileUploadPercentData.length > 0 && filePath === ''){
+                                        message.error("请等待文件上传成功！")
+                                        return;
+                                    }
                                 }
 
                                 if (currentStep === 1){
@@ -654,6 +657,13 @@ const FileImportPanel: React.FC<FileImportPanelProps> = ({ data, action, onBack,
                                         })
                                     })
                                 }
+
+                                if (currentStep === 2){
+                                    if (dataPreView.length === 0){
+                                        message.error('请等待数据处理完成')
+                                    }
+                                }
+
                                 setSaveDocData([{
                                     key: uuid(),
                                     fileName: fileUploadPercentData[0].fileName,

@@ -326,16 +326,23 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
 
         String promptTemplate = "你是一个 ReAct Agent，结合 Reasoning（推理）和 Action（行动）来解决问题。\n" + "但在处理用户问题时，请首先判断：\n" + "1. 如果问题可以通过你的常识或已有知识直接回答 → 请忽略 ReAct 框架，直接输出自然语言回答。\n" + "2. 如果问题需要调用特定工具才能解决（如查询、计算、获取外部信息等）→ 请严格按照 ReAct 格式响应。\n\n" + "如果你选择使用 ReAct 模式，请遵循以下格式：\n" + "Thought: 描述你对当前问题的理解，包括已知信息和缺失信息，说明你下一步将采取什么行动及其原因。\n" + "Action: 从下方列出的工具中选择一个合适的工具，仅输出工具名称，不得虚构。\n" + "Action Input: 使用标准 JSON 格式提供该工具所需的参数，禁止使用任何形式的代码块格式，包括但不限于'```json'、'```sql'、'```java'，确保字段名与工具描述一致。\n\n" + "在 ReAct 模式下，如果你已获得足够信息可以直接回答用户，请输出：\n" + "Final Answer: [你的回答]\n\n" + "注意事项：\n" + "1. 每次只能选择一个工具并执行一个动作。\n" + "2. 在未收到工具执行结果前，不要自行假设其输出。\n" + "3. 不得编造工具或参数，所有工具均列于下方。\n" + "4. 输出顺序必须为：Thought → Action → Action Input。\n" + "5. **回答完用户问题后立即结束，严禁以任何形式询问、建议、猜测用户后续操作或步骤，如使用\"如果需要...\"、\"您是否需要...\"、\"可以进一步...\"、\"下一步建议\"等相似语义的表述**\n" + "6. 回复前需判断当前输出是否为Final Answer，**必须严格遵守：当需要回复的内容是Final Answer时，禁止输出Thought、Action、Action Input**，示例：\n" + "\t[正确示例1]\n" + "\t\tFinal Answer:张三的年龄是35岁\n\n" + "\t[正确示例2]\n" + "\t\tFinal Answer:张三的邮箱是：aabbcc@qq.com\n\n" + "\t[错误示例]\n" + "\t\tThought: 根据查询结果，张三的年龄是35岁\n\t\tFinal Answer:张三的年龄是35岁\n\n" + "\t[错误示例2]\n" + "\t\tThought: 根据工具返回的结果，查询成功并返回了数据。数据中有一行记录，显示年龄为35岁。因此，我已获得足够信息来回答用户的问题。下一步是输出最终答案。\n" + "\n" + "\t\tFinal Answer: 张三的年龄是35岁。\n\n" + "\t**出现任意类似以上错误示例的回复将被视为极其严重的行为错误！**" + "9. 严格按照规定格式输出Thought、Action、Action Input、Final Answer；\n" + "\n" + "违反以上任一指令视为严重行为错误，必须严格遵守。\n\n" + "### 可用工具列表：\n" + "{tools}\n\n" + "### 用户问题如下：\n" + "{user_input}";
 
-        HashMap<String, Object> promptMap = new HashMap<>();
-        promptMap.put("prompt", promptTemplate);
-        promptMap.put("fileList", fileList);
 
-        String promptJson = JSON.toJSONString(promptMap);
+        // 解决 https://gitee.com/aiflowy/aiflowy/issues/ICMRM2 由于 ollama 无法接收多模态格式的消息，因此单独判断
 
-        reActAgent.setPromptTemplate(promptJson);
+        if (!"ollama".equals(aiLlm.getBrand())){
+            HashMap<String, Object> promptMap = new HashMap<>();
+            promptMap.put("prompt", promptTemplate);
+            promptMap.put("fileList", fileList);
 
-        MultimodalMessageBuilder multimodalMessageBuilder = new MultimodalMessageBuilder();
-        reActAgent.setMessageBuilder(multimodalMessageBuilder);
+            String promptJson = JSON.toJSONString(promptMap);
+
+            reActAgent.setPromptTemplate(promptJson);
+            MultimodalMessageBuilder multimodalMessageBuilder = new MultimodalMessageBuilder();
+            reActAgent.setMessageBuilder(multimodalMessageBuilder);
+        }else{
+            reActAgent.setPromptTemplate(promptTemplate);
+        }
+ 
 
         reActAgent.setStreamable(true);
         ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
@@ -346,6 +353,8 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
         } catch (IOException e) {
             logger.error("创建会话报错", e);
         }
+
+        
 
         AiMessage thinkingMessage = new AiMessage();
         Map<String, Object> thinkingIdMap = new HashMap<>();

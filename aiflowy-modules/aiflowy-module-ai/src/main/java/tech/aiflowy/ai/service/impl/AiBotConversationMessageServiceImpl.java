@@ -117,16 +117,23 @@ public class AiBotConversationMessageServiceImpl extends ServiceImpl<AiBotConver
         }
         AiBotConversationMessage conversationMessage = this.getMapper().selectOneById(sessionId);
         if (conversationMessage == null && isExternalMsg == 1){
-            TextPrompt textPrompt = new TextPrompt();
-            textPrompt.setSystemMessage(SystemMessage.of("你是一个给会话取标题的助手，根据用户输入，为此次会话提供**一个**标题，回复格式:{title:'titleContent'}"));
-            textPrompt.setContent(userPrompt);
-            AiMessageResponse chatResponse = llm.chat(textPrompt);
-            AiMessage message = chatResponse.getMessage();
-            Map<String, String> parse = JSON.parseObject(message.getContent(), Map.class);
-            String title = parse.get("title");
+
+            /**
+             * 
+             * 使用 deepseek r1 这类深度思考模型的时候，取标题的时间会很长，因此暂时注释取标题逻辑，等待有了更好的解决方案再来修改
+             * 
+             */
+
+            // TextPrompt textPrompt = new TextPrompt();
+            // textPrompt.setSystemMessage(SystemMessage.of("你是一个给会话取标题的助手，根据用户输入，为此次会话提供**一个**标题，回复格式:{title:'titleContent'}"));
+            // textPrompt.setContent(userPrompt);
+            // AiMessageResponse chatResponse = llm.chat(textPrompt);
+            // AiMessage message = chatResponse.getMessage();
+            // Map<String, String> parse = JSON.parseObject(message.getContent(), Map.class);
+            // String title = parse.get("title");
             AiBotConversationMessage newConversation = new AiBotConversationMessage();
             newConversation.setSessionId(sessionId);
-            newConversation.setTitle(title);
+            newConversation.setTitle(userPrompt);
             newConversation.setBotId(botId);
             newConversation.setCreated(new Date());
             newConversation.setAccountId(BigInteger.valueOf(StpUtil.getLoginIdAsLong()));

@@ -9,19 +9,13 @@ import tech.aiflowy.common.filestorage.FileStorageService;
 
 public class DownloadNodeParser extends BaseNodeParser {
 
-    private final FileStorageService fileStorageService;
-
-    public DownloadNodeParser(FileStorageService fileStorageService) {
-        this.fileStorageService = fileStorageService;
-    }
-
     @Override
     protected BaseNode doParse(JSONObject root, JSONObject data, Tinyflow tinyflow) {
         Integer resourceType = data.getInteger("resourceType");
         if (resourceType == null) {
             resourceType = EnumResourceType.OTHER.getCode();
         }
-        return new DownloadNode(fileStorageService,resourceType);
+        return new DownloadNode(resourceType);
     }
 
     public String getNodeName() {

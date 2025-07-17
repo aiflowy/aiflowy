@@ -105,4 +105,8 @@ public class LocalFileStorageServiceImpl implements FileStorageService {
         return hexString.toString(); // 返回字符串类型的哈希值
     }
 
+    @Override
+    public String save(MultipartFile file, String prePath) {
+        return save(file);
+    }
 }

@@ -133,7 +133,7 @@ export const ExternalPage = () => {
 }
 
 export default {
-    path: "/ai/workflow/external/:id",
+    path: "/ai/workflow/external-old/:id",
     element: <ExternalPage/>,
     frontEnable: true,
 };

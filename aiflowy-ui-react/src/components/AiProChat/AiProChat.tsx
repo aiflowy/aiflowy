@@ -8,12 +8,11 @@ import {
     ThoughtChain,
     ThoughtChainItem,
 } from '@ant-design/x';
-import {Avatar, Badge, Button, GetProp, GetRef, Image, message, Space, Spin, Typography, UploadFile} from 'antd';
+import {Avatar, Button, GetProp, GetRef, Image, message, Space, Spin, Typography, UploadFile} from 'antd';
 import {
     CopyOutlined,
     FolderAddOutlined,
     PauseCircleOutlined,
-    PictureOutlined,
     PlayCircleOutlined,
     SyncOutlined,
 } from '@ant-design/icons';
@@ -23,8 +22,10 @@ import './aiprochat.less'
 import markdownit from 'markdown-it';
 import {usePost, usePostManual} from "../../hooks/useApis.ts";
 import senderIcon from "../../assets/senderIcon.png"
+import senderIconSelected from "../../assets/senderIconSelected.png"
 import clearButtonIcon from "../../assets/clearButton.png"
 import fileIcon from "../../assets/fileLink.png"
+import uploadIfle from "../../assets/uploadIfle.png"
 // const fooAvatar: React.CSSProperties = {
 //     color: '#fff',
 //     backgroundColor: '#87d068',
@@ -93,9 +94,9 @@ export const RenderMarkdown: React.FC<{ content: string, fileList?: Array<string
     return (
 
         <>
-            <div style={{display: "flex", flexDirection: "column", gap: "10px"}}>
+            <div style={{display: "flex", gap: "10px", marginBottom: "10px"}}>
                 {fileList && fileList.length > 0 && fileList.map(file => {
-                    return <Image height={300} src={file} key={Date.now().toString()}></Image>
+                    return <Image width={164} height={164} style={{borderRadius: "8px"}} src={file} key={Date.now().toString()}></Image>
                 })}
             </div>
             <Typography>
@@ -964,8 +965,8 @@ export const AiProChat = ({
                     alignItems: 'center',
                     paddingTop: '103px'
                 }}>
-                    <Avatar size={88} src={botAvatar} style={{marginBottom: '10px'}}/>
-                    <div className={"bot-chat-title"}>{options?.botTitle}</div>
+                    <Avatar size={88} src={botAvatar} style={{marginBottom: '16px'}}/>
+                    <div className={"bot-chat-title"}>{helloMessage}</div>
                     <div className={"bot-chat-description"}>{options?.botDescription}</div>
                 </div>
             );
@@ -1102,9 +1103,9 @@ export const AiProChat = ({
                             )}
 
                             {/* 🌟 渲染主要内容 */}
-                            <RenderMarkdown content={chat.content} fileList={chat?.options?.fileList}/>
+                            <RenderMarkdown content={chat.content} fileList={chat.files || chat?.options?.fileList}/>
                         </div>
-                    ) : <RenderMarkdown content={chat.content} fileList={chat?.options?.fileList}/>,
+                    ) : <RenderMarkdown content={chat.content} fileList={chat.files || chat?.options?.fileList}/>,
                     // avatar: chat.role === 'assistant' ? (
                     //     <img
                     //         src={botAvatar}
@@ -1156,9 +1157,10 @@ export const AiProChat = ({
     const senderHeader = (
         llmDetail && llmDetail.llmOptions && llmDetail.llmOptions.multimodal &&
         <Sender.Header
-            title={"文件上传"}
+            title={<span className={"bot-chat-title"}>文件上传</span>}
             open={headerOpen}
             onOpenChange={setHeaderOpen}
+            className={"chat-send-header"}
             styles={{
                 content: {
                     padding: 0,
@@ -1259,9 +1261,9 @@ export const AiProChat = ({
                             title: 'Drop file here',
                         }
                         : {
-                            icon: <PictureOutlined/>,
-                            title: '上传文件',
-                            description: '点击或拖拽上传，目前仅支持图片',
+                            icon: <img src={uploadIfle} alt="upload" style={{height: '24px', width: '24px'}}/>,
+                            title: <span className={"upload-file-title"}>上传文件</span>,
+                            description: <span className={"upload-file-description"}>点击或拖拽上传，目前仅支持图片</span>,
                         }
                 }
                 getDropContainer={() => senderRef.current?.nativeElement}
@@ -1494,6 +1496,7 @@ export const AiProChat = ({
                         value={content}
                         onChange={setContent}
                         onSubmit={handleSubmit}
+                        placeholder={'尽管问...'}
                         // onKeyDown={(e) => {
                         //     if (e.key === 'Enter' && !e.shiftKey) {
                         //         e.preventDefault(); // 防止换行（如果是 textarea）
@@ -1561,7 +1564,7 @@ export const AiProChat = ({
                         footer={({ components }) => {
                             const {SendButton, SpeechButton} = components ;
                             return (
-                                <Space size="small" style={{display: "flex", justifyContent: "flex-end"}}>
+                                <Space size="small" style={{display: "flex", justifyContent: "flex-end", gap: "0px"}}>
 
                                     {/*{*/}
                                     {/*<div className={"file-link-item ant-space-item"} onClick={() =>{*/}
@@ -1570,22 +1573,27 @@ export const AiProChat = ({
 
                                     {
                                         llmDetail && llmDetail.llmOptions && llmDetail.llmOptions.multimodal &&
-                                        <Badge dot={fileItems.length > 0 && !headerOpen}>
-                                            <div className={"file-link-item"} onClick={() => setHeaderOpen(!headerOpen)} >
-                                                <img src={fileIcon} alt="" style={{width: 16, height: 16}}/>
+                                        // <Badge dot={fileItems.length > 0 && !headerOpen}>
+                                            <div  className={"file-link-item ant-space-item"} onClick={() => setHeaderOpen(!headerOpen)} >
+                                                <img src={fileIcon} alt="" style={{width: 18, height: 18, cursor: 'pointer'}}/>
                                             </div>
-                                        </Badge>
+                                        // </Badge>
                                     }
 
                                     <SpeechButton className={"speech-button"}
                                                   disabled={sendLoading || isStreaming || fileUploading}
                                     />
+
+                                    {/*<div onClick={handleSpeechIconClick}>*/}
+                                    {/*    <img src={speechIcon} alt="" style={{width: 16, height: 16, cursor: "pointer"}}/>*/}
+                                    {/*</div>*/}
                                     <SendButton
                                         type="primary"
                                         // onClick={() => handleSubmit(content)}
-                                        disabled={inputDisabled || recording || fileUploading}
-                                        icon={<img alt="" src={senderIcon} style={{width: 30, height: 30}}/>}
+                                        disabled={content == '' || inputDisabled || recording || fileUploading}
+                                        icon={<img alt="" src={content == '' ? senderIcon : senderIconSelected} style={{width: 30, height: 30}}/>}
                                         loading={sendLoading || isStreaming}
+                                        style={{ marginLeft: '10px' }}
                                     />
 
 

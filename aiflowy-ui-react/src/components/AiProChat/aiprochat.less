@@ -4,9 +4,62 @@
   margin: 0 auto;
 }
 
-.speech-button .ant-btn{
-  width: 16px;
-  height: 16px;
+// 针对 SpeechButton 内部的语音图标
+.speech-button {
+  // 选中按钮内部的图标（通常是 .anticon 类）
+  font-size: 18px; // 自定义图标大小（默认一般是 16px）
+
+  & .anticon {
+    color: #808080; // 自定义默认颜色（例如 Ant Design 主题蓝）
+  }
+
+  // 可选：鼠标悬停时的样式
+  //&:hover .anticon {
+  //  color: #096dd9; // 悬停时加深颜色
+  //}
+  //
+  //// 可选：禁用状态的样式（如果需要和默认禁用色区分）
+  //&:disabled .anticon {
+  //  color: #bfbfbf; // 禁用时的颜色
+  //}
+}
+
+.chat-send-header  {
+  .ant-sender-header-header{
+    background: #F7F7F7 ;
+  }
+  .ant-attachment-list-card-type-preview{
+    height: 83px;
+    width: 83px;
+  }
+  .ant-image-img{
+    border-radius: 8px;
+  }
+  .ant-attachment .ant-attachment-list-upload-btn{
+    height: 83px;
+    width: 83px;
+  }
+}
+
+
+.upload-file-title{
+  font-family: PingFangSC, PingFang SC;
+  font-weight: 400;
+  font-size: 14px;
+  color: #1A1A1A;
+  line-height: 20px;
+  text-align: left;
+  font-style: normal;
+}
+
+.upload-file-description{
+  font-family: PingFangSC, PingFang SC;
+  font-weight: 400;
+  font-size: 12px;
+  color: #969799;
+  line-height: 17px;
+  text-align: left;
+  font-style: normal;
 }
 
 .chat-clear-button-text{
@@ -27,6 +80,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 6px;
+  padding-top: 3px;
   &:hover{
     background-color: #E6F4FF;
   }
@@ -36,6 +90,13 @@
   background: #FFFFFF;
   box-shadow: 0px 2px 16px 0px rgba(17,46,91,0.04);
   border-radius: 8px;
+}
+
+.chat-sender .ant-btn-variant-solid{
+  background: none;
+}
+.chat-sender .ant-btn-variant-solid:not(:disabled):not(.ant-btn-disabled):hover{
+  background: none;
 }
 
 .chat-clear-text .ant-btn {
@@ -63,7 +124,7 @@
   text-align: left;
   font-style: normal;
   text-transform: none;
-  padding-bottom: 20px;
+  padding-bottom: 8px;
 }
 
 .bot-chat-description{

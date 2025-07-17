@@ -13,6 +13,7 @@ import tech.aiflowy.ai.utils.DocUtil;
 import tech.aiflowy.common.constant.Constants;
 import tech.aiflowy.common.constant.enums.EnumResourceOriginType;
 import tech.aiflowy.common.entity.LoginAccount;
+import tech.aiflowy.common.filestorage.FileStorageManager;
 import tech.aiflowy.common.filestorage.FileStorageService;
 import tech.aiflowy.common.util.SpringContextUtil;
 
@@ -25,11 +26,12 @@ import java.util.Map;
 
 public class DownloadNode extends BaseNode {
 
-    private final FileStorageService fileStorageService;
-    private final Integer resourceType;
+    private Integer resourceType;
 
-    public DownloadNode(FileStorageService fileStorageService, Integer resourceType) {
-        this.fileStorageService = fileStorageService;
+    public DownloadNode() {
+    }
+
+    public DownloadNode(Integer resourceType) {
         this.resourceType = resourceType;
     }
 
@@ -49,7 +51,10 @@ public class DownloadNode extends BaseNode {
         }
 
         String fileName = IdUtil.simpleUUID() + "." + suffix;
-        String resourceUrl = fileStorageService.save(new CustomFile(fileName, bytes));
+
+        FileStorageManager manager = SpringContextUtil.getBean(FileStorageManager.class);
+
+        String resourceUrl = manager.save(new CustomFile(fileName, bytes));
 
         AiResource resource = new AiResource();
 
@@ -95,5 +100,13 @@ public class DownloadNode extends BaseNode {
         account.setDeptId(new BigInteger("0"));
         account.setTenantId(new BigInteger("0"));
         return account;
+    }
+
+    public Integer getResourceType() {
+        return resourceType;
+    }
+
+    public void setResourceType(Integer resourceType) {
+        this.resourceType = resourceType;
     }
 }

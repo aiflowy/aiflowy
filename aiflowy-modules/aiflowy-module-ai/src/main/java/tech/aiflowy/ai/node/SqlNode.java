@@ -30,9 +30,12 @@ import java.util.regex.Pattern;
  */
 public class SqlNode extends BaseNode {
 
-    private final String sql;
+    private String sql;
 
     private static final Logger logger = LoggerFactory.getLogger(SqlNode.class);
+
+    public SqlNode() {
+    }
 
     public SqlNode(String sql) {
         this.sql = sql;
@@ -158,5 +161,13 @@ public class SqlNode extends BaseNode {
                 ", memory=" + memory +
                 ", nodeStatus=" + nodeStatus +
                 '}';
+    }
+
+    public String getSql() {
+        return sql;
+    }
+
+    public void setSql(String sql) {
+        this.sql = sql;
     }
 }

@@ -402,16 +402,21 @@ export const ExternalBot: React.FC = () => {
                     </Button>
                 </div>
 
+                <div style={{padding: '0px 24px 8px 24px'}} className={"bot-chat-history"}>历史记录</div>
+
                 {/* 🌟 会话管理 */}
-                {conversationsItems && (
-                    <Conversations
-                        items={conversationsItems}
-                        className={styles.conversations}
-                        activeKey={activeKey}
-                        menu={menuConfig}
-                        onActiveChange={onConversationClick}
-                    />
-                )}
+                <div className={"bot-conversation"}>
+                    {conversationsItems && (
+                        <Conversations
+                            items={conversationsItems}
+                            className={styles.conversations}
+                            activeKey={activeKey}
+                            menu={menuConfig}
+                            onActiveChange={onConversationClick}
+                        />
+                    )}
+                </div>
+
             </div>
             <div className={styles.chat}>
                 <AiProChat

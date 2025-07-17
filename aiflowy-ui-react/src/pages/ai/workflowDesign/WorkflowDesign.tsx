@@ -25,7 +25,7 @@ import {sortNodes} from "../../../libs/workflowUtil";
 import '../style/workflow.design.css'
 import {ConfirmItem} from "./components/ConfirmItem.tsx";
 import {ConfirmItemMulti} from "./components/ConfirmItemMulti.tsx";
-
+import confirmIcon from '../../../assets/confirm-icon.png'
 export const WorkflowDesign = () => {
 
     const {message} = App.useApp()
@@ -261,118 +261,123 @@ export const WorkflowDesign = () => {
 
         item.children = <>
             <div style={{
-                fontWeight: "bold",
-                backgroundColor: "#0066FF",
+                backgroundColor: "#F7F7F7",
                 borderRadius: "8px",
                 padding: "12px 21px",
-                marginBottom: "-24px"
             }}>
                 <div style={{
-                    color: "#fff",
-                    marginBottom: "24px",
+                    marginBottom: "16px",
                     wordBreak: "break-all",
                 }}>
-                    {msg.chainMessage}
+                   <div style={{fontWeight: "bold",display: "flex",alignItems: "center"}}>
+                       <div style={{marginRight: "9px"}}>
+                           <img alt={""} src={confirmIcon} style={{width: "21px", height: "21px"}} />
+                       </div>
+                       <div>
+                           {msg.chainMessage}
+                       </div>
+                   </div>
                 </div>
-            </div>
-            <Form
-                form={confirmForm}
-                style={{
-                    backgroundColor: "#F5F8FD",
-                    borderRadius: "8px",
-                    padding: "24px 24px 8px 24px",
-                }}
-            >
-                {msg.suspendForParameters.map((ops: any, i: number) => {
-                    // formLabel formDescription
-                    if (ops.selectionMode === 'confirm') {
-                        return null
-                    }
-                    const selectKey = ops.name;
-                    const selectionDataType = ops.selectionDataType ? ops.selectionDataType : "text"
-                    const selectionMode = ops.selectionMode ? ops.selectionMode : "single"
-                    const selectionData = ops.selectionData
 
-                    return (
-                        <>
+                <Form
+                    form={confirmForm}
+                    style={{
+                        borderRadius: "8px",
+                    }}
+                >
+                    {msg.suspendForParameters.map((ops: any, i: number) => {
+                        // formLabel formDescription
+                        if (ops.selectionMode === 'confirm') {
+                            return null
+                        }
+                        const selectKey = ops.name;
+                        const selectionDataType = ops.selectionDataType ? ops.selectionDataType : "text"
+                        const selectionMode = ops.selectionMode ? ops.selectionMode : "single"
+                        const selectionData = ops.selectionData
+
+                        return (
                             <div
-                                style={{
-                                    fontWeight: "bold",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    wordBreak: "break-all",
-                                }}>
-                                <div style={{
-                                    display: "inline-block",
-                                    width: "2px",
-                                    borderRadius: "1px",
-                                    height: "16px",
-                                    marginLeft: "-24px",
-                                    marginRight: "24px",
-                                    backgroundColor: "#0066FF"
-                                }}>
-                                    &nbsp;
-                                </div>
-                                {ops.formLabel}
-                            </div>
-                            <div style={{
-                                marginBottom: "20px",
-                                color: "#969799",
-                                wordBreak: "break-all",
-                            }}>
-                                {ops.formDescription}
-                            </div>
-                            <Form.Item
                                 key={i}
                                 style={{
-                                    wordBreak: "break-all",
-                                }}
-                                name={selectKey}
-                                rules={[{required: true, message: '请选择内容'}]}
-                            >
-                                {selectionMode === 'single' ?
-                                    <ConfirmItem selectionDataType={selectionDataType} selectionData={selectionData}/> :
-                                    <ConfirmItemMulti selectionDataType={selectionDataType}
-                                                      selectionData={selectionData}/>
-                                }
-                            </Form.Item>
-                            {i !== (msg.suspendForParameters.length - 1) &&
+                                backgroundColor: "#fff",
+                                padding: "16px",
+                                borderRadius: "8px",
+                                marginBottom: "16px",
+                            }}>
+                                <div
+                                    style={{
+                                        fontWeight: "bold",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        wordBreak: "break-all",
+                                    }}>
+                                    <div style={{
+                                        display: "inline-block",
+                                        width: "2px",
+                                        borderRadius: "1px",
+                                        height: "16px",
+                                        marginLeft: "-16px",
+                                        marginRight: "16px",
+                                        backgroundColor: "#0066FF"
+                                    }}>
+                                        &nbsp;
+                                    </div>
+                                    {ops.formLabel}
+                                </div>
                                 <div style={{
-                                    width: "calc(100% + 48px)",
-                                    borderBottom: "1px solid #D8DEE6",
-                                    marginLeft: "-24px",
-                                    marginRight: "-24px",
-                                    marginBottom: "24px"
-                                }}></div>
-                            }
-                        </>
-                    )
-                })}
-            </Form>
-            <div style={{marginTop: "20px", display: "flex", justifyContent: "flex-end"}}>
-                <Space>
-                    <Button
-                        ref={confirmBtnRef}
-                        type="primary"
-                        disabled={item.confirmBtnDisabled}
-                        onClick={() => {
-                            confirmForm.validateFields().then((values) => {
-                                const value = {
-                                    chainId: msg.chainId,
-                                    confirmParams: {
-                                        [confirmKey]: 'yes',
-                                        ...values
+                                    marginBottom: "16px",
+                                    color: "#969799",
+                                    wordBreak: "break-all",
+                                }}>
+                                    {ops.formDescription}
+                                </div>
+                                <Form.Item
+                                    style={{
+                                        wordBreak: "break-all",
+                                    }}
+                                    name={selectKey}
+                                    rules={[{required: true, message: '请选择内容'}]}
+                                >
+                                    {selectionMode === 'single' ?
+                                        <ConfirmItem selectionDataType={selectionDataType}
+                                                     selectionData={selectionData}/> :
+                                        <ConfirmItemMulti selectionDataType={selectionDataType}
+                                                          selectionData={selectionData}/>
                                     }
-                                }
-                                handleConfirmSubmit(value)
-                            }).catch(() => {
-                                message.warning("请选择内容")
-                            })
-                        }}
-                    >
-                        确认
-                    </Button>
-                </Space>
+                                </Form.Item>
+                            </div>
+                        )
+                    })}
+                </Form>
+                <div style={{
+                    marginTop: "20px",
+                    display: "flex",
+                    justifyContent: "flex-end",
+                }}>
+                    <Space>
+                        <Button
+                            ref={confirmBtnRef}
+                            type="primary"
+                            disabled={item.confirmBtnDisabled}
+                            onClick={() => {
+                                confirmForm.validateFields().then((values) => {
+                                    const value = {
+                                        chainId: msg.chainId,
+                                        confirmParams: {
+                                            [confirmKey]: 'yes',
+                                            ...values
+                                        }
+                                    }
+                                    handleConfirmSubmit(value)
+                                }).catch(() => {
+                                    message.warning("请选择内容")
+                                })
+                            }}
+                        >
+                            确认
+                        </Button>
+                    </Space>
+                </div>
             </div>
         </>
     }

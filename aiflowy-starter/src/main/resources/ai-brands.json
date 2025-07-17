@@ -112,6 +112,7 @@
       "llmEndpoint":"https://dashscope.aliyuncs.com",
       "chatPath":"/compatible-mode/v1/chat/completions",
       "embedPath":"/compatible-mode/v1/embeddings",
+      "rerankPath":"/api/v1/services/rerank/text-rerank/text-rerank",
       "modelList":[
         {
           "llmModel":"qwen-plus",
@@ -256,7 +257,7 @@
       "llmEndpoint":"https://qianfan.baidubce.com",
       "chatPath":"/v2/chat/completions",
       "embedPath":"v2/embeddings",
-      "multimodalEmbedPath":"v2/embeddings",
+      "rerankPath":"/v2/rerank",
       "modelList":[
         {
           "llmModel":"ernie-x1-turbo-32k",
@@ -324,6 +325,7 @@
       "llmEndpoint":"https://ai.gitee.com",
       "chatPath":"/v1/chat/completions",
       "embedPath":"/v1/embeddings",
+      "rerankPath":"/v1/rerank",
       "modelList":[
         {
           "llmModel":"kimi-k2-instruct",
@@ -456,6 +458,7 @@
       "llmEndpoint":"https://api.siliconflow.cn",
       "chatPath":"/v1/chat/completions",
       "embedPath":"/v1/embeddings",
+      "rerankPath":"/v1/rerank",
       "modelList":[
         {
           "llmModel":"deepseek-ai/DeepSeek-R1",

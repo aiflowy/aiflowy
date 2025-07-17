@@ -64,17 +64,16 @@ public class TinyFlowConfigService {
 
     public void setExtraNodeParser(Tinyflow tinyflow) {
 
-        ReadDocService readService = readerManager.getReader();
         // 文档解析
-        DocNodeParser docNodeParser = new DocNodeParser(readService);
+        DocNodeParser docNodeParser = new DocNodeParser();
         // 文件生成
-        MakeFileNodeParser makeFileNodeParser = new MakeFileNodeParser(storageService);
+        MakeFileNodeParser makeFileNodeParser = new MakeFileNodeParser();
         // 插件
         PluginToolNodeParser pluginToolNodeParser = new PluginToolNodeParser();
         // SQL查询
         SqlNodeParser sqlNodeParser = new SqlNodeParser();
         // 下载文件节点
-        DownloadNodeParser downloadNodeParser = new DownloadNodeParser(storageService);
+        DownloadNodeParser downloadNodeParser = new DownloadNodeParser();
 
         ChainParser chainParser = tinyflow.getChainParser();
         chainParser.addNodeParser(docNodeParser.getNodeName(), docNodeParser);

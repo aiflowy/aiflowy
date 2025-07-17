@@ -14,7 +14,10 @@ import java.util.Map;
 
 public class PluginToolNode extends BaseNode {
 
-    private final BigInteger pluginId;
+    private BigInteger pluginId;
+
+    public PluginToolNode() {
+    }
 
     public PluginToolNode(BigInteger pluginId) {
         this.pluginId = pluginId;
@@ -45,5 +48,13 @@ public class PluginToolNode extends BaseNode {
         }
 
         return JSON.parseObject(JSON.toJSONString(result), Map.class);
+    }
+
+    public BigInteger getPluginId() {
+        return pluginId;
+    }
+
+    public void setPluginId(BigInteger pluginId) {
+        this.pluginId = pluginId;
     }
 }

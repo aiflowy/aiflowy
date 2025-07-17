@@ -318,4 +318,19 @@ public class AiLlmBase implements Serializable {
         this.options = options;
     }
 
+    @Override
+    public String toString() {
+        return "AiLlmBase{" + "id=" + id + ", deptId=" + deptId + ", tenantId=" + tenantId + ", title='" + title + '\''
+            + ", brand='" + brand + '\'' + ", icon='" + icon + '\'' + ", description='" + description + '\''
+            + ", supportChat=" + supportChat + ", supportFunctionCalling=" + supportFunctionCalling + ", supportEmbed="
+            + supportEmbed + ", supportReranker=" + supportReranker + ", supportTextToImage=" + supportTextToImage
+            + ", supportImageToImage=" + supportImageToImage + ", supportTextToAudio=" + supportTextToAudio
+            + ", supportAudioToAudio=" + supportAudioToAudio + ", supportTextToVideo=" + supportTextToVideo
+            + ", supportImageToVideo=" + supportImageToVideo + ", llmEndpoint='" + llmEndpoint + '\'' + ", llmModel='"
+            + llmModel + '\'' + ", llmApiKey='" + llmApiKey + '\'' + ", llmExtraConfig='" + llmExtraConfig + '\''
+            + ", options=" + options + '}';
+    }
+
+    
+
 }
