@@ -4,6 +4,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +18,7 @@ import tech.aiflowy.system.service.SysTokenService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * iframe 嵌入用 Token 表 控制层。
@@ -60,7 +61,6 @@ public class SysTokenController extends BaseCurdController<SysTokenService, SysT
 
     @Override
     public Result page(HttpServletRequest request, String sortKey, String sortType, Long pageNumber, Long pageSize) {
-        System.out.println("hhhhhhhhhhsdfsdf");
         if (pageNumber == null || pageNumber < 1) {
             pageNumber = 1L;
         }

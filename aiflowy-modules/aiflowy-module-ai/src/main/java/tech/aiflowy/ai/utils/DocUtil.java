@@ -96,7 +96,6 @@ public class DocUtil {
             // 判断页面数量是否小于等于拆分大小
             if (pages.getCount() <= splitSize) {
                 map.put(1, bytes);
-                System.out.println("无需拆分");
                 return map;
             }
             // 创建Splitter实例

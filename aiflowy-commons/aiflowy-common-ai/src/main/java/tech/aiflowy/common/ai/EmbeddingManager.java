@@ -107,7 +107,6 @@ public class EmbeddingManager {
                 public void onMessage(ChatContext chatContext, AiMessageResponse aiMessageResponse) {
                     try {
                         String content = aiMessageResponse.getMessage().getContent();
-                        System.out.println("ai send >>>>>>" + content + "<<<<<<");
                         emitter.send(SseEmitter.event().data(content));
                     } catch (IOException e) {
                         logger.error(e.toString(), e);

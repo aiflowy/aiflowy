@@ -51,7 +51,6 @@ public class AiPluginServiceImpl extends ServiceImpl<AiPluginMapper, AiPlugin> i
 
     @Override
     public Result savePlugin(AiPlugin aiPlugin) {
-        System.out.println("aaa");
         aiPlugin.setCreated(new Date());
         int insert = aiPluginMapper.insert(aiPlugin);
         if (insert <= 0) {

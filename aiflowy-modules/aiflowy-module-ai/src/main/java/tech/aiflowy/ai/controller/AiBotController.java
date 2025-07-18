@@ -795,7 +795,6 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
                 }
 
                 if (needClose[0]) {
-                    System.out.println("function chat complete");
                     emitter.complete();
                 }
             } else {
@@ -813,7 +812,6 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
                     public void onStop(ChatContext context) {
 
                         if (needClose[0]) {
-                            System.out.println("normal chat complete");
                             emitter.complete();
                         }
                     }
@@ -911,14 +909,11 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
             }
 
         }
-        System.out.println("function call 接收到的参数message：" + aiMessageResponse);
         llm.chatStream(ToolPrompt.of(aiMessageResponse), new StreamResponseListener() {
             @Override
             public void onMessage(ChatContext context, AiMessageResponse response) {
-                System.out.println("function call <UNK>message<UNK>" + aiMessageResponse);
                 String content = response.getMessage().getContent();
                 if (StringUtil.hasText(content)) {
-                    System.out.println("if content" + content);
                     emitter.send(JSON.toJSONString(response.getMessage()));
                 }
             }
@@ -929,8 +924,6 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
                 if (lastAiMessage != null) {
                     historiesPrompt.addMessage(lastAiMessage);
                 }
-                System.out.println(lastAiMessage);
-                System.out.println("function call complete");
                 emitter.complete();
             }
 
@@ -940,7 +933,6 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
                 AiMessage aiMessage = new AiMessage();
                 aiMessage.setContent("未查询到相关信息...");
                 emitter.send(JSON.toJSONString(aiMessage));
-                System.out.println("function call complete with error");
             }
         }, chatOptions);
 

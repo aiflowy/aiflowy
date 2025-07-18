@@ -90,8 +90,6 @@ public class ChatManager {
                             String jsonResult =  JSON.toJSONString(messageContent);
                             emitter.send(jsonResult);
                         }
-//                    String content = aiMessageResponse.getMessage().getContent();
-                        System.out.println(">>>>response: " + content);
                     }
                     @Override
                     public void onStop(ChatContext context) {

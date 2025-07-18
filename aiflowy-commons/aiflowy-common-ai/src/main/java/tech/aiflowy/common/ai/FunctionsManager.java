@@ -102,7 +102,6 @@ public class FunctionsManager {
                     @Override
                     public void onMessage(ChatContext chatContext, AiMessageResponse aiMessageResponse) {
                         String content = aiMessageResponse.getMessage().getContent();
-                        System.out.println(">>>>response: " + content);
                         emitter.send(content);
                     }
 
