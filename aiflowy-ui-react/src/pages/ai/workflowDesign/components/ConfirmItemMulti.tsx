@@ -1,9 +1,13 @@
-import React, {Fragment, useState} from 'react'
-import './confirmItem.css'
+import React, {Fragment, useState} from 'react';
+import './confirmItem.css';
+import {Typography} from 'antd';
+import {DownloadOutlined} from "@ant-design/icons";
+import confirmOther from '../../../../assets/confirm-other.png';
+import confirmFile from '../../../../assets/confirm-file.png';
 
 export type ConfirmItemMultiProps = {
     ref?: any,
-    selectionDataType?: string,
+    selectionDataType?: string, // text, image, video, audio, other, file
     selectionData?: any[],
     label?: string,
     value?: any,
@@ -29,6 +33,10 @@ export const ConfirmItemMulti: React.FC<ConfirmItemMultiProps> = (options) => {
         if (options.onChange) {
             options.onChange(newSelectedValue);
         }
+    }
+
+    const getIcon = (type: string) => {
+        return type === 'other'? confirmOther : confirmFile
     }
 
     const renderSelectionComponent = () => {
@@ -59,7 +67,7 @@ export const ConfirmItemMulti: React.FC<ConfirmItemMultiProps> = (options) => {
                                 <img alt={""} src={item} style={{
                                     width: '80px', height: '80px',
                                     borderRadius: '8px'
-                                }} />
+                                }}/>
                             </div>}
 
                             {selectionDataType === 'video' && <div
@@ -71,7 +79,7 @@ export const ConfirmItemMulti: React.FC<ConfirmItemMultiProps> = (options) => {
                             >
                                 <video controls src={item} style={{
                                     width: '162px', height: '141px'
-                                }} />
+                                }}/>
                             </div>}
 
                             {selectionDataType === 'audio' && <div
@@ -83,9 +91,39 @@ export const ConfirmItemMulti: React.FC<ConfirmItemMultiProps> = (options) => {
                                 onClick={() => changeValue(item)}
                             >
                                 <audio controls src={item} style={{
-                                    width: '100%', height: '44px',marginTop: '8px'
-                                }} />
+                                    width: '100%', height: '44px', marginTop: '8px'
+                                }}/>
                             </div>}
+
+                            {(selectionDataType === 'other' || selectionDataType === 'file') &&
+                                <>
+                                    <div
+                                        key={item + i}
+                                        className={`custom-radio-option ${
+                                            selectedValue.includes(item) ? 'selected' : ''
+                                        }`}
+                                        style={{width: '100%', flexShrink: 0}}
+                                        onClick={() => changeValue(item)}
+                                    >
+                                        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                                            <div style={{width: '92%',display: 'flex', alignItems: 'center'}}>
+                                                <img style={{width: '20px', height: '20px', marginRight: '8px'}} alt={""}
+                                                     src={getIcon(selectionDataType)}/>
+                                                <Typography.Text
+                                                    ellipsis={{ tooltip: item }}
+                                                >
+                                                    {item}
+                                                </Typography.Text>
+                                            </div>
+                                            <div className={'download-icon-btn'} onClick={() => {
+                                                window.open(item, '_blank')
+                                            }}>
+                                                <DownloadOutlined />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </>
+                            }
                         </Fragment>
                     )
                 })}
