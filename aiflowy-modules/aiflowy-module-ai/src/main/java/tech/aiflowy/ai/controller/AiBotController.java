@@ -429,7 +429,7 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
                 String reasoningContent = response.getMessage().getReasoningContent();
                 String fullReasoningContent = response.getMessage().getFullReasoningContent();
                 String content = response.getMessage().getContent();
-
+                
                 if (StringUtils.hasLength(reasoningContent)) {
 
                     if (thinkingIdMap.get("id") == null) {
@@ -598,6 +598,7 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
 
                 if (actionExcute){
                     logger.info("执行了 action ，结果已在其他 hook 中输出，跳过");
+                    emitter.complete();
                     return;
                 }
 
