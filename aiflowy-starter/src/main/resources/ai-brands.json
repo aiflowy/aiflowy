@@ -297,22 +297,29 @@
     "title": "星火大模型",
     "key": "spark",
     "options":{
+      "llmEndpoint":"https://spark-api-open.xf-yun.com",
+      "chatPath":"/v1/chat/completions",
       "modelList":[
         {
-          "llmModel":"Spark Pro",
+          "llmModel":"generalv3",
           "supportChat":true,
           "supportFunctionCalling":true,
-          "version":"v3.1",
           "title":"Spark Pro",
           "description":"专业级大语言模型，在医疗、教育和代码等场景进行专项优化，搜索场景延时更低。适用文本、智能问答等对性能和响应速度有更高要求的业务场景。"
         },
         {
-          "llmModel":"Spark Max",
+          "llmModel":"generalv3.5",
           "supportChat":true,
           "supportFunctionCalling":true,
-          "version":"v3.5",
           "title":"Spark Max",
           "description":"旗舰级大语言模型，具有千亿级参数，核心能力全面升级，具备更强的数学、中文、代码和多模态能力。适用数理计算、逻辑推理等对效果有更高要求的业务场景。"
+        },
+        {
+          "llmModel":"4.0Ultra",
+          "supportChat":true,
+          "supportFunctionCalling":true,
+          "title":"Spark4.0 Ultra",
+          "description":"最强大的大语言模型版本，文本生成、语言理解、知识问答、逻辑推理、数学能力等方面实现超越GPT4 Turbo，优化联网搜索链路，提供更精准回答。"
         }
       ]
     },

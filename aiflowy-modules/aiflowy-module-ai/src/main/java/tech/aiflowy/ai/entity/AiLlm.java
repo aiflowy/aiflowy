@@ -94,8 +94,7 @@ public class AiLlm extends AiLlmBase {
             return null;
         }
         switch (brand.toLowerCase()) {
-            case "spark":
-                return sparkLlm();
+
             case "ollama":
                 return ollamaLlm();
             default:
@@ -108,7 +107,7 @@ public class AiLlm extends AiLlmBase {
         ollamaLlmConfig.setEndpoint(getLlmEndpoint());
         ollamaLlmConfig.setApiKey(getLlmApiKey());
         ollamaLlmConfig.setModel(getLlmModel());
-        // ollamaLlmConfig.setDebug(true);
+        ollamaLlmConfig.setDebug(true);
         return new OllamaLlm(ollamaLlmConfig);
     }
 
@@ -118,7 +117,7 @@ public class AiLlm extends AiLlmBase {
         openAiLlmConfig.setApiKey(getLlmApiKey());
         openAiLlmConfig.setModel(getLlmModel());
         openAiLlmConfig.setDefaultEmbeddingModel(getLlmModel());
-        // openAiLlmConfig.setDebug(true);
+        openAiLlmConfig.setDebug(true);
         Properties properties = PropertiesUtil.textToProperties(getLlmExtraConfig() == null ? "" : getLlmExtraConfig());
         String chatPath = properties.getProperty("chatPath");
         String embedPath = properties.getProperty("embedPath");
@@ -154,45 +153,6 @@ public class AiLlm extends AiLlmBase {
         return new OpenAILlm(openAiLlmConfig);
     }
 
-    private Llm sparkLlm() {
-
-        SparkLlmConfig sparkLlmConfig = new SparkLlmConfig();
-
-        Properties properties = PropertiesUtil.textToProperties(getLlmExtraConfig() == null ? "" : getLlmExtraConfig());
-        String version = properties.getProperty("version");
-        String appId = properties.getProperty("appId");
-        String apiSecret = properties.getProperty("apiSecret");
-
-        Map<String, Object> options = getOptions();
-
-        if (!StringUtils.hasLength(version) && options != null) {
-            String versionFromOptions = (String) options.get("version");
-            if (StringUtils.hasLength(versionFromOptions)) {
-                version = versionFromOptions;
-            }
-        }
-
-        if (!StringUtils.hasLength(appId) && options != null) {
-            String appIdFromOptions = (String) options.get("appId");
-            if (StringUtils.hasLength(appIdFromOptions)) {
-                appId = appIdFromOptions;
-            }
-        }
-
-        if (!StringUtils.hasLength(apiSecret) && options != null) {
-            String apiSecretFromOptions = (String) options.get("apiSecret");
-            if (StringUtils.hasLength(apiSecretFromOptions)) {
-                apiSecret = apiSecretFromOptions;
-            }
-        }
-
-        sparkLlmConfig.setApiSecret(apiSecret);
-        sparkLlmConfig.setVersion(version);
-        sparkLlmConfig.setAppId(appId);
-        sparkLlmConfig.setApiKey(getLlmApiKey());
-        // sparkLlmConfig.setDebug(true);
-
-        return new SparkLlm(sparkLlmConfig);
-    }
+    
 
 }

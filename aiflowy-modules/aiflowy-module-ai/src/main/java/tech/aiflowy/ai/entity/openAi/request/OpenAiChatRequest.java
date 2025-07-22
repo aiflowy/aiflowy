@@ -8,10 +8,6 @@ import com.agentsflex.core.llm.ChatOptions;
 import tech.aiflowy.ai.entity.AiLlm;
 
 import java.util.HashMap;
-import java.util.Properties;
-
-import tech.aiflowy.common.util.PropertiesUtil;
-import tech.aiflowy.common.util.Maps;
 
 /**
  * OpenAI Chat API 请求参数类
@@ -368,59 +364,29 @@ public class OpenAiChatRequest {
         ChatOptions chatOptions = new ChatOptions();
         HashMap<String, Object> hashMap = new HashMap<>();
 
-        if ("spark".equalsIgnoreCase(aiLlm.getBrand())) {
-
-            Map<String, Object> options = aiLlm.getOptions();
-            String llmExtraConfig = aiLlm.getLlmExtraConfig();
-
-            String version = "";
-
-            if (options != null) {
-                version = (String) options.get("version");
-            } else {
-                Properties properties = PropertiesUtil.textToProperties(llmExtraConfig);
-                if (properties != null) {
-                    version = properties.getProperty("version");
-                }
-            }
-
-
-            hashMap.put("parameter", Maps.of("chat", Maps.of("domain", getDomain(version)))
-                .setIf(this.getTemperature() > 0, "temperature", this.getTemperature())
-                .setIf(this.getMaxTokens() > 0, "max_tokens", this.getMaxTokens())
-                .setIfNotNull("top_k", this.getTopK())
-            );
-
-            hashMap.put("payload",
-                Maps.of("message", Maps.of("text", this.getMessages()))
-
-            );
-
-        } else {
-            hashMap.putIfAbsent("messages", this.getMessages());
-            hashMap.put("maxTokens", this.getMaxTokens());
-            hashMap.put("temperature", this.getTemperature());
-            hashMap.put("topP", this.getTopP());
-            hashMap.put("topK", this.getTopK());
-            hashMap.put("stream", this.getStream() == null ? true : this.getStream());
-            hashMap.put("stop", this.getStop());
-            hashMap.put("tools", this.getTools());
-            hashMap.put("toolChoice", this.getToolChoice());
-            hashMap.put("enableThinking", this.getEnableThinking());
-            hashMap.put("seed", this.getSeed());
-            hashMap.put("n", this.getN());
-            hashMap.put("frequencyPenalty", this.getFrequencyPenalty());
-            hashMap.put("presencePenalty", this.getPresencePenalty());
-            hashMap.put("logitBias", this.getLogitBias());
-            hashMap.put("user", this.getUser());
-            hashMap.put("responseFormat", this.getResponseFormat());
-            hashMap.put("topLogprobs", this.getTopLogprobs());
-            hashMap.put("parallelToolCalls", this.getParallelToolCalls());
-            hashMap.put("serviceTier", this.getServiceTier());
-            hashMap.put("systemFingerprint", this.getSystemFingerprint());
-            hashMap.put("reasoningEffort", this.getReasoningEffort());
-            hashMap.put("store", this.getStore());
-        }
+        hashMap.putIfAbsent("messages", this.getMessages());
+        hashMap.put("maxTokens", this.getMaxTokens());
+        hashMap.put("temperature", this.getTemperature());
+        hashMap.put("topP", this.getTopP());
+        hashMap.put("topK", this.getTopK());
+        hashMap.put("stream", this.getStream() == null ? true : this.getStream());
+        hashMap.put("stop", this.getStop());
+        hashMap.put("tools", this.getTools());
+        hashMap.put("toolChoice", this.getToolChoice());
+        hashMap.put("enableThinking", this.getEnableThinking());
+        hashMap.put("seed", this.getSeed());
+        hashMap.put("n", this.getN());
+        hashMap.put("frequencyPenalty", this.getFrequencyPenalty());
+        hashMap.put("presencePenalty", this.getPresencePenalty());
+        hashMap.put("logitBias", this.getLogitBias());
+        hashMap.put("user", this.getUser());
+        hashMap.put("responseFormat", this.getResponseFormat());
+        hashMap.put("topLogprobs", this.getTopLogprobs());
+        hashMap.put("parallelToolCalls", this.getParallelToolCalls());
+        hashMap.put("serviceTier", this.getServiceTier());
+        hashMap.put("systemFingerprint", this.getSystemFingerprint());
+        hashMap.put("reasoningEffort", this.getReasoningEffort());
+        hashMap.put("store", this.getStore());
 
         hashMap.put("metadata", this.getMetadata());
 
@@ -428,20 +394,4 @@ public class OpenAiChatRequest {
         return chatOptions;
     }
 
-    private String getDomain(String version) {
-        switch (version) {
-            case "v4.0":
-                return "4.0Ultra";
-            case "v3.5":
-                return "generalv3.5";
-            case "v3.1":
-                return "generalv3";
-            case "v2.1":
-                return "generalv2";
-            case "v1.1":
-                return "lite";
-            default:
-                return "general";
-        }
-    }
 }
