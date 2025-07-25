@@ -49,7 +49,7 @@ public class WeChatReActListenerImpl implements ReActAgentListener {
         String reasoningContent = response.getMessage().getReasoningContent();
         if (StringUtils.hasLength(reasoningContent)){
             if (!StringUtils.hasLength(thinkingMessage)){
-                thinkingMessage = "请稍等，我正在思考....";
+                thinkingMessage = "🤔 请稍等，我正在思考....";;
                 sendMessage(thinkingMessage);
             }
         }
@@ -62,14 +62,14 @@ public class WeChatReActListenerImpl implements ReActAgentListener {
         log.info("onActionStart------->thinkingMessage:{}",thinkingMessage);
 
         actionExcute = true;
-        batchMessageContent += "需要调用工具回答此问题，正在调用工具，请稍等...";
+        batchMessageContent += "🔧 需要调用工具回答此问题，正在调用工具，请稍等...";
         sendMessage(batchMessageContent);
     }
 
 
     @Override
     public void onActionEnd(ReActStep step, Object result) {
-        batchMessageContent += "工具调用完成。\n" ;
+        batchMessageContent += "✅ 工具调用完成。\n" ;
     }
 
     @Override
@@ -78,9 +78,10 @@ public class WeChatReActListenerImpl implements ReActAgentListener {
         log.info("onFialAnswer------->thinkingMessage:{}------------->finalMessage:{}",thinkingMessage,finalAnswer);
 
 
-        batchMessageContent += finalAnswer;
-        sendMessage(batchMessageContent);
+        String processedAnswer = processLongContent(finalAnswer);
 
+        batchMessageContent += "💡 " + processedAnswer;
+        sendMessage(batchMessageContent);
         cache.remove("wechat:" + toUserOpenId + ":answering");
 
     }
@@ -96,11 +97,11 @@ public class WeChatReActListenerImpl implements ReActAgentListener {
         }
 
   
-        batchMessageContent += context.getLastAiMessage().getFullContent();
+        String fullContent = context.getLastAiMessage().getFullContent();
+        String processedContent = processLongContent(fullContent);
 
-        
+        batchMessageContent += "💡 " + processedContent;
         sendMessage(batchMessageContent);
-
         cache.remove("wechat:" + toUserOpenId + ":answering");
     }
 
@@ -108,7 +109,7 @@ public class WeChatReActListenerImpl implements ReActAgentListener {
     @Override
     public void onActionInvokeError(Exception e) {
         log.error("工具调用失败：{}",e.getMessage());
-        batchMessageContent += "工具调用失败....请稍后重试";
+        batchMessageContent += "⚠️ 工具调用失败....请稍后重试";
         sendMessage(batchMessageContent);
 
     }
@@ -116,21 +117,21 @@ public class WeChatReActListenerImpl implements ReActAgentListener {
     @Override
     public void onStepParseError(String content) {
         log.error("解析步骤出错：{}",content);
-        batchMessageContent += "生成回复失败....请稍后重试";
+        batchMessageContent += "❌ 生成回复失败....请稍后重试";
         sendMessage(batchMessageContent);
     }
 
     @Override
     public void onActionNotMatched(ReActStep step, List<Function> functions) {
         log.error("未找到匹配工具，step:{},functions:{}",step,functions);
-        batchMessageContent += "生成回复失败...未找到可调用工具....请稍后重试";
+        batchMessageContent += "🔍 生成回复失败...未找到可调用工具....请稍后重试";
         sendMessage(batchMessageContent);
     }
 
     @Override
     public void onError(Exception error) {
         log.error("大模型执行报错：{}",error.getMessage());
-        batchMessageContent += "大模型调用出错....请稍后重试";
+        batchMessageContent += "💥 大模型调用出错....请稍后重试";
         sendMessage(batchMessageContent);
     }
 
@@ -143,6 +144,19 @@ public class WeChatReActListenerImpl implements ReActAgentListener {
         } finally {
             batchMessageContent = "";
         }
+    }
+
+
+    private String processLongContent(String content) {
+        if (content == null) {
+            return "";
+        }
+
+        if (content.length() > 900) {
+            return content.substring(0, 900) + "...\n\n📄 内容过长，已截取最大回复长度片段...";
+        }
+
+        return content;
     }
 
 }

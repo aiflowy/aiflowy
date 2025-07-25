@@ -200,7 +200,7 @@ public class WeChatMessageHandler implements MessageHandler {
         if ("/clearContext".equalsIgnoreCase(content.trim())) {
 
             cache.remove(platform + ":" + botId + ":" + sessionId);
-            WxMpKefuMessage message = WxMpKefuMessage.TEXT().toUser(sessionId).content("bot记忆已清空~").build();
+            WxMpKefuMessage message = WxMpKefuMessage.TEXT().toUser(sessionId).content("🧹 bot记忆已清空~").build();
             try {
                 wxMpService.getKefuService().sendKefuMessage(message);
             } catch (WxErrorException e) {
@@ -216,7 +216,7 @@ public class WeChatMessageHandler implements MessageHandler {
         // 发送消息提示用户：
         WxMpKefuMessage message = WxMpKefuMessage.TEXT()
             .toUser(sessionId)
-            .content("大模型正在生成回复，请稍候...")
+            .content("🤖 大模型正在生成回复，请稍候...")
             .build();
         try {
             wxMpService.getKefuService().sendKefuMessage(message);

@@ -197,36 +197,6 @@ public class CompatibleChatController {
             public void onMessage(ChatContext chatContext, AiMessageResponse aiMessageResponse) {
 
                 logger.info("大模型回复：{}", aiMessageResponse.getResponse());
-                // try{
-                //     String respJson = aiMessageResponse.getResponse();
-
-                //     JsonNode root = objectMapper.readTree(respJson);
-
-                //     ArrayNode choices = (ArrayNode) root.path("choices");
-                //     for (JsonNode choice : choices) {
-                //         ObjectNode delta = (ObjectNode) choice.path("delta");
-                //         JsonNode toolCallsNode = delta.path("tool_calls");
-
-                //         // 如果 tool_calls 是对象，则包装成数组
-                //         if (toolCallsNode.isObject()) {
-                //             isFunctionCall[0] = true;
-                //             ArrayNode newArray = objectMapper.createArrayNode();
-                //             newArray.add(toolCallsNode);
-                //             delta.set("tool_calls", newArray);
-                //         }
-                //     }
-
-                //     respJson = objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(root);
-
-                //     System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-                //     System.out.println(respJson);
-                //     System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
-
-                //     aiMessageResponse.setResponse(respJson);
-                    
-                // } catch(Exception e) {
-                //     logger.error("将对象型的 tool_calls 转为数组失败");
-                // }
 
                 if (aiMessageResponse.isFunctionCall() ) {
                     needClose[0] = false;
