@@ -7,7 +7,6 @@ import {CopyOutlined, DeleteOutlined, ExclamationCircleFilled, PlusOutlined, Set
 import {
     useDetail,
     useGetManual,
-    useList,
     usePost,
     usePostManual,
     useRemove,
@@ -162,22 +161,12 @@ const BotDesign: React.FC = () => {
         updateBotLlmId({
             data: {
                 ...values,
-                id: params.id,
+                id: detail?.data?.id,
             }
         }).then(reGetDetail)
             .then(() => {
                 message.success("保存成功")
             })
-
-        // doUpdate({
-        //     data: {
-        //         ...values,
-        //         id: params.id,
-        //     }
-        // }).then(reGetDetail)
-        //     .then(() => {
-        //         message.success("保存成功")
-        //     })
     }
 
     const {doPost: updateBotLLMOptions} = usePostManual("/api/v1/aiBot/updateLlmOptions")
@@ -186,7 +175,7 @@ const BotDesign: React.FC = () => {
         updateBotLLMOptions({
             data: {
                 llmOptions: values,
-                id: params.id,
+                id: detail?.data?.id,
             }
         })
     }
@@ -196,7 +185,7 @@ const BotDesign: React.FC = () => {
         updateBotOptions({
             data: {
                 options: values,
-                id: params.id,
+                id: detail?.data?.id,
             }
         }).then(reGetDetail)
             .then(() => {
@@ -212,10 +201,38 @@ const BotDesign: React.FC = () => {
         setPresetQuestions(detail?.data?.options?.presetQuestions || [])
         setAnonymousEnabled(detail?.data?.options?.anonymousEnabled ?? false)
         setVoicePlayEnabled(detail?.data?.options?.voiceEnabled ?? false)
-        getApiKeyList();
+
+        if (detail?.data?.id){
+            doGetWorkflow({
+                params: {
+                    botId: detail?.data.id
+                }
+            })
+
+            doGetKnowledge({
+                params: {
+                    botId: detail?.data.id
+                }
+            })
+
+            getBotMessage({
+                params: {
+                    botId: detail?.data?.id,
+                    sessionId: getSessionId()
+                }
+            })
+
+            getApiKeyList({
+                params: {
+                    botId: detail?.data?.id
+                }
+            })
+        }
+
+
     }, [detail]);
 
-    const {result: workflowResult, doGet: doGetWorkflow} = useList("aiBotWorkflow", {"botId": params.id});
+    const {result: workflowResult, doGet: doGetWorkflow} = useGetManual("/api/v1/aiBotWorkflow/list");
     const {doSave: doSaveWorkflow} = useSave("aiBotWorkflow");
     const {doRemove: doRemoveAiBotWorkflow} = useRemove("aiBotWorkflow");
     const [workflowOpen, setWorkflowOpen] = useState(false)
@@ -227,7 +244,7 @@ const BotDesign: React.FC = () => {
     const [pluginOpen, setPluginOpen] = useState(false)
 
 
-    const {result: knowledgeResult, doGet: doGetKnowledge} = useList("aiBotKnowledge", {"botId": params.id});
+    const {result: knowledgeResult, doGet: doGetKnowledge} = useGetManual("/api/v1/aiBotKnowledge/list");
     const {doSave: doSaveKnowledge} = useSave("aiBotKnowledge");
     const {doRemove: doRemoveAiBotKnowledge} = useRemove("aiBotKnowledge");
     const [knowledgeOpen, setKnowledgeOpen] = useState(false)
@@ -242,10 +259,7 @@ const BotDesign: React.FC = () => {
     const {start: startChat} = useSseWithEvent("/api/v1/aiBot/chat");
     const {doPost: doRemoveMsg} = usePostManual('/api/v1/aiBotMessage/removeMsg')
     const [chats, setChats] = useState<ChatMessage[]>([]);
-    const {result: messageResult} = useList("aiBotMessage", {
-        botId: params.id,
-        sessionId: getSessionId()
-    });
+    const {result: messageResult, doGet: getBotMessage} = useGetManual("/api/v1/aiBotMessage/list");
     const [pluginToolData, setPluginToolData] = useState([])
 
     const defaultWelcomeMessage = "欢迎使用AIFlowy";
@@ -267,7 +281,7 @@ const BotDesign: React.FC = () => {
     useEffect(() => {
 
         if (pluginToolPermission) {
-            doPostPluginTool({data: {botId: params.id}}).then(r => {
+            doPostPluginTool({data: {botId: detail?.data?.id}}).then(r => {
                 setPluginToolData(r?.data?.data)
             })
         }
@@ -289,7 +303,7 @@ const BotDesign: React.FC = () => {
     const clearMessage: () => void = () => {
         doRemoveMsg({
             data: {
-                botId: params.id,
+                botId: detail?.data?.id,
                 sessionId: getSessionId(),
                 isExternalMsg: 0
             }
@@ -317,7 +331,6 @@ const BotDesign: React.FC = () => {
     const [weChatMpModalOpen, setWeChatMpModalOpen] = useState<boolean>(false);
 
 
-
     const handleClearChat = async () => {
         await aiProChatRef.current?.clearChatMessage();
     };
@@ -338,10 +351,16 @@ const BotDesign: React.FC = () => {
                                 setWorkflowOpen(false)
                                 doSaveWorkflow({
                                     data: {
-                                        botId: params.id,
+                                        botId: detail?.data?.id,
                                         workflowId: item.id,
                                     }
-                                }).then(doGetWorkflow)
+                                }).then(() => {
+                                    doGetWorkflow({
+                                        params: {
+                                            botId: detail?.data?.id
+                                        }
+                                    }).then()
+                                })
                             }}
             />
 
@@ -366,14 +385,14 @@ const BotDesign: React.FC = () => {
 
                     doSavePlugin({
                         data: {
-                            botId: params.id,
+                            botId: detail?.data?.id,
                             pluginToolId: item.id,
                         }
                     }).then(r => {
                         if (r?.data?.errorCode === 0) {
                             message.success("添加成功")
                             // 重新获取插件数据
-                            doPostPluginTool({data: {botId: params.id}}).then(r => {
+                            doPostPluginTool({data: {botId: detail?.data?.id}}).then(r => {
                                 setPluginToolData(r?.data?.data)
                             })
                         } else {
@@ -390,11 +409,11 @@ const BotDesign: React.FC = () => {
                         return;
                     }
 
-                    doRemovePlugin({data: {pluginToolId: item.id, botId: params.id}}).then(res => {
+                    doRemovePlugin({data: {pluginToolId: item.id, botId: detail?.data?.id}}).then(res => {
                         if (res?.data?.errorCode === 0) {
                             message.success('删除成功')
                             // 重新获取插件数据
-                            doPostPluginTool({data: {botId: params.id}}).then(r => {
+                            doPostPluginTool({data: {botId: detail?.data?.id}}).then(r => {
                                 setPluginToolData(r?.data?.data)
                             })
                         } else {
@@ -419,10 +438,16 @@ const BotDesign: React.FC = () => {
                                 setKnowledgeOpen(false)
                                 doSaveKnowledge({
                                     data: {
-                                        botId: params.id,
+                                        botId: detail?.data?.id,
                                         knowledgeId: item.id,
                                     }
-                                }).then(doGetKnowledge)
+                                }).then(() => {
+                                    doGetKnowledge({
+                                        params: {
+                                            "botId": detail?.data?.id
+                                        }
+                                    }).then()
+                                })
                             }}/>
 
 
@@ -559,7 +584,13 @@ const BotDesign: React.FC = () => {
                                                                          onOk: () => {
                                                                              doRemoveAiBotWorkflow({
                                                                                  data: {id: item.id}
-                                                                             }).then(doGetWorkflow)
+                                                                             }).then(() => {
+                                                                                 doGetWorkflow({
+                                                                                     params: {
+                                                                                         botId: detail?.data?.id,
+                                                                                     }
+                                                                                 }).then();
+                                                                             })
                                                                          }
                                                                      })
                                                                  }}
@@ -600,7 +631,13 @@ const BotDesign: React.FC = () => {
                                                                          onOk: () => {
                                                                              doRemoveAiBotKnowledge({
                                                                                  data: {id: item.id}
-                                                                             }).then(doGetKnowledge)
+                                                                             }).then(() => {
+                                                                                 doGetKnowledge({
+                                                                                     params: {
+                                                                                         "botId": detail?.data?.id
+                                                                                     }
+                                                                                 }).then();
+                                                                             })
                                                                          }
                                                                      })
                                                                  }}
@@ -643,10 +680,10 @@ const BotDesign: React.FC = () => {
                                                                                  doRemovePluginTool({
                                                                                      data: {
                                                                                          pluginToolId: item.id,
-                                                                                         botId: params.id
+                                                                                         botId: detail?.data?.id
                                                                                      }
                                                                                  }).then(() => {
-                                                                                     doPostPluginTool({data: {botId: params.id}})
+                                                                                     doPostPluginTool({data: {botId: detail?.data?.id}})
                                                                                          .then(r => {
                                                                                              setPluginToolData(r?.data?.data)
                                                                                          })
@@ -711,7 +748,7 @@ const BotDesign: React.FC = () => {
                                                                 updateBotOptions({
                                                                     data: {
                                                                         options: {presetQuestions: newQuestions},
-                                                                        id: params.id,
+                                                                        id: detail?.data?.id,
                                                                     }
                                                                 }).then((res) => {
                                                                     if (res?.data?.errorCode === 0) {
@@ -738,7 +775,7 @@ const BotDesign: React.FC = () => {
                                 key: 'welcomeMessage',
                                 label: <CollapseLabel text="欢迎语" onClick={() => {
                                 }} plusDisabled/>,
-                                children: <div style={{display:"flex",flexDirection:"column",gap:"8px"}}>
+                                children: <div style={{display: "flex", flexDirection: "column", gap: "8px"}}>
                                     <DebouncedTextArea
                                         disabled={!botSavePermission}
                                         value={welcomeMessage}
@@ -749,12 +786,13 @@ const BotDesign: React.FC = () => {
                                                 return;
                                             }
 
-                                            setWelcomeMessage( event.target.value)
+                                            setWelcomeMessage(event.target.value)
                                         }}
                                         placeholder="请输入欢迎语"
                                         autoSize={{minRows: 2, maxRows: 6}}
                                     />
-                                    <Button color="primary" variant="solid" style={{maxWidth:"150px",alignSelf:"end"}} onClick={() => {
+                                    <Button color="primary" variant="solid"
+                                            style={{maxWidth: "150px", alignSelf: "end"}} onClick={() => {
                                         doUpdateBotOptions({welcomeMessage: welcomeMessage && welcomeMessage.length ? welcomeMessage : defaultWelcomeMessage})
                                     }}>
                                         保存
@@ -784,7 +822,7 @@ const BotDesign: React.FC = () => {
                                             const resp = await updateBotOptions({
                                                 data: {
                                                     options: {voiceEnabled: checked},
-                                                    id: params.id,
+                                                    id: detail?.data?.id,
                                                 }
                                             })
                                             if (resp?.data?.errorCode === 0) {
@@ -837,7 +875,7 @@ const BotDesign: React.FC = () => {
                                                 const resp = await updateBotOptions({
                                                     data: {
                                                         options: {anonymousEnabled: checked},
-                                                        id: params.id,
+                                                        id: detail?.data?.id,
                                                     }
                                                 })
                                                 if (resp?.data?.errorCode === 0) {
@@ -862,31 +900,36 @@ const BotDesign: React.FC = () => {
                             },
                             {
                                 key: 'api',
-                                label: <CollapseLabel text="ApiKey" badgeCount={apiKeyResult?.data?.length ?? 0} onClick={() => {
+                                label: <CollapseLabel text="ApiKey" badgeCount={apiKeyResult?.data?.length ?? 0}
+                                                      onClick={() => {
 
-                                    Modal.confirm({
-                                        title: "确认",
-                                        icon: <ExclamationCircleFilled/>,
-                                        content: "将要新增用于调用此 bot 的 apiKey , 是否确认?",
-                                        centered: true,
-                                        maskClosable: true,
-                                        onOk: async () => {
-                                            const resp = await addApiKey({
-                                                data: {
-                                                    botId: params.id,
-                                                }
-                                            })
+                                                          Modal.confirm({
+                                                              title: "确认",
+                                                              icon: <ExclamationCircleFilled/>,
+                                                              content: "将要新增用于调用此 bot 的 apiKey , 是否确认?",
+                                                              centered: true,
+                                                              maskClosable: true,
+                                                              onOk: async () => {
+                                                                  const resp = await addApiKey({
+                                                                      data: {
+                                                                          botId: detail?.data?.id,
+                                                                      }
+                                                                  })
 
-                                            if (resp?.data?.errorCode === 0) {
-                                                message.success("添加成功")
+                                                                  if (resp?.data?.errorCode === 0) {
+                                                                      message.success("添加成功")
 
-                                                // 发送请求获取新的apiKey列表
-                                                await getApiKeyList();
-                                            }
-                                        }
-                                    })
+                                                                      // 发送请求获取新的apiKey列表
+                                                                      await getApiKeyList({
+                                                                          params: {
+                                                                              botId: detail?.data?.id
+                                                                          }
+                                                                      });
+                                                                  }
+                                                              }
+                                                          })
 
-                                }}/>,
+                                                      }}/>,
                                 children: <div>
                                     <div>
                                         <span>
@@ -904,7 +947,7 @@ const BotDesign: React.FC = () => {
                                             {apiKeyResult && apiKeyResult?.data?.length ? apiKeyResult?.data?.map((item: any) => {
                                                     return (
                                                         <Fragment key={item.id}>
-                                                            <div  style={{
+                                                            <div style={{
                                                                 width: "100%",
                                                                 background: "#ffffff",
                                                                 height: "32px",
@@ -936,7 +979,11 @@ const BotDesign: React.FC = () => {
                                                                                     id: item.id,
                                                                                 }
                                                                             }).then(() => {
-                                                                                getApiKeyList().then();
+                                                                                getApiKeyList({
+                                                                                    params: {
+                                                                                        botId: detail?.data?.id
+                                                                                    }
+                                                                                }).then();
                                                                             })
                                                                         }
                                                                     })
@@ -1006,7 +1053,7 @@ const BotDesign: React.FC = () => {
                                                                 weChatMpForm.setFieldValue("weChatMpToken", "");
                                                                 weChatMpForm.setFieldValue("weChatMpAesKey", "");
 
-                                                                const fieldsValue = weChatMpForm.getFieldsValue(['weChatMpAppId','weChatMpSecret','weChatMpToken','weChatMpAesKey']);
+                                                                const fieldsValue = weChatMpForm.getFieldsValue(['weChatMpAppId', 'weChatMpSecret', 'weChatMpToken', 'weChatMpAesKey']);
                                                                 // 清空 bot 上的微信公众号配置
                                                                 doUpdateBotOptions(fieldsValue);
                                                                 reGetDetail().then();
@@ -1081,7 +1128,7 @@ const BotDesign: React.FC = () => {
                                             const encoder = new TextEncoder();
                                             startChat({
                                                 data: {
-                                                    botId: params.id,
+                                                    botId: detail?.data?.id,
                                                     sessionId: getSessionId(),
                                                     prompt: messages[messages.length - 1].content as string,
                                                     fileList: messages[messages.length - 1].files as Array<string>
@@ -1140,7 +1187,7 @@ const BotDesign: React.FC = () => {
                           updateBotOptions({
                               data: {
                                   options: {presetQuestions: questions},
-                                  id: params.id
+                                  id: detail?.data?.id
                               }
                           }).then((res) => {
                               if (res.data.errorCode === 0) {
@@ -1202,16 +1249,18 @@ const BotDesign: React.FC = () => {
                           setWeChatMpModalOpen(false);
                       }}
                 >
-                    <Form.Item label={<div>接口地址(将这个地址复制到微信公众平台)<Button icon={<CopyOutlined />} color="primary" variant="link" onClick={async () => {
-                        try {
-                            await navigator.clipboard.writeText(`${import.meta.env.VITE_APP_SERVER_ENDPOINT}/api/v1/message/wechat?apiKey=此处填写bot上生成的apiKey`);
-                            message.success("复制成功")
-                        }catch (error){
-                            message.error("复制失败")
-                        }
+                    <Form.Item
+                        label={<div>接口地址(将这个地址复制到微信公众平台)<Button icon={<CopyOutlined/>} color="primary"
+                                                                                  variant="link" onClick={async () => {
+                            try {
+                                await navigator.clipboard.writeText(`${import.meta.env.VITE_APP_SERVER_ENDPOINT}/api/v1/message/wechat?apiKey=此处填写bot上生成的apiKey`);
+                                message.success("复制成功")
+                            } catch (error) {
+                                message.error("复制失败")
+                            }
 
 
-                    }}/> </div>}>
+                        }}/></div>}>
                         <TextArea style={{resize: "none"}} disabled={true}
                                   value={`${import.meta.env.VITE_APP_SERVER_ENDPOINT}/api/v1/message/wechat?apiKey=此处填写bot上生成的apiKey`}
                         />
