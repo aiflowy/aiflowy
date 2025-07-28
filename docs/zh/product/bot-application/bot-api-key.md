@@ -1,26 +1,26 @@
-# 通过api key 请求一个bot
+# 通过 ApiKey 请求 bot
 
-apiKey 的作用是 用于身份认证，通过 apiKey 第三方可以携带对应的参数访问到 AIFlowy 对应的Bot进行对话。
+ApiKey 的作用是 用于身份认证，通过 ApiKey 第三方可以携带对应的参数访问到 AIFlowy 对应的Bot进行对话。
+
+## 创建 apiKey 
+
+进入 bot 设置页面，找到 apiKey 这一栏，点击右上角 "+" 号，在弹窗点击确认，即可完成 apiKey 的创建
+![createApiKey1.png](resource/createApiKey1.png)
 
 ## 第三方接入 Bot 聊天地址：
 请求方式： POST
 请求地址： http://127.0.0.1:8080/v1/chat/completions
 
 
-### 此接口兼容 openAi api
+**此接口兼容 openAi api**
 
-### 默认请求方式以 JSON格式返回
+### 请求示例
 请求头：
 
 Headers: {
 Authorization: Bearer 你在 bot 上生成的 apiKey
 }
 
-请求格式参数说明：
-```
-messages： 消息体
-botId： 第三方想要请求的 BotId
-```
 
 请求示例1：
 ```json
@@ -51,14 +51,6 @@ botId： 第三方想要请求的 BotId
 ```
 
 
-响应参数说明：
-
-```json
-status: END 表示本次对话正常结束
-created： 创建时间
-message： 消息体
-
-```
 
 请求成功示例：
 ```json

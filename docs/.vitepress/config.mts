@@ -183,7 +183,9 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
                     text: 'IFrame 嵌入',
                     link: 'system/iframe.md',
                 },
-                {text: '通过 API 请求', link: 'bot-application/bot-api-key'},
+                {text: '通过 ApiKey 请求 bot', link: 'bot-application/bot-api-key'},
+                {text: '实时语音播报', link: 'bot-application/bot-tts'},
+                {text: 'bot 接入微信公众号', link: 'bot-application/wechat-mp'},
             ]
         },
         {
@@ -248,7 +250,7 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
             items: [
                 {text: '模型管理', link: 'llm/llmList'},
                 {text: '模型接入', link: 'llm/addLlm'},
-                {text: '添加供应商', link: 'llm/llmSuppliers.md'},
+                {text: '供应商管理', link: 'llm/llmSuppliers.md'},
             ]
         },
         {
@@ -285,10 +287,10 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
                     text: '菜单管理',
                     link: 'system/menu.md',
                 },
-                {
-                    text: 'apiKey',
-                    link: 'system/apiKey.md',
-                },
+                // {
+                //     text: 'apiKey',
+                //     link: 'system/apiKey.md',
+                // },
                 {
                     text: '数据字典',
                     link: 'system/data_dictionary.md',
