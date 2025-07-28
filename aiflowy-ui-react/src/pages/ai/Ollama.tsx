@@ -98,7 +98,7 @@ const Ollama: React.FC = () => {
                         disabled={record.hasJoinModel === 1} // 如果已加入，禁用按钮
                         size={'small'}
                     >
-                        {record.hasJoinModel === 1 ? "已加入大模型" : "加入大模型"} {/* 动态显示文本 */}
+                        {record.hasJoinModel === 1 ? "已加入模型管理" : "加入模型管理"} {/* 动态显示文本 */}
                     </Button>
                         <a onClick={() => handleDeleteAction(record)}> <RestOutlined/> 删除 </a>
                 </Space>
