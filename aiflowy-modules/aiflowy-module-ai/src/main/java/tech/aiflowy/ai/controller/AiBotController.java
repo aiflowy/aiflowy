@@ -374,10 +374,8 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
 
         // 解决 https://gitee.com/aiflowy/aiflowy/issues/ICMRM2 根据大模型配置属性决定是否构建多模态消息
         Map<String, Object> aiLlmOptions = aiLlm.getOptions();
-        if (aiLlmOptions != null && aiLlmOptions.get("multimodal") != null &&
-                (boolean) aiLlmOptions.get("multimodal")) {
 
-            // if (!"ollama".equals(aiLlm.getBrand()) && !"spark".equals(aiLlm.getBrand())){
+        if (!"ollama".equals(aiLlm.getBrand()) && !"spark".equals(aiLlm.getBrand())) {
             HashMap<String, Object> promptMap = new HashMap<>();
             promptMap.put("prompt", promptTemplate);
             promptMap.put("fileList", fileList);

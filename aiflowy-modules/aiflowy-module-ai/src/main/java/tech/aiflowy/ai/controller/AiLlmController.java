@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import tech.aiflowy.common.util.StringUtil;
 import org.springframework.util.StringUtils;
 import tech.aiflowy.common.web.exceptions.BusinessException;
+import tech.aiflowy.common.web.jsonbody.JsonBody;
 
 /**
  * 控制层。
@@ -59,6 +60,21 @@ public class AiLlmController extends BaseCurdController<AiLlmService, AiLlm> {
     public Result verifyLlmConfig(@RequestBody AiLlm llm) {
 
         service.verifyLlmConfig(llm);
+
+        return Result.success();
+    }
+
+    @PostMapping("quickAdd")
+    @SaCheckPermission("/api/v1/aiLlm/save")
+    public Result quickAdd(@JsonBody(value = "brand",required = true) String brand,@JsonBody(value = "apiKey",required = true) String apiKey){
+
+
+        if (!StringUtils.hasLength(brand)){
+            throw new BusinessException("请选择供应商！");
+        }
+
+
+        aiLlmService.quickAdd(brand,apiKey);
 
         return Result.success();
     }

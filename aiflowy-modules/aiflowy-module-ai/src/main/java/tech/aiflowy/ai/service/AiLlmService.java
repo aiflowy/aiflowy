@@ -15,4 +15,6 @@ public interface AiLlmService extends IService<AiLlm> {
     Result addAiLlm(AiLlm entity);
 
     void verifyLlmConfig(AiLlm llm);
+
+    void quickAdd(String brand, String apiKey);
 }

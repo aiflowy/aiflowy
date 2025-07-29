@@ -212,7 +212,6 @@
       "llmEndpoint":"https://ark.cn-beijing.volces.com",
       "chatPath":"/api/v3/chat/completions",
       "embedPath":"/api/v3/embeddings",
-      "multimodalEmbedPath":"/api/v3/embeddings/multimodal",
       "modelList":[
         {
           "llmModel":"doubao-seed-1-6-250615",
