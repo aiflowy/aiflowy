@@ -16,4 +16,7 @@ public interface AiKnowledgeService extends IService<AiKnowledge> {
 
     Result search(BigInteger id, String keyword);
 
+    Result getDetail(String idOrAlias);
+
+    AiKnowledge getByAlias(String idOrAlias);
 }

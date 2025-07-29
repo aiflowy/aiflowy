@@ -77,4 +77,9 @@ public class AiKnowledgeController extends BaseCurdController<AiKnowledgeService
 
         return null;
     }
+
+    @Override
+    public Result detail(String id) {
+        return service.getDetail(id);
+    }
 }

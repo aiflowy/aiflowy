@@ -3,6 +3,7 @@ package tech.aiflowy.ai.service.impl;
 
 import com.agentsflex.rerank.DefaultRerankModel;
 import com.agentsflex.search.engine.service.DocumentSearcher;
+import com.mybatisflex.core.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import tech.aiflowy.ai.config.SearcherFactory;
 import tech.aiflowy.ai.entity.AiDocumentChunk;
@@ -13,6 +14,7 @@ import tech.aiflowy.ai.mapper.AiKnowledgeMapper;
 import tech.aiflowy.ai.service.AiDocumentChunkService;
 import tech.aiflowy.ai.service.AiKnowledgeService;
 import tech.aiflowy.ai.service.AiLlmService;
+import tech.aiflowy.ai.utils.RegexUtils;
 import tech.aiflowy.common.domain.Result;
 import com.agentsflex.core.document.Document;
 import com.agentsflex.core.store.DocumentStore;
@@ -145,6 +147,35 @@ public class AiKnowledgeServiceImpl extends ServiceImpl<AiKnowledgeMapper, AiKno
             e.printStackTrace();
             return Result.fail(5, "查询过程中发生异常: " + e.getMessage());
         }
+    }
+
+    @Override
+    public Result getDetail(String idOrAlias) {
+
+        AiKnowledge knowledge = null;
+
+        if (idOrAlias.matches(RegexUtils.ALL_NUMBER)) {
+            knowledge = getById(idOrAlias);
+            if (knowledge == null) {
+                knowledge = getByAlias(idOrAlias);
+            }
+        }
+
+        if (knowledge == null) {
+            knowledge = getByAlias(idOrAlias);
+        }
+
+        return Result.success(knowledge);
+    }
+
+    @Override
+    public AiKnowledge getByAlias(String idOrAlias) {
+
+        QueryWrapper queryWrapper = QueryWrapper.create();
+        queryWrapper.eq("alias",idOrAlias);
+
+        return getOne(queryWrapper);
+
     }
 
 
