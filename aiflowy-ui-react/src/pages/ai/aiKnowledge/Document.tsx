@@ -49,12 +49,7 @@ const Document: React.FC = () => {
     const {result: knowledge} = useDetail("aiKnowledge", params.id);
 
     // 手动加载知识库的文档列表
-    const {loading, result, doGet:doGetDocumentListManual} = useGet(`/api/v1/aiDocument/documentList`,
-        {
-            current: pagination.current,
-            pageSize: pagination.pageSize,
-            id: params.id
-        });
+    const {loading, result, doGet:doGetDocumentListManual} = useGetManual(`/api/v1/aiDocument/documentList`);
 
     const [queryParams, setQueryParams] = useState<queryParamsType>()
 
@@ -80,7 +75,7 @@ const Document: React.FC = () => {
     const onFinish = (values: any) => {
         doSearchGet({
             params: {
-                id: params.id,
+                id: knowledge?.data?.id,
                 ...values
             }
         }).then((resp) => {
@@ -284,7 +279,7 @@ const Document: React.FC = () => {
             params: {
                 current: 1,
                 pageSize: 10,
-                id: params.id
+                id: knowledge?.data?.id
             }
         }).then(res => {
             setPagination({
@@ -317,7 +312,13 @@ const Document: React.FC = () => {
     // 分页变化时触发
     const handleTableChange = (newPagination: any) => {
         const {current, pageSize} = newPagination;
-        doGetDocumentListManual().then(res => {
+        doGetDocumentListManual({
+            params:{
+                current: pagination.current,
+                pageSize: pagination.pageSize,
+                id: knowledge?.data?.id
+            }
+        }).then(res => {
             setPagination({
                 current: current, // 当前页码
                 pageSize: pageSize, // 每页显示条数
@@ -353,7 +354,7 @@ const Document: React.FC = () => {
                 ...searchParams,
                 current: pagination.current,
                 pageSize: pagination.pageSize,
-                id: params.id
+                id: knowledge?.data?.id
             }
         }).then(res => {
             if (result) {
@@ -466,7 +467,13 @@ const Document: React.FC = () => {
         }).then(res => {
             if (res.data.errorCode === 0) {
                 message.success('更新成功')
-                doGetDocumentListManual()
+                doGetDocumentListManual({
+                    params:{
+                        current: pagination.current,
+                        pageSize: pagination.pageSize,
+                        id: knowledge?.data?.id
+                    }
+                })
             } else {
                 message.error(res.data.message)
             }
@@ -565,7 +572,7 @@ const Document: React.FC = () => {
             case 'file-import':
                 return (
                     <div className="content">
-                        <FileImportPanel data={{knowledgeId: params.id}} maxCount={1}
+                        <FileImportPanel data={{knowledgeId: knowledge?.data?.id}} maxCount={1}
                                          action={`${baseUrl}/api/v1/commons/upload`}/>
                     </div>
                 );
@@ -626,6 +633,10 @@ const Document: React.FC = () => {
             ],
         })
 
+        if (knowledge?.data?.id){
+            getDocumentList();
+        }
+
         return () => {
             setOptions({
                 showBreadcrumb: true,
@@ -640,7 +651,7 @@ const Document: React.FC = () => {
 
             {
                 isFileImportVisible ? (  <div className="content">
-                    <FileImportPanel data={{knowledgeId: params.id}} maxCount={1} style={{flex: 1}}
+                    <FileImportPanel data={{knowledgeId: knowledge?.data?.id}} maxCount={1} style={{flex: 1}}
                                      action="/api/v1/commons/upload" onBack={()=>{setIsFileImportVisible(false)}}/>
                 </div>) :(
 
