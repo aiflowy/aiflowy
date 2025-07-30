@@ -1245,7 +1245,7 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
         defaultLlmOptions.put("topK", 4);
         defaultLlmOptions.put("maxReplyLength", 2048);
         defaultLlmOptions.put("topP", 0.7);
-        defaultLlmOptions.put("maxMessageCount", 3);
+        defaultLlmOptions.put("maxMessageCount", 10);
         return defaultLlmOptions;
     }
 
