@@ -33,15 +33,20 @@ public class AiBotMessage extends AiBotMessageBase {
             Map<String, Object> options = getOptions();
             if (options != null && options.get("type") != null && Objects.equals(options.get("type"), 1)) {
 
-                MultimodalMessage multimodalMessage = new MultimodalMessage();
-
-                multimodalMessage.setText(getContent());
-
                 List<String> fileList = (List<String>) options.get("fileList");
-                multimodalMessage.setImageUrls(fileList);
+
+                if (fileList != null && !fileList.isEmpty()){
+                    MultimodalMessage multimodalMessage = new MultimodalMessage();
+
+                    multimodalMessage.setText(getContent());
 
 
-               return  multimodalMessage;
+                    multimodalMessage.setImageUrls(fileList);
+
+
+                    return  multimodalMessage;
+                }
+  
 
             }
 
