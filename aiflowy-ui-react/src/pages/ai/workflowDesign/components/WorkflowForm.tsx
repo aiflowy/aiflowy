@@ -68,6 +68,9 @@ export const WorkflowForm: React.FC<WorkflowFormProps> = (props) => {
                                 options={checkBoxOptions}
                             />
                         }
+                        {!item.formType &&
+                            <Input/>
+                        }
                     </>
                 }
                 {contentType === "other" &&
