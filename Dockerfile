@@ -9,7 +9,7 @@ FROM openjdk:8-jdk-alpine
 MAINTAINER Cennac <cennac@163.com>
 
 # docker build --build-arg VERSION=1.1.2 -t aiflowy:latest .
-ARG VERSION=1.1.2
+ARG VERSION=1.1.5
 ARG BUILD_DATE=2025-7-10
 ARG SERVICE_NAME=aiflowy-starter
 ARG SERVICE_PORT=8080
