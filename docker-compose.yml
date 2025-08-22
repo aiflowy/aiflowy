@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  backend:
+  aiflowy:
     build:
       context: .
       dockerfile: Dockerfile
@@ -15,14 +15,14 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-  frontend:
+  aiflowy-ui:
     build:
       context: ./aiflowy-ui-react
       dockerfile: Dockerfile
     ports:
       - "8081:80"
     depends_on:
-      - backend
+      - aiflowy
     networks:
       - aiflowy-net
   mysql:
@@ -35,6 +35,8 @@ services:
       - "3306:3306"
     volumes:
       - ./initdb:/docker-entrypoint-initdb.d
+    # 这个命令在默认 entrypoint 运行前修复权限
+    entrypoint: sh -c "chown -R mysql:mysql /docker-entrypoint-initdb.d && docker-entrypoint.sh mysqld"
     networks:
       - aiflowy-net
     healthcheck:
