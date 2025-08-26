@@ -1078,21 +1078,15 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
             }, (result) -> {
                 logger.info("tts 转语音 session 执行完毕，connection 已关闭，进行结果缓存");
 
-                List<Map<String, Object>> voiceList = (List<Map<String, Object>>) cache.get(VOICE_KEY);
-
-                if (voiceList == null) {
-                    voiceList = new ArrayList<>();
-                }
-
                 Map<String, Object> resultMap = new HashMap<>();
                 resultMap.put(MESSAGE_SESSION_ID_KEY, messageSessionId);
-                resultMap.put(FULL_TEXT_KEY, finalAnswerContentBuffer.toString());
+                String voiceText = finalAnswerContentBuffer.toString();
+                resultMap.put(FULL_TEXT_KEY, voiceText);
                 resultMap.put(BASE64_KEY, result);
 
-                voiceList.add(resultMap);
-
                 // 缓存60分钟
-                cache.put("aiBot:voice", voiceList, 60, TimeUnit.MINUTES);
+                String cacheKey = VOICE_KEY + HashUtil.md5(voiceText);
+                cache.put(cacheKey, resultMap, 60, TimeUnit.MINUTES);
 
                 // 将完整音频文件保存到本地的逻辑，如果需要则打开下面的注释 👇
                 // if (StringUtils.hasLength(result)) {
