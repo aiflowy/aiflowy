@@ -50,8 +50,14 @@ const CrudPage: React.FC<CurdPageProps> = forwardRef(({
                                                           formRenderFactory,
                                                           onEditModalShowChange
                                                       }, ref) => {
-
+    const antdCrudRef = React.useRef<any>(null);
     useImperativeHandle(ref, () => ({
+        openAddModal: () => {
+            antdCrudRef.current.openAddModal();
+        },
+        onSearch: (searchParams: any) => {
+            actions.onFetchList?.(pageNumber, pageSize, searchParams);
+        },
         refresh: () => {
             actions.onFetchList?.(pageNumber, pageSize, urlParams);
         }
@@ -161,7 +167,7 @@ const CrudPage: React.FC<CurdPageProps> = forwardRef(({
                   pageNumber={pageNumber}
                   pageSize={pageSize}
                   totalRow={((result?.data) as Page<any>)?.totalRow}
-                  ref={ref}
+                  ref={antdCrudRef}
                   needHideSearchForm={needHideSearchForm}
                   usePermission={usePermission}
                   formRenderFactory={formRenderFactory}
