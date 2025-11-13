@@ -5,19 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>tech.aiflowy</groupId>
-        <artifactId>aiflowy</artifactId>
+        <artifactId>aiflowy-starter</artifactId>
         <version>${revision}</version>
     </parent>
 
-    <artifactId>aiflowy-starter</artifactId>
-    <packaging>pom</packaging>
-    <modules>
-        <module>aiflowy-starter-admin</module>
-        <module>aiflowy-starter-all</module>
-        <module>aiflowy-starter-api</module>
-        <module>aiflowy-starter-usercenter</module>
-    </modules>
-
+    <artifactId>aiflowy-starter-usercenter</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

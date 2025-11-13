@@ -9,15 +9,14 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>aiflowy-starter</artifactId>
+    <artifactId>aiflowy-apis</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>aiflowy-starter-admin</module>
-        <module>aiflowy-starter-all</module>
-        <module>aiflowy-starter-api</module>
-        <module>aiflowy-starter-usercenter</module>
+        <module>aiflowy-apis-admin</module>
+        <module>aiflowy-apis-api</module>
+        <module>aiflowy-apis-mcp</module>
+        <module>aiflowy-apis-usercenter</module>
     </modules>
-
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

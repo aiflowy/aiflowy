@@ -8,6 +8,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>aiflowy-apis</module>
         <module>aiflowy-commons</module>
         <module>aiflowy-modules</module>
         <module>aiflowy-starter</module>
@@ -19,7 +20,7 @@
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven-flatten.version>1.3.0</maven-flatten.version>
-        <revision>1.1.7</revision>
+        <revision>2.0.0</revision>
         <mybatis-flex.version>1.11.3</mybatis-flex.version>
         <agents-flex.version>1.3.7</agents-flex.version>
         <tinyflow-java.version>1.2.3</tinyflow-java.version>
@@ -410,6 +411,53 @@
             <dependency>
                 <groupId>tech.aiflowy</groupId>
                 <artifactId>aiflowy-starter</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>tech.aiflowy</groupId>
+                <artifactId>aiflowy-starter-admin</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>tech.aiflowy</groupId>
+                <artifactId>aiflowy-starter-all</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>tech.aiflowy</groupId>
+                <artifactId>aiflowy-starter-api</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>tech.aiflowy</groupId>
+                <artifactId>aiflowy-starter-usercenter</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
+            <!--apis-->
+            <dependency>
+                <groupId>tech.aiflowy</groupId>
+                <artifactId>aiflowy-apis</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>tech.aiflowy</groupId>
+                <artifactId>aiflowy-apis-admin</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>tech.aiflowy</groupId>
+                <artifactId>aiflowy-apis-api</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>tech.aiflowy</groupId>
+                <artifactId>aiflowy-apis-mcp</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>tech.aiflowy</groupId>
+                <artifactId>aiflowy-apis-usercenter</artifactId>
                 <version>${revision}</version>
             </dependency>
 
