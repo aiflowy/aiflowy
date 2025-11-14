@@ -14,7 +14,7 @@
     <modules>
         <module>aiflowy-starter-admin</module>
         <module>aiflowy-starter-all</module>
-        <module>aiflowy-starter-api</module>
+        <module>aiflowy-starter-public</module>
         <module>aiflowy-starter-usercenter</module>
     </modules>
 

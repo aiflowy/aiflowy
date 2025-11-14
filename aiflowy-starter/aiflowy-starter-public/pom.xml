@@ -9,7 +9,7 @@
         <version>${revision}</version>
     </parent>
 
-    <artifactId>aiflowy-starter-api</artifactId>
+    <artifactId>aiflowy-starter-public</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

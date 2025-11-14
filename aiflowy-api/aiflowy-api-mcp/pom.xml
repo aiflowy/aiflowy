@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>tech.aiflowy</groupId>
-        <artifactId>aiflowy-apis</artifactId>
+        <artifactId>aiflowy-api</artifactId>
         <version>${revision}</version>
     </parent>
 
-    <artifactId>aiflowy-apis-api</artifactId>
+    <artifactId>aiflowy-api-mcp</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
