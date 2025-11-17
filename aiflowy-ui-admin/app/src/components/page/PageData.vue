@@ -89,7 +89,6 @@ const setQuery = (newQueryParams) => {
 // 暴露方法给父组件
 defineExpose({
   setQuery,
-  refresh: getPageList,
 });
 
 // 监听器
