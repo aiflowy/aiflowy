@@ -26,7 +26,7 @@ import java.time.LocalDateTime;
 public class SysTokenServiceImpl extends ServiceImpl<SysTokenMapper, SysToken>  implements SysTokenService{
 
     @Override
-    public Result saveGenerateToken() {
+    public Result<Void> saveGenerateToken() {
         long loginId = StpUtil.getLoginIdAsLong();             // 这是要绑定的账号ID
                 QueryWrapper queryWrapper = QueryWrapper.create()
                 .select("*")
@@ -59,11 +59,11 @@ public class SysTokenServiceImpl extends ServiceImpl<SysTokenMapper, SysToken>  
         if (insert <= 0){
             return Result.fail(2, "新增失败");
         }
-        return Result.success();
+        return Result.ok();
     }
 
     @Override
-    public Result updateToken(SysToken sysToken) {
+    public Result<Void> updateToken(SysToken sysToken) {
         SysToken sysToken1 = this.getMapper().selectOneById(sysToken.getId());
         if (sysToken1 == null) {
             return Result.fail(1, "该 token 不存在，修改失败");
@@ -93,7 +93,7 @@ public class SysTokenServiceImpl extends ServiceImpl<SysTokenMapper, SysToken>  
             return Result.fail(5, "更新失败");
         }
 
-        return Result.success();
+        return Result.ok();
     }
 
     @Override

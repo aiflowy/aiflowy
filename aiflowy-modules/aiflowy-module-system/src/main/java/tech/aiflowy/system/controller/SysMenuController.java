@@ -54,19 +54,19 @@ public class SysMenuController extends BaseCurdController<SysMenuService, SysMen
 
     @Override
     @GetMapping("list")
-    public Result list(SysMenu entity, Boolean asTree, String sortKey, String sortType) {
+    public Result<List<SysMenu>> list(SysMenu entity, Boolean asTree, String sortKey, String sortType) {
         QueryWrapper queryWrapper = QueryWrapper.create(entity, buildOperators(entity));
         queryWrapper.orderBy(buildOrderBy(sortKey, sortType, getDefaultOrderBy()));
         List<SysMenu> sysMenus = service.list(queryWrapper);
-        return Result.success(Tree.tryToTree(sysMenus, "id", "parentId"));
+        return Result.ok(Tree.tryToTree(sysMenus, "id", "parentId"));
     }
 
     @GetMapping("tree")
-    public Result tree(SysMenu entity) {
+    public Result<List<SysMenu>> tree(SysMenu entity) {
         LoginAccount account = SaTokenUtil.getLoginAccount();
         BigInteger accountId = account.getId();
         List<SysMenu> sysMenus = service.getMenusByAccountId(entity,accountId);
-        return Result.success(Tree.tryToTree(sysMenus, "id", "parentId"));
+        return Result.ok(Tree.tryToTree(sysMenus, "id", "parentId"));
     }
 
     /**

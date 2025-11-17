@@ -35,9 +35,9 @@ public class SysRoleController extends BaseCurdController<SysRoleService, SysRol
 
     @PostMapping("saveRoleMenu/{roleId}")
     @SaCheckPermission("/api/v1/sysRole/save")
-    public Result saveRoleMenu(@PathVariable("roleId") BigInteger roleId, @JsonBody List<String> keys) {
+    public Result<Void> saveRoleMenu(@PathVariable("roleId") BigInteger roleId, @JsonBody List<String> keys) {
         service.saveRoleMenu(roleId, keys);
-        return Result.success();
+        return Result.ok();
     }
 
     @Override

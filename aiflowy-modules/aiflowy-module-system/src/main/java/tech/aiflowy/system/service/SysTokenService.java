@@ -14,9 +14,9 @@ import java.io.Serializable;
  */
 public interface SysTokenService extends IService<SysToken> {
 
-    Result saveGenerateToken();
+    Result<Void> saveGenerateToken();
 
-    Result updateToken(SysToken sysToken);
+    Result<Void> updateToken(SysToken sysToken);
 
     void delete(Serializable id);
 }

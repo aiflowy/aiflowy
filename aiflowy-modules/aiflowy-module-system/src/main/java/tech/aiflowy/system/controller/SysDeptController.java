@@ -47,11 +47,11 @@ public class SysDeptController extends BaseCurdController<SysDeptService, SysDep
 
     @Override
     @GetMapping("list")
-    public Result list(SysDept entity, Boolean asTree, String sortKey, String sortType) {
+    public Result<List<SysDept>> list(SysDept entity, Boolean asTree, String sortKey, String sortType) {
         QueryWrapper queryWrapper = QueryWrapper.create(entity, buildOperators(entity));
         queryWrapper.orderBy(buildOrderBy(sortKey, sortType, getDefaultOrderBy()));
         List<SysDept> sysMenus = service.list(queryWrapper);
-        return Result.success(Tree.tryToTree(sysMenus, "id", "parentId"));
+        return Result.ok(Tree.tryToTree(sysMenus, "id", "parentId"));
     }
 
     @Override

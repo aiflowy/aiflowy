@@ -17,7 +17,7 @@ public class SysTempTokenController {
 
     @GetMapping("/create")
     @SaIgnore
-    public Result createTempToken() {
+    public Result<String> createTempToken() {
 
         StpUtil.login(0);
         String tokenValue = StpUtil.getTokenValue();
@@ -26,6 +26,6 @@ public class SysTempTokenController {
         loginAccount.setLoginName("匿名用户");
         StpUtil.getSession().set(Constants.LOGIN_USER_KEY, loginAccount);
 
-        return Result.success(tokenValue);
+        return Result.ok("", tokenValue);
     }
 }

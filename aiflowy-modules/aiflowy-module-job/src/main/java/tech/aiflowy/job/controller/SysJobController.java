@@ -37,17 +37,17 @@ public class SysJobController extends BaseCurdController<SysJobService, SysJob> 
 
     @GetMapping("/start")
     @SaCheckPermission("/api/v1/sysJob/save")
-    public Result start(BigInteger id) {
+    public Result<Void> start(BigInteger id) {
         SysJob sysJob = service.getById(id);
         sysJob.setStatus(EnumJobStatus.RUNNING.getCode());
         service.addJob(sysJob);
         service.updateById(sysJob);
-        return Result.success();
+        return Result.ok();
     }
 
     @GetMapping("/stop")
     @SaCheckPermission("/api/v1/sysJob/save")
-    public Result stop(BigInteger id) {
+    public Result<Void> stop(BigInteger id) {
         SysJob sysJob = new SysJob();
         sysJob.setId(id);
         sysJob.setStatus(EnumJobStatus.STOP.getCode());
@@ -55,11 +55,11 @@ public class SysJobController extends BaseCurdController<SysJobService, SysJob> 
         ids.add(id);
         service.deleteJob(ids);
         service.updateById(sysJob);
-        return Result.success();
+        return Result.ok();
     }
 
     @GetMapping("/getNextTimes")
-    public Result getNextTimes(String cronExpression) throws  Exception{
+    public Result<List<String>> getNextTimes(String cronExpression) throws  Exception{
         CronExpression ex = new CronExpression(cronExpression);
         List<String> times = new ArrayList<>();
         Date date = new Date();
@@ -68,7 +68,7 @@ public class SysJobController extends BaseCurdController<SysJobService, SysJob> 
             times.add(DateUtil.formatDateTime(next));
             date = next;
         }
-        return Result.success(times);
+        return Result.ok(times);
     }
 
     @Override

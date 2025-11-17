@@ -18,6 +18,7 @@ import tech.aiflowy.datacenter.adapter.DbHandleManager;
 import tech.aiflowy.datacenter.adapter.DbHandleService;
 import tech.aiflowy.datacenter.entity.DatacenterTable;
 import tech.aiflowy.datacenter.entity.DatacenterTableFields;
+import tech.aiflowy.datacenter.entity.vo.HeaderVo;
 import tech.aiflowy.datacenter.mapper.DatacenterTableFieldsMapper;
 import tech.aiflowy.datacenter.mapper.DatacenterTableMapper;
 import tech.aiflowy.datacenter.service.DatacenterTableService;
@@ -181,21 +182,21 @@ public class DatacenterTableServiceImpl extends ServiceImpl<DatacenterTableMappe
     }
 
     @Override
-    public List<JSONObject> getHeaders(BigInteger tableId) {
+    public List<HeaderVo> getHeaders(BigInteger tableId) {
         QueryWrapper wrapper = QueryWrapper.create();
         wrapper.eq("table_id", tableId);
         wrapper.orderBy("id");
         List<DatacenterTableFields> fields = fieldsMapper.selectListByQuery(wrapper);
-        List<JSONObject> headers = new ArrayList<>();
+        List<HeaderVo> headers = new ArrayList<>();
         for (DatacenterTableFields field : fields) {
-            JSONObject header = new JSONObject();
-            header.put("key", field.getFieldName());
-            header.put("dataIndex", field.getFieldName());
-            header.put("title", field.getFieldDesc());
-            header.put("fieldType", field.getFieldType());
-            header.put("required", field.getRequired());
-            header.put("fieldId", field.getId());
-            header.put("tableId", field.getTableId());
+            HeaderVo header = new HeaderVo();
+            header.setKey(field.getFieldName());
+            header.setDataIndex(field.getFieldName());
+            header.setTitle(field.getFieldDesc());
+            header.setFieldType(field.getFieldType());
+            header.setRequired(field.getRequired());
+            header.setFieldId(field.getId());
+            header.setTableId(field.getTableId());
             headers.add(header);
         }
         return headers;

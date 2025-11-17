@@ -8,6 +8,7 @@ import tech.aiflowy.common.entity.DatacenterQuery;
 import tech.aiflowy.common.entity.LoginAccount;
 import tech.aiflowy.datacenter.entity.DatacenterTable;
 import tech.aiflowy.datacenter.entity.DatacenterTableFields;
+import tech.aiflowy.datacenter.entity.vo.HeaderVo;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -24,7 +25,7 @@ public interface DatacenterTableService extends IService<DatacenterTable> {
 
     Page<Row> getPageData(DatacenterQuery where);
 
-    List<JSONObject> getHeaders(BigInteger tableId);
+    List<HeaderVo> getHeaders(BigInteger tableId);
 
     void saveValue(BigInteger tableId, JSONObject object, LoginAccount account);
 

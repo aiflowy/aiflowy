@@ -4,7 +4,6 @@ import cn.dev33.satoken.stp.StpUtil;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,12 +40,12 @@ public class SysTokenController extends BaseCurdController<SysTokenService, SysT
 
     // 手动生成 Token 并绑定账号
     @GetMapping("/generateToken")
-    public Result generateToken() {
+    public Result<Void> generateToken() {
         return sysTokenService.saveGenerateToken();
     }
 
     @PostMapping("/updateToken")
-    public Result updateToken(@JsonBody SysToken sysToken) {
+    public Result<Void> updateToken(@JsonBody SysToken sysToken) {
         return sysTokenService.updateToken(sysToken);
     }
 
@@ -60,7 +59,7 @@ public class SysTokenController extends BaseCurdController<SysTokenService, SysT
     }
 
     @Override
-    public Result page(HttpServletRequest request, String sortKey, String sortType, Long pageNumber, Long pageSize) {
+    public Result<Page<SysToken>> page(HttpServletRequest request, String sortKey, String sortType, Long pageNumber, Long pageSize) {
         if (pageNumber == null || pageNumber < 1) {
             pageNumber = 1L;
         }
@@ -70,6 +69,6 @@ public class SysTokenController extends BaseCurdController<SysTokenService, SysT
         QueryWrapper queryWrapper = QueryWrapper.create().select("*").from("tb_sys_token")
                 .where("user_id = ? ", StpUtil.getLoginIdAsString());
         Page<SysToken> sysTokenPage = sysTokenMapper.paginateAs(pageNumber, pageSize, queryWrapper, SysToken.class);
-        return Result.success(sysTokenPage);
+        return Result.ok(sysTokenPage);
     }
 }

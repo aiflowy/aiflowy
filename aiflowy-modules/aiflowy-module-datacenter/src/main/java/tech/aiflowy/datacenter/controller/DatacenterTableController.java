@@ -17,6 +17,7 @@ import tech.aiflowy.common.satoken.util.SaTokenUtil;
 import tech.aiflowy.common.web.controller.BaseCurdController;
 import tech.aiflowy.datacenter.entity.DatacenterTable;
 import tech.aiflowy.datacenter.entity.DatacenterTableFields;
+import tech.aiflowy.datacenter.entity.vo.HeaderVo;
 import tech.aiflowy.datacenter.excel.ReadDataListener;
 import tech.aiflowy.datacenter.service.DatacenterTableFieldsService;
 import tech.aiflowy.datacenter.service.DatacenterTableService;
@@ -61,7 +62,7 @@ public class DatacenterTableController extends BaseCurdController<DatacenterTabl
 
     @PostMapping("/saveTable")
     @SaCheckPermission("/api/v1/datacenterTable/save")
-    public Result saveTable(@RequestBody DatacenterTable entity) {
+    public Result<Void> saveTable(@RequestBody DatacenterTable entity) {
         LoginAccount loginUser = SaTokenUtil.getLoginAccount();
         List<DatacenterTableFields> fields = entity.getFields();
         if (CollectionUtil.isEmpty(fields)) {
@@ -75,45 +76,45 @@ public class DatacenterTableController extends BaseCurdController<DatacenterTabl
             entity.setModifiedBy(loginUser.getId());
         }
         service.saveTable(entity, loginUser);
-        return Result.success();
+        return Result.ok();
     }
 
     @GetMapping("/detailInfo")
     @SaCheckPermission("/api/v1/datacenterTable/query")
-    public Result detailInfo(BigInteger tableId) {
+    public Result<DatacenterTable> detailInfo(BigInteger tableId) {
         DatacenterTable table = service.getById(tableId);
         QueryWrapper wrapper = QueryWrapper.create();
         wrapper.eq(DatacenterTableFields::getTableId, tableId);
         wrapper.orderBy("id");
         List<DatacenterTableFields> fields = fieldsService.list(wrapper);
         table.setFields(fields);
-        return Result.success(table);
+        return Result.ok(table);
     }
 
     @GetMapping("/removeTable")
     @SaCheckPermission("/api/v1/datacenterTable/remove")
-    public Result removeTable(BigInteger tableId) {
+    public Result<Void> removeTable(BigInteger tableId) {
         service.removeTable(tableId);
-        return Result.success();
+        return Result.ok();
     }
 
     @GetMapping("/getHeaders")
     @SaCheckPermission("/api/v1/datacenterTable/query")
-    public Result getHeaders(BigInteger tableId) {
-        List<JSONObject> res = service.getHeaders(tableId);
-        return Result.success(res);
+    public Result<List<HeaderVo>> getHeaders(BigInteger tableId) {
+        List<HeaderVo> res = service.getHeaders(tableId);
+        return Result.ok(res);
     }
 
     @GetMapping("/getPageData")
     @SaCheckPermission("/api/v1/datacenterTable/query")
-    public Result getPageData(DatacenterQuery where) {
+    public Result<Page<Row>> getPageData(DatacenterQuery where) {
         Page<Row> res = service.getPageData(where);
-        return Result.success(res);
+        return Result.ok(res);
     }
 
     @PostMapping("/saveValue")
     @SaCheckPermission("/api/v1/datacenterTable/save")
-    public Result saveValue(@RequestParam Map<String, Object> map) {
+    public Result<Void> saveValue(@RequestParam Map<String, Object> map) {
         JSONObject object = new JSONObject(map);
         BigInteger tableId = object.getBigInteger("tableId");
         LoginAccount account = SaTokenUtil.getLoginAccount();
@@ -121,12 +122,12 @@ public class DatacenterTableController extends BaseCurdController<DatacenterTabl
             return Result.fail(99, "参数错误");
         }
         service.saveValue(tableId, object, account);
-        return Result.success();
+        return Result.ok();
     }
 
     @PostMapping("/removeValue")
     @SaCheckPermission("/api/v1/datacenterTable/remove")
-    public Result removeValue(@RequestParam Map<String, Object> map) {
+    public Result<Void> removeValue(@RequestParam Map<String, Object> map) {
         JSONObject object = new JSONObject(map);
         BigInteger tableId = object.getBigInteger("tableId");
         BigInteger id = object.getBigInteger("id");
@@ -135,12 +136,12 @@ public class DatacenterTableController extends BaseCurdController<DatacenterTabl
         }
         LoginAccount account = SaTokenUtil.getLoginAccount();
         service.removeValue(tableId, id, account);
-        return Result.success();
+        return Result.ok();
     }
 
     @PostMapping("/importData")
     @SaCheckPermission("/api/v1/datacenterTable/save")
-    public Result importData(MultipartFile file, @RequestParam Map<String, Object> map) throws Exception {
+    public Result<Void> importData(MultipartFile file, @RequestParam Map<String, Object> map) throws Exception {
         Object tableId = map.get("tableId");
         DatacenterTable record = service.getById(tableId.toString());
         if (record == null) {
@@ -154,7 +155,7 @@ public class DatacenterTableController extends BaseCurdController<DatacenterTabl
         FastExcel.read(is, listener)
                 .sheet()
                 .doRead();
-        return Result.success();
+        return Result.ok();
     }
 
     @GetMapping("/getTemplate")

@@ -106,14 +106,14 @@ public class SysAccountController extends BaseCurdController<SysAccountService, 
     }
 
     @GetMapping("/myProfile")
-    public Result myProfile() {
+    public Result<SysAccount> myProfile() {
         LoginAccount account = SaTokenUtil.getLoginAccount();
         SysAccount sysAccount = service.getById(account.getId());
-        return Result.success(sysAccount);
+        return Result.ok(sysAccount);
     }
 
     @PostMapping("/updateProfile")
-    public Result updateProfile(@JsonBody SysAccount account) {
+    public Result<Void> updateProfile(@JsonBody SysAccount account) {
         BigInteger loginAccountId = SaTokenUtil.getLoginAccount().getId();
         SysAccount update = new SysAccount();
         update.setId(loginAccountId);
@@ -124,7 +124,7 @@ public class SysAccountController extends BaseCurdController<SysAccountService, 
         update.setModified(new Date());
         update.setModifiedBy(loginAccountId);
         service.updateById(update);
-        return Result.success();
+        return Result.ok();
     }
 
     /**
@@ -135,13 +135,13 @@ public class SysAccountController extends BaseCurdController<SysAccountService, 
      * @param confirmPassword 确认密码
      */
     @PostMapping("/updatePassword")
-    public Result updatePassword(@JsonBody(value = "password", required = true) String password,
+    public Result<Void> updatePassword(@JsonBody(value = "password", required = true) String password,
                                  @JsonBody(value = "newPassword", required = true) String newPassword,
                                  @JsonBody(value = "confirmPassword", required = true) String confirmPassword) {
         BigInteger loginAccountId = SaTokenUtil.getLoginAccount().getId();
         SysAccount record = service.getById(loginAccountId);
         if (record == null) {
-            return Result.fail();
+            return Result.fail("修改失败");
         }
         String pwdDb = record.getPassword();
         if (!BCrypt.checkpw(password, pwdDb)) {
@@ -156,6 +156,6 @@ public class SysAccountController extends BaseCurdController<SysAccountService, 
         update.setModified(new Date());
         update.setModifiedBy(loginAccountId);
         service.updateById(update);
-        return Result.success();
+        return Result.ok();
     }
 }

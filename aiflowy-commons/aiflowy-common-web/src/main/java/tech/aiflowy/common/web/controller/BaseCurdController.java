@@ -1,6 +1,5 @@
 package tech.aiflowy.common.web.controller;
 
-import org.apache.poi.ss.formula.functions.T;
 import tech.aiflowy.common.ai.ChatManager;
 import tech.aiflowy.common.ai.util.AiSqlUtil;
 import tech.aiflowy.common.domain.Result;
@@ -336,7 +335,7 @@ public class BaseCurdController<S extends IService<M>, M> extends BaseController
         return service.page(page, queryWrapper);
     }
 
-    protected Result<T> onSaveOrUpdateBefore(M entity, boolean isSave) {
+    protected Result<?> onSaveOrUpdateBefore(M entity, boolean isSave) {
         return null;
     }
 
@@ -344,7 +343,7 @@ public class BaseCurdController<S extends IService<M>, M> extends BaseController
         //void
     }
 
-    protected Result<T> onRemoveBefore(Collection<Serializable> ids) {
+    protected Result<?> onRemoveBefore(Collection<Serializable> ids) {
         return null;
     }
 

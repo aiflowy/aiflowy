@@ -30,27 +30,25 @@ public class SysOptionController extends BaseController {
     @Resource
     private SysOptionService service;
 
-
     @GetMapping("/list")
-    public Result list(String[] keys) {
+    public Result<Map<String, Object>> list(String[] keys) {
+        Map<String, Object> data = new HashMap<>();
         if (keys == null || keys.length == 0) {
-            return Result.success();
+            return Result.ok(data);
         }
         List<SysOption> list = service.list(QueryWrapper.create().in(SysOption::getKey, (Object[]) keys));
-        Map<String, Object> data = new HashMap<>();
         for (SysOption sysOption : list) {
             data.put(sysOption.getKey(), sysOption.getValue());
         }
-        return Result.success(data);
+        return Result.ok(data);
     }
 
-
     @PostMapping("/save")
-    public Result save(@JsonBody Map<String, String> map) {
+    public Result<Void> save(@JsonBody Map<String, String> map) {
         if (map == null || map.isEmpty()) {
-            return Result.success();
+            return Result.ok();
         }
         map.forEach(SysOptions::set);
-        return Result.success();
+        return Result.ok();
     }
 }

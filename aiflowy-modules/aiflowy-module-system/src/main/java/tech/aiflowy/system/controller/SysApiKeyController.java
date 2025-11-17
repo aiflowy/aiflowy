@@ -12,6 +12,7 @@ import tech.aiflowy.common.entity.LoginAccount;
 import tech.aiflowy.common.satoken.util.SaTokenUtil;
 import tech.aiflowy.common.web.controller.BaseCurdController;
 import tech.aiflowy.system.entity.SysApiKey;
+import tech.aiflowy.common.vo.PkVo;
 import tech.aiflowy.system.service.SysApiKeyService;
 
 import java.time.LocalDate;
@@ -38,7 +39,7 @@ public class SysApiKeyController extends BaseCurdController<SysApiKeyService, Sy
      */
     @PostMapping("/key/save")
     @SaCheckPermission("/api/v1/sysApiKey/save")
-    public Result save() {
+    public Result<PkVo> save() {
         String apiKey = UUIDGenerator.generateUUID();
         SysApiKey entity = new SysApiKey();
         entity.setApiKey(apiKey);
@@ -58,10 +59,10 @@ public class SysApiKeyController extends BaseCurdController<SysApiKeyService, Sy
         entity.setExpiredAt(expireDate);
         LoginAccount loginAccount = SaTokenUtil.getLoginAccount();
         commonFiled(entity,loginAccount.getId(),loginAccount.getTenantId(),loginAccount.getDeptId());
-        boolean success = service.save(entity);
+        service.save(entity);
         onSaveOrUpdateAfter(entity, true);
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(entity.getClass());
         Object[] pkArgs = tableInfo.buildPkSqlArgs(entity);
-        return Result.create(success).set("id", pkArgs);
+        return Result.ok(new PkVo(pkArgs));
     }
 }
