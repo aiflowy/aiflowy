@@ -1,8 +1,129 @@
+<script setup>
+import { computed, defineEmits, defineProps, isVNode, ref } from 'vue';
+
+import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue';
+import { ElIcon } from 'element-plus';
+
+// 定义组件属性
+const props = defineProps({
+  // 分类数据，格式示例：[{ name: '分类1', icon: SomeIcon }, { name: '分类2' }]
+  categories: {
+    type: Array,
+    default: () => [],
+    required: true,
+  },
+  titleKey: {
+    type: String,
+    default: 'name',
+  },
+  iconKey: {
+    type: String,
+    default: 'icon',
+  },
+  // 自定义展开状态宽度（默认300px）
+  expandWidth: {
+    type: Number,
+    default: 120,
+  },
+  // 自定义收缩状态宽度（默认48px）
+  collapseWidth: {
+    type: Number,
+    default: 48,
+  },
+  iconSize: { type: [Number, String], default: 18 },
+  iconColor: { type: String, default: 'var(--el-text-color-primary)' },
+  // 新增：是否用 img 标签渲染 SVG 字符串（默认 false）
+  useImgForSvg: { type: Boolean, default: false },
+});
+
+// 定义事件
+const emit = defineEmits([
+  'click', // 分类项点击事件
+  'panelToggle', // 面板收缩状态改变事件
+]);
+
+// -------------------------- 核心工具函数 --------------------------
+/**
+ * SVG 字符串转 Data URL（供 img 标签使用）
+ * @param {string} svgString - 清理后的 SVG 字符串
+ * @returns {string} Data URL
+ */
+const svgToDataUrl = (svgString) => {
+  // 1. 去除 SVG 中的换行和多余空格（优化编码后体积）
+  const cleanedSvg = svgString
+    .replaceAll('\n', '')
+    .replaceAll(/\s+/g, ' ')
+    .trim();
+  // 2. URL 编码 + 拼接 Data URL 格式
+  return `data:image/svg+xml;utf8,${encodeURIComponent(cleanedSvg)}`;
+};
+
+/**
+ * 判断是否为组件（Element Plus 图标 / 自定义 SVG 组件）
+ */
+const isComponent = (icon) => {
+  return (
+    typeof icon === 'object' && (typeof icon === 'object' || isVNode(icon))
+  );
+};
+
+/**
+ * 判断是否为 SVG 字符串
+ */
+const isSvgString = (icon) => {
+  return typeof icon === 'string' && icon.trim().startsWith('<svg');
+};
+
+/**
+ * 判断是否为图片 URL
+ */
+const isImageUrl = (icon) => {
+  return (
+    typeof icon === 'string' &&
+    (icon.endsWith('.svg') ||
+      icon.endsWith('.png') ||
+      icon.endsWith('.jpg') ||
+      icon.startsWith('http://') ||
+      icon.startsWith('https://'))
+  );
+};
+
+// 面板收缩状态
+const isCollapsed = ref(false);
+
+// 检查是否有分类包含图标
+const hasIcons = computed(() => {
+  return props.categories.some((item) => item[props.iconKey]);
+});
+
+// 动态计算面板宽度
+const panelWidth = computed(() => {
+  if (isCollapsed.value) {
+    // 收缩状态：有图标用自定义收缩宽度，无图标保持最小适配宽度
+    return hasIcons.value ? props.collapseWidth : 120;
+  } else {
+    // 展开状态：使用自定义展开宽度
+    return props.expandWidth;
+  }
+});
+
+// 切换面板收缩状态
+const togglePanel = () => {
+  isCollapsed.value = !isCollapsed.value;
+  emit('panelToggle', {
+    collapsed: isCollapsed.value,
+    currentWidth: panelWidth.value,
+  });
+};
+
+// 处理分类项点击
+const handleCategoryClick = (category) => {
+  emit('click', category);
+};
+</script>
+
 <template>
-  <div
-    class="category-panel"
-    :style="{ width: panelWidth + 'px' }"
-  >
+  <div class="category-panel" :style="{ width: `${panelWidth}px` }">
     <!-- 右上角收缩/展开按钮 -->
     <div class="toggle-panel-btn" @click="togglePanel">
       <ElIcon>
@@ -12,10 +133,7 @@
     </div>
 
     <!-- 分类列表容器 -->
-    <div
-      class="category-list"
-      :class="{ 'collapsed': isCollapsed }"
-    >
+    <div class="category-list" :class="{ collapsed: isCollapsed }">
       <!-- 遍历一级分类数据 -->
       <div
         v-for="(category, index) in categories"
@@ -38,7 +156,7 @@
                 v-if="!useImgForSvg"
                 v-html="category[iconKey]"
                 class="custom-svg"
-              />
+              ></div>
               <img
                 v-else
                 :src="svgToDataUrl(category[iconKey])"
@@ -58,7 +176,7 @@
           <!-- 分类名称（收缩状态且有图标时隐藏文字） -->
           <span
             class="category-name"
-            :class="{ 'hidden': isCollapsed && category[iconKey] }"
+            :class="{ hidden: isCollapsed && category[iconKey] }"
           >
             {{ category[titleKey] }}
           </span>
@@ -67,123 +185,6 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import {ref, defineProps, defineEmits, computed, isVNode} from 'vue'
-import { ArrowLeft, ArrowRight } from '@element-plus/icons-vue'
-import { ElIcon } from 'element-plus'
-
-// 定义组件属性
-const props = defineProps({
-  // 分类数据，格式示例：[{ name: '分类1', icon: SomeIcon }, { name: '分类2' }]
-  categories: {
-    type: Array,
-    default: () => [],
-    required: true
-  },
-  titleKey: {
-    type: String,
-    default: 'name'
-  },
-  iconKey: {
-    type: String,
-    default: 'icon'
-  },
-  // 自定义展开状态宽度（默认300px）
-  expandWidth: {
-    type: Number,
-    default: 120
-  },
-  // 自定义收缩状态宽度（默认48px）
-  collapseWidth: {
-    type: Number,
-    default: 48
-  },
-  iconSize: { type: [Number, String], default: 18 },
-  iconColor: { type: String, default: 'var(--el-text-color-primary)' },
-  // 新增：是否用 img 标签渲染 SVG 字符串（默认 false）
-  useImgForSvg: { type: Boolean, default: false }
-})
-
-// -------------------------- 核心工具函数 --------------------------
-/**
- * SVG 字符串转 Data URL（供 img 标签使用）
- * @param {string} svgString - 清理后的 SVG 字符串
- * @returns {string} Data URL
- */
-const svgToDataUrl = (svgString) => {
-  // 1. 去除 SVG 中的换行和多余空格（优化编码后体积）
-  const cleanedSvg = svgString
-    .replace(/\n/g, '')
-    .replace(/\s+/g, ' ')
-    .trim();
-  // 2. URL 编码 + 拼接 Data URL 格式
-  return `data:image/svg+xml;utf8,${encodeURIComponent(cleanedSvg)}`;
-}
-
-/**
- * 判断是否为组件（Element Plus 图标 / 自定义 SVG 组件）
- */
-const isComponent = (icon) => {
-  return typeof icon === 'object' && (typeof icon === 'object' || isVNode(icon))
-}
-
-/**
- * 判断是否为 SVG 字符串
- */
-const isSvgString = (icon) => {
-  return typeof icon === 'string' && icon.trim().startsWith('<svg')
-}
-
-/**
- * 判断是否为图片 URL
- */
-const isImageUrl = (icon) => {
-  return typeof icon === 'string' && (
-    icon.endsWith('.svg') || icon.endsWith('.png') || icon.endsWith('.jpg') ||
-    icon.startsWith('http://') || icon.startsWith('https://')
-  )
-}
-
-// 定义事件
-const emit = defineEmits([
-  'click',       // 分类项点击事件
-  'panel-toggle' // 面板收缩状态改变事件
-])
-
-// 面板收缩状态
-const isCollapsed = ref(false)
-
-// 检查是否有分类包含图标
-const hasIcons = computed(() => {
-  return props.categories.some(item => item[props.iconKey])
-})
-
-// 动态计算面板宽度
-const panelWidth = computed(() => {
-  if (isCollapsed.value) {
-    // 收缩状态：有图标用自定义收缩宽度，无图标保持最小适配宽度
-    return hasIcons.value ? props.collapseWidth : 120
-  } else {
-    // 展开状态：使用自定义展开宽度
-    return props.expandWidth
-  }
-})
-
-// 切换面板收缩状态
-const togglePanel = () => {
-  isCollapsed.value = !isCollapsed.value
-  emit('panel-toggle', {
-    collapsed: isCollapsed.value,
-    currentWidth: panelWidth.value
-  })
-}
-
-// 处理分类项点击
-const handleCategoryClick = (category) => {
-  emit('click', category)
-}
-</script>
 
 <style scoped>
 .category-panel {
@@ -290,7 +291,9 @@ const handleCategoryClick = (category) => {
 }
 
 .category-name {
-  transition: opacity 0.2s, transform 0.2s;
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

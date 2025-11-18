@@ -1,64 +1,15 @@
-<template>
-  <div class="custom-header">
-    <!-- 左侧搜索区域 -->
-    <div class="header-left">
-      <div class="search-container">
-        <el-input
-          v-model="searchValue"
-          placeholder="请输入搜索内容"
-          class="search-input"
-          @keyup.enter="handleSearch"
-        >
-          <template #append>
-            <el-button @click="handleSearch">
-              <el-icon><Search /></el-icon>
-            </el-button>
-          </template>
-        </el-input>
-      </div>
-    </div>
-
-    <!-- 右侧按钮区域 -->
-    <div class="header-right">
-      <!-- 显示的按钮（最多3个） -->
-      <template v-for="(button, index) in visibleButtons" :key="button.key || index">
-        <el-button
-          :type="button.type || 'default'"
-          :icon="button.icon"
-          :disabled="button.disabled"
-          @click="handleButtonClick(button)"
-        >
-          {{ button.text }}
-        </el-button>
-      </template>
-
-      <!-- 下拉菜单（隐藏的按钮） -->
-      <el-dropdown v-if="dropdownButtons.length > 0" @command="handleDropdownClick">
-        <el-button>
-          更多<el-icon class="el-icon--right"><arrow-down /></el-icon>
-        </el-button>
-        <template #dropdown>
-          <el-dropdown-menu>
-            <el-dropdown-item
-              v-for="button in dropdownButtons"
-              :key="button.key"
-              :command="button"
-              :disabled="button.disabled"
-            >
-              <el-icon v-if="button.icon"><component :is="button.icon" /></el-icon>
-              <span style="margin-left: 8px;">{{ button.text }}</span>
-            </el-dropdown-item>
-          </el-dropdown-menu>
-        </template>
-      </el-dropdown>
-    </div>
-  </div>
-</template>
-
 <script setup>
-import { ref, computed } from 'vue'
-import { ElInput, ElButton, ElIcon, ElDropdown, ElDropdownMenu, ElDropdownItem } from 'element-plus'
-import { Search, ArrowDown } from '@element-plus/icons-vue'
+import { computed, ref } from 'vue';
+
+import { ArrowDown, Search } from '@element-plus/icons-vue';
+import {
+  ElButton,
+  ElDropdown,
+  ElDropdownItem,
+  ElDropdownMenu,
+  ElIcon,
+  ElInput,
+} from 'element-plus';
 
 // 定义组件属性
 const props = defineProps({
@@ -67,64 +18,131 @@ const props = defineProps({
     type: Array,
     default: () => [],
     validator: (value) => {
-      return value.every(button => {
-        return typeof button.text === 'string' &&
+      return value.every((button) => {
+        return (
+          typeof button.text === 'string' &&
           (button.key || typeof button.key === 'string')
-      })
-    }
+        );
+      });
+    },
   },
   // 最大显示按钮数量（不包括下拉菜单）
   maxVisibleButtons: {
     type: Number,
-    default: 3
+    default: 3,
   },
   // 搜索框占位符
   searchPlaceholder: {
     type: String,
-    default: '请输入搜索内容'
-  }
-})
+    default: '请输入搜索内容',
+  },
+});
 
-const emit = defineEmits(['search', 'button-click'])
+const emit = defineEmits(['search', 'button-click', 'buttonClick']);
 
 // 搜索值
-const searchValue = ref('')
+const searchValue = ref('');
 
 // 计算显示的按钮
 const visibleButtons = computed(() => {
-  return props.buttons.slice(0, props.maxVisibleButtons)
-})
+  return props.buttons.slice(0, props.maxVisibleButtons);
+});
 
 // 计算下拉菜单中的按钮
 const dropdownButtons = computed(() => {
-  return props.buttons.slice(props.maxVisibleButtons)
-})
+  return props.buttons.slice(props.maxVisibleButtons);
+});
 
 // 处理搜索
 const handleSearch = () => {
-  emit('search', searchValue.value)
-}
+  emit('search', searchValue.value);
+};
 
 // 处理按钮点击
 const handleButtonClick = (button) => {
-  emit('button-click', {
+  emit('buttonClick', {
     type: 'button',
     key: button.key,
-    button: button,
-    data: button.data
-  })
-}
+    button,
+    data: button.data,
+  });
+};
 
 // 处理下拉菜单点击
 const handleDropdownClick = (button) => {
-  emit('button-click', {
+  emit('buttonClick', {
     type: 'dropdown',
     key: button.key,
-    button: button,
-    data: button.data
-  })
-}
+    button,
+    data: button.data,
+  });
+};
 </script>
+
+<template>
+  <div class="custom-header">
+    <!-- 左侧搜索区域 -->
+    <div class="header-left">
+      <div class="search-container">
+        <ElInput
+          v-model="searchValue"
+          placeholder="请输入搜索内容"
+          class="search-input"
+          @keyup.enter="handleSearch"
+        >
+          <template #append>
+            <ElButton @click="handleSearch">
+              <ElIcon><Search /></ElIcon>
+            </ElButton>
+          </template>
+        </ElInput>
+      </div>
+    </div>
+
+    <!-- 右侧按钮区域 -->
+    <div class="header-right">
+      <!-- 显示的按钮（最多3个） -->
+      <template
+        v-for="(button, index) in visibleButtons"
+        :key="button.key || index"
+      >
+        <ElButton
+          :type="button.type || 'default'"
+          :icon="button.icon"
+          :disabled="button.disabled"
+          @click="handleButtonClick(button)"
+        >
+          {{ button.text }}
+        </ElButton>
+      </template>
+
+      <!-- 下拉菜单（隐藏的按钮） -->
+      <ElDropdown
+        v-if="dropdownButtons.length > 0"
+        @command="handleDropdownClick"
+      >
+        <ElButton>
+          更多<ElIcon class="el-icon--right"><ArrowDown /></ElIcon>
+        </ElButton>
+        <template #dropdown>
+          <ElDropdownMenu>
+            <ElDropdownItem
+              v-for="button in dropdownButtons"
+              :key="button.key"
+              :command="button"
+              :disabled="button.disabled"
+            >
+              <ElIcon v-if="button.icon">
+                <component :is="button.icon" />
+              </ElIcon>
+              <span style="margin-left: 8px">{{ button.text }}</span>
+            </ElDropdownItem>
+          </ElDropdownMenu>
+        </template>
+      </ElDropdown>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .custom-header {
