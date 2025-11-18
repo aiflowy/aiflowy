@@ -94,9 +94,11 @@ function remove(row: any) {
         </ElButton>
       </ElFormItem>
     </ElForm>
-    <ElButton @click="showDialog({})" type="primary">
-      {{ $t('button.add') }}
-    </ElButton>
+    <div class="handle-div">
+      <ElButton @click="showDialog({})" type="primary">
+        {{ $t('button.add') }}
+      </ElButton>
+    </div>
     <PageData
       ref="pageDataRef"
       page-url="/api/v1/sysAccount/page"
