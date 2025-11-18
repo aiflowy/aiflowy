@@ -237,7 +237,6 @@ const handleCategoryClick = (category) => {
 }
 
 .category-item {
-  border-bottom: 1px solid #e5e7eb;
 }
 
 .category-item:last-child {

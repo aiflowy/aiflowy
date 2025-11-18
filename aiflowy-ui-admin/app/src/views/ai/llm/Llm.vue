@@ -1,14 +1,15 @@
 <script setup>
 
 import CategoryPanel from "#/components/categoryPanel/CategoryPanel.vue";
-import {onMounted, ref} from "vue";
-import {ElTable, ElTableColumn} from 'element-plus'
+import {markRaw, onMounted, ref} from "vue";
+import {ElTable, ElTableColumn, ElImage, ElButton, ElIcon, ElDialog} from 'element-plus'
 import {getLlmBrandList} from "#/api/ai/llm.js";
-import HeaderSearch from "#/components/headerSearch/HeaderSearch.vue";
-import { Plus, Edit, Delete, Download, Upload, Refresh } from '@element-plus/icons-vue'
+import { Plus, Edit, Delete} from '@element-plus/icons-vue'
 import PageData from "#/components/page/PageData.vue";
-
+import HeaderSearch from "#/components/headerSearch/HeaderSearch.vue";
 const brandListData = ref([])
+const dialogTitle = ref('新增')
+const LlmAddOrUpdateDialog = ref(false)
 onMounted(() =>{
   getLlmBrandList().then(res => {
     console.log('res')
@@ -27,7 +28,7 @@ const headerButtons = ref([
   {
     key: 'add',
     text: '新增大模型',
-    icon: Plus,
+    icon: markRaw(Plus),
     type: 'primary',
     data: { action: 'addLlm' }
   },
@@ -35,13 +36,14 @@ const headerButtons = ref([
     key: 'edit',
     text: '一键添加',
     type: 'primary',
-    icon: Plus,
+    icon: markRaw(Plus),
     data: { action: 'oneClickAdd' }
   }
 ])
 
 const addLlm = () => {
   console.log('新增大模型')
+  LlmAddOrUpdateDialog.value = true
 }
 
 const oneClickAdd = () => {
@@ -65,6 +67,10 @@ const handleButtonClick = (event) => {
       oneClickAdd()
       break
   }
+}
+
+const handleClose = () => {
+  console.log('关闭对话框')
 }
 </script>
 
@@ -92,15 +98,50 @@ const handleButtonClick = (event) => {
         >
           <template #default="{ pageList }">
             <el-table :data="pageList" style="width: 100%">
+              <el-table-column prop="icon" label="Icon" width="80">
+                <template #default="scope">
+                <el-image v-if="scope.row.icon" :src="scope.row.icon" style="width: 30px; height: 30px;"></el-image>
+                </template>
+              </el-table-column>
               <el-table-column prop="id" label="id" width="180" />
               <el-table-column prop="title" label="名称" width="180" />
+              <el-table-column prop="description" label="描述" width="300" show-overflow-tooltip />
+              <el-table-column fixed="right" label="操作" min-width="120">
+                <template #default>
+                  <el-button link type="primary" size="small">
+                    <el-icon class="mr-1">
+                      <Edit />
+                    </el-icon>编辑
+                  </el-button>
+                  <el-button link type="primary" size="small">
+                    <el-icon class="mr-1">
+                    <Delete />
+                  </el-icon>删除</el-button>
+                </template>
+              </el-table-column>
             </el-table>
           </template>
         </PageData>
       </div>
     </div>
 
-
+<!--    新增大模型对话框-->
+    <el-dialog
+      v-model="LlmAddOrUpdateDialog"
+      :title="dialogTitle"
+      width="500"
+      :before-close="handleClose"
+    >
+      <span>This is a message</span>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="LlmAddOrUpdateDialog = false">Cancel</el-button>
+          <el-button type="primary" @click="LlmAddOrUpdateDialog = false">
+            Confirm
+          </el-button>
+        </div>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
