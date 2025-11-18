@@ -3,6 +3,8 @@
   "menu": {
     "account": "Account",
     "role": "Role",
-    "menu": "Menus"
+    "menu": "Menus",
+    "dept": "Department",
+    "position": "Position"
   }
 }

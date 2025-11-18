@@ -3,6 +3,8 @@
   "menu": {
     "account": "用户管理",
     "role": "角色管理",
-    "menu": "菜单管理"
+    "menu": "菜单管理",
+    "dept": "部门管理",
+    "position": "岗位管理"
   }
 }

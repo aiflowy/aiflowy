@@ -15,18 +15,16 @@ import {
 } from 'element-plus';
 
 import { api } from '#/api/request';
-import DictSelect from '#/components/dict/DictSelect.vue';
 import PageData from '#/components/page/PageData.vue';
 import { $t } from '#/locales';
 
-import SysAccountModal from './sysAccountModal.vue';
+import SysAccountModal from './SysAccountModal.vue';
 
 const formRef = ref<FormInstance>();
 const pageDataRef = ref();
 const saveDialog = ref();
 const formInline = ref({
-  loginName: '',
-  accountType: '',
+  id: '',
 });
 function search(formEl: FormInstance | undefined) {
   formEl?.validate((valid) => {
@@ -75,15 +73,8 @@ function remove(row: any) {
   <div class="page-container">
     <SysAccountModal ref="saveDialog" @reload="reset" />
     <ElForm ref="formRef" :inline="true" :model="formInline">
-      <ElFormItem label="用户类型" prop="accountType">
-        <DictSelect
-          style="width: 200px"
-          v-model="formInline.accountType"
-          dict-code="accountType"
-        />
-      </ElFormItem>
-      <ElFormItem label="账号" prop="loginName">
-        <ElInput v-model="formInline.loginName" placeholder="请输入账号" />
+      <ElFormItem label="查询字段" prop="id">
+        <ElInput v-model="formInline.id" placeholder="请输入查询字段" />
       </ElFormItem>
       <ElFormItem>
         <ElButton @click="search(formRef)" type="primary">
@@ -103,13 +94,74 @@ function remove(row: any) {
       ref="pageDataRef"
       page-url="/api/v1/sysAccount/page"
       :page-size="10"
-      :init-query-params="{ status: 1 }"
     >
       <template #default="{ pageList }">
         <ElTable :data="pageList" border>
-          <ElTableColumn prop="loginName" label="账号" width="180" />
-          <ElTableColumn prop="nickname" label="昵称" width="180" />
-          <ElTableColumn prop="avatar" label="头像" />
+          <ElTableColumn prop="deptId" label="部门ID">
+            <template #default="{ row }">
+              {{ row.deptId }}
+            </template>
+          </ElTableColumn>
+          <ElTableColumn prop="loginName" label="登录账号">
+            <template #default="{ row }">
+              {{ row.loginName }}
+            </template>
+          </ElTableColumn>
+          <ElTableColumn prop="password" label="密码">
+            <template #default="{ row }">
+              {{ row.password }}
+            </template>
+          </ElTableColumn>
+          <ElTableColumn prop="accountType" label="账户类型">
+            <template #default="{ row }">
+              {{ row.accountType }}
+            </template>
+          </ElTableColumn>
+          <ElTableColumn prop="nickname" label="昵称">
+            <template #default="{ row }">
+              {{ row.nickname }}
+            </template>
+          </ElTableColumn>
+          <ElTableColumn prop="mobile" label="手机电话">
+            <template #default="{ row }">
+              {{ row.mobile }}
+            </template>
+          </ElTableColumn>
+          <ElTableColumn prop="email" label="邮件">
+            <template #default="{ row }">
+              {{ row.email }}
+            </template>
+          </ElTableColumn>
+          <ElTableColumn prop="avatar" label="账户头像">
+            <template #default="{ row }">
+              {{ row.avatar }}
+            </template>
+          </ElTableColumn>
+          <ElTableColumn prop="dataScope" label="数据权限类型">
+            <template #default="{ row }">
+              {{ row.dataScope }}
+            </template>
+          </ElTableColumn>
+          <ElTableColumn prop="deptIdList" label="自定义部门权限">
+            <template #default="{ row }">
+              {{ row.deptIdList }}
+            </template>
+          </ElTableColumn>
+          <ElTableColumn prop="status" label="数据状态">
+            <template #default="{ row }">
+              {{ row.status }}
+            </template>
+          </ElTableColumn>
+          <ElTableColumn prop="created" label="创建时间">
+            <template #default="{ row }">
+              {{ row.created }}
+            </template>
+          </ElTableColumn>
+          <ElTableColumn prop="remark" label="备注">
+            <template #default="{ row }">
+              {{ row.remark }}
+            </template>
+          </ElTableColumn>
           <ElTableColumn>
             <template #default="{ row }">
               <ElButton @click="showDialog(row)" type="primary">

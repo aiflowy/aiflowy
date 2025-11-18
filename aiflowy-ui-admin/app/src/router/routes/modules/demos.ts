@@ -51,7 +51,7 @@ const routes: RouteRecordRaw[] = [
         },
         name: 'aaaf',
         path: '/demos/aaa',
-        component: () => import('#/views/system/sysAccount/sysAccountList.vue'),
+        component: () => import('#/views/system/sysAccount/SysAccountList.vue'),
       },
     ],
   },
