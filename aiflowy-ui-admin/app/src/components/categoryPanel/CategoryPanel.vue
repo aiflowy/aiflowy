@@ -194,6 +194,7 @@ const handleCategoryClick = (category) => {
   height: 100%;
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* 平滑宽度过渡 */
   box-sizing: border-box;
+  background-color: var(--el-bg-color);
 }
 
 /* 右上角收缩/展开按钮 */

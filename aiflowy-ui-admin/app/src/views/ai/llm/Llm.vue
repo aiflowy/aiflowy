@@ -2,9 +2,11 @@
 
 import CategoryPanel from "#/components/categoryPanel/CategoryPanel.vue";
 import {onMounted, ref} from "vue";
+import {ElTable, ElTableColumn} from 'element-plus'
 import {getLlmBrandList} from "#/api/ai/llm.js";
-import HeaderSerch from "#/components/headerSearch/HeaderSerch.vue";
+import HeaderSearch from "#/components/headerSearch/HeaderSearch.vue";
 import { Plus, Edit, Delete, Download, Upload, Refresh } from '@element-plus/icons-vue'
+import PageData from "#/components/page/PageData.vue";
 
 const brandListData = ref([])
 onMounted(() =>{
@@ -24,45 +26,27 @@ const handleCategoryClick = (category) => {
 const headerButtons = ref([
   {
     key: 'add',
-    text: '新增',
+    text: '新增大模型',
     icon: Plus,
     type: 'primary',
-    data: { action: 'create' }
+    data: { action: 'addLlm' }
   },
   {
     key: 'edit',
-    text: '编辑',
-    icon: Edit,
-    data: { action: 'update' }
-  },
-  {
-    key: 'delete',
-    text: '删除',
-    icon: Delete,
-    type: 'danger',
-    disabled: false,
-    data: { action: 'delete' }
-  },
-  {
-    key: 'export',
-    text: '导出',
-    icon: Download,
-    data: { format: 'excel' }
-  },
-  {
-    key: 'import',
-    text: '导入',
-    icon: Upload,
-    data: { format: 'excel' }
-  },
-  {
-    key: 'refresh',
-    text: '刷新',
-    icon: Refresh,
-    data: { timestamp: Date.now() }
+    text: '一键添加',
+    type: 'primary',
+    icon: Plus,
+    data: { action: 'oneClickAdd' }
   }
 ])
 
+const addLlm = () => {
+  console.log('新增大模型')
+}
+
+const oneClickAdd = () => {
+  console.log('一键添加')
+}
 // 处理搜索事件
 const handleSearch = (searchValue) => {
   console.log('搜索内容:', searchValue)
@@ -75,22 +59,10 @@ const handleButtonClick = (event) => {
   // 根据按钮 key 执行不同操作
   switch (event.key) {
     case 'add':
-      handleAdd()
+      addLlm()
       break
     case 'edit':
-      handleEdit()
-      break
-    case 'delete':
-      handleDelete()
-      break
-    case 'export':
-      handleExport()
-      break
-    case 'import':
-      handleImport()
-      break
-    case 'refresh':
-      handleRefresh()
+      oneClickAdd()
       break
   }
 }
@@ -99,7 +71,7 @@ const handleButtonClick = (event) => {
 <template>
   <div class="llm-container">
     <div class="llm-header">
-      <HeaderSerch
+      <HeaderSearch
         :buttons="headerButtons"
         search-placeholder="搜索用户"
         @search="handleSearch"
@@ -107,7 +79,27 @@ const handleButtonClick = (event) => {
       />
     </div>
 
-    <CategoryPanel :categories="brandListData" title-key="title" :use-img-for-svg="true" :expandWidth="150" @click="handleCategoryClick"/>
+    <div class="llm-content">
+      <div>
+        <CategoryPanel :categories="brandListData" title-key="title" :use-img-for-svg="true" :expandWidth="150" @click="handleCategoryClick"/>
+      </div>
+      <div class="llm-table">
+        <PageData
+          ref="pageDataRef"
+          page-url="/api/v1/aiLlm/page"
+          :page-size="10"
+          :init-query-params="{ status: 1 }"
+        >
+          <template #default="{ pageList }">
+            <el-table :data="pageList" style="width: 100%">
+              <el-table-column prop="id" label="id" width="180" />
+              <el-table-column prop="title" label="名称" width="180" />
+            </el-table>
+          </template>
+        </PageData>
+      </div>
+    </div>
+
 
   </div>
 </template>
@@ -120,5 +112,12 @@ const handleButtonClick = (event) => {
 }
 .llm-header{
   margin-bottom: 20px;
+}
+.llm-content{
+ display: flex;
+}
+
+.llm-table{
+  width: 100%;
 }
 </style>
