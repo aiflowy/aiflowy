@@ -1,26 +1,57 @@
 <script setup lang="ts">
+import type { FormInstance } from 'element-plus';
+
 import { ref } from 'vue';
 
-import { ElButton, ElTable, ElTableColumn } from 'element-plus';
+import {
+  ElButton,
+  ElForm,
+  ElFormItem,
+  ElInput,
+  ElTable,
+  ElTableColumn,
+} from 'element-plus';
 
+import DictSelect from '#/components/dict/DictSelect.vue';
 import PageData from '#/components/page/PageData.vue';
-import { $t } from '#/locales';
 
+const formRef = ref();
 const pageDataRef = ref();
-const search = () => {
-  pageDataRef.value.setQuery({ loginName: 'tes2t' });
+const search = (formEl: FormInstance) => {
+  formEl.validate((valid) => {
+    if (valid) {
+      pageDataRef.value.setQuery(formInline.value);
+    }
+  });
 };
-const reset = () => {
+const reset = (formEl: FormInstance) => {
+  formEl.resetFields();
   pageDataRef.value.setQuery({});
 };
+const formInline = ref({
+  loginName: '',
+  accountType: '',
+});
 </script>
 
 <template>
   <div class="page-container">
-    <ElButton @click="search" type="primary">
-      {{ $t('button.search.submit') }}
-    </ElButton>
-    <ElButton @click="reset">{{ $t('button.search.reset') }}</ElButton>
+    <ElForm ref="formRef" :inline="true" :model="formInline">
+      <ElFormItem label="用户类型" prop="accountType">
+        <DictSelect
+          style="width: 200px"
+          v-model="formInline.accountType"
+          dict-code="accountType"
+        />
+      </ElFormItem>
+      <ElFormItem label="账号" prop="loginName">
+        <ElInput v-model="formInline.loginName" placeholder="请输入账号" />
+      </ElFormItem>
+      <ElFormItem>
+        <ElButton @click="search(formRef)" type="primary">查询</ElButton>
+        <ElButton @click="reset(formRef)">重置</ElButton>
+      </ElFormItem>
+    </ElForm>
     <PageData
       ref="pageDataRef"
       page-url="/api/v1/sysAccount/page"

@@ -93,7 +93,7 @@ defineExpose({
 
 // 监听器
 watch(
-  [() => pageInfo.pageNumber, () => pageInfo.pageSize, queryParams],
+  [() => pageInfo.pageNumber, () => pageInfo.pageSize],
   () => {
     getPageList();
   },
