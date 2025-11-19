@@ -64,6 +64,7 @@ import tech.aiflowy.system.mapper.SysApiKeyMapper;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.time.Duration;
 import java.util.*;
@@ -1185,5 +1186,16 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
         // 检查是否包含"暂不支持该接口"或其他相关关键词
         return message.contains("暂不支持该接口") || message.contains("不支持接口") || message.contains("接口不支持") || message
                 .contains("The tool call is not supported");
+    }
+
+    @Override
+    protected Result<?> onRemoveBefore(Collection<Serializable> ids) {
+        QueryWrapper queryWrapperKnowledge = QueryWrapper.create().in(AiBotKnowledge::getBotId, ids);
+        aiBotKnowledgeService.remove(queryWrapperKnowledge);
+        QueryWrapper queryWrapperBotWorkflow = QueryWrapper.create().in(AiBotWorkflow::getBotId, ids);
+        aiBotWorkflowService.remove(queryWrapperBotWorkflow);
+        QueryWrapper queryWrapperBotPlugins = QueryWrapper.create().in(AiBotPlugins::getBotId, ids);
+        aiBotPluginsService.remove(queryWrapperBotPlugins);
+        return super.onRemoveBefore(ids);
     }
 }

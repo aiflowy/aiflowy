@@ -9,3 +9,8 @@ export async function getLlmBrandList() {
 export async function saveLlm(data: string) {
   return api.post('/api/v1/aiLlm/save', data);
 }
+
+// 删除LLM
+export async function deleteLlm(data: any) {
+  return api.post(`/api/v1/aiLlm/remove`, data);
+}

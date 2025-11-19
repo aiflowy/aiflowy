@@ -8,11 +8,14 @@ import {
   ElButton,
   ElIcon,
   ElImage,
+  ElMessage,
+  ElMessageBox,
   ElTable,
   ElTableColumn,
+  ElTag,
 } from 'element-plus';
 
-import { getLlmBrandList } from '#/api/ai/llm.js';
+import { deleteLlm, getLlmBrandList } from '#/api/ai/llm.js';
 import CategoryPanel from '#/components/categoryPanel/CategoryPanel.vue';
 import HeaderSearch from '#/components/headerSearch/HeaderSearch.vue';
 import PageData from '#/components/page/PageData.vue';
@@ -51,10 +54,16 @@ const headerButtons = ref([
 
 const LlmAddOrUpdateDialogRef = ref(null);
 
-const addLlm = async () => {
+const addLlm = async (isEdit = false) => {
   await nextTick();
   if (LlmAddOrUpdateDialogRef.value) {
-    LlmAddOrUpdateDialogRef.value.openAddDialog();
+    if (isEdit) {
+      LlmAddOrUpdateDialogRef.value.openUpdateDialog(editRecord.value);
+      console.log('editRecord.value');
+      console.log(editRecord.value);
+    } else {
+      LlmAddOrUpdateDialogRef.value.openAddDialog();
+    }
   }
 };
 
@@ -76,6 +85,34 @@ const handleButtonClick = (event) => {
       break;
     }
   }
+};
+
+const pageDataRef = ref(null);
+
+const handleDelete = (row) => {
+  ElMessageBox.confirm($t('message.deleteAlert'), $t('message.noticeTitle'), {
+    confirmButtonText: $t('message.ok'),
+    cancelButtonText: $t('message.cancel'),
+    type: 'warning',
+  })
+    .then(() => {
+      // 删除逻辑
+      deleteLlm({ id: row.id }).then((res) => {
+        if (res.errorCode === 0) {
+          ElMessage.success(res.message);
+          pageDataRef.value.setQuery({});
+        }
+      });
+    })
+    .catch(() => {
+      // 取消逻辑
+    });
+};
+
+const editRecord = ref({});
+const handleEdit = (row) => {
+  editRecord.value = row;
+  addLlm(true);
 };
 </script>
 
@@ -102,6 +139,7 @@ const handleButtonClick = (event) => {
       </div>
       <div class="llm-table">
         <PageData
+          ref="pageDataRef"
           page-url="/api/v1/aiLlm/page"
           :page-size="10"
           :init-query-params="{ status: 1 }"
@@ -118,21 +156,31 @@ const handleButtonClick = (event) => {
                 </template>
               </ElTableColumn>
               <ElTableColumn prop="title" label="名称" width="180" />
-              <ElTableColumn
-                prop="description"
-                label="描述"
-                width="300"
-                show-overflow-tooltip
-              />
+              <ElTableColumn prop="supportFeatures" label="能力" width="240">
+                <template #default="scope">
+                  <ElTag
+                    v-for="item in scope.row.supportFeatures"
+                    :key="item"
+                    class="mr-1"
+                  >
+                    {{ item }}
+                  </ElTag>
+                </template>
+              </ElTableColumn>
+              <ElTableColumn prop="description" label="描述" width="auto" />
               <ElTableColumn fixed="right" label="操作" min-width="120">
-                <template #default>
-                  <ElButton link type="primary">
+                <template #default="scope">
+                  <ElButton link type="primary" @click="handleEdit(scope.row)">
                     <ElIcon class="mr-1">
                       <Edit />
                     </ElIcon>
                     {{ $t('button.edit') }}
                   </ElButton>
-                  <ElButton link type="primary">
+                  <ElButton
+                    link
+                    type="primary"
+                    @click="handleDelete(scope.row)"
+                  >
                     <ElIcon class="mr-1">
                       <Delete />
                     </ElIcon>
@@ -148,6 +196,7 @@ const handleButtonClick = (event) => {
 
     <!--   大模型模态框-->
     <LlmModal
+      :edit-record="editRecord"
       ref="LlmAddOrUpdateDialogRef"
       @close="LlmAddOrUpdateDialog = false"
     />

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FormInstance, FormRules } from 'element-plus';
 
-import { nextTick, onMounted, reactive, ref, watch } from 'vue';
+import { defineEmits, nextTick, onMounted, reactive, ref, watch } from 'vue';
 
 import {
   ElButton,
@@ -78,6 +78,8 @@ interface modalListType {
   embedPath?: string;
   llmEndpoint?: string;
 }
+
+const emit = defineEmits(['success']);
 const dialogTitle = ref($t('button.add'));
 const LlmAddOrUpdateDialog = ref(false);
 const ruleFormRef = ref<FormInstance>();
@@ -155,8 +157,15 @@ const modalList = ref<modalListType[]>([]);
 
 defineExpose({
   openAddDialog: () => {
+    ruleFormRef.value?.resetFields();
     dialogTitle.value = $t('button.add');
     LlmAddOrUpdateDialog.value = true;
+  },
+  openUpdateDialog: (editRecord: any) => {
+    ruleFormRef.value?.resetFields();
+    dialogTitle.value = $t('button.edit');
+    LlmAddOrUpdateDialog.value = true;
+    Object.assign(llmForm, editRecord);
   },
 });
 
@@ -228,6 +237,7 @@ const handleConfirm = () => {
         if (res.errorCode === 0) {
           ElMessage.success($t('message.saveOkMessage'));
           LlmAddOrUpdateDialog.value = false;
+          emit('success');
         }
       });
     }
