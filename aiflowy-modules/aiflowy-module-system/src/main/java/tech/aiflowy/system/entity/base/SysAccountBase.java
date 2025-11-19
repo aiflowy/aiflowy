@@ -75,18 +75,6 @@ public class SysAccountBase extends DateEntity implements Serializable {
     private String avatar;
 
     /**
-     * 数据权限类型
-     */
-    @Column(comment = "数据权限类型")
-    private Integer dataScope;
-
-    /**
-     * 自定义部门权限
-     */
-    @Column(comment = "自定义部门权限")
-    private String deptIdList;
-
-    /**
      * 数据状态
      */
     @Column(comment = "数据状态")
@@ -206,22 +194,6 @@ public class SysAccountBase extends DateEntity implements Serializable {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
-    }
-
-    public Integer getDataScope() {
-        return dataScope;
-    }
-
-    public void setDataScope(Integer dataScope) {
-        this.dataScope = dataScope;
-    }
-
-    public String getDeptIdList() {
-        return deptIdList;
-    }
-
-    public void setDeptIdList(String deptIdList) {
-        this.deptIdList = deptIdList;
     }
 
     public Integer getStatus() {

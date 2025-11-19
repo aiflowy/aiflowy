@@ -80,6 +80,24 @@ public class SysRoleBase extends DateEntity implements Serializable {
     @Column(comment = "删除标识", isLogicDelete = true)
     private Integer isDeleted;
 
+    /**
+     * 数据权限
+     */
+    @Column(comment = "数据权限")
+    private Integer dataScope;
+
+    /**
+     * 菜单权限是否父子联动
+     */
+    @Column(comment = "菜单权限是否父子联动")
+    private Boolean menuCheckStrictly;
+
+    /**
+     * 部门权限是否父子联动
+     */
+    @Column(comment = "部门权限是否父子联动")
+    private Boolean deptCheckStrictly;
+
     public BigInteger getId() {
         return id;
     }
@@ -166,6 +184,30 @@ public class SysRoleBase extends DateEntity implements Serializable {
 
     public void setIsDeleted(Integer isDeleted) {
         this.isDeleted = isDeleted;
+    }
+
+    public Integer getDataScope() {
+        return dataScope;
+    }
+
+    public void setDataScope(Integer dataScope) {
+        this.dataScope = dataScope;
+    }
+
+    public Boolean getMenuCheckStrictly() {
+        return menuCheckStrictly;
+    }
+
+    public void setMenuCheckStrictly(Boolean menuCheckStrictly) {
+        this.menuCheckStrictly = menuCheckStrictly;
+    }
+
+    public Boolean getDeptCheckStrictly() {
+        return deptCheckStrictly;
+    }
+
+    public void setDeptCheckStrictly(Boolean deptCheckStrictly) {
+        this.deptCheckStrictly = deptCheckStrictly;
     }
 
 }
