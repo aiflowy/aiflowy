@@ -15,16 +15,23 @@ import {
 
 import { api } from '#/api/request';
 import { $t } from '#/locales';
+import { useDictStore } from '#/store';
 
 import SysMenuModal from './SysMenuModal.vue';
 
 onMounted(() => {
   getTree();
+  initDict();
 });
 
 const saveDialog = ref();
 const treeData = ref([]);
 const loading = ref(false);
+const dictStore = useDictStore();
+function initDict() {
+  dictStore.fetchDictionary('menuType');
+  dictStore.fetchDictionary('yesOrNo');
+}
 function reset() {
   getTree();
 }
@@ -88,7 +95,7 @@ function getTree() {
       <ElTableColumn width="50" />
       <ElTableColumn prop="menuType" :label="$t('sysMenu.menuType')">
         <template #default="{ row }">
-          {{ row.menuType }}
+          {{ dictStore.getDictLabel('menuType', row.menuType) }}
         </template>
       </ElTableColumn>
       <ElTableColumn prop="menuTitle" :label="$t('sysMenu.menuTitle')">
@@ -113,7 +120,7 @@ function getTree() {
       </ElTableColumn>
       <ElTableColumn prop="isShow" :label="$t('sysMenu.isShow')">
         <template #default="{ row }">
-          {{ row.isShow }}
+          {{ dictStore.getDictLabel('yesOrNo', row.isShow) }}
         </template>
       </ElTableColumn>
       <ElTableColumn prop="permissionTag" :label="$t('sysMenu.permissionTag')">

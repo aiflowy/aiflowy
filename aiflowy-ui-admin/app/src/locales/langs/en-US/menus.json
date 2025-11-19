@@ -1,0 +1,13 @@
+{
+  "system": {
+    "title": "System",
+    "sysAccount": "Account",
+    "sysRole": "Role",
+    "sysMenu": "Menu",
+    "sysDept": "Department",
+    "sysPosition": "Position",
+    "sysDict": "Dictionary",
+    "sysJob": "Job",
+    "sysLog": "Log"
+  }
+}
