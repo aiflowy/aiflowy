@@ -7,7 +7,7 @@ import 'vue-cropper/dist/index.css';
 
 import { useAccessStore } from '@aiflowy/stores';
 
-import { Delete, Edit, Plus } from '@element-plus/icons-vue';
+import { Delete, Plus, Refresh } from '@element-plus/icons-vue';
 import {
   ElButton,
   ElDialog,
@@ -306,13 +306,11 @@ watch(showCropDialog, (newVal) => {
           hide-on-click-modal
         />
         <div class="preview-actions">
-          <ElButton type="primary" text @click="triggerUpload">
-            <ElIcon><Edit /></ElIcon>
-            重新上传
+          <ElButton @click="triggerUpload">
+            <ElIcon><Refresh /></ElIcon>
           </ElButton>
-          <ElButton type="danger" text @click="handleRemove">
+          <ElButton @click="handleRemove">
             <ElIcon><Delete /></ElIcon>
-            删除
           </ElButton>
         </div>
       </div>
@@ -384,6 +382,9 @@ watch(showCropDialog, (newVal) => {
   position: relative;
   overflow: hidden;
   transition: border-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .avatar-uploader:hover {
@@ -423,7 +424,7 @@ watch(showCropDialog, (newVal) => {
 
 .preview-actions {
   display: flex;
-  gap: 8px;
+  gap: 5px;
 }
 
 .cropper-container {
