@@ -1,7 +1,10 @@
 package tech.aiflowy.system.service.impl;
 
+import tech.aiflowy.common.constant.enums.EnumDataScope;
 import tech.aiflowy.system.entity.*;
+import tech.aiflowy.system.mapper.SysRoleDeptMapper;
 import tech.aiflowy.system.mapper.SysRoleMapper;
+import tech.aiflowy.system.mapper.SysRoleMenuMapper;
 import tech.aiflowy.system.service.SysAccountRoleService;
 import tech.aiflowy.system.service.SysRoleService;
 import cn.hutool.core.collection.CollectionUtil;
@@ -30,6 +33,10 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
 
     @Resource
     private SysAccountRoleService sysAccountRoleService;
+    @Resource
+    private SysRoleMenuMapper sysRoleMenuMapper;
+    @Resource
+    private SysRoleDeptMapper sysRoleDeptMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -57,5 +64,43 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
             return new ArrayList<>();
         }
         return listByIds(roleIds);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveRole(SysRole sysRole) {
+
+        saveOrUpdate(sysRole);
+
+        // 非自定义数据权限，则部门id集合为空
+        if (!EnumDataScope.CUSTOM.getCode().equals(sysRole.getDataScope())) {
+            sysRole.setDeptIds(new ArrayList<>());
+        }
+
+        List<BigInteger> menuIds = sysRole.getMenuIds();
+        List<BigInteger> deptIds = sysRole.getDeptIds();
+
+        QueryWrapper dw = QueryWrapper.create();
+        dw.eq("role_id", sysRole.getId());
+        sysRoleMenuMapper.deleteByQuery(dw);
+        sysRoleDeptMapper.deleteByQuery(dw);
+
+        if (CollectionUtil.isNotEmpty(menuIds)) {
+            for (BigInteger menuId : menuIds) {
+                SysRoleMenu roleMenu = new SysRoleMenu();
+                roleMenu.setRoleId(sysRole.getId());
+                roleMenu.setMenuId(menuId);
+                sysRoleMenuMapper.insert(roleMenu);
+            }
+        }
+
+        if (CollectionUtil.isNotEmpty(deptIds)) {
+            for (BigInteger deptId : deptIds) {
+                SysRoleDept roleDept = new SysRoleDept();
+                roleDept.setRoleId(sysRole.getId());
+                roleDept.setDeptId(deptId);
+                sysRoleDeptMapper.insert(roleDept);
+            }
+        }
     }
 }

@@ -50,6 +50,8 @@ const rules = ref({
 function openDialog(row: any) {
   if (row.id) {
     isAdd.value = false;
+    getMenuIds(row.id);
+    getDeptIds(row.id);
   }
   entity.value = row;
   dialogVisible.value = true;
@@ -59,10 +61,7 @@ function save() {
     if (valid) {
       btnLoading.value = true;
       api
-        .post(
-          isAdd.value ? 'api/v1/sysRole/save' : 'api/v1/sysRole/update',
-          entity.value,
-        )
+        .post('/api/v1/sysRole/saveRole', entity.value)
         .then((res) => {
           btnLoading.value = false;
           if (res.errorCode === 0) {
@@ -82,6 +81,16 @@ function closeDialog() {
   isAdd.value = true;
   entity.value = {};
   dialogVisible.value = false;
+}
+function getMenuIds(roleId: any) {
+  api.get(`/api/v1/sysRole/getRoleMenuIds?roleId=${roleId}`).then((res) => {
+    entity.value.menuIds = res.data;
+  });
+}
+function getDeptIds(roleId: any) {
+  api.get(`/api/v1/sysRole/getRoleDeptIds?roleId=${roleId}`).then((res) => {
+    entity.value.deptIds = res.data;
+  });
 }
 </script>
 

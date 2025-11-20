@@ -83,7 +83,7 @@ watch(filterText, (val) => {
 watch(
   () => props.modelValue,
   (newVal: any) => {
-    if (isTreeReady.value && treeRef.value && newVal) {
+    if (isTreeReady.value && treeRef.value) {
       // 使用nextTick确保DOM更新完成
       nextTick(() => {
         treeRef.value!.setCheckedKeys(newVal);
