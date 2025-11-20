@@ -18,21 +18,23 @@
       "supportAudioToAudio": "SupportAudioToAudio",
       "supportTextToVideo": "SupportTextToVideo",
       "supportImageToVideo": "SupportImageToVideo",
-      "multimodal": "多模态",
+      "multimodal": "multimodal",
       "llmEndpoint": "LlmEndpoint",
       "chatPath": "ChatPath",
       "embedPath": "embedPath",
       "llmModel": "LlmModel",
       "llmApiKey": "apiKey",
       "llmExtraConfig": "LlmExtraConfig",
-      "options": "Options"
+      "options": "Options",
+      "ability": "Ability"
     }
   ,
   "llmModal": {
     "TitleRequired": "Please enter the name",
     "BrandRequired": "Please enter the brand",
     "ModelRequired": "Please enter the model",
-    "ApiKeyRequired": "Please enter the apiKey"
+    "ApiKeyRequired": "Please enter the apiKey",
+    "QuickAddLlm": "One-click addition of large models"
   },
   "placeholder": {
     "title": "Please enter the title",

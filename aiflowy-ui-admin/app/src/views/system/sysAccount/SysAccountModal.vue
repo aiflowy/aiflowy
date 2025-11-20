@@ -13,6 +13,7 @@ import {
 } from 'element-plus';
 
 import { api } from '#/api/request';
+import Cropper from '#/components/upload/Cropper.vue';
 import { $t } from '#/locales';
 
 const emit = defineEmits(['reload']);
@@ -63,6 +64,11 @@ function openDialog(row: any) {
     isAdd.value = false;
   }
   entity.value = row;
+  entity.value.avatars = [
+    'https://static.agentscenter.cn/public//1/2025/11/20/8e11e271-d863-47ad-8817-0dc3f157becc/0ec0626f1c2b425888f928efc0997eb8.png',
+    'https://static.agentscenter.cn/public//1/2025/11/20/07d63759-01d8-4b03-8b15-c2d03cd9e0ab/6C29D7C8F836BEFABCEA3FA87F351BA9.jpg',
+    'https://static.agentscenter.cn/public//1/2025/11/20/60194bc4-097a-49b3-bef7-b5a071cdb4e1/99bfe6c53d4855e0 (1).jpg',
+  ];
   dialogVisible.value = true;
 }
 function save() {
@@ -133,7 +139,7 @@ function closeDialog() {
         <ElInput v-model.trim="entity.email" />
       </ElFormItem>
       <ElFormItem prop="avatar" :label="$t('sysAccount.avatar')">
-        <ElInput v-model.trim="entity.avatar" />
+        <Cropper v-model="entity.avatar" crop />
       </ElFormItem>
       <ElFormItem prop="dataScope" :label="$t('sysAccount.dataScope')">
         <ElInput v-model.trim="entity.dataScope" />

@@ -1,7 +1,7 @@
 {
     "id": "Id",
     "tenantId": "TenantId",
-    "deptId": "DeptId",
+    "deptId": "Dept",
     "positionName": "PositionName",
     "positionCode": "PositionCode",
     "sortNo": "SortNo",

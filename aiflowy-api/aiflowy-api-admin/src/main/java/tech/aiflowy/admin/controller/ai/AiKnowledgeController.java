@@ -98,7 +98,7 @@ public class AiKnowledgeController extends BaseCurdController<AiKnowledgeService
             throw new BusinessException("此知识库还关联着bot，请先取消关联！");
         }
 
-        return Result.ok();
+        return null;
     }
 
     @Override

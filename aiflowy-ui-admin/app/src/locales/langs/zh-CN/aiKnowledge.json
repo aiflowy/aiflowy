@@ -1,0 +1,33 @@
+{
+  "id": "Id",
+  "alias": "别名",
+  "deptId": "部门ID",
+  "tenantId": "租户ID",
+  "icon": "ICON",
+  "title": "名称",
+  "description": "描述",
+  "slug": "URL 别名",
+  "vectorStoreEnable": "是否启用向量数据库",
+  "vectorStoreType": "向量数据库类型",
+  "vectorStoreCollection": "向量数据库集合",
+  "vectorStoreConfig": "向量数据库配置",
+  "vectorEmbedLlmId": "向量模型",
+  "created": "创建时间",
+  "createdBy": "创建用户ID",
+  "modified": "最后一次修改时间",
+  "modifiedBy": "最后一次修改用户ID",
+  "options": "其他配置",
+  "rerankLlmId": "重排模型",
+  "searchEngineEnable": "是否启用搜索引擎",
+  "englishName": "英文名称",
+  "placeholder": {
+    "title": "请输入名称",
+    "description": "请输入描述，以便大模型更好的理解该知识库并且调用",
+    "englishName": "请输入英文名称",
+    "alias": "请输入别名,不允许含中文",
+    "embedLlm": "请选择向量模型",
+    "rerankLlm": "请选择重排模型",
+    "vectorStoreCollection": "只能包含字母、数字和下划线且长度在3-20个字符之间",
+    "vectorStoreType": "请选择向量数据库类型"
+  }
+}

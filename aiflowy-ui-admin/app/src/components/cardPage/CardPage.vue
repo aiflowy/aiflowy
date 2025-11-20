@@ -11,7 +11,6 @@ import {
   ElDropdownMenu,
   ElEmpty,
   ElIcon,
-  ElMessage,
 } from 'element-plus';
 
 const props = defineProps({
@@ -54,7 +53,6 @@ const dropdownActions = computed(() => {
 // 处理操作按钮点击
 const handleActionClick = (action, item) => {
   emit('actionClick', { action, item });
-  ElMessage.success(`执行操作: ${action.label} - ${item[props.titleKey]}`);
 };
 </script>
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FormInstance } from 'element-plus';
 
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 import { Delete, Edit, Plus } from '@element-plus/icons-vue';
 import {
@@ -19,15 +19,24 @@ import {
 import { api } from '#/api/request';
 import PageData from '#/components/page/PageData.vue';
 import { $t } from '#/locales';
+import { useDictStore } from '#/store';
 
 import SysPositionModal from './SysPositionModal.vue';
+
+onMounted(() => {
+  initDict();
+});
 
 const formRef = ref<FormInstance>();
 const pageDataRef = ref();
 const saveDialog = ref();
 const formInline = ref({
-  id: '',
+  positionName: '',
 });
+const dictStore = useDictStore();
+function initDict() {
+  dictStore.fetchDictionary('dataStatus');
+}
 function search(formEl: FormInstance | undefined) {
   formEl?.validate((valid) => {
     if (valid) {
@@ -75,8 +84,11 @@ function remove(row: any) {
   <div class="page-container">
     <SysPositionModal ref="saveDialog" @reload="reset" />
     <ElForm ref="formRef" :inline="true" :model="formInline">
-      <ElFormItem :label="$t('sysPosition.id')" prop="id">
-        <ElInput v-model="formInline.id" :placeholder="$t('sysPosition.id')" />
+      <ElFormItem :label="$t('sysPosition.positionName')" prop="positionName">
+        <ElInput
+          v-model="formInline.positionName"
+          :placeholder="$t('sysPosition.positionName')"
+        />
       </ElFormItem>
       <ElFormItem>
         <ElButton @click="search(formRef)" type="primary">
@@ -106,11 +118,6 @@ function remove(row: any) {
     >
       <template #default="{ pageList }">
         <ElTable :data="pageList" border>
-          <ElTableColumn prop="deptId" :label="$t('sysPosition.deptId')">
-            <template #default="{ row }">
-              {{ row.deptId }}
-            </template>
-          </ElTableColumn>
           <ElTableColumn
             prop="positionName"
             :label="$t('sysPosition.positionName')"
@@ -134,7 +141,7 @@ function remove(row: any) {
           </ElTableColumn>
           <ElTableColumn prop="status" :label="$t('sysPosition.status')">
             <template #default="{ row }">
-              {{ row.status }}
+              {{ dictStore.getDictLabel('dataStatus', row.status) }}
             </template>
           </ElTableColumn>
           <ElTableColumn prop="created" :label="$t('sysPosition.created')">

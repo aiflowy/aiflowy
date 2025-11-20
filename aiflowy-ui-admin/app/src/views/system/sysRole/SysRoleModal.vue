@@ -15,6 +15,7 @@ import {
 
 import { api } from '#/api/request';
 import DictSelect from '#/components/dict/DictSelect.vue';
+import Tree from '#/components/tree/Tree.vue';
 import { $t } from '#/locales';
 
 const emit = defineEmits(['reload']);
@@ -49,6 +50,8 @@ const rules = ref({
 function openDialog(row: any) {
   if (row.id) {
     isAdd.value = false;
+    getMenuIds(row.id);
+    getDeptIds(row.id);
   }
   entity.value = row;
   dialogVisible.value = true;
@@ -58,10 +61,7 @@ function save() {
     if (valid) {
       btnLoading.value = true;
       api
-        .post(
-          isAdd.value ? 'api/v1/sysRole/save' : 'api/v1/sysRole/update',
-          entity.value,
-        )
+        .post('/api/v1/sysRole/saveRole', entity.value)
         .then((res) => {
           btnLoading.value = false;
           if (res.errorCode === 0) {
@@ -81,6 +81,16 @@ function closeDialog() {
   isAdd.value = true;
   entity.value = {};
   dialogVisible.value = false;
+}
+function getMenuIds(roleId: any) {
+  api.get(`/api/v1/sysRole/getRoleMenuIds?roleId=${roleId}`).then((res) => {
+    entity.value.menuIds = res.data;
+  });
+}
+function getDeptIds(roleId: any) {
+  api.get(`/api/v1/sysRole/getRoleDeptIds?roleId=${roleId}`).then((res) => {
+    entity.value.deptIds = res.data;
+  });
 }
 </script>
 
@@ -117,15 +127,34 @@ function closeDialog() {
           :active-text="$t('sysRole.checkStrictlyTrue')"
           :inactive-text="$t('sysRole.checkStrictlyFalse')"
         />
+        <Tree
+          data-url="/api/v1/sysMenu/list?asTree=true"
+          v-model="entity.menuIds"
+          :default-props="{
+            label: 'menuTitle',
+            children: 'children',
+          }"
+          :check-strictly="!entity.menuCheckStrictly"
+        />
       </ElFormItem>
       <ElFormItem :label="$t('sysRole.dataPermission')">
         <DictSelect v-model="entity.dataScope" dict-code="dataScope" />
-        <ElSwitch
-          v-if="entity.dataScope === 5"
-          v-model="entity.deptCheckStrictly"
-          :active-text="$t('sysRole.checkStrictlyTrue')"
-          :inactive-text="$t('sysRole.checkStrictlyFalse')"
-        />
+        <div v-if="entity.dataScope === 5" style="width: 100%">
+          <ElSwitch
+            v-model="entity.deptCheckStrictly"
+            :active-text="$t('sysRole.checkStrictlyTrue')"
+            :inactive-text="$t('sysRole.checkStrictlyFalse')"
+          />
+          <Tree
+            data-url="/api/v1/sysDept/list?asTree=true"
+            v-model="entity.deptIds"
+            :default-props="{
+              label: 'deptName',
+              children: 'children',
+            }"
+            :check-strictly="!entity.deptCheckStrictly"
+          />
+        </div>
       </ElFormItem>
     </ElForm>
     <template #footer>

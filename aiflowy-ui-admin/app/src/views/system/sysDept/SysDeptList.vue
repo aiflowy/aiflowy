@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FormInstance } from 'element-plus';
 
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 import { Delete, Edit, Plus } from '@element-plus/icons-vue';
 import {
@@ -17,27 +17,37 @@ import {
 } from 'element-plus';
 
 import { api } from '#/api/request';
-import PageData from '#/components/page/PageData.vue';
 import { $t } from '#/locales';
+import { useDictStore } from '#/store';
 
 import SysDeptModal from './SysDeptModal.vue';
 
+onMounted(() => {
+  getTree();
+  initDict();
+});
+
 const formRef = ref<FormInstance>();
-const pageDataRef = ref();
+const treeData = ref([]);
+const loading = ref(false);
 const saveDialog = ref();
 const formInline = ref({
-  id: '',
+  deptName: '',
 });
+const dictStore = useDictStore();
+function initDict() {
+  dictStore.fetchDictionary('dataStatus');
+}
 function search(formEl: FormInstance | undefined) {
   formEl?.validate((valid) => {
     if (valid) {
-      pageDataRef.value.setQuery(formInline.value);
+      getTree();
     }
   });
 }
 function reset(formEl: FormInstance | undefined) {
   formEl?.resetFields();
-  pageDataRef.value.setQuery({});
+  getTree();
 }
 function showDialog(row: any) {
   saveDialog.value.openDialog({ ...row });
@@ -69,14 +79,31 @@ function remove(row: any) {
     },
   }).catch(() => {});
 }
+function getTree() {
+  loading.value = true;
+  api
+    .get('/api/v1/sysDept/list', {
+      params: {
+        asTree: true,
+        ...formInline.value,
+      },
+    })
+    .then((res) => {
+      loading.value = false;
+      treeData.value = res.data;
+    });
+}
 </script>
 
 <template>
   <div class="page-container">
     <SysDeptModal ref="saveDialog" @reload="reset" />
     <ElForm ref="formRef" :inline="true" :model="formInline">
-      <ElFormItem :label="$t('sysDept.id')" prop="id">
-        <ElInput v-model="formInline.id" :placeholder="$t('sysDept.id')" />
+      <ElFormItem :label="$t('sysDept.deptName')" prop="deptName">
+        <ElInput
+          v-model="formInline.deptName"
+          :placeholder="$t('sysDept.deptName')"
+        />
       </ElFormItem>
       <ElFormItem>
         <ElButton @click="search(formRef)" type="primary">
@@ -99,80 +126,62 @@ function remove(row: any) {
         {{ $t('button.add') }}
       </ElButton>
     </div>
-    <PageData ref="pageDataRef" page-url="/api/v1/sysDept/page" :page-size="10">
-      <template #default="{ pageList }">
-        <ElTable :data="pageList" border>
-          <ElTableColumn prop="parentId" :label="$t('sysDept.parentId')">
-            <template #default="{ row }">
-              {{ row.parentId }}
-            </template>
-          </ElTableColumn>
-          <ElTableColumn prop="ancestors" :label="$t('sysDept.ancestors')">
-            <template #default="{ row }">
-              {{ row.ancestors }}
-            </template>
-          </ElTableColumn>
-          <ElTableColumn prop="deptName" :label="$t('sysDept.deptName')">
-            <template #default="{ row }">
-              {{ row.deptName }}
-            </template>
-          </ElTableColumn>
-          <ElTableColumn prop="deptCode" :label="$t('sysDept.deptCode')">
-            <template #default="{ row }">
-              {{ row.deptCode }}
-            </template>
-          </ElTableColumn>
-          <ElTableColumn prop="sortNo" :label="$t('sysDept.sortNo')">
-            <template #default="{ row }">
-              {{ row.sortNo }}
-            </template>
-          </ElTableColumn>
-          <ElTableColumn prop="status" :label="$t('sysDept.status')">
-            <template #default="{ row }">
-              {{ row.status }}
-            </template>
-          </ElTableColumn>
-          <ElTableColumn prop="created" :label="$t('sysDept.created')">
-            <template #default="{ row }">
-              {{ row.created }}
-            </template>
-          </ElTableColumn>
-          <ElTableColumn prop="remark" :label="$t('sysDept.remark')">
-            <template #default="{ row }">
-              {{ row.remark }}
-            </template>
-          </ElTableColumn>
-          <ElTableColumn :label="$t('common.handle')" width="150">
-            <template #default="{ row }">
-              <div>
-                <ElButton
-                  v-access:code="'/api/v1/sysDept/save'"
-                  @click="showDialog(row)"
-                  link
-                  type="primary"
-                >
-                  <ElIcon class="mr-1">
-                    <Edit />
-                  </ElIcon>
-                  {{ $t('button.edit') }}
-                </ElButton>
-                <ElButton
-                  v-access:code="'/api/v1/sysDept/remove'"
-                  @click="remove(row)"
-                  link
-                  type="danger"
-                >
-                  <ElIcon class="mr-1">
-                    <Delete />
-                  </ElIcon>
-                  {{ $t('button.delete') }}
-                </ElButton>
-              </div>
-            </template>
-          </ElTableColumn>
-        </ElTable>
-      </template>
-    </PageData>
+    <ElTable :data="treeData" row-key="id" v-loading="loading" border>
+      <ElTableColumn width="50" />
+      <ElTableColumn prop="deptName" :label="$t('sysDept.deptName')">
+        <template #default="{ row }">
+          {{ row.deptName }}
+        </template>
+      </ElTableColumn>
+      <ElTableColumn prop="deptCode" :label="$t('sysDept.deptCode')">
+        <template #default="{ row }">
+          {{ row.deptCode }}
+        </template>
+      </ElTableColumn>
+      <ElTableColumn prop="sortNo" :label="$t('sysDept.sortNo')">
+        <template #default="{ row }">
+          {{ row.sortNo }}
+        </template>
+      </ElTableColumn>
+      <ElTableColumn prop="created" :label="$t('sysDept.created')">
+        <template #default="{ row }">
+          {{ row.created }}
+        </template>
+      </ElTableColumn>
+      <ElTableColumn prop="remark" :label="$t('sysDept.remark')">
+        <template #default="{ row }">
+          {{ row.remark }}
+        </template>
+      </ElTableColumn>
+      <ElTableColumn :label="$t('common.handle')" width="150">
+        <template #default="{ row }">
+          <div>
+            <ElButton
+              v-access:code="'/api/v1/sysDept/save'"
+              @click="showDialog(row)"
+              link
+              type="primary"
+            >
+              <ElIcon class="mr-1">
+                <Edit />
+              </ElIcon>
+              {{ $t('button.edit') }}
+            </ElButton>
+            <ElButton
+              v-access:code="'/api/v1/sysDept/remove'"
+              @click="remove(row)"
+              link
+              type="danger"
+            >
+              <ElIcon class="mr-1">
+                <Delete />
+              </ElIcon>
+              {{ $t('button.delete') }}
+            </ElButton>
+          </div>
+        </template>
+      </ElTableColumn>
+    </ElTable>
   </div>
 </template>
 

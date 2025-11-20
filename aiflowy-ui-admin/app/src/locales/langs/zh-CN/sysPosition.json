@@ -1,7 +1,7 @@
 {
     "id": "主键",
     "tenantId": "租户ID",
-    "deptId": "部门ID",
+    "deptId": "部门",
     "positionName": "岗位名称",
     "positionCode": "岗位编码",
     "sortNo": "排序",

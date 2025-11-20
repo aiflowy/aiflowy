@@ -13,6 +13,7 @@ import {
 } from 'element-plus';
 
 import { api } from '#/api/request';
+import DictSelect from '#/components/dict/DictSelect.vue';
 import { $t } from '#/locales';
 
 const emit = defineEmits(['reload']);
@@ -101,22 +102,24 @@ function closeDialog() {
       :rules="rules"
     >
       <ElFormItem prop="parentId" :label="$t('sysDept.parentId')">
-        <ElInput v-model.trim="entity.parentId" />
-      </ElFormItem>
-      <ElFormItem prop="ancestors" :label="$t('sysDept.ancestors')">
-        <ElInput v-model.trim="entity.ancestors" />
+        <DictSelect
+          :disabled="entity.deptCode === 'root_dept'"
+          :extra-options="[{ label: $t('sysDept.root'), value: 0 }]"
+          v-model="entity.parentId"
+          dict-code="sysDept"
+        />
       </ElFormItem>
       <ElFormItem prop="deptName" :label="$t('sysDept.deptName')">
         <ElInput v-model.trim="entity.deptName" />
       </ElFormItem>
       <ElFormItem prop="deptCode" :label="$t('sysDept.deptCode')">
-        <ElInput v-model.trim="entity.deptCode" />
+        <ElInput
+          :disabled="entity.deptCode === 'root_dept'"
+          v-model.trim="entity.deptCode"
+        />
       </ElFormItem>
       <ElFormItem prop="sortNo" :label="$t('sysDept.sortNo')">
         <ElInput v-model.trim="entity.sortNo" />
-      </ElFormItem>
-      <ElFormItem prop="status" :label="$t('sysDept.status')">
-        <ElInput v-model.trim="entity.status" />
       </ElFormItem>
       <ElFormItem prop="remark" :label="$t('sysDept.remark')">
         <ElInput v-model.trim="entity.remark" />

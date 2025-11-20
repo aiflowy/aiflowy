@@ -16,7 +16,7 @@ import {
   ElTag,
 } from 'element-plus';
 
-import { getLlmBrandList, saveLlm } from '#/api/ai/llm.js';
+import { getLlmBrandList, saveLlm, updateLlm } from '#/api/ai/llm.js';
 import UploadAvatar from '#/components/upload/UploadAvatar.vue';
 import { $t } from '#/locales';
 
@@ -82,7 +82,8 @@ interface modalListType {
 const emit = defineEmits(['success']);
 const dialogTitle = ref($t('button.add'));
 const LlmAddOrUpdateDialog = ref(false);
-const ruleFormRef = ref<FormInstance>();
+const llmFormRef = ref<FormInstance>();
+const isAdd = ref(false);
 type brandDataListType = brandDataType[];
 const brandListData = ref<brandDataListType>([]);
 // 是否自定义输入
@@ -124,8 +125,8 @@ const rules = reactive<FormRules<LlmFormType>>({
     },
   ],
 });
-
-const llmForm = reactive<LlmFormType>({
+// 定义表单初始值（所有字段默认值，与 LlmFormType 结构对齐）
+const INIT_LLM_FORM: LlmFormType = {
   title: '',
   brand: '',
   llmModel: '',
@@ -142,27 +143,45 @@ const llmForm = reactive<LlmFormType>({
   supportAudioToAudio: false,
   supportTextToVideo: false,
   supportImageToVideo: false,
-  isCustomInput: isCustomInput.value,
+  isCustomInput: false,
   options: {
+    chatPath: undefined,
+    embedPath: undefined,
+    isCustomInput: false,
+    llmEndpoint: undefined,
     multimodal: false,
-    isCustomInput: isCustomInput.value,
-    chatPath: '',
-    embedPath: '',
-    llmEndpoint: '',
   },
-});
+};
+
+const llmForm = reactive<LlmFormType>({ ...INIT_LLM_FORM });
 
 // 选择品牌时，触发的联动逻辑
 const modalList = ref<modalListType[]>([]);
 
 defineExpose({
   openAddDialog: () => {
-    ruleFormRef.value?.resetFields();
+    isAdd.value = true;
+    Object.assign(llmForm, { ...INIT_LLM_FORM });
+    nextTick(() => {
+      llmFormRef.value?.resetFields();
+    });
     dialogTitle.value = $t('button.add');
     LlmAddOrUpdateDialog.value = true;
   },
   openUpdateDialog: (editRecord: any) => {
-    ruleFormRef.value?.resetFields();
+    isAdd.value = false;
+    const mergedRecord = {
+      ...INIT_LLM_FORM,
+      ...editRecord,
+      options: {
+        ...INIT_LLM_FORM.options,
+        ...editRecord.options,
+      },
+    };
+    Object.assign(llmForm, mergedRecord);
+    nextTick(() => {
+      llmFormRef.value?.clearValidate();
+    });
     dialogTitle.value = $t('button.edit');
     LlmAddOrUpdateDialog.value = true;
     Object.assign(llmForm, editRecord);
@@ -173,7 +192,7 @@ defineExpose({
 watch(
   () => llmForm.brand,
   async (newValue, _oldValue) => {
-    if (newValue) {
+    if (isAdd.value && newValue) {
       llmForm.llmModel = '';
       modalList.value = [];
       llmForm.options.multimodal = false;
@@ -208,7 +227,12 @@ watch(
 watch(
   () => llmForm.llmModel,
   (newModel) => {
-    if (newModel && modalList.value.length > 0 && !isCustomInput.value) {
+    if (
+      isAdd.value &&
+      newModel &&
+      modalList.value.length > 0 &&
+      !isCustomInput.value
+    ) {
       llmForm.description = newModel;
       const tempModel: modalListType | undefined = modalList.value.find(
         (item) => item.llmModel === newModel,
@@ -224,28 +248,33 @@ watch(
         llmForm.description = tempModel.description;
       }
     }
-
     // 你的逻辑：比如根据选中的模型加载配置、校验等
   },
   { immediate: false },
 );
 
 const handleConfirm = () => {
-  ruleFormRef.value?.validate((valid) => {
+  llmFormRef.value?.validate((valid) => {
     if (valid) {
-      saveLlm(JSON.stringify(llmForm)).then((res) => {
-        if (res.errorCode === 0) {
-          ElMessage.success($t('message.saveOkMessage'));
-          LlmAddOrUpdateDialog.value = false;
-          emit('success');
-        }
-      });
+      if (isAdd.value) {
+        saveLlm(JSON.stringify(llmForm)).then((res) => {
+          if (res.errorCode === 0) {
+            ElMessage.success($t('message.saveOkMessage'));
+            LlmAddOrUpdateDialog.value = false;
+            emit('success');
+          }
+        });
+      } else {
+        updateLlm(JSON.stringify(llmForm)).then((res) => {
+          if (res.errorCode === 0) {
+            ElMessage.success($t('message.updateOkMessage'));
+            LlmAddOrUpdateDialog.value = false;
+            emit('success');
+          }
+        });
+      }
     }
   });
-};
-
-const handleAvatarSuccess = (imageUrl: string) => {
-  llmForm.icon = imageUrl;
 };
 </script>
 
@@ -258,12 +287,9 @@ const handleAvatarSuccess = (imageUrl: string) => {
     align-center
   >
     <div class="llm-dialog-container">
-      <UploadAvatar
-        :allowed-image-types="['image/jpeg']"
-        @success="handleAvatarSuccess"
-      />
+      <UploadAvatar v-model="llmForm.icon" />
       <ElForm
-        ref="ruleFormRef"
+        ref="llmFormRef"
         style="width: 100%; margin-top: 20px"
         :model="llmForm"
         :rules="rules"

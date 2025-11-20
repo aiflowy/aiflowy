@@ -22,14 +22,16 @@
     "multimodal": "多模态",
     "llmApiKey": "apiKey",
     "llmExtraConfig": "大模型其他属性配置",
-    "options": "其他配置内容"
+    "options": "其他配置内容",
+    "ability": "能力"
   }
 ,
   "llmModal": {
     "TitleRequired": "请输入名称",
     "BrandRequired": "请选择供应商",
     "ModelRequired": "请输入大模型",
-    "ApiKeyRequired": "请输入apiKey"
+    "ApiKeyRequired": "请输入apiKey",
+    "QuickAddLlm": "一键添加大模型"
   },
   "placeholder": {
     "title": "请输入名称",

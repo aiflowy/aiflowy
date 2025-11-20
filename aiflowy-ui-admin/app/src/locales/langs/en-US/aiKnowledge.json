@@ -1,0 +1,33 @@
+{
+  "id": "Id",
+  "alias": "Alias",
+  "deptId": "DeptId",
+  "tenantId": "TenantId",
+  "icon": "Icon",
+  "title": "Title",
+  "description": "Description",
+  "slug": "Slug",
+  "vectorStoreEnable": "VectorStoreEnable",
+  "vectorStoreType": "VectorStoreType",
+  "vectorStoreCollection": "VectorStoreCollection",
+  "vectorStoreConfig": "VectorStoreConfig",
+  "vectorEmbedLlmId": "VectorEmbedLlm",
+  "created": "Created",
+  "createdBy": "CreatedBy",
+  "modified": "Modified",
+  "modifiedBy": "ModifiedBy",
+  "options": "Options",
+  "rerankLlmId": "RerankLlm",
+  "searchEngineEnable": "SearchEngineEnable",
+  "englishName": "EnglishName",
+  "placeholder": {
+    "title": "Please input title",
+    "description": "Please provide a description so that the large model can better understand the knowledge base and make calls",
+    "englishName": "Please enter an English name",
+    "alias": "Please enter an alias, Chinese is not allowed",
+    "embedLlm": "Please choose a vector model",
+    "rerankLlm": "Please choose to rearrange the model",
+    "vectorStoreCollection": "Can only contain letters, numbers, and underscores with a length between 3-20 characters",
+    "vectorStoreType": "Please select the vector database type"
+  }
+}

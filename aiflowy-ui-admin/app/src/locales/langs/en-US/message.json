@@ -7,5 +7,8 @@
   "saveOkMessage": "Saved successfully",
   "saveFailMessage": "Save failed",
   "deleteOkMessage": "Deleted successfully",
-  "deleteFailMessage": "Delete failed"
+  "deleteFailMessage": "Delete failed",
+  "loading": "Loading...",
+  "getDataError": "Get data error",
+  "updateOkMessage": "Updated successfully"
 }

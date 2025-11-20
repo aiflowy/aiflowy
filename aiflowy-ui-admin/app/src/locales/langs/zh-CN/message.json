@@ -7,5 +7,8 @@
   "saveOkMessage": "保存成功！",
   "saveFailMessage": "保存失败！",
   "deleteOkMessage": "删除成功！",
-  "deleteFailMessage": "删除失败！"
+  "deleteFailMessage": "删除失败！",
+  "loading": "加载中...",
+  "getDataError": "获取数据失败",
+  "updateOkMessage": "更新成功！"
 }

@@ -1,7 +1,8 @@
 {
+    "root": "Root",
     "id": "Id",
     "tenantId": "TenantId",
-    "parentId": "ParentId",
+    "parentId": "Parent",
     "ancestors": "Ancestors",
     "deptName": "DeptName",
     "deptCode": "DeptCode",

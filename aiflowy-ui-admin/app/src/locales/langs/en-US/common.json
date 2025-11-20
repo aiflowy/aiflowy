@@ -1,3 +1,5 @@
 {
-  "handle": "Operate"
+  "handle": "Operate",
+  "searchPlaceholder": "Please enter search content",
+  "allCategories": "All"
 }

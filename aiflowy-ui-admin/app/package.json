@@ -40,6 +40,7 @@
     "element-plus": "catalog:",
     "pinia": "catalog:",
     "vue": "catalog:",
+    "vue-cropper": "^1.1.4",
     "vue-router": "catalog:"
   },
   "devDependencies": {

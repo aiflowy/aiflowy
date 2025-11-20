@@ -16,6 +16,10 @@ const props = defineProps({
     type: Number,
     default: 10,
   },
+  pageSizes: {
+    type: Array,
+    default: () => [10, 20, 50, 100],
+  },
   // 额外的查询参数，比如一些必带的参数
   extraQueryParams: {
     type: Object,
@@ -117,7 +121,7 @@ onMounted(() => {
         v-model:current-page="pageInfo.pageNumber"
         v-model:page-size="pageInfo.pageSize"
         :total="pageInfo.total"
-        :page-sizes="[10, 20, 50, 100]"
+        :page-sizes="pageSizes"
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"

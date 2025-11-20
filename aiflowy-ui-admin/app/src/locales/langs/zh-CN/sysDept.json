@@ -1,7 +1,8 @@
 {
+    "root": "根部门",
     "id": "主键",
     "tenantId": "租户ID",
-    "parentId": "父级ID",
+    "parentId": "父级",
     "ancestors": "父级部门ID集合",
     "deptName": "部门名称",
     "deptCode": "部门编码",

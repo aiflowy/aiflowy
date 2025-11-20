@@ -13,6 +13,7 @@ import {
 } from 'element-plus';
 
 import { api } from '#/api/request';
+import DictSelect from '#/components/dict/DictSelect.vue';
 import { $t } from '#/locales';
 
 const emit = defineEmits(['reload']);
@@ -100,7 +101,7 @@ function closeDialog() {
       :rules="rules"
     >
       <ElFormItem prop="deptId" :label="$t('sysPosition.deptId')">
-        <ElInput v-model.trim="entity.deptId" />
+        <DictSelect v-model="entity.deptId" dict-code="sysDept" />
       </ElFormItem>
       <ElFormItem prop="positionName" :label="$t('sysPosition.positionName')">
         <ElInput v-model.trim="entity.positionName" />
@@ -112,7 +113,7 @@ function closeDialog() {
         <ElInput v-model.trim="entity.sortNo" />
       </ElFormItem>
       <ElFormItem prop="status" :label="$t('sysPosition.status')">
-        <ElInput v-model.trim="entity.status" />
+        <DictSelect v-model="entity.status" dict-code="dataStatus" />
       </ElFormItem>
       <ElFormItem prop="remark" :label="$t('sysPosition.remark')">
         <ElInput v-model.trim="entity.remark" />

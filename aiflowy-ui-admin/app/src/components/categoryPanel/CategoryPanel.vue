@@ -115,9 +115,10 @@ const togglePanel = () => {
     currentWidth: panelWidth.value,
   });
 };
-
+const selectedCategory = ref(null);
 // 处理分类项点击
 const handleCategoryClick = (category) => {
+  selectedCategory.value = category;
   emit('click', category);
 };
 </script>
@@ -142,6 +143,7 @@ const handleCategoryClick = (category) => {
       >
         <div
           class="category-item-content"
+          :class="{ selected: selectedCategory === category }"
           @click="handleCategoryClick(category)"
         >
           <!-- 图标 -->
@@ -313,5 +315,16 @@ const handleCategoryClick = (category) => {
 /* 收缩状态下文字强制隐藏（避免无图标时文字溢出） */
 .collapsed .category-name {
   display: none;
+}
+
+/* 新增：选中态样式 */
+.category-item-content.selected {
+  background-color: var(--el-color-primary-light-9);
+  color: var(--el-text-color-primary);
+  font-weight: 600;
+}
+
+.category-item-content.selected:hover {
+  background-color: var(--el-color-primary-light-9);
 }
 </style>
