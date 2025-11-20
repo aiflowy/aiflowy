@@ -70,41 +70,22 @@ const emit = defineEmits(['update:modelValue', 'change', 'check']);
 // 响应式数据
 const treeData = ref([]);
 const loading = ref(false);
-const filterText = ref('');
 const treeRef = ref<TreeV2Instance>();
 const nodeMap = ref(new Map()); // 用于存储节点键到节点数据的映射
-const isTreeReady = ref(false); // 标记树组件是否准备就绪
-// 监听过滤文本变化
-watch(filterText, (val) => {
-  treeRef.value?.filter(val);
-});
 
-// 监听modelValue变化，更新树的选择状态
 watch(
-  () => props.modelValue,
-  (newVal: any) => {
-    if (isTreeReady.value && treeRef.value) {
-      // 使用nextTick确保DOM更新完成
+  [() => props.modelValue, () => treeData.value],
+  ([newVal, treeDataVal]) => {
+    const value = newVal || [];
+    if (treeDataVal && treeDataVal.length > 0) {
       nextTick(() => {
-        treeRef.value!.setCheckedKeys(newVal);
+        if (treeRef.value) {
+          treeRef.value.setCheckedKeys(value);
+        }
       });
     }
   },
   { immediate: true, deep: true },
-);
-// 监听树数据变化，当数据加载完成后设置选中状态
-watch(
-  () => treeData.value,
-  () => {
-    if (treeData.value.length > 0 && props.modelValue.length > 0) {
-      // 数据加载完成后，等待树组件渲染完成再设置选中状态
-      nextTick(() => {
-        isTreeReady.value = true;
-        treeRef.value!.setCheckedKeys(props.modelValue);
-      });
-    }
-  },
-  { deep: true },
 );
 
 // 过滤节点方法
@@ -148,6 +129,15 @@ const fetchTreeData = async () => {
     // 构建节点映射
     nodeMap.value.clear();
     buildNodeMap(res.data);
+
+    // 数据加载完成后，如果有选中值则设置
+    if (props.modelValue && props.modelValue.length > 0) {
+      nextTick(() => {
+        if (treeRef.value) {
+          treeRef.value.setCheckedKeys(props.modelValue);
+        }
+      });
+    }
   } catch (error) {
     console.error('get data error:', error);
     ElMessage.error($t('message.getDataError'));

@@ -80,10 +80,12 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         List<BigInteger> menuIds = sysRole.getMenuIds();
         List<BigInteger> deptIds = sysRole.getDeptIds();
 
-        QueryWrapper dw = QueryWrapper.create();
-        dw.eq("role_id", sysRole.getId());
-        sysRoleMenuMapper.deleteByQuery(dw);
-        sysRoleDeptMapper.deleteByQuery(dw);
+        QueryWrapper wrm = QueryWrapper.create();
+        wrm.eq(SysRoleMenu::getRoleId, sysRole.getId());
+        sysRoleMenuMapper.deleteByQuery(wrm);
+        QueryWrapper wrd = QueryWrapper.create();
+        wrd.eq(SysRoleDept::getRoleId, sysRole.getId());
+        sysRoleDeptMapper.deleteByQuery(wrd);
 
         if (CollectionUtil.isNotEmpty(menuIds)) {
             for (BigInteger menuId : menuIds) {
