@@ -82,8 +82,8 @@ public class AiKnowledgeController extends BaseCurdController<AiKnowledgeService
 
     @GetMapping("search")
     @SaCheckPermission("/api/v1/aiKnowledge/query")
-    public Result<List<Document>> search(@RequestParam BigInteger id, @RequestParam String keyword) {
-        return Result.ok(service.search(id, keyword));
+    public Result<List<Document>> search(@RequestParam BigInteger knowledgeId, @RequestParam String keyword) {
+        return Result.ok(service.search(knowledgeId, keyword));
     }
 
 

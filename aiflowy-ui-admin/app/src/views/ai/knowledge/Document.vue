@@ -10,6 +10,7 @@ import CategoryPanel from '#/components/categoryPanel/CategoryPanel.vue';
 import HeaderSearch from '#/components/headerSearch/HeaderSearch.vue';
 import ChunkDocumentTable from '#/views/ai/knowledge/ChunkDocumentTable.vue';
 import DocumentTable from '#/views/ai/knowledge/DocumentTable.vue';
+import KnowledgeSearch from '#/views/ai/knowledge/KnowledgeSearch.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -91,7 +92,7 @@ const viewDoc = (docId: string) => {
         <ChunkDocumentTable v-else :document-id="documentId" />
       </div>
       <div v-if="selectedCategory === 'knowledgeSearch'" class="doc-table">
-        <DocumentTable :knowledge-id="knowledgeId" />
+        <KnowledgeSearch :knowledge-id="knowledgeId" />
       </div>
     </div>
   </div>
