@@ -15,5 +15,9 @@
     "modified": "修改时间",
     "modifiedBy": "修改者",
     "remark": "备注",
-    "isDeleted": "删除标识"
+    "isDeleted": "删除标识",
+    "workflow": "工作流",
+    "beanMethod": "bean方法",
+    "javaMethod": "java方法",
+    "example": "示例"
 }

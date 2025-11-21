@@ -75,7 +75,7 @@ function openDialog(row: any) {
       entity.value.jobParams = {};
     }
     if (entity.value.jobParams.workflowId) {
-      workflowChange(entity.value.jobParams.workflowId);
+      getWorkflowParams(entity.value.jobParams.workflowId);
     }
     isAdd.value = false;
   } else {
@@ -114,12 +114,19 @@ function closeDialog() {
   dialogVisible.value = false;
 }
 function jobTypeChange(v: any) {
-  entity.value.jobParams = {};
+  workflowParams.value = [];
+  entity.value.jobParams = {
+    workflowParams: {},
+  };
   if (v === 1) {
     entity.value.jobParams.workflowParams = {};
   }
 }
 function workflowChange(v: any) {
+  entity.value.jobParams.workflowParams = {};
+  getWorkflowParams(v);
+}
+function getWorkflowParams(v: any) {
   paramsLoading.value = true;
   api.get(`/api/v1/aiWorkflow/getRunningParameters?id=${v}`).then((res) => {
     paramsLoading.value = false;
@@ -160,7 +167,7 @@ const str = '"param"';
       </ElFormItem>
       <ElFormItem
         v-if="entity.jobType === 1"
-        label="工作流"
+        :label="$t('sysJob.workflow')"
         prop="jobParams.workflowId"
         :rules="[
           { required: true, message: $t('message.required'), trigger: 'blur' },
@@ -193,7 +200,7 @@ const str = '"param"';
       </ElFormItem>
       <ElFormItem
         v-if="entity.jobType === 2"
-        label="bean方法"
+        :label="$t('sysJob.beanMethod')"
         prop="jobParams.beanMethod"
         :rules="[
           { required: true, message: $t('message.required'), trigger: 'blur' },
@@ -202,12 +209,12 @@ const str = '"param"';
         <ElInput v-model="entity.jobParams.beanMethod" />
         <ElAlert
           style="margin-top: 5px"
-          :title="`示例：sysJobServiceImpl.testParam(${str},false,299)`"
+          :title="`${$t('sysJob.example')}：sysJobServiceImpl.testParam(${str},false,299)`"
         />
       </ElFormItem>
       <ElFormItem
         v-if="entity.jobType === 3"
-        label="java方法"
+        :label="$t('sysJob.javaMethod')"
         prop="jobParams.javaMethod"
         :rules="[
           { required: true, message: $t('message.required'), trigger: 'blur' },
@@ -216,7 +223,7 @@ const str = '"param"';
         <ElInput v-model="entity.jobParams.javaMethod" />
         <ElAlert
           style="margin-top: 5px"
-          :title="`示例：tech.aiflowy.job.util.JobUtil.execTest(${str},1,0.52D,100L)`"
+          :title="`${$t('sysJob.example')}：tech.aiflowy.job.util.JobUtil.execTest(${str},1,0.52D,100L)`"
         />
       </ElFormItem>
       <ElFormItem prop="allowConcurrent" :label="$t('sysJob.allowConcurrent')">

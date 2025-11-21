@@ -1,0 +1,14 @@
+{
+  "title": "JobLog",
+  "id": "Id",
+  "jobId": "JobId",
+  "jobName": "JobName",
+  "jobParams": "JobParams",
+  "jobResult": "JobResult",
+  "errorInfo": "ErrorInfo",
+  "status": "Status",
+  "startTime": "StartTime",
+  "endTime": "EndTime",
+  "created": "Created",
+  "remark": "Remark"
+}

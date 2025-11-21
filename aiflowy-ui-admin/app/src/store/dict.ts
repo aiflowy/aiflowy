@@ -35,7 +35,7 @@ export const useDictStore = defineStore('dictionary', {
 
         return dictMap;
       } catch (error) {
-        console.error(`获取字典 ${dictType} 失败:`, error);
+        console.error(`get dict ${dictType} error:`, error);
         return new Map();
       }
     },
@@ -44,7 +44,6 @@ export const useDictStore = defineStore('dictionary', {
     getDictLabel(dictType: string, value: any) {
       const dictMap = this.dictCache.get(dictType);
       if (!dictMap) {
-        console.warn(`字典 ${dictType} 尚未加载`);
         return value; // 返回原值作为降级处理
       }
 

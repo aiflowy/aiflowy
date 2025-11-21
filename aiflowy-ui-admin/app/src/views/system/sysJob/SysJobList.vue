@@ -26,6 +26,7 @@ import {
 import { api } from '#/api/request';
 import PageData from '#/components/page/PageData.vue';
 import { $t } from '#/locales';
+import { router } from '#/router';
 import { useDictStore } from '#/store';
 
 import SysJobModal from './SysJobModal.vue';
@@ -37,7 +38,7 @@ const formRef = ref<FormInstance>();
 const pageDataRef = ref();
 const saveDialog = ref();
 const formInline = ref({
-  id: '',
+  jobName: '',
 });
 const dictStore = useDictStore();
 function initDict() {
@@ -131,14 +132,25 @@ function stop(row: any) {
     },
   });
 }
+function toLogPage(row: any) {
+  router.push({
+    name: 'SysJobLog',
+    query: {
+      jobId: row.id,
+    },
+  });
+}
 </script>
 
 <template>
   <div class="page-container">
     <SysJobModal ref="saveDialog" @reload="reset" />
     <ElForm ref="formRef" :inline="true" :model="formInline">
-      <ElFormItem :label="$t('sysJob.id')" prop="id">
-        <ElInput v-model="formInline.id" :placeholder="$t('sysJob.id')" />
+      <ElFormItem :label="$t('sysJob.jobName')" prop="jobName">
+        <ElInput
+          v-model="formInline.jobName"
+          :placeholder="$t('sysJob.jobName')"
+        />
       </ElFormItem>
       <ElFormItem>
         <ElButton @click="search(formRef)" type="primary">
@@ -198,11 +210,6 @@ function stop(row: any) {
               {{ dictStore.getDictLabel('misfirePolicy', row.misfirePolicy) }}
             </template>
           </ElTableColumn>
-          <ElTableColumn prop="options" :label="$t('sysJob.options')">
-            <template #default="{ row }">
-              {{ row.options }}
-            </template>
-          </ElTableColumn>
           <ElTableColumn prop="status" :label="$t('sysJob.status')">
             <template #default="{ row }">
               {{ dictStore.getDictLabel('jobStatus', row.status) }}
@@ -218,7 +225,7 @@ function stop(row: any) {
               {{ row.remark }}
             </template>
           </ElTableColumn>
-          <ElTableColumn :label="$t('common.handle')" width="150">
+          <ElTableColumn :label="$t('common.handle')" width="300">
             <template #default="{ row }">
               <div>
                 <ElButton
@@ -246,7 +253,7 @@ function stop(row: any) {
                   {{ $t('button.stop') }}
                 </ElButton>
                 <ElButton
-                  v-if="row.status === 0"
+                  @click="toLogPage(row)"
                   v-access:code="'/api/v1/sysJob/query'"
                   link
                   type="primary"
@@ -257,8 +264,8 @@ function stop(row: any) {
                   {{ $t('button.log') }}
                 </ElButton>
                 <ElButton
-                  v-access:code="'/api/v1/sysJob/save'"
                   @click="showDialog(row)"
+                  v-access:code="'/api/v1/sysJob/save'"
                   link
                   type="primary"
                 >
@@ -268,8 +275,8 @@ function stop(row: any) {
                   {{ $t('button.edit') }}
                 </ElButton>
                 <ElButton
-                  v-access:code="'/api/v1/sysJob/remove'"
                   @click="remove(row)"
+                  v-access:code="'/api/v1/sysJob/remove'"
                   link
                   type="danger"
                 >
