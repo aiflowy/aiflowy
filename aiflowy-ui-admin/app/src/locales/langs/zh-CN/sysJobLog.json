@@ -1,0 +1,14 @@
+{
+  "title": "任务日志",
+  "id": "主键",
+  "jobId": "任务ID",
+  "jobName": "任务名称",
+  "jobParams": "任务参数",
+  "jobResult": "执行结果",
+  "errorInfo": "错误信息",
+  "status": "执行状态",
+  "startTime": "开始时间",
+  "endTime": "结束时间",
+  "created": "创建时间",
+  "remark": "备注"
+}

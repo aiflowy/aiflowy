@@ -12,7 +12,7 @@ export const APP_DOC_URL = 'https://doc.aiflowy.tech';
  * @zh_CN AIFlowy Logo
  */
 export const APP_LOGO_URL =
-  'https://unpkg.com/@aiflowy/static-source@0.1.7/source/logo-v1.webp';
+  'https://static.agentscenter.cn/attachment/1/2025/11/21/bebbe37b-f2d8-4776-9d51-d7a3535f4fe9/tabIcon.svg';
 
 /**
  * @zh_CN AIFlowy Admin 首页地址

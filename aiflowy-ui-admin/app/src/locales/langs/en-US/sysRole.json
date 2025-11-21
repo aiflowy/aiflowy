@@ -12,6 +12,6 @@
     "isDeleted": "IsDeleted",
     "menuPermission": "MenuPermission",
     "dataPermission": "DataPermission",
-    "checkStrictlyTrue": "CheckStrictlyTrue",
-    "checkStrictlyFalse": "CheckStrictlyFalse"
+    "checkStrictlyTrue": "Linked",
+    "checkStrictlyFalse": "NotLinked"
 }

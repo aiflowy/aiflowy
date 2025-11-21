@@ -65,7 +65,7 @@ const defaultPreferences: Preferences = {
   logo: {
     enable: true,
     fit: 'contain',
-    source: 'https://unpkg.com/@aiflowy/static-source@0.1.7/source/logo-v1.webp',
+    source: '/favicon.svg',
   },
   navigation: {
     accordion: true,

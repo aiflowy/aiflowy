@@ -15,8 +15,8 @@
   "start": "Start",
   "stop": "Stop",
   "log": "Log",
-  "back": "back",
-  "importFile": "import file",
-  "view": "view",
-  "download": "download"
+  "back": "Back",
+  "importFile": "ImportFile",
+  "view": "View",
+  "download": "Download"
 }

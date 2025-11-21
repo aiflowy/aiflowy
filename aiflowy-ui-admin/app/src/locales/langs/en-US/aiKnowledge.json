@@ -26,6 +26,8 @@
   "createdModifyTime":  "Creation/update time",
   "documentList":  "documentList",
   "knowledgeRetrieval":  "knowledgeRetrieval",
+  "sorting": "Sorting",
+  "content": "Content",
   "placeholder": {
     "title": "Please input title",
     "description": "Please provide a description so that the large model can better understand the knowledge base and make calls",

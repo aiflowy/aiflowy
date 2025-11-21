@@ -26,6 +26,8 @@
   "createdModifyTime":  "创建/更新时间",
   "documentList":  "文档列表",
   "knowledgeRetrieval":  "知识检索",
+  "sorting": "排序",
+  "content": "内容",
   "placeholder": {
     "title": "请输入名称",
     "description": "请输入描述，以便大模型更好的理解该知识库并且调用",

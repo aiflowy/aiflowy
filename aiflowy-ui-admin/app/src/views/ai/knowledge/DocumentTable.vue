@@ -1,11 +1,19 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { ref } from 'vue';
 
 import { $t } from '@aiflowy/locales';
 
 import { Delete, Download, View } from '@element-plus/icons-vue';
-import { ElButton, ElIcon, ElTable, ElTableColumn } from 'element-plus';
+import {
+  ElButton,
+  ElIcon,
+  ElMessage,
+  ElMessageBox,
+  ElTable,
+  ElTableColumn,
+} from 'element-plus';
 
+import { api } from '#/api/request';
 import PageData from '#/components/page/PageData.vue';
 
 const props = defineProps({
@@ -15,18 +23,28 @@ const props = defineProps({
   },
 });
 
-onMounted(() => {
-  console.log('文档列表', props.knowledgeId);
-});
+const emits = defineEmits(['viewDoc']);
 const pageDataRef = ref();
-const handleView = (row) => {
-  console.log('查看文档', row);
+const handleView = (row: any) => {
+  emits('viewDoc', row.id);
 };
-const handleDownload = (row) => {
+const handleDownload = (row: any) => {
   console.log('下载文档', row);
 };
-const handleDelete = (row) => {
-  console.log('删除文档', row);
+const handleDelete = (row: any) => {
+  ElMessageBox.confirm($t('message.deleteAlert'), $t('message.noticeTitle'), {
+    confirmButtonText: $t('button.confirm'),
+    cancelButtonText: $t('button.cancel'),
+    type: 'warning',
+  }).then(() => {
+    api.post('/api/v1/aiDocument/removeDoc', { id: row.id }).then((res) => {
+      if (res.errorCode === 0) {
+        ElMessage.success($t('message.deleteOkMessage'));
+        pageDataRef.value.setQuery({ id: props.knowledgeId });
+      }
+    });
+    // 删除逻辑
+  });
 };
 </script>
 
@@ -35,7 +53,7 @@ const handleDelete = (row) => {
     page-url="/api/v1/aiDocument/documentList"
     ref="pageDataRef"
     :page-size="10"
-    :extra-query-params="{ id: knowledgeId }"
+    :extra-query-params="{ id: props.knowledgeId }"
   >
     <template #default="{ pageList }">
       <ElTable :data="pageList" style="width: 100%" size="large">

@@ -15,5 +15,9 @@
     "modified": "Modified",
     "modifiedBy": "ModifiedBy",
     "remark": "Remark",
-    "isDeleted": "IsDeleted"
+    "isDeleted": "IsDeleted",
+    "workflow": "Workflow",
+    "beanMethod": "BeanMethod",
+    "javaMethod": "JavaMethod",
+    "example": "example"
 }

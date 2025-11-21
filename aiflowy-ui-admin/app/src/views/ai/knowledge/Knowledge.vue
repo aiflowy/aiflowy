@@ -45,9 +45,9 @@ const actions = ref([
 
 onMounted(() => {});
 const handleDelete = (item) => {
-  ElMessageBox.confirm('确定要删除吗？', '提示', {
-    confirmButtonText: '确定',
-    cancelButtonText: '取消',
+  ElMessageBox.confirm($t('message.deleteAlert'), $t('message.noticeTitle'), {
+    confirmButtonText: $t('message.ok'),
+    cancelButtonText: $t('message.cancel'),
     type: 'warning',
   })
     .then(() => {

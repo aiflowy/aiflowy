@@ -139,7 +139,6 @@ const handleCategoryClick = (category) => {
 };
 
 onMounted(() => {
-  console.log('selectedCategory', selectedCategory.value);
   // 初始化时，检查是否有默认选中的分类
   if (props.defaultSelectedCategory) {
     selectedCategory.value = props.defaultSelectedCategory;
