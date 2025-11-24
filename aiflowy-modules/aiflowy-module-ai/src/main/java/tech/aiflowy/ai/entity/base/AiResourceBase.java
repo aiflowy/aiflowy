@@ -104,6 +104,12 @@ public class AiResourceBase extends DateEntity implements Serializable {
     @Column(comment = "删除标识", isLogicDelete = true)
     private Integer isDeleted;
 
+    /**
+     * 文件大小
+     */
+    @Column(comment = "文件大小")
+    private BigInteger fileSize;
+
     public BigInteger getId() {
         return id;
     }
@@ -224,4 +230,11 @@ public class AiResourceBase extends DateEntity implements Serializable {
         this.isDeleted = isDeleted;
     }
 
+    public BigInteger getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(BigInteger fileSize) {
+        this.fileSize = fileSize;
+    }
 }

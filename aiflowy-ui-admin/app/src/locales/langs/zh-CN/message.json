@@ -12,5 +12,6 @@
   "getDataError": "获取数据失败",
   "updateOkMessage": "更新成功！",
   "startAlert": "确定启动吗？",
-  "stopAlert": "确定停止吗？"
+  "stopAlert": "确定停止吗？",
+  "preview": "预览"
 }

@@ -12,5 +12,6 @@
   "getDataError": "Get data error",
   "updateOkMessage": "Updated successfully",
   "startAlert": "Are you sure to start?",
-  "stopAlert": "Are you sure to stop?"
+  "stopAlert": "Are you sure to stop?",
+  "preview": "Preview"
 }

@@ -18,5 +18,7 @@
   "back": "Back",
   "importFile": "ImportFile",
   "view": "View",
-  "download": "Download"
+  "download": "Download",
+  "upload": "Upload",
+  "preview": "Preview"
 }

@@ -9,5 +9,9 @@
     "sysDict": "Dictionary",
     "sysJob": "Job",
     "sysLog": "Log"
+  },
+  "ai": {
+    "title": "AI",
+    "resources": "Resources"
   }
 }

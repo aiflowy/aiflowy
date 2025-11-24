@@ -42,3 +42,50 @@ export function getNestedValue<T>(obj: T, path: string): any {
 
   return current;
 }
+
+/**
+ * 获取资源类型
+ * @param suffix
+ */
+export const getResourceType = (suffix: any): number => {
+  if (!suffix) {
+    return 99;
+  }
+  const img = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'svg'];
+  const video = ['mp4', 'm4v', 'webm', 'ogg'];
+  const audio = ['mp3', 'wav', 'ogg'];
+  const doc = [
+    'doc',
+    'docx',
+    'xls',
+    'xlsx',
+    'ppt',
+    'pptx',
+    'pdf',
+    'txt',
+    'md',
+    'csv',
+  ];
+  if (img.includes(suffix)) {
+    return 0;
+  } else if (video.includes(suffix)) {
+    return 1;
+  } else if (audio.includes(suffix)) {
+    return 2;
+  } else if (doc.includes(suffix)) {
+    return 3;
+  } else {
+    return 99;
+  }
+};
+
+/**
+ * 将字节格式化为可读大小
+ */
+export function formatBytes(bytes: any, decimals = 2) {
+  if (bytes === 0 || !bytes) return '0 Bytes';
+  const k = 1024;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${Number.parseFloat((bytes / k ** i).toFixed(decimals))} ${sizes[i]}`;
+}

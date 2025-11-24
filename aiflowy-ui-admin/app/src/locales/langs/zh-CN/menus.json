@@ -9,5 +9,9 @@
     "sysDict": "字典管理",
     "sysJob": "定时任务",
     "sysLog": "日志管理"
+  },
+  "ai": {
+    "title": "AI能力",
+    "resources": "素材库"
   }
 }

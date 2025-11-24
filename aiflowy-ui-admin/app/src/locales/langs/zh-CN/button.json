@@ -18,5 +18,7 @@
   "back": "返回",
   "importFile": "导入文件",
   "view": "查看",
-  "download": "下载"
+  "download": "下载",
+  "upload": "上传",
+  "preview": "预览"
 }

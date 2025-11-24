@@ -1,0 +1,23 @@
+{
+    "title": "数据中枢",
+    "id": "主键",
+    "deptId": "部门ID",
+    "tenantId": "租户ID",
+    "tableName": "数据表名",
+    "tableDesc": "数据表描述",
+    "actualTable": "物理表名",
+    "status": "数据状态",
+    "created": "创建时间",
+    "createdBy": "创建者",
+    "modified": "修改时间",
+    "modifiedBy": "修改者",
+    "options": "扩展项",
+    "fields": "字段",
+    "fieldName": "字段名",
+    "fieldDesc": "字段描述",
+    "fieldType": "字段类型",
+    "required": "是否必填",
+    "noFieldError": "至少包含一个字段",
+    "fieldInfoError": "字段信息不完善",
+    "nameRegx": "只能包含小写字母、数字和下划线，且必须以小写字母开头"
+}

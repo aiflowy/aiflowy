@@ -6,7 +6,9 @@ import { defineEmits, ref } from 'vue';
 import { useAppConfig } from '@aiflowy/hooks';
 import { useAccessStore } from '@aiflowy/stores';
 
-import { ElButton, ElMessage, ElMessageBox, ElUpload } from 'element-plus';
+import { ElButton, ElUpload } from 'element-plus';
+
+import { $t } from '#/locales';
 
 const props = defineProps({
   action: {
@@ -19,11 +21,11 @@ const props = defineProps({
   },
   limit: {
     type: Number,
-    default: 3,
+    default: 1,
   },
   multiple: {
     type: Boolean,
-    default: true,
+    default: false,
   },
 });
 
@@ -31,6 +33,7 @@ const emit = defineEmits([
   'success', // 文件上传成功
   'handleDelete',
   'handlePreview',
+  'beforeUpload',
 ]);
 
 const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
@@ -41,31 +44,14 @@ const headers = ref({
 });
 const fileList = ref<UploadUserFile[]>([]);
 
+const beforeUpload: UploadProps['beforeUpload'] = (rawFile) => {
+  emit('beforeUpload', rawFile);
+};
 const handleRemove: UploadProps['onRemove'] = (file, uploadFiles) => {
   emit('handleDelete', file, uploadFiles);
 };
-
-const handlePreview: UploadProps['onPreview'] = (uploadFile) => {
-  emit('handleDelete', uploadFile);
-};
-
-const handleExceed: UploadProps['onExceed'] = (files, uploadFiles) => {
-  ElMessage.warning(
-    `The limit is 3, you selected ${files.length} files this time, add up to ${
-      files.length + uploadFiles.length
-    } totally`,
-  );
-};
-
 const handleSuccess: UploadProps['onSuccess'] = (response) => {
   emit('success', response.data.path);
-};
-
-const beforeRemove: UploadProps['beforeRemove'] = (uploadFile) => {
-  return ElMessageBox.confirm(`确定删除 ${uploadFile.name} ?`).then(
-    () => true,
-    () => false,
-  );
 };
 </script>
 
@@ -76,18 +62,11 @@ const beforeRemove: UploadProps['beforeRemove'] = (uploadFile) => {
     :headers="headers"
     :action="`${apiURL}${props.action}`"
     :multiple="props.multiple"
-    :on-preview="handlePreview"
+    :before-upload="beforeUpload"
     :on-remove="handleRemove"
-    :before-remove="beforeRemove"
     :limit="props.limit"
-    :on-exceed="handleExceed"
     :on-success="handleSuccess"
   >
-    <ElButton type="primary">Click to upload</ElButton>
-    <template #tip>
-      <div class="el-upload__tip">
-        {{ tips }}
-      </div>
-    </template>
+    <ElButton type="primary">{{ $t('button.upload') }}</ElButton>
   </ElUpload>
 </template>
