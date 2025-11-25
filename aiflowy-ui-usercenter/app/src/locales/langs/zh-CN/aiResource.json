@@ -1,0 +1,18 @@
+{
+    "id": "主键",
+    "deptId": "部门ID",
+    "tenantId": "租户ID",
+    "resourceType": "素材类型",
+    "resourceName": "素材名称",
+    "suffix": "后缀",
+    "resourceUrl": "素材地址",
+    "origin": "素材来源",
+    "status": "数据状态",
+    "created": "创建时间",
+    "createdBy": "创建者",
+    "modified": "修改时间",
+    "modifiedBy": "修改者",
+    "options": "扩展项",
+    "isDeleted": "删除标识",
+    "fileSize": "文件大小"
+}

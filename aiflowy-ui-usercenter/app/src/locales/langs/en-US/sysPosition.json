@@ -1,0 +1,15 @@
+{
+    "id": "Id",
+    "tenantId": "TenantId",
+    "deptId": "Dept",
+    "positionName": "PositionName",
+    "positionCode": "PositionCode",
+    "sortNo": "SortNo",
+    "status": "Status",
+    "created": "Created",
+    "createdBy": "CreatedBy",
+    "modified": "Modified",
+    "modifiedBy": "ModifiedBy",
+    "remark": "Remark",
+    "isDeleted": "IsDeleted"
+}

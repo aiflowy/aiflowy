@@ -1,0 +1,17 @@
+{
+    "id": "主键",
+    "tenantId": "租户ID",
+    "roleName": "角色名称",
+    "roleKey": "角色标识",
+    "status": "数据状态",
+    "created": "创建时间",
+    "createdBy": "创建者",
+    "modified": "修改时间",
+    "modifiedBy": "修改者",
+    "remark": "备注",
+    "isDeleted": "删除标识",
+    "menuPermission": "菜单权限",
+    "dataPermission": "数据权限",
+    "checkStrictlyTrue": "联动",
+    "checkStrictlyFalse": "不联动"
+}

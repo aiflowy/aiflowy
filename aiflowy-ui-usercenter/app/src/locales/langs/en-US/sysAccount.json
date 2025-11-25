@@ -1,0 +1,22 @@
+{
+  "id": "Id",
+  "deptId": "Dept",
+  "tenantId": "TenantId",
+  "loginName": "LoginName",
+  "password": "Password",
+  "accountType": "AccountType",
+  "nickname": "Nickname",
+  "mobile": "Mobile",
+  "email": "Email",
+  "avatar": "Avatar",
+  "dataScope": "DataScope",
+  "deptIdList": "DeptIdList",
+  "status": "Status",
+  "created": "Created",
+  "createdBy": "CreatedBy",
+  "modified": "Modified",
+  "modifiedBy": "ModifiedBy",
+  "remark": "Remark",
+  "isDeleted": "IsDeleted",
+  "roleIds": "Role"
+}

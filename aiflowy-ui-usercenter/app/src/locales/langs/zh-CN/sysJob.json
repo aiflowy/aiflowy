@@ -1,0 +1,23 @@
+{
+    "id": "主键",
+    "deptId": "部门ID",
+    "tenantId": "租户ID",
+    "jobName": "任务名称",
+    "jobType": "任务类型",
+    "jobParams": "任务参数",
+    "cronExpression": "cron表达式",
+    "allowConcurrent": "是否并发执行",
+    "misfirePolicy": "错过策略",
+    "options": "其他配置",
+    "status": "任务状态",
+    "created": "创建时间",
+    "createdBy": "创建者",
+    "modified": "修改时间",
+    "modifiedBy": "修改者",
+    "remark": "备注",
+    "isDeleted": "删除标识",
+    "workflow": "工作流",
+    "beanMethod": "bean方法",
+    "javaMethod": "java方法",
+    "example": "示例"
+}

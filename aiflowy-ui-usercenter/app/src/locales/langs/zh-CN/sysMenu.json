@@ -1,0 +1,20 @@
+{
+"root":"顶级",
+"id": "主键",
+"parentId": "父菜单",
+"menuType": "菜单类型",
+"menuTitle": "菜单标题",
+"menuUrl": "菜单url",
+"component": "组件路径",
+"menuIcon": "图标",
+"isShow": "是否显示",
+"permissionTag": "权限标识",
+"sortNo": "排序",
+"status": "数据状态",
+"created": "创建时间",
+"createdBy": "创建者",
+"modified": "修改时间",
+"modifiedBy": "修改者",
+"remark": "备注",
+"isDeleted": "删除标识"
+}

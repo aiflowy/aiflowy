@@ -1,0 +1,20 @@
+{
+"root":"Top",
+"id": "Id",
+"parentId": "Parent",
+"menuType": "MenuType",
+"menuTitle": "MenuTitle",
+"menuUrl": "MenuUrl",
+"component": "Component",
+"menuIcon": "MenuIcon",
+"isShow": "IsShow",
+"permissionTag": "PermissionTag",
+"sortNo": "SortNo",
+"status": "Status",
+"created": "Created",
+"createdBy": "CreatedBy",
+"modified": "Modified",
+"modifiedBy": "ModifiedBy",
+"remark": "Remark",
+"isDeleted": "IsDeleted"
+}

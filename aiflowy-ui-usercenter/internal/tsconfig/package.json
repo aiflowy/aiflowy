@@ -1,0 +1,25 @@
+{
+  "name": "@aiflowy/tsconfig",
+  "version": "1.0.0",
+  "private": true,
+  "homepage": "https://github.com/aiflowy/aiflowy",
+  "bugs": "https://github.com/aiflowy/aiflowy/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aiflowy/aiflowy.git",
+    "directory": "internal/tsconfig"
+  },
+  "license": "MIT",
+  "type": "module",
+  "files": [
+    "base.json",
+    "library.json",
+    "node.json",
+    "web-app.json",
+    "web.json"
+  ],
+  "dependencies": {
+    "@aiflowy/types": "workspace:*",
+    "vite": "catalog:"
+  }
+}

@@ -1,0 +1,13 @@
+{
+    "id": "主键",
+    "tableId": "数据表ID",
+    "fieldName": "字段名称",
+    "fieldDesc": "字段描述",
+    "fieldType": "字段类型",
+    "required": "是否必填",
+    "created": "创建时间",
+    "createdBy": "创建者",
+    "modified": "修改时间",
+    "modifiedBy": "修改者",
+    "options": "扩展项"
+}

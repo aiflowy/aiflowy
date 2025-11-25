@@ -1,0 +1,22 @@
+{
+  "id": "主键",
+  "deptId": "部门",
+  "tenantId": "租户ID",
+  "loginName": "登录账号",
+  "password": "密码",
+  "accountType": "账户类型",
+  "nickname": "昵称",
+  "mobile": "手机电话",
+  "email": "邮件",
+  "avatar": "账户头像",
+  "dataScope": "数据权限类型",
+  "deptIdList": "自定义部门权限",
+  "status": "数据状态",
+  "created": "创建时间",
+  "createdBy": "创建者",
+  "modified": "修改时间",
+  "modifiedBy": "修改者",
+  "remark": "备注",
+  "isDeleted": "删除标识",
+  "roleIds": "角色"
+}

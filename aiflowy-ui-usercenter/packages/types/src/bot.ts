@@ -1,0 +1,36 @@
+interface BotInfo {
+  alias: string;
+  anonymousEnabled: boolean;
+  created: string;
+  createdBy: number;
+  deptId: number;
+  description: string;
+  icon: string;
+  id: string;
+  llmId: string;
+  llmOptions: {
+    maxMessageCount: number;
+    maxReplyLength: number;
+    temperature: number;
+    topK: number;
+    topP: number;
+  };
+  modified: string;
+  modifiedBy: number;
+  options: {
+    anonymousEnabled: boolean;
+    EncodingAESKey: string;
+    presetQuestions: string[];
+    reActModeEnabled: boolean;
+    voiceEnabled: boolean;
+    weChatMpAesKey: string;
+    weChatMpAppId: string;
+    weChatMpSecret: string;
+    weChatMpToken: string;
+    welcomeMessage: string;
+  };
+  tenantId: number;
+  title: string;
+}
+
+export type { BotInfo };

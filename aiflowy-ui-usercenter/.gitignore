@@ -1,4 +1,33 @@
-# Logs
+node_modules
+.DS_Store
+dist
+dist-ssr
+dist.zip
+dist.tar
+dist.war
+.nitro
+.output
+*-dist.zip
+*-dist.tar
+*-dist.war
+coverage
+*.local
+**/.vitepress/cache
+.cache
+.turbo
+.temp
+dev-dist
+.stylelintcache
+yarn.lock
+package-lock.json
+.VSCodeCounter
+**/backend-mock/data
+
+# local env files
+.env.local
+.env.*.local
+.eslintcache
+
 logs
 *.log
 npm-debug.log*
@@ -6,31 +35,18 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-
-node_modules
-.DS_Store
-dist
-dist-ssr
-coverage
-*.local
+vite.config.mts.*
+vite.config.mjs.*
+vite.config.js.*
+vite.config.ts.*
 
 # Editor directories and files
-.vscode/*
-!.vscode/extensions.json
 .idea
+# .vscode
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-
-*.tsbuildinfo
-
-.eslintcache
-
-# Cypress
-/cypress/videos/
-/cypress/screenshots/
-
-# Vitest
-__screenshots__/
+.history
+.cursor

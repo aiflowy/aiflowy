@@ -1,0 +1,47 @@
+{
+  "name": "@aiflowy/plugins",
+  "version": "1.0.0",
+  "homepage": "https://github.com/aiflowy/aiflowy",
+  "bugs": "https://github.com/aiflowy/aiflowy/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aiflowy/aiflowy.git",
+    "directory": "packages/effects/plugins"
+  },
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    "./echarts": {
+      "types": "./src/echarts/index.ts",
+      "default": "./src/echarts/index.ts"
+    },
+    "./vxe-table": {
+      "types": "./src/vxe-table/index.ts",
+      "default": "./src/vxe-table/index.ts"
+    },
+    "./motion": {
+      "types": "./src/motion/index.ts",
+      "default": "./src/motion/index.ts"
+    }
+  },
+  "dependencies": {
+    "@aiflowy-core/form-ui": "workspace:*",
+    "@aiflowy-core/shadcn-ui": "workspace:*",
+    "@aiflowy-core/shared": "workspace:*",
+    "@aiflowy/hooks": "workspace:*",
+    "@aiflowy/icons": "workspace:*",
+    "@aiflowy/locales": "workspace:*",
+    "@aiflowy/preferences": "workspace:*",
+    "@aiflowy/types": "workspace:*",
+    "@aiflowy/utils": "workspace:*",
+    "@vueuse/core": "catalog:",
+    "@vueuse/motion": "catalog:",
+    "echarts": "catalog:",
+    "vue": "catalog:",
+    "vxe-pc-ui": "catalog:",
+    "vxe-table": "catalog:"
+  }
+}

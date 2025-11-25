@@ -1,0 +1,54 @@
+{
+  "name": "@aiflowy-core/shadcn-ui",
+  "version": "1.0.0",
+  "#main": "./dist/index.mjs",
+  "#module": "./dist/index.mjs",
+  "homepage": "https://github.com/aiflowy/aiflowy",
+  "bugs": "https://github.com/aiflowy/aiflowy/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aiflowy/aiflowy.git",
+    "directory": "packages/@aiflowy-core/uikit/shadcn-ui"
+  },
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "#build": "pnpm unbuild",
+    "#prepublishOnly": "npm run build"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "main": "./src/index.ts",
+  "module": "./src/index.ts",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "development": "./src/index.ts",
+      "default": "./src/index.ts",
+      "//default": "./dist/index.mjs"
+    }
+  },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "default": "./src/index.ts"
+      }
+    }
+  },
+  "dependencies": {
+    "@aiflowy-core/composables": "workspace:*",
+    "@aiflowy-core/icons": "workspace:*",
+    "@aiflowy-core/shared": "workspace:*",
+    "@aiflowy-core/typings": "workspace:*",
+    "@vueuse/core": "catalog:",
+    "class-variance-authority": "catalog:",
+    "lucide-vue-next": "catalog:",
+    "reka-ui": "catalog:",
+    "vee-validate": "catalog:",
+    "vue": "catalog:"
+  }
+}

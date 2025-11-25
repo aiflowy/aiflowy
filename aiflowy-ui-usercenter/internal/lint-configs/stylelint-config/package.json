@@ -1,0 +1,43 @@
+{
+  "name": "@aiflowy/stylelint-config",
+  "version": "1.0.0",
+  "private": true,
+  "homepage": "https://github.com/aiflowy/aiflowy",
+  "bugs": "https://github.com/aiflowy/aiflowy/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aiflowy/aiflowy.git",
+    "directory": "internal/lint-configs/stylelint-config"
+  },
+  "license": "MIT",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./index.mjs",
+  "module": "./index.mjs",
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "default": "./index.mjs"
+    }
+  },
+  "dependencies": {
+    "@stylistic/stylelint-plugin": "catalog:",
+    "stylelint-config-recess-order": "catalog:",
+    "stylelint-scss": "catalog:"
+  },
+  "devDependencies": {
+    "postcss": "catalog:",
+    "postcss-html": "catalog:",
+    "postcss-scss": "catalog:",
+    "prettier": "catalog:",
+    "stylelint": "catalog:",
+    "stylelint-config-recommended": "catalog:",
+    "stylelint-config-recommended-scss": "catalog:",
+    "stylelint-config-recommended-vue": "catalog:",
+    "stylelint-config-standard": "catalog:",
+    "stylelint-order": "catalog:",
+    "stylelint-prettier": "catalog:"
+  }
+}

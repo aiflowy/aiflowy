@@ -1,0 +1,13 @@
+{
+    "id": "Id",
+    "tableId": "TableId",
+    "fieldName": "FieldName",
+    "fieldDesc": "FieldDesc",
+    "fieldType": "FieldType",
+    "required": "Required",
+    "created": "Created",
+    "createdBy": "CreatedBy",
+    "modified": "Modified",
+    "modifiedBy": "ModifiedBy",
+    "options": "Options"
+}

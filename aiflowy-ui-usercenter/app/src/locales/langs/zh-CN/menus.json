@@ -1,0 +1,17 @@
+{
+  "system": {
+    "title": "系统管理",
+    "sysAccount": "用户管理",
+    "sysRole": "角色管理",
+    "sysMenu": "菜单管理",
+    "sysDept": "部门管理",
+    "sysPosition": "岗位管理",
+    "sysDict": "字典管理",
+    "sysJob": "定时任务",
+    "sysLog": "日志管理"
+  },
+  "ai": {
+    "title": "AI能力",
+    "resources": "素材库"
+  }
+}

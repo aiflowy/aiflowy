@@ -1,0 +1,17 @@
+{
+    "id": "Id",
+    "tenantId": "TenantId",
+    "roleName": "RoleName",
+    "roleKey": "RoleKey",
+    "status": "Status",
+    "created": "Created",
+    "createdBy": "CreatedBy",
+    "modified": "Modified",
+    "modifiedBy": "ModifiedBy",
+    "remark": "Remark",
+    "isDeleted": "IsDeleted",
+    "menuPermission": "MenuPermission",
+    "dataPermission": "DataPermission",
+    "checkStrictlyTrue": "Linked",
+    "checkStrictlyFalse": "NotLinked"
+}
