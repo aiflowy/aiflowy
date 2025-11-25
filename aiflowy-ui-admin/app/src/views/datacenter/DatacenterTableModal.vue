@@ -80,7 +80,7 @@ watch(
   (newVal) => {
     entity.value.fields = newVal;
   },
-    { deep: true }
+  { deep: true },
 );
 
 // functions
@@ -206,6 +206,7 @@ function deleteField(row: any, $index: number) {
             <ElTableColumn :label="$t('datacenterTable.fieldType')">
               <template #default="{ row }">
                 <DictSelect
+                  :disabled="!isAdd"
                   v-model.trim="row.fieldType"
                   dict-code="fieldType"
                 />

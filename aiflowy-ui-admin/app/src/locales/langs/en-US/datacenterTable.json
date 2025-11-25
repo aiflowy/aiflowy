@@ -21,5 +21,13 @@
     "fieldInfoError": "Field info is not completed",
     "nameRegx": "It can only contain lowercase letters, numbers, and underscores, and must start with a lowercase letter",
     "structure": "TableStructure",
-    "data": "Data"
+    "data": "Data",
+    "uploadTitle": "Click to upload",
+    "uploadDesc": "Choose an excel file to upload, file size limit 10MB.",
+    "downloadTemplate": "Download  template",
+    "importComplete": "Import is completed",
+    "totalNum": "Total Count",
+    "successNum": "Success Count",
+    "failNum": "Fail Count",
+    "failList": "Fail List"
 }

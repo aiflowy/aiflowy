@@ -19,6 +19,7 @@ import tech.aiflowy.datacenter.entity.DatacenterTable;
 import tech.aiflowy.datacenter.entity.DatacenterTableFields;
 import tech.aiflowy.datacenter.entity.vo.HeaderVo;
 import tech.aiflowy.datacenter.excel.ReadDataListener;
+import tech.aiflowy.datacenter.excel.ReadResVo;
 import tech.aiflowy.datacenter.service.DatacenterTableFieldsService;
 import tech.aiflowy.datacenter.service.DatacenterTableService;
 
@@ -139,13 +140,16 @@ public class DatacenterTableController extends BaseCurdController<DatacenterTabl
         return Result.ok();
     }
 
+    /**
+     * 导入数据
+     */
     @PostMapping("/importData")
     @SaCheckPermission("/api/v1/datacenterTable/save")
-    public Result<Void> importData(MultipartFile file, @RequestParam Map<String, Object> map) throws Exception {
+    public Result<ReadResVo> importData(MultipartFile file, @RequestParam Map<String, Object> map) throws Exception {
         Object tableId = map.get("tableId");
         DatacenterTable record = service.getById(tableId.toString());
         if (record == null) {
-            return Result.fail(99, "数据表不存在");
+            throw new RuntimeException("数据表不存在");
         }
         InputStream is = file.getInputStream();
         List<DatacenterTableFields> fields = service.getFields(record.getId());
@@ -155,7 +159,11 @@ public class DatacenterTableController extends BaseCurdController<DatacenterTabl
         FastExcel.read(is, listener)
                 .sheet()
                 .doRead();
-        return Result.ok();
+        int totalCount = listener.getTotalCount();
+        int errorCount = listener.getErrorCount();
+        int successCount = listener.getSuccessCount();
+        List<JSONObject> errorRows = listener.getErrorRows();
+        return Result.ok(new ReadResVo(successCount, errorCount, totalCount, errorRows));
     }
 
     @GetMapping("/getTemplate")

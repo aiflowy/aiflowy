@@ -29,6 +29,7 @@ import { api } from '#/api/request';
 import tableIcon from '#/assets/datacenter/table2x.png';
 import PageData from '#/components/page/PageData.vue';
 import { router } from '#/router';
+import BatchImportModal from '#/views/datacenter/BatchImportModal.vue';
 import RecordModal from '#/views/datacenter/RecordModal.vue';
 
 const pageDataRef = ref();
@@ -43,6 +44,7 @@ const fieldList = ref<any[]>([]);
 const headers = ref<any[]>([]);
 const activeMenu = ref('1');
 const recordModal = ref();
+const batchImportModal = ref();
 function getDetailInfo(id: any) {
   api.get(`/api/v1/datacenterTable/detailInfo?tableId=${id}`).then((res) => {
     detailInfo.value = res.data;
@@ -96,10 +98,19 @@ function remove(row: any) {
 function refresh() {
   pageDataRef.value.setQuery({});
 }
+function openImportModal() {
+  batchImportModal.value.openDialog();
+}
 </script>
 
 <template>
   <div class="page-container">
+    <BatchImportModal
+      :table-id="tableId"
+      :title="$t('button.batchImport')"
+      ref="batchImportModal"
+      @reload="refresh"
+    />
     <RecordModal
       ref="recordModal"
       :form-items="headers"
@@ -126,7 +137,7 @@ function refresh() {
               </ElIcon>
               {{ $t('button.addLine') }}
             </ElButton>
-            <ElButton type="primary" @click="refresh">
+            <ElButton type="primary" @click="openImportModal">
               <ElIcon class="mr-1">
                 <Upload />
               </ElIcon>

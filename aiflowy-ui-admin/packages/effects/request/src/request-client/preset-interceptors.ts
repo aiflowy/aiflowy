@@ -28,6 +28,9 @@ export const defaultResponseInterceptor = ({
       if (config.responseReturn === 'raw') {
         return response;
       }
+      if (config.responseType === 'blob') {
+        return responseData;
+      }
 
       if (status >= 200 && status < 400) {
         if (config.responseReturn === 'body') {

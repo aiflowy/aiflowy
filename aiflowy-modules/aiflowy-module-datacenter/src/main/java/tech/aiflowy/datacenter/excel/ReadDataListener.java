@@ -30,6 +30,8 @@ public class ReadDataListener implements ReadListener<LinkedHashMap<Integer, Obj
     private int errorCount = 0;
     private int totalCount = 0;
 
+    private final List<JSONObject> errorRows = new ArrayList<>();
+
     public ReadDataListener() {
     }
 
@@ -54,8 +56,9 @@ public class ReadDataListener implements ReadListener<LinkedHashMap<Integer, Obj
             service.saveValue(tableId, obj, loginAccount);
             successCount++;
         } catch (Exception e) {
-            log.error("导入数据到数据中枢失败，具体值：{}", obj, e);
             errorCount++;
+            log.error("导入数据到数据中枢失败，具体值：{}", obj, e);
+            errorRows.add(obj);
         }
         totalCount++;
     }
@@ -96,5 +99,9 @@ public class ReadDataListener implements ReadListener<LinkedHashMap<Integer, Obj
 
     public int getTotalCount() {
         return totalCount;
+    }
+
+    public List<JSONObject> getErrorRows() {
+        return errorRows;
     }
 }
