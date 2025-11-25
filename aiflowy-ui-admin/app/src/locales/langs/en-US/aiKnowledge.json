@@ -42,6 +42,23 @@
     "fileUpload": "File upload",
     "parameterSettings": "ParameterSettings",
     "segmentedPreview": "SegmentedPreview",
-    "confirmImport": "ConfirmImport"
+    "confirmImport": "ConfirmImport",
+    "fileName": "File Name",
+    "progressUpload": "Progress of file upload",
+    "fileSize": "File size"
+  },
+  "splitterDoc": {
+    "fileType": "FileType",
+    "splitterName": "Segmenter",
+    "chunkSize": "SegmentLength",
+    "overlapSize": "SegmentOverlap",
+    "regex": "RegularExpression",
+    "document": "Document",
+    "simpleDocumentSplitter": "SimpleDocumentSplitter",
+    "simpleTokenizeSplitter": "SimpleTokenizeSplitter",
+    "regexDocumentSplitter": "RegexDocumentSplitter",
+    "uploadStatus": "UploadStatus",
+    "pendingUpload": "PendingUpload",
+    "completed": "Completed"
   }
 }

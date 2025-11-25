@@ -14,5 +14,7 @@
   "startAlert": "确定启动吗？",
   "stopAlert": "确定停止吗？",
   "preview": "预览",
-  "notEmpty": "不能为空"
+  "notEmpty": "不能为空",
+  "success": "成功",
+  "fail": "失败"
 }

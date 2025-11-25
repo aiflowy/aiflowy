@@ -203,15 +203,15 @@ public class AiDocumentServiceImpl extends ServiceImpl<AiDocumentMapper, AiDocum
             List<AiDocumentChunk> aiDocumentChunks = null;
             // 如果是预览拆分，则返回指定页的数据
             if ("textSplit".equals(operation)){
-                if (pageNumber == 1){
-                    if (previewList.size() < pageSize){
-                        aiDocumentChunks = previewList;
-                    } else {
-                        aiDocumentChunks = previewList.subList(0, pageSize);
-                    }
+                int startIndex = (pageNumber - 1) * pageSize;
+                int endIndex = Math.min(startIndex + pageSize, previewList.size());
+
+                if (startIndex >= previewList.size()) {
+                    aiDocumentChunks = new ArrayList<>();
                 } else {
-                    aiDocumentChunks = previewList.subList(pageNumber * pageSize, pageNumber * pageSize + pageSize);
+                    aiDocumentChunks = new ArrayList<>(previewList.subList(startIndex, endIndex));
                 }
+
                 res.put("total", previewList.size());
                 // 保存文件到知识库
             } else if ("saveText".equals(operation)){

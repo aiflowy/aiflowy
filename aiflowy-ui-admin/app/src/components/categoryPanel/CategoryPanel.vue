@@ -19,6 +19,10 @@ const props = defineProps({
     default: () => [],
     required: true,
   },
+  valueKey: {
+    type: String,
+    default: undefined,
+  },
   titleKey: {
     type: String,
     default: 'name',
@@ -57,6 +61,11 @@ const emit = defineEmits([
   'click', // 分类项点击事件
   'panelToggle', // 面板收缩状态改变事件
 ]);
+
+const finalValueKey = computed(() => {
+  // 父组件传递了 valueKey 就用 valueKey，否则用 titleKey
+  return props.valueKey ?? props.titleKey;
+});
 
 // -------------------------- 核心工具函数 --------------------------
 /**
@@ -134,8 +143,13 @@ const togglePanel = () => {
 const selectedCategory = ref(null);
 // 处理分类项点击
 const handleCategoryClick = (category) => {
-  selectedCategory.value = category[props.titleKey];
-  emit('click', category);
+  // 选中值：用 finalValueKey（父组件指定的字段）
+  selectedCategory.value = category[finalValueKey.value];
+  emit('click', {
+    item: category,
+    value: category[finalValueKey.value], // 父组件指定字段的值
+    label: category[props.titleKey], // 分类名称
+  });
 };
 
 onMounted(() => {
@@ -166,7 +180,7 @@ onMounted(() => {
       >
         <div
           class="category-item-content"
-          :class="{ selected: selectedCategory === category[titleKey] }"
+          :class="{ selected: selectedCategory === category[finalValueKey] }"
           @click="handleCategoryClick(category)"
         >
           <!-- 图标 -->

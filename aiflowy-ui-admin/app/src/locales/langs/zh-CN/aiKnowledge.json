@@ -42,6 +42,23 @@
     "fileUpload": "文件上传",
     "parameterSettings": "参数设置",
     "segmentedPreview": "分段预览",
-    "confirmImport": "确认导入"
+    "confirmImport": "确认导入",
+    "fileName": "文件名称",
+    "progressUpload": "文件上传进度",
+    "fileSize": "文件大小"
+  },
+  "splitterDoc": {
+    "fileType": "文件类型",
+    "splitterName": "分割器",
+    "chunkSize": "分段长度",
+    "overlapSize": "分段重叠",
+    "regex": "正则表达式",
+    "document": "文档",
+    "simpleDocumentSplitter": "简单文档分割器",
+    "simpleTokenizeSplitter": "简单分词器",
+    "regexDocumentSplitter": "正则文档分割器",
+    "uploadStatus": "上传状态",
+    "pendingUpload": "待上传",
+    "completed": "已完成"
   }
 }

@@ -19,7 +19,7 @@ const router = useRouter();
 const knowledgeId = ref<string>((route.query.id as string) || '');
 
 const categoryData = [
-  { key: 'docList', name: $t('aiKnowledge.documentList') },
+  { key: 'documentList', name: $t('aiKnowledge.documentList') },
   { key: 'knowledgeSearch', name: $t('aiKnowledge.knowledgeRetrieval') },
 ];
 const headerButtons = [
@@ -38,7 +38,7 @@ const headerButtons = [
   },
 ];
 const isImportFileVisible = ref(false);
-const selectedCategory = ref('docList');
+const selectedCategory = ref('documentList');
 const handleSearch = () => {};
 const handleButtonClick = (event: any) => {
   // 根据按钮 key 执行不同操作
@@ -54,7 +54,7 @@ const handleButtonClick = (event: any) => {
   }
 };
 const handleCategoryClick = (category: any) => {
-  selectedCategory.value = category.key;
+  selectedCategory.value = category.item.key;
   viewDocVisible.value = false;
 };
 const viewDocVisible = ref(false);
@@ -82,15 +82,16 @@ const backDoc = () => {
       </div>
       <div class="doc-content">
         <CategoryPanel
-          :default-selected-category="$t('aiKnowledge.documentList')"
+          default-selected-category="documentList"
           :categories="categoryData"
           title-key="name"
+          value-key="key"
           :use-img-for-svg="true"
           :need-hide-collapse="true"
           :expand-width="200"
           @click="handleCategoryClick"
         />
-        <div v-if="selectedCategory === 'docList'" class="doc-table">
+        <div v-if="selectedCategory === 'documentList'" class="doc-table">
           <DocumentTable
             :knowledge-id="knowledgeId"
             @view-doc="viewDoc"

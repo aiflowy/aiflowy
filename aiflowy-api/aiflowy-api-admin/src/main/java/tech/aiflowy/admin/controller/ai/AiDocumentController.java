@@ -153,8 +153,8 @@ public class AiDocumentController extends BaseCurdController<AiDocumentService, 
     @PostMapping(value = {"textSplit", "/saveText"}, produces = MediaType.APPLICATION_JSON_VALUE)
     @SaCheckPermission("/api/v1/aiKnowledge/save")
     public Result<?> textSplit(
-                              @RequestParam("pageNumber") Integer pageNumber,
-                              @RequestParam("pageSize") Integer pageSize,
+                              @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+                              @RequestParam(value = "pageSize", required = false) Integer pageSize,
                               @RequestParam("operation") String operation,
                               @RequestParam("filePath") String filePath,
                               @RequestParam("fileOriginName") String fileOriginName,

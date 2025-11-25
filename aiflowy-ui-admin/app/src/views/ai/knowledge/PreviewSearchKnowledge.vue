@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Document } from '@element-plus/icons-vue';
-import { ElIcon } from 'element-plus';
+import { ElButton, ElIcon } from 'element-plus';
 // 定义类型接口（与 React 版本一致）
 interface PreviewItem {
   sorting: string;
@@ -8,6 +8,10 @@ interface PreviewItem {
   score: string;
 }
 const props = defineProps({
+  hideScore: {
+    type: Boolean,
+    default: false,
+  },
   data: {
     type: Array as () => PreviewItem[],
     default: () => [],
@@ -41,9 +45,6 @@ const props = defineProps({
     default: false,
   },
 });
-
-// 暴露事件（直接使用 props 中的回调，无需额外定义）
-const { onCancel, onConfirm } = props;
 </script>
 
 <template>
@@ -56,7 +57,7 @@ const { onCancel, onConfirm } = props;
         </ElIcon>
         {{ isSearching ? '检索结果' : '文档预览' }}
       </h3>
-      <span class="preview-stats" v-if="data.length > 0">
+      <span class="preview-stats" v-if="props.data.length > 0">
         共 {{ total > 0 ? total : data.length }} 个分段
       </span>
     </div>
@@ -74,7 +75,7 @@ const { onCancel, onConfirm } = props;
               {{ item.sorting ?? index + 1 }}
             </div>
             <div class="el-list-item-meta">
-              <div>相似度: {{ item.score }}</div>
+              <div v-if="!hideScore">相似度: {{ item.score }}</div>
               <div class="content-desc">{{ item.content }}</div>
             </div>
           </div>
@@ -140,7 +141,6 @@ const { onCancel, onConfirm } = props;
   }
 
   .preview-content {
-    //max-height: 500px; /* 限制最大高度，可根据需求调整 */
     overflow-y: auto;
     padding: 20px;
 

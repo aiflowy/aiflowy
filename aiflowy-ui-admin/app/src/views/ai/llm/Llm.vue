@@ -27,14 +27,14 @@ const LlmAddOrUpdateDialog = ref(false);
 onMounted(() => {
   getLlmBrandList().then((res) => {
     brandListData.value = [
-      { title: $t('common.allCategories'), key: '' },
+      { title: $t('common.allCategories'), key: 'allCategories' },
       ...res.data,
     ];
   });
 });
 
 const handleCategoryClick = (category) => {
-  pageDataRef.value.setQuery({ brand: category.key });
+  pageDataRef.value.setQuery({ brand: category.item.key });
 };
 
 // 按钮配置
@@ -136,8 +136,10 @@ const handleSuccess = () => {
     <div class="llm-content">
       <div>
         <CategoryPanel
+          default-selected-category="allCategories"
           :categories="brandListData"
           title-key="title"
+          value-key="key"
           :use-img-for-svg="true"
           :expand-width="150"
           @click="handleCategoryClick"

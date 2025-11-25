@@ -130,7 +130,7 @@ public class S3Client {
         try {
             loginIdAsString = StpUtil.getLoginIdAsString();
             if (StringUtils.hasValue(loginIdAsString)){
-                path = "/" + StpUtil.getLoginIdAsString() + PathGeneratorUtil.generatePath(file.getOriginalFilename());
+                path = StpUtil.getLoginIdAsString() + PathGeneratorUtil.generatePath(file.getOriginalFilename());
             }
         } catch (Exception e) {
             if (e instanceof NotLoginException) {
@@ -299,10 +299,10 @@ public class S3Client {
      */
     public InputStream getObjectContent(String objectPath, Long start, Long end) {
 
-        if (objectPath.startsWith("http") || objectPath.startsWith("https")) {
-            objectPath = objectPath.substring(properties.getEndpoint().length() + properties.getBucketName().length() + 1);
-        }
-
+//        if (objectPath.startsWith("http") || objectPath.startsWith("https")) {
+//            objectPath = objectPath.substring(properties.getEndpoint().length() + properties.getBucketName().length() + 1);
+//        }
+        objectPath = objectPath.replace(properties.getDomain() + "/", "");
         GetObjectRequest request = new GetObjectRequest(properties.getBucketName(), objectPath);
         if (start != null) {
             if (end != null) {
