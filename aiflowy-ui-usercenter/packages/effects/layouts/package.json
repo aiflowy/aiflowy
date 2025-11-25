@@ -1,0 +1,43 @@
+{
+  "name": "@aiflowy/layouts",
+  "version": "1.0.0",
+  "homepage": "https://github.com/aiflowy/aiflowy",
+  "bugs": "https://github.com/aiflowy/aiflowy/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aiflowy/aiflowy.git",
+    "directory": "packages/effects/layouts"
+  },
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    }
+  },
+  "dependencies": {
+    "@aiflowy-core/composables": "workspace:*",
+    "@aiflowy-core/form-ui": "workspace:*",
+    "@aiflowy-core/layout-ui": "workspace:*",
+    "@aiflowy-core/menu-ui": "workspace:*",
+    "@aiflowy-core/popup-ui": "workspace:*",
+    "@aiflowy-core/shadcn-ui": "workspace:*",
+    "@aiflowy-core/shared": "workspace:*",
+    "@aiflowy-core/tabs-ui": "workspace:*",
+    "@aiflowy/constants": "workspace:*",
+    "@aiflowy/hooks": "workspace:*",
+    "@aiflowy/icons": "workspace:*",
+    "@aiflowy/locales": "workspace:*",
+    "@aiflowy/preferences": "workspace:*",
+    "@aiflowy/stores": "workspace:*",
+    "@aiflowy/types": "workspace:*",
+    "@aiflowy/utils": "workspace:*",
+    "@vueuse/core": "catalog:",
+    "vue": "catalog:",
+    "vue-router": "catalog:"
+  }
+}

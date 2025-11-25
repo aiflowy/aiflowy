@@ -4,13 +4,22 @@ import { useRoute } from 'vue-router';
 
 import { $t } from '@aiflowy/locales';
 
-import { ArrowLeft, Delete, Edit, Refresh } from '@element-plus/icons-vue';
+import {
+  ArrowLeft,
+  Delete,
+  Edit,
+  Plus,
+  Refresh,
+  Upload,
+} from '@element-plus/icons-vue';
 import {
   ElButton,
   ElCol,
   ElIcon,
   ElMenu,
   ElMenuItem,
+  ElMessage,
+  ElMessageBox,
   ElRow,
   ElTable,
   ElTableColumn,
@@ -20,6 +29,7 @@ import { api } from '#/api/request';
 import tableIcon from '#/assets/datacenter/table2x.png';
 import PageData from '#/components/page/PageData.vue';
 import { router } from '#/router';
+import RecordModal from '#/views/datacenter/RecordModal.vue';
 
 const pageDataRef = ref();
 const route = useRoute();
@@ -32,6 +42,7 @@ const detailInfo = ref<any>({});
 const fieldList = ref<any[]>([]);
 const headers = ref<any[]>([]);
 const activeMenu = ref('1');
+const recordModal = ref();
 function getDetailInfo(id: any) {
   api.get(`/api/v1/datacenterTable/detailInfo?tableId=${id}`).then((res) => {
     detailInfo.value = res.data;
@@ -44,10 +55,43 @@ function getHeaders(id: any) {
   });
 }
 function showDialog(row: any) {
-  console.log(row);
+  recordModal.value.openDialog({ ...row });
 }
 function remove(row: any) {
-  console.log(row);
+  ElMessageBox.confirm($t('message.deleteAlert'), $t('message.noticeTitle'), {
+    confirmButtonText: $t('message.ok'),
+    cancelButtonText: $t('message.cancel'),
+    type: 'warning',
+    beforeClose: (action, instance, done) => {
+      if (action === 'confirm') {
+        instance.confirmButtonLoading = true;
+        api
+          .post(
+            `/api/v1/datacenterTable/removeValue`,
+            {},
+            {
+              params: {
+                tableId: tableId.value,
+                id: row.id,
+              },
+            },
+          )
+          .then((res) => {
+            instance.confirmButtonLoading = false;
+            if (res.errorCode === 0) {
+              ElMessage.success(res.message);
+              refresh();
+              done();
+            }
+          })
+          .catch(() => {
+            instance.confirmButtonLoading = false;
+          });
+      } else {
+        done();
+      }
+    },
+  }).catch(() => {});
 }
 function refresh() {
   pageDataRef.value.setQuery({});
@@ -56,16 +100,38 @@ function refresh() {
 
 <template>
   <div class="page-container">
+    <RecordModal
+      ref="recordModal"
+      :form-items="headers"
+      :table-id="tableId"
+      @reload="refresh"
+    />
     <ElRow>
       <ElCol :span="24" class="border-b">
-        <div class="mb-2.5 flex items-center gap-2">
-          <ElIcon class="cursor-pointer" @click="router.back()">
-            <ArrowLeft />
-          </ElIcon>
-          <img :src="tableIcon" class="h-10 w-10" />
-          <div class="flex flex-col justify-center">
-            <div class="text-sm font-bold">{{ detailInfo.tableName }}</div>
-            <div class="desc text-xs">{{ detailInfo.tableDesc }}</div>
+        <div class="mb-2.5 flex items-center justify-between">
+          <div class="flex items-center gap-2.5">
+            <ElIcon class="cursor-pointer" @click="router.back()">
+              <ArrowLeft />
+            </ElIcon>
+            <img :src="tableIcon" class="h-10 w-10" />
+            <div class="flex flex-col justify-center">
+              <div class="text-sm font-bold">{{ detailInfo.tableName }}</div>
+              <div class="desc text-xs">{{ detailInfo.tableDesc }}</div>
+            </div>
+          </div>
+          <div class="flex items-center" v-if="activeMenu === '2'">
+            <ElButton type="primary" @click="showDialog({})">
+              <ElIcon class="mr-1">
+                <Plus />
+              </ElIcon>
+              {{ $t('button.addLine') }}
+            </ElButton>
+            <ElButton type="primary" @click="refresh">
+              <ElIcon class="mr-1">
+                <Upload />
+              </ElIcon>
+              {{ $t('button.batchImport') }}
+            </ElButton>
           </div>
         </div>
       </ElCol>
@@ -114,7 +180,7 @@ function refresh() {
           :page-size="10"
         >
           <template #default="{ pageList }">
-            <ElButton @click="refresh" class="float-right">
+            <ElButton link @click="refresh" class="float-right">
               <ElIcon>
                 <Refresh />
               </ElIcon>
@@ -127,7 +193,13 @@ function refresh() {
                 :label="item.title"
               >
                 <template #default="{ row }">
-                  {{ row[item.key] }}
+                  <div v-if="item.fieldType === 5">
+                    {{ 1 === row[item.key] ? '是' : '否' }}
+                  </div>
+                  <div v-else-if="item.fieldType === 4">
+                    {{ parseFloat(row[item.key]) }}
+                  </div>
+                  <div v-else>{{ row[item.key] }}</div>
                 </template>
               </ElTableColumn>
               <ElTableColumn :label="$t('common.handle')" width="150">

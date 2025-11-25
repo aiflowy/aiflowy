@@ -13,5 +13,8 @@
   "updateOkMessage": "Updated successfully",
   "startAlert": "Are you sure to start?",
   "stopAlert": "Are you sure to stop?",
-  "preview": "Preview"
+  "preview": "Preview",
+  "notEmpty": "Can not be empty",
+  "success": "Success",
+  "fail": "Fail"
 }

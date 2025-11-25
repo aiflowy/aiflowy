@@ -1,0 +1,17 @@
+{
+  "deleteAlert": "确定删除吗？",
+  "noticeTitle": "提示",
+  "ok": "确定",
+  "cancel": "取消",
+  "required": "该项为必填项",
+  "saveOkMessage": "保存成功！",
+  "saveFailMessage": "保存失败！",
+  "deleteOkMessage": "删除成功！",
+  "deleteFailMessage": "删除失败！",
+  "loading": "加载中...",
+  "getDataError": "获取数据失败",
+  "updateOkMessage": "更新成功！",
+  "startAlert": "确定启动吗？",
+  "stopAlert": "确定停止吗？",
+  "preview": "预览"
+}

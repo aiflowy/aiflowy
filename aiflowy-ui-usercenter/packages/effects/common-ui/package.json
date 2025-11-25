@@ -1,0 +1,54 @@
+{
+  "name": "@aiflowy/common-ui",
+  "version": "1.0.0",
+  "homepage": "https://github.com/aiflowy/aiflowy",
+  "bugs": "https://github.com/aiflowy/aiflowy/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aiflowy/aiflowy.git",
+    "directory": "packages/effects/common-ui"
+  },
+  "license": "MIT",
+  "type": "module",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./es/tippy": {
+      "types": "./src/components/tippy/index.ts",
+      "default": "./src/components/tippy/index.ts"
+    },
+    "./es/loading": {
+      "types": "./src/components/loading/index.ts",
+      "default": "./src/components/loading/index.ts"
+    }
+  },
+  "dependencies": {
+    "@aiflowy-core/form-ui": "workspace:*",
+    "@aiflowy-core/popup-ui": "workspace:*",
+    "@aiflowy-core/preferences": "workspace:*",
+    "@aiflowy-core/shadcn-ui": "workspace:*",
+    "@aiflowy-core/shared": "workspace:*",
+    "@aiflowy/constants": "workspace:*",
+    "@aiflowy/hooks": "workspace:*",
+    "@aiflowy/icons": "workspace:*",
+    "@aiflowy/locales": "workspace:*",
+    "@aiflowy/types": "workspace:*",
+    "@vueuse/core": "catalog:",
+    "@vueuse/integrations": "catalog:",
+    "json-bigint": "catalog:",
+    "qrcode": "catalog:",
+    "tippy.js": "catalog:",
+    "vue": "catalog:",
+    "vue-json-viewer": "catalog:",
+    "vue-router": "catalog:",
+    "vue-tippy": "catalog:"
+  },
+  "devDependencies": {
+    "@types/qrcode": "catalog:"
+  }
+}

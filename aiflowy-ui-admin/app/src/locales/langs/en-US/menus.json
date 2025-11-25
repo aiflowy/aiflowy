@@ -12,6 +12,7 @@
   },
   "ai": {
     "title": "AI",
-    "resources": "Resources"
+    "resources": "Resources",
+    "datacenter": "Datacenter"
   }
 }

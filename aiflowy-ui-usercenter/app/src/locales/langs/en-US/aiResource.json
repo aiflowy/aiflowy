@@ -1,0 +1,18 @@
+{
+    "id": "Id",
+    "deptId": "DeptId",
+    "tenantId": "TenantId",
+    "resourceType": "ResourceType",
+    "resourceName": "ResourceName",
+    "suffix": "Suffix",
+    "resourceUrl": "ResourceUrl",
+    "origin": "Origin",
+    "status": "Status",
+    "created": "Created",
+    "createdBy": "CreatedBy",
+    "modified": "Modified",
+    "modifiedBy": "ModifiedBy",
+    "options": "Options",
+    "isDeleted": "IsDeleted",
+    "fileSize": "FileSize"
+}

@@ -1,0 +1,14 @@
+{
+    "id": "Id",
+    "accountId": "AccountId",
+    "actionName": "ActionName",
+    "actionType": "ActionType",
+    "actionClass": "ActionClass",
+    "actionMethod": "ActionMethod",
+    "actionUrl": "ActionUrl",
+    "actionIp": "ActionIp",
+    "actionParams": "ActionParams",
+    "actionBody": "ActionBody",
+    "status": "Status",
+    "created": "Created"
+}

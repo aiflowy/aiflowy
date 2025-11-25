@@ -22,5 +22,7 @@
   "upload": "上传",
   "preview": "预览",
   "nextStep": "下一步",
-  "previousStep": "上一步"
+  "previousStep": "上一步",
+  "addLine": "增加行",
+  "batchImport": "批量导入"
 }

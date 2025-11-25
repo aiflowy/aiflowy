@@ -1,0 +1,160 @@
+{
+  "folders": [
+    {
+      "name": "@aiflowy/app",
+      "path": "app",
+    },
+    {
+      "name": "@aiflowy/docs",
+      "path": "docs",
+    },
+    {
+      "name": "@aiflowy/commitlint-config",
+      "path": "internal/lint-configs/commitlint-config",
+    },
+    {
+      "name": "@aiflowy/eslint-config",
+      "path": "internal/lint-configs/eslint-config",
+    },
+    {
+      "name": "@aiflowy/prettier-config",
+      "path": "internal/lint-configs/prettier-config",
+    },
+    {
+      "name": "@aiflowy/stylelint-config",
+      "path": "internal/lint-configs/stylelint-config",
+    },
+    {
+      "name": "@aiflowy/node-utils",
+      "path": "internal/node-utils",
+    },
+    {
+      "name": "@aiflowy/tailwind-config",
+      "path": "internal/tailwind-config",
+    },
+    {
+      "name": "@aiflowy/tsconfig",
+      "path": "internal/tsconfig",
+    },
+    {
+      "name": "@aiflowy/vite-config",
+      "path": "internal/vite-config",
+    },
+    {
+      "name": "@aiflowy-core/design",
+      "path": "packages/@core/base/design",
+    },
+    {
+      "name": "@aiflowy-core/icons",
+      "path": "packages/@core/base/icons",
+    },
+    {
+      "name": "@aiflowy-core/shared",
+      "path": "packages/@core/base/shared",
+    },
+    {
+      "name": "@aiflowy-core/typings",
+      "path": "packages/@core/base/typings",
+    },
+    {
+      "name": "@aiflowy-core/composables",
+      "path": "packages/@core/composables",
+    },
+    {
+      "name": "@aiflowy-core/preferences",
+      "path": "packages/@core/preferences",
+    },
+    {
+      "name": "@aiflowy-core/form-ui",
+      "path": "packages/@core/ui-kit/form-ui",
+    },
+    {
+      "name": "@aiflowy-core/layout-ui",
+      "path": "packages/@core/ui-kit/layout-ui",
+    },
+    {
+      "name": "@aiflowy-core/menu-ui",
+      "path": "packages/@core/ui-kit/menu-ui",
+    },
+    {
+      "name": "@aiflowy-core/popup-ui",
+      "path": "packages/@core/ui-kit/popup-ui",
+    },
+    {
+      "name": "@aiflowy-core/shadcn-ui",
+      "path": "packages/@core/ui-kit/shadcn-ui",
+    },
+    {
+      "name": "@aiflowy-core/tabs-ui",
+      "path": "packages/@core/ui-kit/tabs-ui",
+    },
+    {
+      "name": "@aiflowy/constants",
+      "path": "packages/constants",
+    },
+    {
+      "name": "@aiflowy/access",
+      "path": "packages/effects/access",
+    },
+    {
+      "name": "@aiflowy/common-ui",
+      "path": "packages/effects/common-ui",
+    },
+    {
+      "name": "@aiflowy/hooks",
+      "path": "packages/effects/hooks",
+    },
+    {
+      "name": "@aiflowy/layouts",
+      "path": "packages/effects/layouts",
+    },
+    {
+      "name": "@aiflowy/plugins",
+      "path": "packages/effects/plugins",
+    },
+    {
+      "name": "@aiflowy/request",
+      "path": "packages/effects/request",
+    },
+    {
+      "name": "@aiflowy/icons",
+      "path": "packages/icons",
+    },
+    {
+      "name": "@aiflowy/locales",
+      "path": "packages/locales",
+    },
+    {
+      "name": "@aiflowy/preferences",
+      "path": "packages/preferences",
+    },
+    {
+      "name": "@aiflowy/stores",
+      "path": "packages/stores",
+    },
+    {
+      "name": "@aiflowy/styles",
+      "path": "packages/styles",
+    },
+    {
+      "name": "@aiflowy/types",
+      "path": "packages/types",
+    },
+    {
+      "name": "@aiflowy/utils",
+      "path": "packages/utils",
+    },
+    {
+      "name": "@aiflowy/playground",
+      "path": "playground",
+    },
+    {
+      "name": "@aiflowy/turbo-run",
+      "path": "scripts/turbo-run",
+    },
+    {
+      "name": "@aiflowy/vsh",
+      "path": "scripts/vsh",
+    },
+  ],
+}

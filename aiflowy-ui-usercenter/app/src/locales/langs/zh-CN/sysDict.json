@@ -1,0 +1,12 @@
+{
+    "id": "主键",
+    "name": "数据字典名称",
+    "code": "字典编码",
+    "description": "字典描述或备注",
+    "dictType": "字典类型 1 自定义字典、2 数据表字典、 3 枚举类字典、 4 系统字典（自定义 DictLoader）",
+    "sortNo": "排序编号",
+    "status": "是否启用",
+    "options": "扩展字典  存放 json",
+    "created": "创建时间",
+    "modified": "修改时间"
+}

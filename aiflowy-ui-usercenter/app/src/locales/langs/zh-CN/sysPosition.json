@@ -1,0 +1,15 @@
+{
+    "id": "主键",
+    "tenantId": "租户ID",
+    "deptId": "部门",
+    "positionName": "岗位名称",
+    "positionCode": "岗位编码",
+    "sortNo": "排序",
+    "status": "数据状态",
+    "created": "创建时间",
+    "createdBy": "创建者",
+    "modified": "修改时间",
+    "modifiedBy": "修改者",
+    "remark": "备注",
+    "isDeleted": "删除标识"
+}

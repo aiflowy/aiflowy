@@ -1,0 +1,14 @@
+{
+    "id": "ID",
+    "accountId": "操作人",
+    "actionName": "操作名称",
+    "actionType": "操作的类型",
+    "actionClass": "操作涉及的类",
+    "actionMethod": "操作涉及的方法",
+    "actionUrl": "操作涉及的 URL 地址",
+    "actionIp": "操作涉及的用户 IP 地址",
+    "actionParams": "操作请求参数",
+    "actionBody": "操作请求body",
+    "status": "操作状态 1 成功 9 失败",
+    "created": "操作时间"
+}

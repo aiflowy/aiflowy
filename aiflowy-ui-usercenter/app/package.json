@@ -1,0 +1,49 @@
+{
+  "name": "@aiflowy/app",
+  "version": "1.0.0",
+  "homepage": "https://aiflowy.tech",
+  "bugs": "https://github.com/aiflowy/aiflowy/issues",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aiflowy/aiflowy.git",
+    "directory": "app"
+  },
+  "type": "module",
+  "scripts": {
+    "build": "pnpm vite build --mode production",
+    "build:analyze": "pnpm vite build --mode analyze",
+    "dev": "pnpm vite --mode development",
+    "preview": "vite preview",
+    "typecheck": "vue-tsc --noEmit --skipLibCheck"
+  },
+  "imports": {
+    "#/*": "./src/*"
+  },
+  "dependencies": {
+    "@aiflowy/access": "workspace:*",
+    "@aiflowy/common-ui": "workspace:*",
+    "@aiflowy/constants": "workspace:*",
+    "@aiflowy/hooks": "workspace:*",
+    "@aiflowy/icons": "workspace:*",
+    "@aiflowy/layouts": "workspace:*",
+    "@aiflowy/locales": "workspace:*",
+    "@aiflowy/plugins": "workspace:*",
+    "@aiflowy/preferences": "workspace:*",
+    "@aiflowy/request": "workspace:*",
+    "@aiflowy/stores": "workspace:*",
+    "@aiflowy/styles": "workspace:*",
+    "@aiflowy/types": "workspace:*",
+    "@aiflowy/utils": "workspace:*",
+    "@element-plus/icons-vue": "^2.3.2",
+    "@vueuse/core": "catalog:",
+    "dayjs": "catalog:",
+    "element-plus": "catalog:",
+    "pinia": "catalog:",
+    "vue": "catalog:",
+    "vue-cropper": "^1.1.4",
+    "vue-router": "catalog:"
+  },
+  "devDependencies": {
+    "unplugin-element-plus": "catalog:"
+  }
+}

@@ -1,0 +1,12 @@
+{
+    "id": "Id",
+    "name": "Name",
+    "code": "Code",
+    "description": "Description",
+    "dictType": "DictType",
+    "sortNo": "SortNo",
+    "status": "Status",
+    "options": "Options",
+    "created": "Created",
+    "modified": "Modified"
+}

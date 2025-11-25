@@ -129,6 +129,41 @@ class RequestClient {
   }
 
   /**
+   * POST + 文件上传请求方法
+   */
+  public postFile<T = any>(
+    url: string,
+    data?: FormData,
+    config?: RequestClientConfig,
+  ): Promise<T> {
+    const c = {
+      ...config,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+    return this.request<T>(url, { ...c, data, method: 'POST' });
+  }
+
+  /**
+   * POST + FORM 请求方法
+   */
+  public postForm<T = any>(
+    url: string,
+    data?: any,
+    config?: RequestClientConfig,
+  ): Promise<T> {
+    const keyValue = qs.stringify(data, { arrayFormat: 'repeat' });
+    const c = {
+      ...config,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      },
+    };
+    return this.request<T>(url, { ...c, data: keyValue, method: 'POST' });
+  }
+
+  /**
    * PUT请求方法
    */
   public put<T = any>(

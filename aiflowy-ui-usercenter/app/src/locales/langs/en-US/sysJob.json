@@ -1,0 +1,23 @@
+{
+    "id": "Id",
+    "deptId": "DeptId",
+    "tenantId": "TenantId",
+    "jobName": "JobName",
+    "jobType": "JobType",
+    "jobParams": "JobParams",
+    "cronExpression": "CronExpression",
+    "allowConcurrent": "AllowConcurrent",
+    "misfirePolicy": "MisfirePolicy",
+    "options": "Options",
+    "status": "Status",
+    "created": "Created",
+    "createdBy": "CreatedBy",
+    "modified": "Modified",
+    "modifiedBy": "ModifiedBy",
+    "remark": "Remark",
+    "isDeleted": "IsDeleted",
+    "workflow": "Workflow",
+    "beanMethod": "BeanMethod",
+    "javaMethod": "JavaMethod",
+    "example": "example"
+}

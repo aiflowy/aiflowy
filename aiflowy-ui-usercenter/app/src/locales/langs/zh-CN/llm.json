@@ -1,0 +1,42 @@
+{
+  "filed":
+  {
+    "title": "标题",
+    "brand": "供应商",
+    "llmModel": "大模型名称",
+    "icon": "ICON",
+    "description": "描述",
+    "supportChat": "对话模型",
+    "supportFunctionCalling": "方法调用",
+    "supportEmbed": "向量化",
+    "supportReranker": "重排",
+    "supportTextToImage": "文生图",
+    "supportImageToImage": "图生图",
+    "supportTextToAudio": "文生音频",
+    "supportAudioToAudio": "音频转音频",
+    "supportTextToVideo": "文生视频",
+    "supportImageToVideo": "图生成视频",
+    "llmEndpoint": "请求地址",
+    "chatPath": "对话路径",
+    "embedPath": "向量化路径",
+    "multimodal": "多模态",
+    "llmApiKey": "apiKey",
+    "llmExtraConfig": "大模型其他属性配置",
+    "options": "其他配置内容",
+    "ability": "能力"
+  }
+,
+  "llmModal": {
+    "TitleRequired": "请输入名称",
+    "BrandRequired": "请选择供应商",
+    "ModelRequired": "请输入大模型",
+    "ApiKeyRequired": "请输入apiKey",
+    "QuickAddLlm": "一键添加大模型"
+  },
+  "placeholder": {
+    "title": "请输入名称",
+    "brand": "请选择品牌",
+    "llmModel": "请输入大模型名称",
+    "description": "请输入描述"
+  }
+}

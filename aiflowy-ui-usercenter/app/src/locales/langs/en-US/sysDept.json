@@ -1,0 +1,17 @@
+{
+    "root": "Root",
+    "id": "Id",
+    "tenantId": "TenantId",
+    "parentId": "Parent",
+    "ancestors": "Ancestors",
+    "deptName": "DeptName",
+    "deptCode": "DeptCode",
+    "sortNo": "SortNo",
+    "status": "Status",
+    "created": "Created",
+    "createdBy": "CreatedBy",
+    "modified": "Modified",
+    "modifiedBy": "ModifiedBy",
+    "remark": "Remark",
+    "isDeleted": "IsDeleted"
+}
