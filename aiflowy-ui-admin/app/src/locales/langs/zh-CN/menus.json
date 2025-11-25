@@ -12,6 +12,7 @@
   },
   "ai": {
     "title": "AI能力",
-    "resources": "素材库"
+    "resources": "素材库",
+    "datacenter": "数据中枢"
   }
 }

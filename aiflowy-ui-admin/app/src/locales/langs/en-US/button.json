@@ -20,5 +20,7 @@
   "view": "View",
   "download": "Download",
   "upload": "Upload",
-  "preview": "Preview"
+  "preview": "Preview",
+  "addLine": "AddRecord",
+  "batchImport": "BatchImport"
 }
