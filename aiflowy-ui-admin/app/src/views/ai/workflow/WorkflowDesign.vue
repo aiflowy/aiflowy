@@ -1,22 +1,30 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue';
+import { onMounted, onUnmounted, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 
 import { ArrowLeft, Position } from '@element-plus/icons-vue';
 import { Tinyflow } from '@tinyflow-ai/vue';
 import { ElButton } from 'element-plus';
 
+import { api } from '#/api/request';
+import { $t } from '#/locales';
 import { router } from '#/router';
 
 import '@tinyflow-ai/vue/dist/index.css';
 
+const route = useRoute();
 // vue
 onMounted(() => {
   document.addEventListener('keydown', handleKeydown);
+  getWorkflowInfo(workflowId.value);
 });
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydown);
 });
 // variables
+const workflowId = ref(route.query.id);
+const workflowData = ref<any>(null);
+const showTinyFlow = ref(false);
 const saveLoading = ref(false);
 const handleKeydown = (event: KeyboardEvent) => {
   // 检查是否是 Ctrl+S
@@ -27,9 +35,11 @@ const handleKeydown = (event: KeyboardEvent) => {
     }
   }
 };
-const initialData = ref({
-  nodes: [],
-  edges: [],
+const workflowInfo = ref<any>({});
+watch([() => workflowData.value], ([workflowData]) => {
+  if (workflowData) {
+    showTinyFlow.value = true;
+  }
 });
 // functions
 async function runWorkflow() {
@@ -45,6 +55,14 @@ async function handleSave() {
   await new Promise((resolve: any) => setTimeout(resolve, 1000));
   saveLoading.value = false;
 }
+function getWorkflowInfo(workflowId: any) {
+  api.get(`/api/v1/aiWorkflow/detail?id=${workflowId}`).then((res) => {
+    workflowInfo.value = res.data;
+    if (workflowInfo.value.content) {
+      workflowData.value = JSON.parse(workflowInfo.value.content);
+    }
+  });
+}
 </script>
 
 <template>
@@ -52,19 +70,23 @@ async function handleSave() {
     <div class="flex items-center justify-between border-b p-2.5">
       <div>
         <ElButton :icon="ArrowLeft" link @click="router.back()">
-          工作流名称
+          {{ workflowInfo.title }}
         </ElButton>
       </div>
       <div>
         <ElButton :disabled="saveLoading" :icon="Position" @click="runWorkflow">
-          试运行
+          {{ $t('button.runTest') }}
         </ElButton>
         <ElButton type="primary" :disabled="saveLoading" @click="handleSave">
-          保存(ctrl+s)
+          {{ $t('button.save') }}(ctrl+s)
         </ElButton>
       </div>
     </div>
-    <Tinyflow class="tiny-flow-container" :data="initialData" />
+    <Tinyflow
+      v-if="showTinyFlow"
+      class="tiny-flow-container"
+      :data="workflowData"
+    />
   </div>
 </template>
 

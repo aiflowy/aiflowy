@@ -17,9 +17,11 @@ import {
 } from 'element-plus';
 
 import { api } from '#/api/request';
+import workflowIcon from '#/assets/ai/workflow/workflowIcon.png';
 import CardList from '#/components/page/CardList.vue';
 import PageData from '#/components/page/PageData.vue';
 import { $t } from '#/locales';
+import { router } from '#/router';
 import { useDictStore } from '#/store';
 
 import AiWorkflowModal from './AiWorkflowModal.vue';
@@ -61,7 +63,7 @@ const formRef = ref<FormInstance>();
 const pageDataRef = ref();
 const saveDialog = ref();
 const formInline = ref({
-  id: '',
+  title: '',
 });
 const dictStore = useDictStore();
 function initDict() {
@@ -115,6 +117,7 @@ function handleAction(row: any, action: string) {
       break;
     }
     case 'design': {
+      toDesignPage(row);
       break;
     }
     case 'edit': {
@@ -126,14 +129,25 @@ function handleAction(row: any, action: string) {
     }
   }
 }
+function toDesignPage(row: any) {
+  router.push({
+    name: 'WorkflowDesign',
+    query: {
+      id: row.id,
+    },
+  });
+}
 </script>
 
 <template>
   <div class="page-container">
     <AiWorkflowModal ref="saveDialog" @reload="reset" />
     <ElForm ref="formRef" :inline="true" :model="formInline">
-      <ElFormItem :label="$t('aiWorkflow.id')" prop="id">
-        <ElInput v-model="formInline.id" :placeholder="$t('aiWorkflow.id')" />
+      <ElFormItem :label="$t('aiWorkflow.title')" prop="title">
+        <ElInput
+          v-model="formInline.title"
+          :placeholder="$t('aiWorkflow.title')"
+        />
       </ElFormItem>
       <ElFormItem>
         <ElButton @click="search(formRef)" type="primary">
@@ -164,6 +178,7 @@ function handleAction(row: any, action: string) {
     >
       <template #default="{ pageList }">
         <CardList
+          :default-icon="workflowIcon"
           :data="pageList"
           :actions="actions"
           @on-action="handleAction"

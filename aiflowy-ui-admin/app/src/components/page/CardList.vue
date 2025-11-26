@@ -27,6 +27,7 @@ export interface CardListProps {
   titleField?: string;
   descField?: string;
   actions?: ActionButton[];
+  defaultIcon: any;
   data: any[];
 }
 const props = withDefaults(defineProps<CardListProps>(), {
@@ -66,7 +67,7 @@ function handleAction(row: any, action: any) {
       >
         <div class="card-content">
           <div>
-            <ElAvatar :src="item[iconField]" />
+            <ElAvatar :src="item[iconField] || defaultIcon" />
           </div>
           <div style="width: 80%">
             <ElTooltip :content="item[titleField]" placement="top">
