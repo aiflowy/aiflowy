@@ -92,7 +92,11 @@ const hiddenActions = computed(() => {
                 {{ action.text }}
               </ElButton>
               <ElDivider
-                v-if="visibleActions.length > 1"
+                v-if="
+                  filterActions.length <= 3
+                    ? idx < filterActions.length - 1
+                    : true
+                "
                 direction="vertical"
               />
             </template>
