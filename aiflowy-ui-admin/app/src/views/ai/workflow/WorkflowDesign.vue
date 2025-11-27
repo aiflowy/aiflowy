@@ -140,6 +140,7 @@ function onExecuting(msg: any) {
       <WorkflowSteps
         :workflow-id="workflowId"
         :execute-message="executeMessage"
+        :node-json="tinyFlowData"
       />
     </ElDrawer>
     <div class="flex items-center justify-between border-b p-2.5">

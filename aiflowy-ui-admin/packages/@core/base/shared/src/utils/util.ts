@@ -107,3 +107,85 @@ export function getOptions(labelKey: string, valueKey: string, options: any[]) {
   }
   return [];
 }
+
+/**
+ * 工作流节点排序
+ * @param nodesJson
+ */
+export function sortNodes(nodesJson: any): any[] {
+  const { nodes, edges } = nodesJson;
+
+  // 创建数据结构
+  const nodeMap: any = {};
+  const graph: any = {};
+  const inDegree: any = {};
+
+  // 初始化
+  nodes.forEach((node: any) => {
+    const nodeId = node.id;
+    nodeMap[nodeId] = {
+      key: nodeId,
+      label: node.data?.title || nodeId,
+      original: node,
+      children: '',
+      extra: '',
+    };
+    graph[nodeId] = [];
+    inDegree[nodeId] = 0;
+  });
+
+  // 处理参数依赖
+  nodes.forEach((node: any) => {
+    const parameters = node.data?.parameters || [];
+    parameters.forEach((param: any) => {
+      if (param.ref) {
+        const [sourceNodeId] = param.ref.split('.');
+        if (nodeMap[sourceNodeId]) {
+          graph[sourceNodeId].push(node.id);
+          inDegree[node.id]++;
+        }
+      }
+    });
+  });
+
+  // 处理边依赖
+  edges.forEach((edge: any) => {
+    const { source, target } = edge;
+    if (nodeMap[source] && nodeMap[target]) {
+      graph[source].push(target);
+      inDegree[target]++;
+    }
+  });
+
+  // 拓扑排序
+  const queue = nodes
+    .filter((node: any) => inDegree[node.id] === 0)
+    .map((node: any) => node.id);
+  const sortedNodes = [];
+
+  while (queue.length > 0) {
+    const nodeId = queue.shift();
+    sortedNodes.push(nodeMap[nodeId]);
+
+    graph[nodeId].forEach((neighborId: any) => {
+      inDegree[neighborId]--;
+      if (inDegree[neighborId] === 0) {
+        queue.push(neighborId);
+      }
+    });
+  }
+
+  // 检查循环依赖
+  if (sortedNodes.length !== nodes.length) {
+    console.error('检测到循环依赖，排序结果可能不完整');
+  }
+
+  // 只返回需要的格式
+  return sortedNodes.map((node) => ({
+    key: node.key,
+    label: node.label,
+    original: node.original,
+    children: node.children,
+    extra: node.extra,
+  }));
+}
