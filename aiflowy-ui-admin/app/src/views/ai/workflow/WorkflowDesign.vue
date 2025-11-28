@@ -23,16 +23,13 @@ const route = useRoute();
 // vue
 onMounted(async () => {
   document.addEventListener('keydown', handleKeydown);
-  customNode.value = await getCustomNode({
-    handleChosen: (nodeType: string, updateNodeData: any, value: string) => {
-      console.log('nodeType:', nodeType);
-      console.log('updateNodeData:', updateNodeData);
-      console.log('value:', value);
-    },
-  });
-  getLlmList();
-  getKnowledgeList();
-  getWorkflowInfo(workflowId.value);
+  await Promise.all([
+    loadCustomNode(),
+    getLlmList(),
+    getKnowledgeList(),
+    getWorkflowInfo(workflowId.value),
+  ]);
+  showTinyFlow.value = true;
 });
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydown);
@@ -68,15 +65,17 @@ const handleKeydown = (event: KeyboardEvent) => {
   }
 };
 const drawerVisible = ref(false);
-watch(
-  [() => tinyFlowData.value, () => llmList.value, () => knowledgeList.value],
-  ([tinyFlowData, llmList, knowledgeList]) => {
-    if (tinyFlowData && llmList && knowledgeList) {
-      showTinyFlow.value = true;
-    }
-  },
-);
+
 // functions
+async function loadCustomNode() {
+  customNode.value = await getCustomNode({
+    handleChosen: (nodeType: string, updateNodeData: any, value: string) => {
+      console.log('nodeType:', nodeType);
+      console.log('updateNodeData:', updateNodeData);
+      console.log('value:', value);
+    },
+  });
+}
 async function runWorkflow() {
   if (!saveLoading.value) {
     await handleSave().then(() => {
@@ -99,7 +98,7 @@ async function handleSave(showMsg: boolean = false) {
       }
     });
 }
-function getWorkflowInfo(workflowId: any) {
+async function getWorkflowInfo(workflowId: any) {
   api.get(`/api/v1/aiWorkflow/detail?id=${workflowId}`).then((res) => {
     workflowInfo.value = res.data;
     tinyFlowData.value = workflowInfo.value.content
@@ -107,12 +106,12 @@ function getWorkflowInfo(workflowId: any) {
       : {};
   });
 }
-function getLlmList() {
+async function getLlmList() {
   api.get('/api/v1/aiLlm/list').then((res) => {
     llmList.value = res.data;
   });
 }
-function getKnowledgeList() {
+async function getKnowledgeList() {
   api.get('/api/v1/aiKnowledge/list').then((res) => {
     knowledgeList.value = res.data;
   });
