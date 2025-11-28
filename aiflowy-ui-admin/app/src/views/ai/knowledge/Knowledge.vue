@@ -4,14 +4,15 @@ import { useRouter } from 'vue-router';
 
 import { $t } from '@aiflowy/locales';
 
-import { Delete, Edit, Plus, View } from '@element-plus/icons-vue';
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { Delete, Edit, Notebook, Plus, Search } from '@element-plus/icons-vue';
+import { ElDialog, ElMessage, ElMessageBox } from 'element-plus';
 
 import { api } from '#/api/request';
 import CardPage from '#/components/cardPage/CardPage.vue';
 import HeaderSearch from '#/components/headerSearch/HeaderSearch.vue';
 import PageData from '#/components/page/PageData.vue';
 import AiKnowledgeModal from '#/views/ai/knowledge/AiKnowledgeModal.vue';
+import KnowledgeSearch from '#/views/ai/knowledge/KnowledgeSearch.vue';
 
 const router = useRouter();
 
@@ -19,28 +20,28 @@ const router = useRouter();
 const actions = ref([
   {
     name: 'edit',
-    label: '编辑',
+    label: $t('button.edit'),
     type: 'primary',
     icon: markRaw(Edit),
     permission: '/api/v1/aiKnowledge/save',
   },
   {
-    name: 'view',
-    label: '列表',
+    name: 'knowledge',
+    label: $t('aiKnowledge.actions.knowledge'),
     type: 'success',
-    icon: markRaw(View),
+    icon: markRaw(Notebook),
     permission: '/api/v1/aiKnowledge/save',
   },
   {
-    name: 'delete',
-    label: '检索',
+    name: 'retrieve',
+    label: $t('aiKnowledge.actions.retrieve'),
     type: 'danger',
-    icon: markRaw(View),
+    icon: markRaw(Search),
   },
   {
     name: 'delete',
-    label: '删除',
-    type: 'info',
+    label: $t('button.delete'),
+    type: 'danger',
     icon: markRaw(Delete),
     permission: '/api/v1/aiKnowledge/remove',
   },
@@ -63,6 +64,8 @@ const handleDelete = (item) => {
     })
     .catch(() => {});
 };
+const selectSearchKnowledgeId = ref('');
+const searchKnowledgeModalVisible = ref(false);
 // 处理操作按钮点击
 const handleAction = ({ action, item }) => {
   // 根据不同的操作执行不同的逻辑
@@ -75,21 +78,21 @@ const handleAction = ({ action, item }) => {
       aiKnowledgeModalRef.value.openDialog(item);
       break;
     }
-    case 'view': {
+    case 'knowledge': {
       router.replace({
         path: '/ai/knowledge/document',
         query: {
-          // 关键：传递 pageKey 与原页面一致（复用 Tab Key）
           id: item.id,
           pageKey: '/ai/knowledge',
         },
-        // meta: {
-        //   pageKey: '/ai/knowledge', // 隐藏在路由元信息中
-        // },
       });
       break;
     }
-    // 其他操作...
+    case 'retrieve': {
+      selectSearchKnowledgeId.value = item.id;
+      searchKnowledgeModalVisible.value = true;
+      break;
+    }
   }
 };
 
@@ -98,10 +101,11 @@ const aiKnowledgeModalRef = ref();
 const headerButtons = [
   {
     key: 'add',
-    text: '新增知识库',
+    text: $t('aiKnowledge.actions.addKnowledge'),
     icon: markRaw(Plus),
     type: 'primary',
     data: { action: 'add' },
+    permission: '/api/v1/aiKnowledge/save',
   },
 ];
 const handleButtonClick = (event, _item) => {
@@ -122,7 +126,6 @@ const handleSearch = (params) => {
     <div class="knowledge-header">
       <HeaderSearch
         :buttons="headerButtons"
-        search-placeholder="搜索用户"
         @search="handleSearch"
         @button-click="handleButtonClick"
       />
@@ -148,8 +151,20 @@ const handleSearch = (params) => {
       </PageData>
     </div>
     <!--    新增知识库模态框-->
-    <!--    <AddKnowledgeModal ref="addKnowledgeRef" @success="handleAddSuccess" />-->
     <AiKnowledgeModal ref="aiKnowledgeModalRef" @reload="handleSearch" />
+    <!--    知识检索模态框-->
+    <ElDialog
+      v-model="searchKnowledgeModalVisible"
+      draggable
+      :close-on-click-modal="false"
+      width="80%"
+      align-center
+      :title="$t('aiKnowledge.knowledgeRetrieval')"
+    >
+      <div class="search-knowledge-dialog">
+        <KnowledgeSearch :knowledge-id="selectSearchKnowledgeId" />
+      </div>
+    </ElDialog>
   </div>
 </template>
 
@@ -158,6 +173,9 @@ const handleSearch = (params) => {
   padding: 20px;
   width: 100%;
   margin: 0 auto;
+}
+.search-knowledge-dialog {
+  height: calc(100vh - 161px);
 }
 
 h1 {

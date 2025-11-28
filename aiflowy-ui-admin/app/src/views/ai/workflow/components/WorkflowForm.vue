@@ -11,6 +11,7 @@ import {
   ElForm,
   ElFormItem,
   ElInput,
+  ElMessage,
   ElRadioGroup,
   ElSelect,
 } from 'element-plus';
@@ -20,12 +21,16 @@ import { $t } from '#/locales';
 
 export type WorkflowFormProps = {
   onExecuting?: (values: any) => void;
+  onSubmit?: (values: any) => void;
   workflowId: any;
   workflowParams: any;
 };
 const props = withDefaults(defineProps<WorkflowFormProps>(), {
   onExecuting: () => {
     console.warn('no execute method');
+  },
+  onSubmit: () => {
+    console.warn('no submit method');
   },
 });
 const runForm = ref<FormInstance>();
@@ -61,11 +66,18 @@ function submit() {
           ...runParams.value,
         },
       };
-
+      props.onSubmit?.(runParams.value);
       submitLoading.value = true;
       postSse('/api/v1/aiWorkflow/tryRunningStream', data, {
         onMessage: (message) => {
-          props.onExecuting?.(message);
+          if (message.data) {
+            const msg = JSON.parse(message.data).content;
+            if (msg.status === 'execOnce') {
+              ElMessage.warning('流程已执行完毕，请重新发起。');
+            } else {
+              props.onExecuting?.(message);
+            }
+          }
         },
         onFinished: () => {
           submitLoading.value = false;

@@ -115,6 +115,9 @@ const filteredActions = computed(() => {
                     :key="action.name"
                     :command="action"
                     :icon="action.icon"
+                    :class="{
+                      'delete-dropdown-item': action.name === 'delete',
+                    }"
                   >
                     {{ action.label }}
                   </ElDropdownItem>
@@ -126,9 +129,8 @@ const filteredActions = computed(() => {
       </ElCard>
     </div>
 
-    <!-- 空状态（保留） -->
     <div v-if="data.length === 0" class="empty-state">
-      <ElEmpty description="暂无数据" />
+      <ElEmpty />
     </div>
   </div>
 </template>
@@ -140,23 +142,31 @@ const filteredActions = computed(() => {
 }
 
 .card-list {
-  display: flex;
-  min-width: 300px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
   margin-bottom: 20px;
 }
+
 :deep(.el-card__body) {
   padding: 20px 0 0 0;
 }
 .card-item {
   transition: all 0.3s ease;
   border-radius: 8px;
-  width: 330px;
   flex-shrink: 0;
   height: 165px;
+  min-width: 0;
 }
-
+:deep(.delete-dropdown-item) {
+  color: #ff4d4f !important;
+}
+:deep(.delete-dropdown-item:hover) {
+  color: #ff7875 !important;
+}
+:deep(.delete-dropdown-item .el-icon) {
+  color: inherit !important;
+}
 .card-item:hover {
   transform: translateY(-5px);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -262,19 +272,75 @@ const filteredActions = computed(() => {
   text-align: center;
 }
 
-/* 响应式设计（移除分页相关样式，保留卡片适配） */
-@media (max-width: 768px) {
+/* 响应式设计 */
+/* 超大屏幕 */
+@media (min-width: 1920px) {
   .card-list {
-    justify-content: center; /* 小屏幕下卡片居中 */
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 24px;
   }
-  .card-item {
-    width: 100%;
-    max-width: 330px;
+}
+
+/* 大屏幕 */
+@media (min-width: 1200px) and (max-width: 1919px) {
+  .card-list {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+  }
+}
+
+/* 中等屏幕 */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .card-list {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+
+  .card-header {
+    padding: 0 16px 0 16px;
+    gap: 12px;
+  }
+
+  .card-title {
+    font-size: 15px;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    height: 36px;
+    min-height: 36px;
+  }
+}
+
+/* 小屏幕 - 平板 */
+@media (min-width: 768px) and (max-width: 991px) {
+  .card-list {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px;
   }
   .card-header {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+    padding: 0 12px 0 12px;
+    gap: 10px;
+  }
+
+  .card-title {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  .card-desc {
+    font-size: 12px;
+    height: 32px;
+    min-height: 32px;
+    -webkit-line-clamp: 2;
+  }
+
+  .card-actions {
+    height: 40px;
+  }
+
+  .action-btn .el-button {
+    font-size: 11px;
   }
 }
 </style>

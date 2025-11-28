@@ -5,7 +5,14 @@ import type { ActionButton } from '#/components/page/CardList.vue';
 
 import { onMounted, ref } from 'vue';
 
-import { Delete, Edit, Plus, Tools, VideoPlay } from '@element-plus/icons-vue';
+import {
+  CopyDocument,
+  Delete,
+  Edit,
+  Plus,
+  Tools,
+  VideoPlay,
+} from '@element-plus/icons-vue';
 import {
   ElButton,
   ElForm,
@@ -52,6 +59,18 @@ const actions: ActionButton[] = [
     permission: '',
     onClick: (row: any) => {
       alert(row.id);
+    },
+  },
+  {
+    icon: CopyDocument,
+    text: $t('button.copy'),
+    className: '',
+    permission: '',
+    onClick: (row: any) => {
+      showDialog({
+        title: `${row.title}复制`,
+        content: row.content,
+      });
     },
   },
   {

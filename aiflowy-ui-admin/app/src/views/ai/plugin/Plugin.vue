@@ -32,11 +32,13 @@ const actions = ref([
     label: $t('plugin.button.tools'),
     type: 'success',
     icon: markRaw(PluginToolIcon),
+    permission: '/api/v1/aiPlugin/save',
   },
   {
     name: 'categorize',
     label: $t('plugin.button.categorize'),
     icon: markRaw(CategorizeIcon),
+    permission: '/api/v1/aiPlugin/save',
   },
   {
     name: 'delete',

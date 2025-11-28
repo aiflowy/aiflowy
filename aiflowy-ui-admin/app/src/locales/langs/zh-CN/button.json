@@ -28,5 +28,6 @@
   "startImport": "开始导入",
   "design": "设计",
   "run": "运行",
-  "runTest": "试运行"
+  "runTest": "试运行",
+  "copy": "复制"
 }

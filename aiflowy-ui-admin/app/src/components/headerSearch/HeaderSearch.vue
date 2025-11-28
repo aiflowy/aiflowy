@@ -11,6 +11,8 @@ import {
   ElInput,
 } from 'element-plus';
 
+import { hasPermission } from '#/api/common/hasPermission.ts';
+
 // 定义组件属性
 const props = defineProps({
   // 按钮配置数组
@@ -50,7 +52,13 @@ const visibleButtons = computed(() => {
 
 // 计算下拉菜单中的按钮
 const dropdownButtons = computed(() => {
-  return props.buttons.slice(props.maxVisibleButtons);
+  const dropdownButtonsTemp = props.buttons.slice(props.maxVisibleButtons);
+  if (dropdownButtonsTemp.length === 0) {
+    return [];
+  }
+  return dropdownButtonsTemp.value.filter((action) => {
+    return hasPermission([action.permission]);
+  });
 });
 
 // 处理搜索
@@ -121,6 +129,7 @@ const handleDropdownClick = (button) => {
           :type="button.type || 'default'"
           :icon="button.icon"
           :disabled="button.disabled"
+          v-access:code="button.permission"
           @click="handleButtonClick(button)"
         >
           {{ button.text }}

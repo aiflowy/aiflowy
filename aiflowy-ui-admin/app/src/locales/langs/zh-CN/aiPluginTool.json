@@ -19,6 +19,8 @@
     "configureOutputParameters": "配置输出参数",
     "trialRun": "试运行",
     "toolPath": "工具路径",
-    "requestMethod": "请求方法"
+    "requestMethod": "请求方法",
+    "runResult": "运行结果",
+    "run": "运行"
   }
 }

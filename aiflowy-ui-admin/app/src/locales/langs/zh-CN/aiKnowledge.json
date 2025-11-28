@@ -63,5 +63,17 @@
     "uploading": "解析中",
     "importSuccess": "导入成功"
   },
-  "documentManagement": "文档管理"
+  "documentManagement": "文档管理",
+  "actions": {
+    "knowledge": "知识",
+    "retrieve": "检索",
+    "addKnowledge": "新增知识库",
+    "confirmImport": "确认导入",
+    "cancelImport": "取消导入"
+  },
+  "searchResults": "检索结果",
+  "documentPreview": "文档预览",
+  "total": "共",
+  "segments": "个分段",
+  "similarityScore": "相似度"
 }

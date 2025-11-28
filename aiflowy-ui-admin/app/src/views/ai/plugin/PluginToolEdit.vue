@@ -4,7 +4,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { $t } from '@aiflowy/locales';
 
-import { Back } from '@element-plus/icons-vue';
+import { Back, VideoPlay } from '@element-plus/icons-vue';
 import {
   ElButton,
   ElForm,
@@ -16,6 +16,8 @@ import {
 } from 'element-plus';
 
 import { api } from '#/api/request';
+import PluginInputAndOutParams from '#/views/ai/plugin/PluginInputAndOutParams.vue';
+import PluginRunTestModal from '#/views/ai/plugin/PluginRunTestModal.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -36,6 +38,8 @@ const pluginToolInfo = ref<any>({
   requestMethod: '',
 });
 const pluginInfo = ref<any>({});
+const pluginInputData = ref<any[]>([]);
+const pluginOutputData = ref<any[]>([]);
 
 function getPluginToolInfo() {
   api
@@ -46,9 +50,13 @@ function getPluginToolInfo() {
       if (res.errorCode === 0) {
         pluginToolInfo.value = res.data.data;
         pluginInfo.value = res.data.aiPlugin;
+        pluginInputData.value = JSON.parse(res.data.data.inputData || '[]');
+        pluginOutputData.value = JSON.parse(res.data.data.outputData || '[]');
       }
     });
 }
+const pluginInputParamsEditable = ref(false);
+const pluginOutputParamsEditable = ref(false);
 
 const pluginBasicCollapse = ref({
   title: $t('aiPluginTool.pluginToolEdit.basicInfo'),
@@ -57,14 +65,15 @@ const pluginBasicCollapse = ref({
 });
 const pluginBasicCollapseInputParams = ref({
   title: $t('aiPluginTool.pluginToolEdit.configureInputParameters'),
-  isOpen: true,
+  isOpen: false,
   isEdit: false,
 });
-const configureOutputParameters = ref({
+const pluginBasicCollapseOutputParams = ref({
   title: $t('aiPluginTool.pluginToolEdit.configureOutputParameters'),
-  isOpen: true,
+  isOpen: false,
   isEdit: false,
 });
+
 const handleClickHeader = (index: number) => {
   switch (index) {
     case 1: {
@@ -78,8 +87,8 @@ const handleClickHeader = (index: number) => {
       break;
     }
     case 3: {
-      configureOutputParameters.value.isOpen =
-        !configureOutputParameters.value.isOpen;
+      pluginBasicCollapseOutputParams.value.isOpen =
+        !pluginBasicCollapseOutputParams.value.isOpen;
 
       break;
     }
@@ -115,30 +124,53 @@ const rules = reactive({
   ],
 });
 const saveForm = ref();
-
 const updatePluginTool = (index: number) => {
-  if (!saveForm.value) return;
-  saveForm.value.validate((valid: boolean) => {
-    if (valid) {
-      api
-        .post('/api/v1/aiPluginTool/tool/update', {
-          id: toolId.value,
-          name: pluginToolInfo.value.name,
-          englishName: pluginToolInfo.value.englishName,
-          description: pluginToolInfo.value.description,
-          basePath: pluginToolInfo.value.basePath,
-          requestMethod: pluginToolInfo.value.requestMethod,
-        })
-        .then((res) => {
-          if (res.errorCode === 0) {
-            ElMessage.success($t('message.updateOkMessage'));
-            if (index === 1) {
-              pluginBasicCollapse.value.isEdit = false;
-            }
+  if (index === 1) {
+    if (!saveForm.value) return;
+    saveForm.value.validate((valid: boolean) => {
+      if (valid) {
+        updatePluginToolInfo(index);
+      }
+    });
+  } else {
+    updatePluginToolInfo(index);
+  }
+};
+const updatePluginToolInfo = (index: number) => {
+  api
+    .post('/api/v1/aiPluginTool/tool/update', {
+      id: toolId.value,
+      name: pluginToolInfo.value.name,
+      englishName: pluginToolInfo.value.englishName,
+      description: pluginToolInfo.value.description,
+      basePath: pluginToolInfo.value.basePath,
+      requestMethod: pluginToolInfo.value.requestMethod,
+      inputData: JSON.stringify(pluginInputData.value),
+      outputData: JSON.stringify(pluginOutputData.value),
+    })
+    .then((res) => {
+      if (res.errorCode === 0) {
+        ElMessage.success($t('message.updateOkMessage'));
+        switch (index) {
+          case 1: {
+            pluginBasicCollapse.value.isEdit = false;
+
+            break;
           }
-        });
-    }
-  });
+          case 2: {
+            pluginBasicCollapseInputParams.value.isEdit = false;
+
+            break;
+          }
+          case 3: {
+            pluginBasicCollapseOutputParams.value.isEdit = false;
+
+            break;
+          }
+          // No default
+        }
+      }
+    });
 };
 const handleEdit = (index: number) => {
   switch (index) {
@@ -148,16 +180,21 @@ const handleEdit = (index: number) => {
     }
     case 2: {
       pluginBasicCollapseInputParams.value.isEdit = true;
+      pluginBasicCollapseInputParams.value.isOpen = true;
+      pluginInputParamsEditable.value = true;
       break;
     }
     case 3: {
-      configureOutputParameters.value.isEdit = true;
+      pluginBasicCollapseOutputParams.value.isEdit = true;
+      pluginBasicCollapseOutputParams.value.isOpen = true;
+      pluginOutputParamsEditable.value = true;
       break;
     }
     // No default
   }
 };
 const handleSave = (index: number) => {
+  pluginInputParamsEditable.value = false;
   updatePluginTool(index);
 };
 const handleCancel = (index: number) => {
@@ -170,12 +207,12 @@ const handleCancel = (index: number) => {
     }
     case 2: {
       pluginBasicCollapseInputParams.value.isEdit = false;
-
+      pluginInputParamsEditable.value = false;
       break;
     }
     case 3: {
-      configureOutputParameters.value.isEdit = false;
-
+      pluginBasicCollapseOutputParams.value.isEdit = false;
+      pluginOutputParamsEditable.value = false;
       break;
     }
     // No default
@@ -203,6 +240,10 @@ const requestMethodOptions = [
     value: 'PATCH',
   },
 ];
+const runTestRef = ref();
+const handleOpenRunModal = () => {
+  runTestRef.value.openDialog();
+};
 </script>
 
 <template>
@@ -211,8 +252,8 @@ const requestMethodOptions = [
       <ElButton @click="back" :icon="Back">
         {{ $t('button.back') }}
       </ElButton>
-      <ElButton>
-        {{ $t('aiPluginTool.pluginToolEdit.basicInfo') }}
+      <ElButton type="primary" :icon="VideoPlay" @click="handleOpenRunModal">
+        {{ $t('aiPluginTool.pluginToolEdit.trialRun') }}
       </ElButton>
     </div>
     <!-- 折叠面板列表 -->
@@ -407,7 +448,7 @@ const requestMethodOptions = [
           </div>
         </div>
 
-        <!-- 面板内容 -->
+        <!--编辑基本信息-->
         <div
           class="accordion-content"
           :class="{
@@ -415,14 +456,80 @@ const requestMethodOptions = [
           }"
         >
           <div class="accordion-content-inner">
-            <!--编辑基本信息-->
-            <div v-show="pluginBasicCollapseInputParams.isEdit">
-              <div class="plugin-tool-info-edit-container">222</div>
+            <PluginInputAndOutParams
+              v-model="pluginInputData"
+              :editable="pluginInputParamsEditable"
+              :is-edit-output="false"
+            />
+          </div>
+        </div>
+      </div>
+      <!--      输出参数-->
+      <div
+        class="accordion-item"
+        :class="{
+          'accordion-item--active': pluginBasicCollapseOutputParams.isOpen,
+        }"
+      >
+        <!-- 面板头部 -->
+        <div class="accordion-header" @click="handleClickHeader(3)">
+          <div class="column-header-container">
+            <div
+              class="accordion-icon"
+              :class="{
+                'accordion-icon--rotated':
+                  pluginBasicCollapseOutputParams.isOpen,
+              }"
+            >
+              ▼
             </div>
+            <h3 class="accordion-title">
+              {{ pluginBasicCollapseOutputParams.title }}
+            </h3>
+          </div>
+          <div>
+            <ElButton
+              @click.stop="handleEdit(3)"
+              type="primary"
+              v-if="!pluginBasicCollapseOutputParams.isEdit"
+            >
+              {{ $t('button.edit') }}
+            </ElButton>
+            <ElButton
+              @click.stop="handleCancel(3)"
+              v-if="pluginBasicCollapseOutputParams.isEdit"
+            >
+              {{ $t('button.cancel') }}
+            </ElButton>
+            <ElButton
+              @click.stop="handleSave(3)"
+              type="primary"
+              v-if="pluginBasicCollapseOutputParams.isEdit"
+            >
+              {{ $t('button.save') }}
+            </ElButton>
+          </div>
+        </div>
+
+        <!--编辑基本信息-->
+        <div
+          class="accordion-content"
+          :class="{
+            'accordion-content--open': pluginBasicCollapseOutputParams.isOpen,
+          }"
+        >
+          <div class="accordion-content-inner">
+            <PluginInputAndOutParams
+              v-model="pluginOutputData"
+              :editable="pluginOutputParamsEditable"
+              :is-edit-output="true"
+            />
           </div>
         </div>
       </div>
     </div>
+    <!--    试运行模态框-->
+    <PluginRunTestModal ref="runTestRef" :plugin-tool-id="toolId" />
   </div>
 </template>
 
@@ -433,7 +540,11 @@ const requestMethodOptions = [
   padding: 20px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
-
+.controls-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .title {
   text-align: center;
   color: var(--el-text-color-secondary);

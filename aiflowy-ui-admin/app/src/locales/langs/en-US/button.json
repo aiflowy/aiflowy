@@ -28,5 +28,6 @@
   "startImport": "StartImport",
   "design": "Design",
   "run": "Run",
-  "runTest": "RunTest"
+  "runTest": "RunTest",
+  "copy": "Copy"
 }

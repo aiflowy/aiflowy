@@ -45,6 +45,7 @@ const headerButtons = ref([
     icon: markRaw(Plus),
     type: 'primary',
     data: { action: 'addLlm' },
+    permission: '/api/v1/aiLlm/save',
   },
   {
     key: 'edit',
@@ -52,6 +53,7 @@ const headerButtons = ref([
     type: 'primary',
     icon: markRaw(Plus),
     data: { action: 'oneClickAdd' },
+    permission: '/api/v1/aiLlm/save',
   },
 ]);
 
@@ -127,7 +129,6 @@ const handleSuccess = () => {
     <div class="llm-header">
       <HeaderSearch
         :buttons="headerButtons"
-        search-placeholder="搜索用户"
         @search="handleSearch"
         @button-click="handleButtonClick"
       />

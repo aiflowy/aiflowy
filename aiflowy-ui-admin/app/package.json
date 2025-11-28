@@ -43,7 +43,8 @@
     "pinia": "catalog:",
     "vue": "catalog:",
     "vue-cropper": "^1.1.4",
-    "vue-router": "catalog:"
+    "vue-router": "catalog:",
+    "vue3-json-viewer": "^2.4.1"
   },
   "devDependencies": {
     "unplugin-element-plus": "catalog:"

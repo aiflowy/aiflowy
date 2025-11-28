@@ -11,5 +11,8 @@
     "createdBy": "CreatedBy",
     "modified": "Modified",
     "modifiedBy": "ModifiedBy",
-    "englishName": "EnglishName"
+    "englishName": "EnglishName",
+    "params": "Params",
+    "steps": "Steps",
+    "result": "Result"
 }

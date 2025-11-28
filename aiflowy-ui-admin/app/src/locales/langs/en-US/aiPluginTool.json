@@ -19,6 +19,8 @@
     "configureOutputParameters": "Configure output parameters",
     "trialRun": "Trial run",
     "toolPath": "Tool path",
-    "requestMethod": "RequestMethod"
+    "requestMethod": "RequestMethod",
+    "runResult": "Run result",
+    "run": "run"
   }
 }

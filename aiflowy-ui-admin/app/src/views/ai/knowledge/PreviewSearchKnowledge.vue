@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+
 import { Document } from '@element-plus/icons-vue';
 import { ElButton, ElIcon } from 'element-plus';
 // 定义类型接口（与 React 版本一致）
@@ -45,20 +47,31 @@ const props = defineProps({
     default: false,
   },
 });
+const loadingStatus = ref(false);
+defineExpose({
+  loadingContent: (state: boolean) => {
+    loadingStatus.value = state;
+  },
+});
 </script>
 
 <template>
-  <div class="preview-container">
+  <div class="preview-container" v-loading="loadingStatus">
     <!-- 头部区域：标题 + 统计信息 -->
     <div class="preview-header">
       <h3>
         <ElIcon class="header-icon" size="20">
           <Document />
         </ElIcon>
-        {{ isSearching ? '检索结果' : '文档预览' }}
+        {{
+          isSearching
+            ? $t('aiKnowledge.searchResults')
+            : $t('aiKnowledge.documentPreview')
+        }}
       </h3>
       <span class="preview-stats" v-if="props.data.length > 0">
-        共 {{ total > 0 ? total : data.length }} 个分段
+        {{ $t('aiKnowledge.total') }}
+        {{ total > 0 ? total : data.length }} {{ $t('aiKnowledge.segments') }}
       </span>
     </div>
 
@@ -75,7 +88,9 @@ const props = defineProps({
               {{ item.sorting ?? index + 1 }}
             </div>
             <div class="el-list-item-meta">
-              <div v-if="!hideScore">相似度: {{ item.score }}</div>
+              <div v-if="!hideScore">
+                {{ $t('aiKnowledge.similarityScore') }}: {{ item.score }}
+              </div>
               <div class="content-desc">{{ item.content }}</div>
             </div>
           </div>
@@ -90,7 +105,7 @@ const props = defineProps({
           :style="{ minWidth: '100px', height: '36px' }"
           click="onCancel"
         >
-          取消导入
+          {{ $t('aiKnowledge.confirmImport') }}
         </ElButton>
         <ElButton
           type="primary"
@@ -98,7 +113,7 @@ const props = defineProps({
           :loading="disabledConfirm"
           click="onConfirm"
         >
-          确认导入
+          {{ $t('aiKnowledge.cancelImport') }}
         </ElButton>
       </div>
     </div>

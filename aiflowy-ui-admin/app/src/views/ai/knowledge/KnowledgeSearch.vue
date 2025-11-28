@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 
-import { ElButton, ElInput } from 'element-plus';
+import { $t } from '@aiflowy/locales';
+
+import { ElButton, ElInput, ElMessage } from 'element-plus';
 
 import { api } from '#/api/request';
 import PreviewSearchKnowledge from '#/views/ai/knowledge/PreviewSearchKnowledge.vue';
@@ -14,13 +16,19 @@ const props = defineProps({
 });
 const searchDataList = ref([]);
 const keyword = ref('');
+const previewSearchKnowledgeRef = ref();
 const handleSearch = () => {
+  if (!keyword.value) {
+    ElMessage.error($t('message.pleaseInputContent'));
+    return;
+  }
+  previewSearchKnowledgeRef.value.loadingContent(true);
   api
     .get(
       `/api/v1/aiKnowledge/search?knowledgeId=${props.knowledgeId}&keyword=${keyword.value}`,
     )
     .then((res) => {
-      console.log('search result', res);
+      previewSearchKnowledgeRef.value.loadingContent(false);
       searchDataList.value = res.data;
     });
 };
@@ -29,11 +37,19 @@ const handleSearch = () => {
 <template>
   <div class="search-container">
     <div class="search-input">
-      <ElInput v-model="keyword" placeholder="请输入内容" />
-      <ElButton type="primary" @click="handleSearch">搜索</ElButton>
+      <ElInput
+        v-model="keyword"
+        :placeholder="$t('common.searchPlaceholder')"
+      />
+      <ElButton type="primary" @click="handleSearch">
+        {{ $t('button.query') }}
+      </ElButton>
     </div>
     <div class="search-result">
-      <PreviewSearchKnowledge :data="searchDataList" />
+      <PreviewSearchKnowledge
+        :data="searchDataList"
+        ref="previewSearchKnowledgeRef"
+      />
     </div>
   </div>
 </template>
