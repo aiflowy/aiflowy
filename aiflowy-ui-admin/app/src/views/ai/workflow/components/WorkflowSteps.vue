@@ -16,12 +16,19 @@ export interface WorkflowStepsProps {
   workflowId: any;
   executeMessage: null | ServerSentEventMessage;
   nodeJson: any;
+  initSignal?: boolean;
 }
 const props = defineProps<WorkflowStepsProps>();
 
 const nodes = ref<any[]>([]);
 const nodeStatusMap = ref<Record<string, any>>({});
 const isChainError = ref(false);
+watch(
+  () => props.initSignal,
+  () => {
+    nodeStatusMap.value = {};
+  },
+);
 watch(
   () => props.nodeJson,
   (newVal) => {

@@ -23,16 +23,13 @@ const route = useRoute();
 // vue
 onMounted(async () => {
   document.addEventListener('keydown', handleKeydown);
-  customNode.value = await getCustomNode({
-    handleChosen: (nodeType: string, updateNodeData: any, value: string) => {
-      console.log('nodeType:', nodeType);
-      console.log('updateNodeData:', updateNodeData);
-      console.log('value:', value);
-    },
-  });
-  getWorkflowInfo(workflowId.value);
-  getLlmList();
-  getKnowledgeList();
+  await Promise.all([
+    loadCustomNode(),
+    getLlmList(),
+    getKnowledgeList(),
+    getWorkflowInfo(workflowId.value),
+  ]);
+  showTinyFlow.value = true;
 });
 onUnmounted(() => {
   document.removeEventListener('keydown', handleKeydown);
@@ -68,15 +65,17 @@ const handleKeydown = (event: KeyboardEvent) => {
   }
 };
 const drawerVisible = ref(false);
-watch(
-  [() => tinyFlowData.value, () => llmList.value, () => knowledgeList.value],
-  ([tinyFlowData, llmList, knowledgeList]) => {
-    if (tinyFlowData && llmList && knowledgeList) {
-      showTinyFlow.value = true;
-    }
-  },
-);
+
 // functions
+async function loadCustomNode() {
+  customNode.value = await getCustomNode({
+    handleChosen: (nodeType: string, updateNodeData: any, value: string) => {
+      console.log('nodeType:', nodeType);
+      console.log('updateNodeData:', updateNodeData);
+      console.log('value:', value);
+    },
+  });
+}
 async function runWorkflow() {
   if (!saveLoading.value) {
     await handleSave().then(() => {
@@ -99,7 +98,7 @@ async function handleSave(showMsg: boolean = false) {
       }
     });
 }
-function getWorkflowInfo(workflowId: any) {
+async function getWorkflowInfo(workflowId: any) {
   api.get(`/api/v1/aiWorkflow/detail?id=${workflowId}`).then((res) => {
     workflowInfo.value = res.data;
     tinyFlowData.value = workflowInfo.value.content
@@ -107,12 +106,12 @@ function getWorkflowInfo(workflowId: any) {
       : {};
   });
 }
-function getLlmList() {
+async function getLlmList() {
   api.get('/api/v1/aiLlm/list').then((res) => {
     llmList.value = res.data;
   });
 }
-function getKnowledgeList() {
+async function getKnowledgeList() {
   api.get('/api/v1/aiKnowledge/list').then((res) => {
     knowledgeList.value = res.data;
   });
@@ -126,31 +125,38 @@ function getRunningParams() {
     });
 }
 const executeMessage = ref<any>(null);
+const initState = ref(false);
 function onExecuting(msg: any) {
   executeMessage.value = msg;
+}
+function onSubmit() {
+  initState.value = !initState.value;
 }
 </script>
 
 <template>
   <div class="head-div h-full w-full">
     <ElDrawer v-model="drawerVisible" :title="$t('button.run')" size="600px">
-      参数：
+      <div class="mb-2.5 font-semibold">参数：</div>
       <WorkflowForm
         :workflow-id="workflowId"
         :workflow-params="runParams"
         :on-executing="onExecuting"
+        :on-submit="onSubmit"
       />
-      执行结果：
-      <ExecResult
-        :workflow-id="workflowId"
-        :execute-message="executeMessage"
-        :node-json="sortNodes(tinyFlowData)"
-      />
-      执行步骤：
+      <div class="mb-2.5 font-semibold">执行步骤：</div>
       <WorkflowSteps
         :workflow-id="workflowId"
         :execute-message="executeMessage"
         :node-json="sortNodes(tinyFlowData)"
+        :init-signal="initState"
+      />
+      <div class="mb-2.5 mt-2.5 font-semibold">执行结果：</div>
+      <ExecResult
+        :workflow-id="workflowId"
+        :execute-message="executeMessage"
+        :node-json="sortNodes(tinyFlowData)"
+        :init-signal="initState"
       />
     </ElDrawer>
     <div class="flex items-center justify-between border-b p-2.5">

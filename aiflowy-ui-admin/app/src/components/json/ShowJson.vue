@@ -23,7 +23,7 @@ watch(
 </script>
 
 <template>
-  <JsonViewer :value="value || {}" copyable :theme="themeMode" />
+  <JsonViewer :value="value || ''" copyable :theme="themeMode" />
 </template>
 
 <style scoped></style>

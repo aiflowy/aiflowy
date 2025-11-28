@@ -21,12 +21,16 @@ import { $t } from '#/locales';
 
 export type WorkflowFormProps = {
   onExecuting?: (values: any) => void;
+  onSubmit?: (values: any) => void;
   workflowId: any;
   workflowParams: any;
 };
 const props = withDefaults(defineProps<WorkflowFormProps>(), {
   onExecuting: () => {
     console.warn('no execute method');
+  },
+  onSubmit: () => {
+    console.warn('no submit method');
   },
 });
 const runForm = ref<FormInstance>();
@@ -62,7 +66,7 @@ function submit() {
           ...runParams.value,
         },
       };
-
+      props.onSubmit?.(runParams.value);
       submitLoading.value = true;
       postSse('/api/v1/aiWorkflow/tryRunningStream', data, {
         onMessage: (message) => {
