@@ -16,5 +16,6 @@
   "preview": "预览",
   "notEmpty": "不能为空",
   "success": "成功",
-  "fail": "失败"
+  "fail": "失败",
+  "pleaseInputContent": "请输入内容"
 }

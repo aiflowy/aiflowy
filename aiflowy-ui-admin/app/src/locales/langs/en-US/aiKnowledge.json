@@ -67,6 +67,13 @@
   "actions": {
     "knowledge": "Knowledge",
     "retrieve": "Retrieve",
-    "addKnowledge": "AddKnowledge"
-  }
+    "addKnowledge": "AddKnowledge",
+    "confirmImport": "ConfirmImport",
+    "cancelImport": "CancelImport"
+  },
+  "searchResults": "SearchResults",
+  "documentPreview": "DocumentPreview",
+  "total": "Total",
+  "segments": "Segments",
+  "similarityScore": "SimilarityScore"
 }

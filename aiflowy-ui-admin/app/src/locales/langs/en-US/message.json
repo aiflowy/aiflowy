@@ -16,5 +16,6 @@
   "preview": "Preview",
   "notEmpty": "Can not be empty",
   "success": "Success",
-  "fail": "Fail"
+  "fail": "Fail",
+  "pleaseInputContent": "Please input content"
 }

@@ -67,6 +67,13 @@
   "actions": {
     "knowledge": "知识",
     "retrieve": "检索",
-    "addKnowledge": "新增知识库"
-  }
+    "addKnowledge": "新增知识库",
+    "confirmImport": "确认导入",
+    "cancelImport": "取消导入"
+  },
+  "searchResults": "检索结果",
+  "documentPreview": "文档预览",
+  "total": "共",
+  "segments": "个分段",
+  "similarityScore": "相似度"
 }

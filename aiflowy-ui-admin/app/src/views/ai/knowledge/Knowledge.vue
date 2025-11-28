@@ -5,13 +5,14 @@ import { useRouter } from 'vue-router';
 import { $t } from '@aiflowy/locales';
 
 import { Delete, Edit, Notebook, Plus, Search } from '@element-plus/icons-vue';
-import { ElMessage, ElMessageBox } from 'element-plus';
+import { ElDialog, ElMessage, ElMessageBox } from 'element-plus';
 
 import { api } from '#/api/request';
 import CardPage from '#/components/cardPage/CardPage.vue';
 import HeaderSearch from '#/components/headerSearch/HeaderSearch.vue';
 import PageData from '#/components/page/PageData.vue';
 import AiKnowledgeModal from '#/views/ai/knowledge/AiKnowledgeModal.vue';
+import KnowledgeSearch from '#/views/ai/knowledge/KnowledgeSearch.vue';
 
 const router = useRouter();
 
@@ -63,6 +64,8 @@ const handleDelete = (item) => {
     })
     .catch(() => {});
 };
+const selectSearchKnowledgeId = ref('');
+const searchKnowledgeModalVisible = ref(false);
 // 处理操作按钮点击
 const handleAction = ({ action, item }) => {
   // 根据不同的操作执行不同的逻辑
@@ -83,6 +86,11 @@ const handleAction = ({ action, item }) => {
           pageKey: '/ai/knowledge',
         },
       });
+      break;
+    }
+    case 'retrieve': {
+      selectSearchKnowledgeId.value = item.id;
+      searchKnowledgeModalVisible.value = true;
       break;
     }
   }
@@ -144,6 +152,19 @@ const handleSearch = (params) => {
     </div>
     <!--    新增知识库模态框-->
     <AiKnowledgeModal ref="aiKnowledgeModalRef" @reload="handleSearch" />
+    <!--    知识检索模态框-->
+    <ElDialog
+      v-model="searchKnowledgeModalVisible"
+      draggable
+      :close-on-click-modal="false"
+      width="80%"
+      align-center
+      :title="$t('aiKnowledge.knowledgeRetrieval')"
+    >
+      <div class="search-knowledge-dialog">
+        <KnowledgeSearch :knowledge-id="selectSearchKnowledgeId" />
+      </div>
+    </ElDialog>
   </div>
 </template>
 
@@ -152,6 +173,9 @@ const handleSearch = (params) => {
   padding: 20px;
   width: 100%;
   margin: 0 auto;
+}
+.search-knowledge-dialog {
+  height: calc(100vh - 161px);
 }
 
 h1 {
