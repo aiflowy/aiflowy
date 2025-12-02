@@ -163,24 +163,24 @@ const handleDownload = (url: string) => {
 }
 
 .custom-radio-option {
-  background-color: #fff;
+  background-color: var(--el-bg-color);
   padding: 8px;
   border-radius: 8px;
   cursor: pointer;
   position: relative;
-  box-shadow: 0 0 0 1px #d9d9d9;
+  box-shadow: 0 0 0 1px var(--el-border-color);
   transition: all 0.2s;
   box-sizing: border-box;
 }
 
 .custom-radio-option:hover {
-  box-shadow: 0 0 0 1px #0066ff;
+  box-shadow: 0 0 0 1px var(--el-color-primary-light-5);
 }
 
 .custom-radio-option.selected {
-  box-shadow: 0 0 0 1px #0066ff;
+  box-shadow: 0 0 0 1px var(--el-color-primary-light-3);
   padding: 8px;
-  background: rgba(0, 102, 255, 0.06);
+  background: var(--el-color-primary-light-9);
 }
 
 .custom-radio-option.selected::after {

@@ -256,7 +256,7 @@ function handleConfirm(node: any) {
   border-radius: 1px;
   height: 16px;
   margin-right: 16px;
-  background-color: #0066ff;
+  background-color: var(--el-color-primary);
 }
 
 .description-container {
