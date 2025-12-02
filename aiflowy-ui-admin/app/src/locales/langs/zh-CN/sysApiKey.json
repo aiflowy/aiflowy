@@ -12,5 +12,7 @@
     "enable": "启用",
     "disable": "未启用",
     "failure": "已失效"
-  }
+  },
+  "permissions": "授权接口",
+  "addApiKeyNotice": "该操作会生成一个apiKey,请确认是否生成"
 }

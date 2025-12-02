@@ -9,6 +9,7 @@ import {
   ElDialog,
   ElForm,
   ElFormItem,
+  ElIcon,
   ElInput,
   ElMessage,
   ElMessageBox,
@@ -28,6 +29,7 @@ const formRef = ref<FormInstance>();
 const pageDataRef = ref();
 const saveDialog = ref();
 const formInline = ref({
+  apiKey: '',
   id: '',
 });
 
@@ -47,7 +49,7 @@ function reset(formEl: FormInstance | undefined) {
 function showDialog(row: any) {
   saveDialog.value.openDialog({ ...row });
 }
-function showAddPermissionDialog(row: any) {
+function showAddPermissionDialog(_row: any) {
   dialogVisible.value = true;
 }
 const dialogVisible = ref(false);
@@ -78,6 +80,24 @@ function remove(row: any) {
     },
   }).catch(() => {});
 }
+function addNewApiKey() {
+  ElMessageBox.confirm(
+    $t('sysApiKey.addApiKeyNotice'),
+    $t('message.noticeTitle'),
+    {
+      confirmButtonText: $t('message.ok'),
+      cancelButtonText: $t('message.cancel'),
+      type: 'warning',
+    },
+  ).then(() => {
+    api.post('/api/v1/sysApiKey/key/save', {}).then((res) => {
+      if (res.errorCode === 0) {
+        ElMessage.success($t('message.saveOkMessage'));
+        pageDataRef.value.setQuery({});
+      }
+    });
+  });
+}
 </script>
 
 <template>
@@ -100,7 +120,7 @@ function remove(row: any) {
           </ElButton>
         </ElFormItem>
       </ElForm>
-      <ElButton @click="showDialog({})" type="primary">
+      <ElButton @click="addNewApiKey" type="primary">
         <ElIcon class="mr-1">
           <Plus />
         </ElIcon>

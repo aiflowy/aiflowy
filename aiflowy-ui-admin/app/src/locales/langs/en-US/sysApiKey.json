@@ -1,16 +1,18 @@
 {
-    "id": "Id",
-    "apiKey": "ApiKey",
-    "created": "Created",
-    "status": "Status",
-    "deptId": "DeptId",
-    "tenantId": "TenantId",
-    "expiredAt": "ExpiredAt",
-    "createdBy": "CreatedBy",
-    "addApiKey": "addApiKey",
-    "actions": {
-      "enable": "Enable",
-      "disable": "NotDisable",
-      "failure": "Failure"
-    }
+  "id": "Id",
+  "apiKey": "ApiKey",
+  "created": "Created",
+  "status": "Status",
+  "deptId": "DeptId",
+  "tenantId": "TenantId",
+  "expiredAt": "ExpiredAt",
+  "createdBy": "CreatedBy",
+  "addApiKey": "addApiKey",
+  "actions": {
+    "enable": "Enable",
+    "disable": "NotDisable",
+    "failure": "Failure"
+  },
+  "permissions": "AuthInterface",
+  "addApiKeyNotice": "This operation will generate an API key. Please confirm whether to proceed"
 }

@@ -1,8 +1,11 @@
 package tech.aiflowy.admin.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import com.mybatisflex.core.paginate.Page;
+import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.table.TableInfo;
 import com.mybatisflex.core.table.TableInfoFactory;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,11 +16,18 @@ import tech.aiflowy.common.satoken.util.SaTokenUtil;
 import tech.aiflowy.common.web.controller.BaseCurdController;
 import tech.aiflowy.system.entity.SysApiKey;
 import tech.aiflowy.common.vo.PkVo;
+import tech.aiflowy.system.entity.SysApiKeyResourcePermissionRelationship;
+import tech.aiflowy.system.service.SysApiKeyResourcePermissionRelationshipService;
 import tech.aiflowy.system.service.SysApiKeyService;
 
+import javax.annotation.Resource;
+import javax.management.Query;
+import javax.servlet.http.HttpServletRequest;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 
 /**
  *  控制层。
@@ -32,6 +42,8 @@ public class SysApiKeyController extends BaseCurdController<SysApiKeyService, Sy
         super(service);
     }
 
+    @Resource
+    private SysApiKeyResourcePermissionRelationshipService sysApiKeyResourcePermissionRelationshipService;
     /**
      * 添加（保存）数据
      *
@@ -64,5 +76,27 @@ public class SysApiKeyController extends BaseCurdController<SysApiKeyService, Sy
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(entity.getClass());
         Object[] pkArgs = tableInfo.buildPkSqlArgs(entity);
         return Result.ok(new PkVo(pkArgs));
+    }
+
+    @Override
+    protected void onSaveOrUpdateAfter(SysApiKey entity, boolean isSave) {
+        if (!isSave && entity.getPermissionIds() != null && !entity.getPermissionIds().isEmpty()) {
+            // 修改的时候绑定授权接口
+            sysApiKeyResourcePermissionRelationshipService.authInterface(entity);
+        }
+    }
+
+    @Override
+    @GetMapping("/page")
+    public Result<?> page(HttpServletRequest request, String sortKey, String sortType, Long pageNumber, Long pageSize) {
+        Result<Page<SysApiKey>> pageResult = (Result<Page<SysApiKey>>) super.page(request, sortKey, sortType, pageNumber, pageSize);
+        Page<SysApiKey> data = pageResult.getData();
+        List<SysApiKey> records = data.getRecords();
+        records.forEach(record -> {
+            QueryWrapper queryWrapper = QueryWrapper.create().select(SysApiKeyResourcePermissionRelationship::getApiKeyResourceId).eq(SysApiKeyResourcePermissionRelationship::getApiKeyId, record.getId());
+            List<BigInteger> resourceIds = sysApiKeyResourcePermissionRelationshipService.listAs(queryWrapper, BigInteger.class);
+            record.setPermissionIds(resourceIds);
+        });
+        return pageResult;
     }
 }
