@@ -1,44 +1,77 @@
 <script setup lang="ts">
 import type { BotInfo } from '@aiflowy/types';
 
-import { markRaw } from 'vue';
+import { markRaw, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { Delete, Edit, Setting, VideoPlay } from '@element-plus/icons-vue';
+import { $t } from '@aiflowy/locales';
+
+import {
+  Delete,
+  Edit,
+  Plus,
+  Setting,
+  VideoPlay,
+} from '@element-plus/icons-vue';
 
 import CardPage from '#/components/cardPage/CardPage.vue';
+import HeaderSearch from '#/components/headerSearch/HeaderSearch.vue';
 import PageData from '#/components/page/PageData.vue';
 
 const router = useRouter();
+const pageDataRef = ref();
 
+const headerButtons = [
+  {
+    key: 'add',
+    text: $t('aiBots.createBot'),
+    icon: markRaw(Plus),
+    type: 'primary',
+    data: { action: 'add' },
+    permission: '/api/v1/aiKnowledge/save',
+  },
+];
 // 操作按钮配置
 const actions = [
   {
     name: 'edit',
-    label: '编辑',
+    label: $t('button.edit'),
     type: 'default',
     icon: markRaw(Edit),
   },
   {
     name: 'setting',
-    label: '设置',
+    label: $t('button.setting'),
     type: 'default',
     icon: markRaw(Setting),
   },
   {
     name: 'run',
-    label: '运行',
+    label: $t('button.run'),
     type: 'default',
     icon: markRaw(VideoPlay),
   },
   {
     name: 'delete',
-    label: '删除',
+    label: $t('button.delete'),
     type: 'danger',
     icon: markRaw(Delete),
+    permission: '/api/v1/aiBot/remove',
   },
 ];
 
+const handleButtonClick = (event: any) => {
+  switch (event.key) {
+    case 'add': {
+      // aiKnowledgeModalRef.value.openDialog({});
+      console.warn(event);
+      break;
+    }
+  }
+};
+const handleSearch = (params: string) => {
+  pageDataRef.value.setQuery({ title: params, isQueryOr: true });
+};
 const handleAction = ({
   action,
   item,
@@ -56,8 +89,17 @@ const handleAction = ({
 </script>
 
 <template>
-  <div class="page-container">
-    <PageData page-url="/api/v1/aiBot/page" :init-query-params="{ status: 1 }">
+  <div class="space-y-5 p-5">
+    <HeaderSearch
+      :buttons="headerButtons"
+      @search="handleSearch"
+      @button-click="handleButtonClick"
+    />
+    <PageData
+      ref="pageDataRef"
+      page-url="/api/v1/aiBot/page"
+      :init-query-params="{ status: 1 }"
+    >
       <template #default="{ pageList }">
         <CardPage
           title-key="title"
