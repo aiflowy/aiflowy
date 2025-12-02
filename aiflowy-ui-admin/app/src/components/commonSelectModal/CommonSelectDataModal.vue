@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import type { PropType } from 'vue';
+
+import { ref } from 'vue';
 
 import { $t } from '@aiflowy/locales';
 
@@ -33,13 +35,6 @@ const pageDataRef = ref();
 const loading = ref(false);
 const selectedIds = ref<(number | string)[]>([]);
 
-watch(
-  () => props.defaultSelectedIds,
-  (newVal) => {
-    selectedIds.value = newVal ? [...newVal] : [];
-  },
-  { immediate: true },
-);
 defineExpose({
   openDialog(defaultSelectedIds: (number | string)[]) {
     selectedIds.value = defaultSelectedIds ? [...defaultSelectedIds] : [];
@@ -50,7 +45,7 @@ const isSelected = (id: number | string) => {
   return selectedIds.value.includes(id);
 };
 
-const toggleSelection = (id: number | string, checked: boolean) => {
+const toggleSelection = (id: number | string, checked: any) => {
   if (checked) {
     selectedIds.value.push(id);
   } else {
