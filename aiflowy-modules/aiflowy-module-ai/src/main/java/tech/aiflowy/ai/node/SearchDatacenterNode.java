@@ -1,12 +1,12 @@
 package tech.aiflowy.ai.node;
 
-import com.agentsflex.core.chain.Chain;
-import com.agentsflex.core.chain.Parameter;
-import com.agentsflex.core.chain.node.BaseNode;
 import com.agentsflex.core.util.StringUtil;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.row.Row;
 import com.mybatisflex.core.tenant.TenantManager;
+import dev.tinyflow.core.chain.Chain;
+import dev.tinyflow.core.chain.Parameter;
+import dev.tinyflow.core.node.BaseNode;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import org.slf4j.Logger;
@@ -45,7 +45,7 @@ public class SearchDatacenterNode extends BaseNode {
     @Override
     protected Map<String, Object> execute(Chain chain) {
 
-        Map<String, Object> map = chain.getParameterValues(this);
+        Map<String, Object> map = chain.getState().resolveParameters(this);
         Map<String, Object> res = new HashMap<>();
         long limitNum = 10;
         if (limit != null) {

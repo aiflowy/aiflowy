@@ -1,12 +1,12 @@
 package tech.aiflowy.ai.entity;
 
+import com.agentsflex.core.model.chat.tool.Tool;
 import tech.aiflowy.ai.enums.BotMessageTypeEnum;
 import tech.aiflowy.ai.mapper.AiBotConversationMessageMapper;
 import tech.aiflowy.ai.service.AiBotConversationMessageService;
 import tech.aiflowy.ai.service.AiBotMessageService;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
-import com.agentsflex.core.llm.functions.Function;
 import com.agentsflex.core.memory.ChatMemory;
 import com.agentsflex.core.message.*;
 import com.alibaba.fastjson.JSON;
@@ -38,7 +38,7 @@ public class AiBotMessageMemory implements ChatMemory {
     }
 
     @Override
-    public List<Message> getMessages() {
+    public List<Message> getMessages(int i) {
         List<AiBotMessage> sysAiMessages = messageService.list(QueryWrapper.create()
                 .eq(AiBotMessage::getBotId, botId, true)
                 .eq(AiBotMessage::getAccountId, accountId, true)
@@ -59,6 +59,7 @@ public class AiBotMessageMemory implements ChatMemory {
         return messages;
     }
 
+
     @Override
     public void addMessage(Message message) {
 
@@ -77,16 +78,16 @@ public class AiBotMessageMemory implements ChatMemory {
             aiMessage.setCompletionTokens(m.getCompletionTokens());
             Map<String, Object> metadataMap = m.getMetadataMap();
             aiMessage.setOptions(metadataMap);
-            List<FunctionCall> calls = m.getCalls();
-            if (CollectionUtil.isNotEmpty(calls)) {
+            List<ToolCall> toolCalls = m.getToolCalls();
+            if (CollectionUtil.isNotEmpty(toolCalls)) {
                 return;
             }
 
-        } else if (message instanceof HumanMessage) {
+        } else if (message instanceof UserMessage) {
 
-            HumanMessage hm = (HumanMessage) message;
+            UserMessage hm = (UserMessage) message;
             aiMessage.setContent(hm.getContent());
-            List<Function> functions = hm.getFunctions();
+            List<Tool> functions = hm.getTools();
             aiMessage.setFunctions(JSON.toJSONString(functions, SerializerFeature.WriteClassName));
             aiMessage.setRole("user");
             Map<String, Object> metadataMap = hm.getMetadataMap();
@@ -115,6 +116,11 @@ public class AiBotMessageMemory implements ChatMemory {
         if (StrUtil.isNotEmpty(aiMessage.getContent())) {
             messageService.save(aiMessage);
         }
+    }
+
+    @Override
+    public void clear() {
+
     }
 
     @Override

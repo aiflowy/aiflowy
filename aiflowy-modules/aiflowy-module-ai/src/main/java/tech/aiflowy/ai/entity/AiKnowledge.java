@@ -1,15 +1,10 @@
 package tech.aiflowy.ai.entity;
 
-import tech.aiflowy.ai.entity.base.AiKnowledgeBase;
-import tech.aiflowy.common.util.PropertiesUtil;
-import com.agentsflex.core.llm.functions.Function;
 import com.agentsflex.core.store.DocumentStore;
 import com.agentsflex.store.aliyun.AliyunVectorStore;
 import com.agentsflex.store.aliyun.AliyunVectorStoreConfig;
 import com.agentsflex.store.elasticsearch.ElasticSearchVectorStore;
 import com.agentsflex.store.elasticsearch.ElasticSearchVectorStoreConfig;
-import com.agentsflex.store.milvus.MilvusVectorStore;
-import com.agentsflex.store.milvus.MilvusVectorStoreConfig;
 import com.agentsflex.store.opensearch.OpenSearchVectorStore;
 import com.agentsflex.store.opensearch.OpenSearchVectorStoreConfig;
 import com.agentsflex.store.qcloud.QCloudVectorStore;
@@ -17,6 +12,8 @@ import com.agentsflex.store.qcloud.QCloudVectorStoreConfig;
 import com.agentsflex.store.redis.RedisVectorStore;
 import com.agentsflex.store.redis.RedisVectorStoreConfig;
 import com.mybatisflex.annotation.Table;
+import tech.aiflowy.ai.entity.base.AiKnowledgeBase;
+import tech.aiflowy.common.util.PropertiesUtil;
 
 /**
  * 实体类。
@@ -30,14 +27,14 @@ public class AiKnowledge extends AiKnowledgeBase {
 
     public DocumentStore toDocumentStore() {
         String storeType = this.getVectorStoreType();
-        if (storeType == null){
+        if (storeType == null) {
             return null;
         }
         switch (storeType.toLowerCase()) {
             case "redis":
                 return redisStore();
-            case "milvus":
-                return milvusStore();
+//            case "milvus":
+//                return milvusStore();
             case "opensearch":
                 return openSearchStore();
             case "elasticsearch":
@@ -64,10 +61,10 @@ public class AiKnowledge extends AiKnowledgeBase {
         return new RedisVectorStore(redisVectorStoreConfig);
     }
 
-    private DocumentStore milvusStore() {
-        MilvusVectorStoreConfig milvusVectorStoreConfig = getStoreConfig(MilvusVectorStoreConfig.class);
-        return new MilvusVectorStore(milvusVectorStoreConfig);
-    }
+//    private DocumentStore milvusStore() {
+//        MilvusVectorStoreConfig milvusVectorStoreConfig = getStoreConfig(MilvusVectorStoreConfig.class);
+//        return new MilvusVectorStore(milvusVectorStoreConfig);
+//    }
 
     private DocumentStore openSearchStore() {
         OpenSearchVectorStoreConfig openSearchVectorStoreConfig = getStoreConfig(OpenSearchVectorStoreConfig.class);
@@ -91,10 +88,5 @@ public class AiKnowledge extends AiKnowledgeBase {
 
     private <T> T getStoreConfig(Class<T> clazz) {
         return PropertiesUtil.propertiesTextToEntity(this.getVectorStoreConfig(), clazz);
-    }
-
-
-    public Function toFunction(boolean needEnglishName) {
-        return new AiKnowledgeFunction(this, needEnglishName);
     }
 }

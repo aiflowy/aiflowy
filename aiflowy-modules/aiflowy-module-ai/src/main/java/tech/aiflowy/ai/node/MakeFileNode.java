@@ -2,8 +2,8 @@ package tech.aiflowy.ai.node;
 
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
-import com.agentsflex.core.chain.Chain;
-import com.agentsflex.core.chain.node.BaseNode;
+import dev.tinyflow.core.chain.Chain;
+import dev.tinyflow.core.node.BaseNode;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
@@ -34,7 +34,7 @@ public class MakeFileNode extends BaseNode {
 
     @Override
     protected Map<String, Object> execute(Chain chain) {
-        Map<String, Object> map = chain.getParameterValues(this);
+        Map<String, Object> map = chain.getState().resolveParameters(this);
 
         Map<String, Object> res = new HashMap<>();
 
@@ -64,12 +64,12 @@ public class MakeFileNode extends BaseNode {
         // 创建一个新的Word文档
         XWPFDocument doc = new XWPFDocument();
         // 创建样式
-        CTStyle ctStyle = CTStyle.Factory.newInstance();
-        ctStyle.setStyleId("IndentStyle");
-        CTPPrGeneral pPr = ctStyle.addNewPPr();
-        CTInd ind = pPr.addNewInd();
-        ind.setFirstLine(400);
-        doc.createStyles().addStyle(new XWPFStyle(ctStyle));
+//        CTStyle ctStyle = CTStyle.Factory.newInstance();
+//        ctStyle.setStyleId("IndentStyle");
+//        CTPPrGeneral pPr = ctStyle.addNewPPr();
+//        CTInd ind = pPr.addNewInd();
+//        ind.setFirstLine(400);
+//        doc.createStyles().addStyle(new XWPFStyle(ctStyle));
 
         for (String str : split) {
             // 创建段落

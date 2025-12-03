@@ -1,14 +1,10 @@
 package tech.aiflowy.ai.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
-import com.agentsflex.core.llm.Llm;
-import com.agentsflex.core.llm.response.AiMessageResponse;
-import com.agentsflex.core.message.AiMessage;
-import com.agentsflex.core.message.SystemMessage;
-import com.agentsflex.core.prompt.TextPrompt;
-import com.alibaba.fastjson.JSON;
+import com.agentsflex.core.model.chat.ChatModel;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
+import dev.tinyflow.core.llm.Llm;
 import tech.aiflowy.ai.entity.AiBotConversationMessage;
 import tech.aiflowy.ai.entity.AiBotMessage;
 import tech.aiflowy.ai.mapper.AiBotConversationMessageMapper;
@@ -110,7 +106,7 @@ public class AiBotConversationMessageServiceImpl extends ServiceImpl<AiBotConver
     }
 
     @Override
-    public Boolean needRefreshConversationTitle(String sessionId, String userPrompt, Llm llm, BigInteger botId, int isExternalMsg) {
+    public Boolean needRefreshConversationTitle(String sessionId, String userPrompt, ChatModel chatModel, BigInteger botId, int isExternalMsg) {
         boolean login = StpUtil.isLogin();
         if (!login){
             return false;

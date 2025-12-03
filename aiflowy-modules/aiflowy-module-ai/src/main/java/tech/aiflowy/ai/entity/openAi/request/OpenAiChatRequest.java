@@ -4,7 +4,7 @@ package tech.aiflowy.ai.entity.openAi.request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import java.util.Map;
-import com.agentsflex.core.llm.ChatOptions;
+//import com.agentsflex.core.llm.ChatOptions;
 import tech.aiflowy.ai.entity.AiLlm;
 
 import java.util.HashMap;
@@ -360,38 +360,38 @@ public class OpenAiChatRequest {
             '}';
     }
 
-    public ChatOptions buildChatOptions(AiLlm aiLlm) {
-        ChatOptions chatOptions = new ChatOptions();
-        HashMap<String, Object> hashMap = new HashMap<>();
-
-        hashMap.putIfAbsent("messages", this.getMessages());
-        hashMap.put("maxTokens", this.getMaxTokens());
-        hashMap.put("temperature", this.getTemperature());
-        hashMap.put("topP", this.getTopP());
-        hashMap.put("topK", this.getTopK());
-        hashMap.put("stream", this.getStream() == null ? true : this.getStream());
-        hashMap.put("stop", this.getStop());
-        hashMap.put("tools", this.getTools());
-        hashMap.put("toolChoice", this.getToolChoice());
-        hashMap.put("enableThinking", this.getEnableThinking());
-        hashMap.put("seed", this.getSeed());
-        hashMap.put("n", this.getN());
-        hashMap.put("frequencyPenalty", this.getFrequencyPenalty());
-        hashMap.put("presencePenalty", this.getPresencePenalty());
-        hashMap.put("logitBias", this.getLogitBias());
-        hashMap.put("user", this.getUser());
-        hashMap.put("responseFormat", this.getResponseFormat());
-        hashMap.put("topLogprobs", this.getTopLogprobs());
-        hashMap.put("parallelToolCalls", this.getParallelToolCalls());
-        hashMap.put("serviceTier", this.getServiceTier());
-        hashMap.put("systemFingerprint", this.getSystemFingerprint());
-        hashMap.put("reasoningEffort", this.getReasoningEffort());
-        hashMap.put("store", this.getStore());
-
-        hashMap.put("metadata", this.getMetadata());
-
-        chatOptions.setExtra(hashMap);
-        return chatOptions;
-    }
+//    public ChatOptions buildChatOptions(AiLlm aiLlm) {
+//        ChatOptions chatOptions = new ChatOptions();
+//        HashMap<String, Object> hashMap = new HashMap<>();
+//
+//        hashMap.putIfAbsent("messages", this.getMessages());
+//        hashMap.put("maxTokens", this.getMaxTokens());
+//        hashMap.put("temperature", this.getTemperature());
+//        hashMap.put("topP", this.getTopP());
+//        hashMap.put("topK", this.getTopK());
+//        hashMap.put("stream", this.getStream() == null ? true : this.getStream());
+//        hashMap.put("stop", this.getStop());
+//        hashMap.put("tools", this.getTools());
+//        hashMap.put("toolChoice", this.getToolChoice());
+//        hashMap.put("enableThinking", this.getEnableThinking());
+//        hashMap.put("seed", this.getSeed());
+//        hashMap.put("n", this.getN());
+//        hashMap.put("frequencyPenalty", this.getFrequencyPenalty());
+//        hashMap.put("presencePenalty", this.getPresencePenalty());
+//        hashMap.put("logitBias", this.getLogitBias());
+//        hashMap.put("user", this.getUser());
+//        hashMap.put("responseFormat", this.getResponseFormat());
+//        hashMap.put("topLogprobs", this.getTopLogprobs());
+//        hashMap.put("parallelToolCalls", this.getParallelToolCalls());
+//        hashMap.put("serviceTier", this.getServiceTier());
+//        hashMap.put("systemFingerprint", this.getSystemFingerprint());
+//        hashMap.put("reasoningEffort", this.getReasoningEffort());
+//        hashMap.put("store", this.getStore());
+//
+//        hashMap.put("metadata", this.getMetadata());
+//
+//        chatOptions.setExtra(hashMap);
+//        return chatOptions;
+//    }
 
 }

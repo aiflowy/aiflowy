@@ -2,7 +2,6 @@ package tech.aiflowy.ai.entity;
 
 import tech.aiflowy.ai.entity.base.AiPluginsBase;
 import com.mybatisflex.annotation.Column;
-import com.agentsflex.core.llm.functions.Function;
 import com.mybatisflex.annotation.Table;
 
 
@@ -24,9 +23,5 @@ public class AiPlugins extends AiPluginsBase {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public Function toFunction() {
-        return new AiPluginsFunction(this);
     }
 }

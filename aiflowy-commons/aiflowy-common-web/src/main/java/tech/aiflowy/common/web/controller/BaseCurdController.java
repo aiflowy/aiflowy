@@ -1,19 +1,5 @@
 package tech.aiflowy.common.web.controller;
 
-import tech.aiflowy.common.ai.ChatManager;
-import tech.aiflowy.common.ai.util.AiSqlUtil;
-import tech.aiflowy.common.domain.Result;
-import tech.aiflowy.common.entity.LoginAccount;
-import tech.aiflowy.common.tree.Tree;
-import tech.aiflowy.common.util.Maps;
-import tech.aiflowy.common.util.SqlOperatorsUtil;
-import tech.aiflowy.common.util.SqlUtil;
-import tech.aiflowy.common.web.exceptions.ProgramException;
-import tech.aiflowy.common.web.jsonbody.JsonBody;
-import tech.aiflowy.common.satoken.util.SaTokenUtil;
-import com.agentsflex.core.prompt.TextPrompt;
-import com.agentsflex.core.prompt.template.TextPromptTemplate;
-import com.alibaba.fastjson.JSON;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.query.SqlOperators;
@@ -24,6 +10,14 @@ import com.mybatisflex.core.util.StringUtil;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import tech.aiflowy.common.domain.Result;
+import tech.aiflowy.common.entity.LoginAccount;
+import tech.aiflowy.common.satoken.util.SaTokenUtil;
+import tech.aiflowy.common.tree.Tree;
+import tech.aiflowy.common.util.SqlOperatorsUtil;
+import tech.aiflowy.common.util.SqlUtil;
+import tech.aiflowy.common.web.exceptions.ProgramException;
+import tech.aiflowy.common.web.jsonbody.JsonBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
@@ -57,7 +51,7 @@ public class BaseCurdController<S extends IService<M>, M> extends BaseController
             throw new NullPointerException("entity is null");
         }
         LoginAccount loginAccount = SaTokenUtil.getLoginAccount();
-        commonFiled(entity,loginAccount.getId(),loginAccount.getTenantId(),loginAccount.getDeptId());
+        commonFiled(entity, loginAccount.getId(), loginAccount.getTenantId(), loginAccount.getDeptId());
         service.save(entity);
         onSaveOrUpdateAfter(entity, true);
         TableInfo tableInfo = TableInfoFactory.ofEntityClass(entity.getClass());
@@ -220,8 +214,8 @@ public class BaseCurdController<S extends IService<M>, M> extends BaseController
                             if (StringUtil.isNumeric(value)) {
                                 queryWrapper.eq(columnName, value);
                             } else {
-                                if (isQueryOrBool){
-                                    queryWrapper.or(columnName + " like " +  "'%" + value + "%' ");
+                                if (isQueryOrBool) {
+                                    queryWrapper.or(columnName + " like " + "'%" + value + "%' ");
                                 } else {
                                     queryWrapper.like(columnName, value);
                                 }
@@ -234,65 +228,6 @@ public class BaseCurdController<S extends IService<M>, M> extends BaseController
 
         return queryWrapper;
     }
-
-
-    @PostMapping("intelligentFilling")
-    public Result<?> intelligentFilling(@JsonBody("content") String content) {
-        Class<?> entityClass = getEntityClass();
-        if (entityClass == null) {
-            return Result.ok();
-        }
-
-        String templateString = "请根据如下的 DDL 语句，帮我分析出用户给出的内容，可能对应的是哪个字段，并使用 JSON 数据格式的方式返回，" +
-                "注意，只需要返回 JSON 的数据内容，不需要对此进行解释以，不需要及除了 JSON 数据以外的其他任何内容。\n" +
-                "\n" +
-                "假设 DDL 内容为：\n" +
-                "\n" +
-                "```sql\n" +
-                "CREATE TABLE `tb_sys_account` (\n" +
-                "  `id` bigint(20) unsigned NOT NULL COMMENT '主键ID',\n" +
-                "  `login_name` varchar(64) DEFAULT NULL COMMENT '登录账号',\n" +
-                "  `nickname` varchar(128) DEFAULT NULL COMMENT '昵称',\n" +
-                "  `mobile` varchar(32) DEFAULT NULL COMMENT '手机电话',\n" +
-                "  `email` varchar(64) DEFAULT NULL COMMENT '邮件'\n" +
-                ") ENGINE=InnoDB COMMENT='账号信息表';\n" +
-                "```\n" +
-                "\n" +
-                "假设用户给出的内容：\n" +
-                "\n" +
-                "张三  18611223344\n" +
-                "\n" +
-                "你应该返回如下的 JSON 内容：\n" +
-                "\n" +
-                "```json\n" +
-                "{\n" +
-                "  \"nickname\": \"张三\",\n" +
-                "  \"mobile\": \"18611223344\"\n" +
-                "}\n" +
-                "```\n" +
-                "\n" +
-                "现在，真实的 DDL 内容如下：\n" +
-                "\n" +
-                "```sql\n" +
-                "{similarilyDDL}" +
-                "```\n" +
-                "用户给出的内容如下：\n" +
-                "{content}";
-
-        TextPromptTemplate template = new TextPromptTemplate(templateString);
-        TableInfo tableInfo = TableInfoFactory.ofEntityClass(entityClass);
-        TextPrompt prompt = template.format(Maps.of("similarilyDDL", AiSqlUtil.getSimilarilyDDL(tableInfo))
-                .set("content", content));
-        String maybeJson = ChatManager.getInstance().chat(prompt);
-        if (maybeJson == null || !maybeJson.contains("```")) {
-            return Result.ok();
-        } else {
-            maybeJson = maybeJson.replace("```json", "").replace("```", "");
-        }
-
-        return Result.ok("result", JSON.parse(maybeJson));
-    }
-
 
     protected Class<?> getEntityClass() {
         Type type = getClass().getGenericSuperclass();

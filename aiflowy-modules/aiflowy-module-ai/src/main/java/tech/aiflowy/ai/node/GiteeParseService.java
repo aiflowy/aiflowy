@@ -2,11 +2,11 @@ package tech.aiflowy.ai.node;
 
 import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
-import com.agentsflex.core.llm.client.OkHttpClientUtil;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.alicp.jetcache.Cache;
+import dev.tinyflow.core.util.OkHttpClientUtil;
 import okhttp3.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

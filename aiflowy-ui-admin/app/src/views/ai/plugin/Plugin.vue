@@ -241,11 +241,12 @@ h1 {
   height: calc(100vh - 161px);
   padding-top: 20px;
 }
-.category-panel-container {
-}
+
 .plugin-content-data-container {
   padding: 20px;
   background-color: var(--el-bg-color);
   width: 100%;
+  border-top-right-radius: var(--el-border-radius-base);
+  border-bottom-right-radius: var(--el-border-radius-base);
 }
 </style>

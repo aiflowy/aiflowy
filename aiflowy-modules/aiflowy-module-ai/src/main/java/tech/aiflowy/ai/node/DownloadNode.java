@@ -2,11 +2,11 @@ package tech.aiflowy.ai.node;
 
 import cn.hutool.core.io.FileTypeUtil;
 import cn.hutool.core.util.IdUtil;
-import com.agentsflex.core.chain.Chain;
-import com.agentsflex.core.chain.Parameter;
-import com.agentsflex.core.chain.node.BaseNode;
 import com.agentsflex.core.util.StringUtil;
 import com.mybatisflex.core.tenant.TenantManager;
+import dev.tinyflow.core.chain.Chain;
+import dev.tinyflow.core.node.BaseNode;
+import dev.tinyflow.core.chain.Parameter;
 import tech.aiflowy.ai.entity.AiResource;
 import tech.aiflowy.ai.service.AiResourceService;
 import tech.aiflowy.ai.utils.DocUtil;
@@ -14,7 +14,6 @@ import tech.aiflowy.common.constant.Constants;
 import tech.aiflowy.common.constant.enums.EnumResourceOriginType;
 import tech.aiflowy.common.entity.LoginAccount;
 import tech.aiflowy.common.filestorage.FileStorageManager;
-import tech.aiflowy.common.filestorage.FileStorageService;
 import tech.aiflowy.common.util.SpringContextUtil;
 
 import java.io.ByteArrayInputStream;
@@ -37,7 +36,7 @@ public class DownloadNode extends BaseNode {
 
     @Override
     protected Map<String, Object> execute(Chain chain) {
-        Map<String, Object> map = chain.getParameterValues(this);
+        Map<String, Object> map = chain.getState().resolveParameters(this);
         Map<String, Object> res = new HashMap<>();
 
         String originUrl = map.get("originUrl").toString();
@@ -60,7 +59,7 @@ public class DownloadNode extends BaseNode {
 
         // 默认为未知来源
         LoginAccount account = defaultAccount();
-        Object cache = chain.getMemory().get(Constants.LOGIN_USER_KEY);
+        Object cache = chain.getState().getMemory().get(Constants.LOGIN_USER_KEY);
         if (cache != null) {
             account = (LoginAccount) cache;
         }

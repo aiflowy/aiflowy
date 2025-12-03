@@ -1,7 +1,8 @@
 package tech.aiflowy.ai.service;
 
-import com.agentsflex.core.llm.Llm;
+import com.agentsflex.core.model.chat.ChatModel;
 import com.mybatisflex.core.service.IService;
+import dev.tinyflow.core.llm.Llm;
 import tech.aiflowy.ai.entity.AiBotConversationMessage;
 import tech.aiflowy.common.domain.Result;
 
@@ -21,6 +22,6 @@ public interface AiBotConversationMessageService extends IService<AiBotConversat
 
     Result externalList(BigInteger botId);
 
-    Boolean needRefreshConversationTitle(String sessionId, String userPrompt, Llm llm, BigInteger botId, int isExternalMsg);
+    Boolean needRefreshConversationTitle(String sessionId, String userPrompt, ChatModel chatModel, BigInteger botId, int isExternalMsg);
 
 }

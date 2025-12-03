@@ -1,6 +1,6 @@
 package tech.aiflowy.ai.utils;
 
-import com.agentsflex.core.llm.client.OkHttpClientUtil;
+import dev.tinyflow.core.util.OkHttpClientUtil;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

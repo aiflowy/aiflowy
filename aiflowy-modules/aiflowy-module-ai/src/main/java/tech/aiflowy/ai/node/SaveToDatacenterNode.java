@@ -1,10 +1,10 @@
 package tech.aiflowy.ai.node;
 
-import com.agentsflex.core.chain.Chain;
-import com.agentsflex.core.chain.node.BaseNode;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.mybatisflex.core.tenant.TenantManager;
+import dev.tinyflow.core.chain.Chain;
+import dev.tinyflow.core.node.BaseNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.aiflowy.common.constant.Constants;
@@ -32,14 +32,14 @@ public class SaveToDatacenterNode extends BaseNode {
     @Override
     protected Map<String, Object> execute(Chain chain) {
 
-        Map<String, Object> map = chain.getParameterValues(this);
+        Map<String, Object> map = chain.getState().resolveParameters(this);
         JSONObject json = new JSONObject(map);
 
         Map<String, Object> res = new HashMap<>();
 
         // 默认为未知来源
         LoginAccount account = defaultAccount();
-        Object cache = chain.getMemory().get(Constants.LOGIN_USER_KEY);
+        Object cache = chain.getState().getMemory().get(Constants.LOGIN_USER_KEY);
         if (cache != null) {
             account = (LoginAccount) cache;
         }

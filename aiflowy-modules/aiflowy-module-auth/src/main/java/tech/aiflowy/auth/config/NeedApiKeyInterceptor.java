@@ -27,7 +27,6 @@ public class NeedApiKeyInterceptor implements HandlerInterceptor {
                 if (StringUtil.noText(apiKey)) {
                     throw new BusinessException("请传入apiKey");
                 }
-                String[] needPermissions = needApiKeyAccess.value();
                 sysApiKeyService.checkApikeyPermission(apiKey, requestURI);
 
             }

@@ -1,10 +1,9 @@
 package tech.aiflowy.ai.node;
 
 import cn.hutool.core.util.StrUtil;
-import com.agentsflex.core.chain.ChainNode;
-import com.agentsflex.core.chain.node.BaseNode;
 import com.alibaba.fastjson.JSONObject;
 import dev.tinyflow.core.Tinyflow;
+import dev.tinyflow.core.node.BaseNode;
 import dev.tinyflow.core.parser.BaseNodeParser;
 import tech.aiflowy.common.filestorage.FileStorageService;
 

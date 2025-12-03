@@ -2,10 +2,11 @@ package tech.aiflowy.job.util;
 
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.StrUtil;
-import com.agentsflex.core.chain.Chain;
 import com.alibaba.fastjson2.JSONObject;
 import com.mybatisflex.core.tenant.TenantManager;
 import dev.tinyflow.core.Tinyflow;
+import dev.tinyflow.core.chain.Chain;
+import dev.tinyflow.core.chain.ChainDefinition;
 import org.quartz.JobKey;
 import org.quartz.TriggerKey;
 import tech.aiflowy.ai.entity.AiWorkflow;
@@ -84,17 +85,17 @@ public class JobUtil {
             AiWorkflow workflow = service.getById(workflowId);
             if (workflow != null) {
                 Tinyflow tinyflow = workflow.toTinyflow();
-                Chain chain = tinyflow.toChain();
+                ChainDefinition chain = tinyflow.toChain();
 
-                if (accountId != null) {
-                    // 设置的归属者
-                    SysAccount account = accountService.getById(accountId.toString());
-                    if (account != null) {
-                        chain.getMemory().put(Constants.LOGIN_USER_KEY,account.toLoginAccount());
-                    }
-                }
-
-                return chain.executeForResult(params);
+//                if (accountId != null) {
+//                    // 设置的归属者
+//                    SysAccount account = accountService.getById(accountId.toString());
+//                    if (account != null) {
+//                        chain.getMemory().put(Constants.LOGIN_USER_KEY,account.toLoginAccount());
+//                    }
+//                }
+//
+//                return chain.executeForResult(params);
             }
         } finally {
             TenantManager.restoreTenantCondition();

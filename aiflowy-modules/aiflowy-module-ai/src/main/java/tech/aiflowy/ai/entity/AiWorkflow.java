@@ -4,7 +4,6 @@ import tech.aiflowy.ai.entity.base.AiWorkflowBase;
 import tech.aiflowy.ai.utils.TinyFlowConfigService;
 import tech.aiflowy.common.util.SpringContextUtil;
 import tech.aiflowy.common.util.StringUtil;
-import com.agentsflex.core.llm.functions.Function;
 import com.mybatisflex.annotation.Table;
 import dev.tinyflow.core.Tinyflow;
 
@@ -31,9 +30,4 @@ public class AiWorkflow extends AiWorkflowBase {
         return tinyflow;
     }
 
-
-
-    public Function toFunction(boolean needEnglishName) {
-        return new AiWorkflowFunction(this, needEnglishName);
-    }
 }

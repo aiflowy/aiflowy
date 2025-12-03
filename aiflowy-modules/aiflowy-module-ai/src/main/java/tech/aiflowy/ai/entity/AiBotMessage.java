@@ -1,16 +1,16 @@
 package tech.aiflowy.ai.entity;
 
-import com.agentsflex.core.message.*;
-import com.agentsflex.core.prompt.ImagePrompt;
-import tech.aiflowy.ai.entity.base.AiBotMessageBase;
-import tech.aiflowy.ai.message.MultimodalMessage;
-import tech.aiflowy.common.util.StringUtil;
-import com.agentsflex.core.llm.functions.Function;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.parser.Feature;
+import com.agentsflex.core.message.AiMessage;
+import com.agentsflex.core.message.Message;
+import com.agentsflex.core.message.SystemMessage;
+import com.agentsflex.core.message.UserMessage;
+import com.agentsflex.core.model.chat.tool.Tool;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONReader;
 import com.mybatisflex.annotation.Table;
+import tech.aiflowy.ai.entity.base.AiBotMessageBase;
+import tech.aiflowy.common.util.StringUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -36,27 +36,20 @@ public class AiBotMessage extends AiBotMessageBase {
                 List<String> fileList = (List<String>) options.get("fileList");
 
                 if (fileList != null && !fileList.isEmpty()){
-                    MultimodalMessage multimodalMessage = new MultimodalMessage();
-
-                    multimodalMessage.setText(getContent());
-
-
-                    multimodalMessage.setImageUrls(fileList);
-
-
-                    return  multimodalMessage;
+//                    MultimodalMessage multimodalMessage = new MultimodalMessage();
+//                    multimodalMessage.setText(getContent());
+//                    multimodalMessage.setImageUrls(fileList);
+//                    return  multimodalMessage;
                 }
-  
-
             }
 
-            HumanMessage humanMessage = new HumanMessage();
+            UserMessage humanMessage = new UserMessage();
             humanMessage.setContent(getContent());
             String functionsJson = getFunctions();
             if (StringUtil.hasText(functionsJson)) {
-                List<Function> functions = JSON.parseArray(functionsJson, Function.class, Feature.SupportAutoType);
-                if (functions != null && !functions.isEmpty()) {
-                    humanMessage.addFunctions(functions);
+                List<Tool> tools = JSON.parseArray(functionsJson, Tool.class, JSONReader.Feature.SupportAutoType);
+                if (tools != null && !tools.isEmpty()) {
+                    humanMessage.addTools(tools);
                 }
             }
             return humanMessage;

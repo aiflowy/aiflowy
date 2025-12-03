@@ -1,6 +1,5 @@
 package tech.aiflowy.ai.entity;
 
-import com.agentsflex.core.llm.functions.Function;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Table;
 import tech.aiflowy.ai.entity.base.AiPluginToolBase;
@@ -24,9 +23,5 @@ public class AiPluginTool extends AiPluginToolBase {
 
     public void setJoinBot(boolean joinBot) {
         this.joinBot = joinBot;
-    }
-
-    public  Function toFunction() {
-        return new AiPluginFunction(this);
     }
 }

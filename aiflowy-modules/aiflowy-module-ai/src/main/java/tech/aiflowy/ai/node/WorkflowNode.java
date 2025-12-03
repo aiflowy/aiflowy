@@ -1,11 +1,12 @@
 package tech.aiflowy.ai.node;
 
-import com.agentsflex.core.chain.Chain;
-import com.agentsflex.core.chain.node.BaseNode;
+import dev.tinyflow.core.chain.Chain;
+import dev.tinyflow.core.node.BaseNode;
 import tech.aiflowy.ai.entity.AiWorkflow;
 import tech.aiflowy.ai.service.AiWorkflowService;
 import tech.aiflowy.common.util.SpringContextUtil;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class WorkflowNode extends BaseNode {
@@ -22,15 +23,15 @@ public class WorkflowNode extends BaseNode {
     @Override
     protected Map<String, Object> execute(Chain chain) {
 
-        Map<String, Object> params = chain.getParameterValues(this);
+        Map<String, Object> params = chain.getState().resolveParameters(this);
         AiWorkflowService service = SpringContextUtil.getBean(AiWorkflowService.class);
         AiWorkflow workflow = service.getById(workflowId);
         if (workflow == null) {
             throw new RuntimeException("工作流不存在：" + workflowId);
         }
-        Chain subChain = workflow.toTinyflow().toChain();
+        //Chain subChain = workflow.toTinyflow().toChain();
 
-        return subChain.executeForResult(params);
+        return new HashMap<>();
     }
 
     public String getWorkflowId() {

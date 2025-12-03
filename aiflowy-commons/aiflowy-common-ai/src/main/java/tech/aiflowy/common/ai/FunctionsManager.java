@@ -1,16 +1,17 @@
 package tech.aiflowy.common.ai;
 
+import com.agentsflex.core.model.chat.ChatModel;
+import com.agentsflex.core.model.chat.response.AiMessageResponse;
+import com.agentsflex.core.model.chat.tool.MethodTool;
+import com.agentsflex.core.model.chat.tool.Tool;
+import com.agentsflex.core.model.chat.tool.ToolScanner;
+import com.agentsflex.core.model.client.StreamContext;
+import com.agentsflex.core.prompt.SimplePrompt;
 import tech.aiflowy.common.ai.annotation.FunctionModuleDef;
 import tech.aiflowy.common.util.SpringContextUtil;
 import tech.aiflowy.common.util.StringUtil;
-import com.agentsflex.core.llm.ChatContext;
-import com.agentsflex.core.llm.Llm;
-import com.agentsflex.core.llm.StreamResponseListener;
-import com.agentsflex.core.llm.functions.Function;
-import com.agentsflex.core.llm.functions.JavaNativeFunctions;
-import com.agentsflex.core.llm.response.AiMessageResponse;
 import com.agentsflex.core.memory.ChatMemory;
-import com.agentsflex.core.prompt.FunctionPrompt;
+import com.agentsflex.core.model.chat.StreamResponseListener;
 import com.mybatisflex.core.util.ClassUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +52,7 @@ public class FunctionsManager {
     }
 
 
-    public List<Function> getFunctions(String userPrompt, String... names) {
+    public List<Tool> getFunctions(String userPrompt, String... names) {
         StringBuilder prompt = new StringBuilder("我的系统包含了如下的模块：\n");
         functionModules.forEach((s, functionModule) ->
                 prompt.append("- **").append(functionModule.getTitle()).append("**: ").append(functionModule.getDescription()).append("\n")
@@ -78,43 +79,44 @@ public class FunctionsManager {
             return null;
         }
 
-        return JavaNativeFunctions.from(functionModule.getFunctionsObject());
+        return ToolScanner.scan(functionModule.getFunctionsObject());
     }
 
-    public SseEmitter call(String prompt, List<Function> functions) {
+    public SseEmitter call(String prompt, List<Tool> functions) {
         return call(prompt, functions, null);
     }
 
-    public SseEmitter call(String prompt, List<Function> functions, ChatMemory memory) {
+    public SseEmitter call(String prompt, List<Tool> functions, ChatMemory memory) {
         MySseEmitter emitter = new MySseEmitter(20000L);
         sseExecutor.execute(() -> {
-            Llm llm = ChatManager.getInstance().getChatLlm();
-            if (llm == null) {
+            ChatModel chatModel = ChatManager.getInstance().getChatLlm();
+            if (chatModel == null) {
                 emitter.sendAndComplete("AI 大模型未配置正确");
                 return;
             }
-            FunctionPrompt functionPrompt = new FunctionPrompt(prompt, functions);
-            AiMessageResponse response = llm.chat(functionPrompt);
-
+            SimplePrompt functionPrompt = new SimplePrompt(prompt);
+            AiMessageResponse response = chatModel.chat(functionPrompt);
 
             if (response.getMessage() == null) {
-                llm.chatStream(prompt, new StreamResponseListener() {
+                chatModel.chatStream(prompt, new StreamResponseListener() {
                     @Override
-                    public void onMessage(ChatContext chatContext, AiMessageResponse aiMessageResponse) {
-                        String content = aiMessageResponse.getMessage().getContent();
+                    public void onMessage(StreamContext streamContext, AiMessageResponse aiMessageResponse) {
+                        String content = streamContext.getAiMessage().getContent();
                         emitter.send(content);
                     }
 
                     @Override
-                    public void onStop(ChatContext context) {
+                    public void onStop(StreamContext context) {
+
                         emitter.complete();
                     }
                 });
-            } else {
-                Object result = response.callFunctions();
-                memory.addMessage(response.getMessage());
-                emitter.sendAndComplete(result + " \n");
             }
+//            else {
+//                Object result = response.callFunctions();
+//                memory.addMessage(response.getMessage());
+//                emitter.sendAndComplete(result + " \n");
+//            }
         });
         return emitter;
     }

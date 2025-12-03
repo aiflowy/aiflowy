@@ -1,11 +1,8 @@
 
 package tech.aiflowy.ai.utils;
 
-import com.agentsflex.core.llm.Llm;
-import com.agentsflex.llm.deepseek.DeepseekLlm;
-import tech.aiflowy.ai.entity.AiBot;
-import java.math.BigInteger;
-import org.springframework.beans.BeanUtils;
+import com.agentsflex.core.model.chat.ChatModel;
+import com.agentsflex.llm.deepseek.DeepseekChatModel;
 
 public class AiBotChatUtil {
 
@@ -13,12 +10,12 @@ public class AiBotChatUtil {
 
     /**
      * 判断当前大模型的方法名称是否需要传非中文的 tool 名称
-     * 
-     * @param llm
+     *
+     * @param chatModel
      * @return
      */
-    public static boolean needEnglishName(Llm llm) {
-        return llm instanceof DeepseekLlm;
+    public static boolean needEnglishName(ChatModel chatModel) {
+        return chatModel instanceof DeepseekChatModel;
     }
 
 }

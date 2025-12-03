@@ -1,12 +1,9 @@
 package tech.aiflowy.ai.node;
-import com.agentsflex.core.chain.Chain;
-import com.agentsflex.core.chain.Parameter;
-import com.agentsflex.core.chain.node.BaseNode;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jfinal.template.stat.ast.For;
+
 import com.mybatisflex.core.row.Db;
 import com.mybatisflex.core.row.Row;
+import dev.tinyflow.core.chain.Chain;
+import dev.tinyflow.core.node.BaseNode;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
@@ -44,7 +41,7 @@ public class SqlNode extends BaseNode {
     @Override
     protected Map<String, Object> execute(Chain chain) {
 
-        Map<String, Object> map = chain.getParameterValues(this);
+        Map<String, Object> map = chain.getState().resolveParameters(this);
         Map<String, Object> res = new HashMap<>();
 
 
@@ -141,26 +138,6 @@ public class SqlNode extends BaseNode {
         result.put("replacedSql", finalSql);
         result.put("paramNames", paramNames);
         return result;
-    }
-
-
-
-    @Override
-    public String toString() {
-        return "SqlNode{" +
-                "sql='" + sql + '\'' +
-                ", outputDefs=" + outputDefs +
-                ", parameters=" + parameters +
-                ", id='" + id + '\'' +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", async=" + async +
-                ", inwardEdges=" + inwardEdges +
-                ", outwardEdges=" + outwardEdges +
-                ", condition=" + condition +
-                ", memory=" + memory +
-                ", nodeStatus=" + nodeStatus +
-                '}';
     }
 
     public String getSql() {

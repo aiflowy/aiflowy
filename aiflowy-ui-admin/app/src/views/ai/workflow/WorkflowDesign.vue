@@ -50,7 +50,7 @@ const provider = computed(() => ({
   knowledge: () => getOptions('title', 'id', knowledgeList.value),
   searchEngine: (): any => [
     {
-      value: 'bocha',
+      value: 'bocha-search',
       label: '博查搜索',
     },
   ],

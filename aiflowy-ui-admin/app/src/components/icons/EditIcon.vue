@@ -9,6 +9,7 @@ const props = defineProps({
 
 <template>
   <svg
+    :class="props.className"
     width="18px"
     height="18px"
     viewBox="0 0 16 16"

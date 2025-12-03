@@ -1,8 +1,8 @@
 package tech.aiflowy.ai.node;
 
-import com.agentsflex.core.chain.node.BaseNode;
 import com.alibaba.fastjson.JSONObject;
 import dev.tinyflow.core.Tinyflow;
+import dev.tinyflow.core.node.BaseNode;
 import dev.tinyflow.core.parser.BaseNodeParser;
 
 public class DocNodeParser extends BaseNodeParser {
