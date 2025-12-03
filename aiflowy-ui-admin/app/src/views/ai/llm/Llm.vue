@@ -231,6 +231,7 @@ const handleSuccess = () => {
   display: flex;
   flex-direction: column;
   padding: 20px;
+  height: calc(100vh - 161px);
 }
 
 .llm-header {

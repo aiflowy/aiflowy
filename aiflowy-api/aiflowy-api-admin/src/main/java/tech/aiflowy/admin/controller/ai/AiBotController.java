@@ -1,247 +1,282 @@
-//
-//package tech.aiflowy.admin.controller.ai;
-//
-//import cn.dev33.satoken.annotation.SaCheckPermission;
-//import cn.dev33.satoken.annotation.SaIgnore;
-//import cn.dev33.satoken.stp.StpUtil;
+
+package tech.aiflowy.admin.controller.ai;
+
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaIgnore;
+import cn.dev33.satoken.stp.StpUtil;
 //import cn.hutool.core.util.IdUtil;
 //import cn.hutool.core.util.ObjectUtil;
+//import com.agentsflex.core.agent.react.ReActAgent;
+//import com.agentsflex.core.agent.react.ReActMessageBuilder;
 //import com.agentsflex.core.llm.ChatContext;
-//import com.agentsflex.core.llm.ChatOptions;
 //import com.agentsflex.core.llm.Llm;
 //import com.agentsflex.core.llm.StreamResponseListener;
 //import com.agentsflex.core.llm.client.OkHttpClientUtil;
-//import com.agentsflex.core.llm.functions.Function;
 //import com.agentsflex.core.llm.response.AiMessageResponse;
 //import com.agentsflex.core.llm.response.FunctionCaller;
 //import com.agentsflex.core.message.AiMessage;
 //import com.agentsflex.core.message.HumanMessage;
-//import com.agentsflex.core.message.SystemMessage;
+import com.agentsflex.core.message.SystemMessage;
+import com.agentsflex.core.message.UserMessage;
+import com.agentsflex.core.model.chat.ChatModel;
+import com.agentsflex.core.model.chat.ChatOptions;
+import com.agentsflex.core.model.chat.StreamResponseListener;
+import com.agentsflex.core.model.chat.response.AiMessageResponse;
+import com.agentsflex.core.model.chat.tool.Tool;
 //import com.agentsflex.core.prompt.HistoriesPrompt;
+import com.agentsflex.core.model.client.StreamContext;
+import com.agentsflex.core.prompt.MemoryPrompt;
 //import com.agentsflex.core.prompt.ToolPrompt;
-//import com.agentsflex.core.react.ReActAgent;
 //import com.agentsflex.core.react.ReActAgentListener;
 //import com.agentsflex.core.react.ReActStep;
-//import com.agentsflex.core.util.CollectionUtil;
-//import com.alibaba.fastjson.JSON;
-//import com.alibaba.fastjson.JSONObject;
-//import com.alicp.jetcache.Cache;
-//import com.mybatisflex.core.query.QueryWrapper;
-//import okhttp3.OkHttpClient;
-//import okhttp3.WebSocket;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.beans.factory.annotation.Qualifier;
-//import org.springframework.http.HttpStatus;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.util.StringUtils;
-//import org.springframework.web.bind.annotation.*;
-//import org.springframework.web.context.request.RequestContextHolder;
-//import org.springframework.web.context.request.ServletRequestAttributes;
-//import org.springframework.web.multipart.MultipartFile;
-//import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-//import tech.aiflowy.ai.entity.*;
-//import tech.aiflowy.ai.enums.BotMessageTypeEnum;
-//import tech.aiflowy.ai.mapper.AiBotConversationMessageMapper;
-//import tech.aiflowy.ai.message.MultimodalMessageBuilder;
-//import tech.aiflowy.ai.message.NormalMessageBuilder;
-//import tech.aiflowy.ai.service.*;
-//import tech.aiflowy.ai.utils.AiBotChatUtil;
+import com.agentsflex.core.util.CollectionUtil;
+import com.alibaba.dashscope.common.MultiModalMessage;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alicp.jetcache.Cache;
+import com.mybatisflex.core.query.QueryWrapper;
+import okhttp3.OkHttpClient;
+import okhttp3.WebSocket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import tech.aiflowy.ai.entity.*;
+import tech.aiflowy.ai.enums.BotMessageTypeEnum;
+import tech.aiflowy.ai.mapper.AiBotConversationMessageMapper;
+import tech.aiflowy.ai.service.*;
+import tech.aiflowy.ai.utils.AiBotChatUtil;
 //import tech.aiflowy.ai.utils.AiBotMessageIframeMemory;
-//import tech.aiflowy.common.ai.ChatManager;
-//import tech.aiflowy.common.ai.MySseEmitter;
-//import tech.aiflowy.common.audio.core.AudioServiceManager;
-//import tech.aiflowy.common.domain.Result;
-//import tech.aiflowy.common.satoken.util.SaTokenUtil;
-//import tech.aiflowy.common.util.Maps;
-//import tech.aiflowy.common.util.StringUtil;
-//import tech.aiflowy.common.web.controller.BaseCurdController;
-//import tech.aiflowy.common.web.exceptions.BusinessException;
-//import tech.aiflowy.common.web.jsonbody.JsonBody;
-//import tech.aiflowy.system.mapper.SysApiKeyMapper;
-//
-//import javax.annotation.Resource;
-//import javax.servlet.http.HttpServletResponse;
-//import java.io.IOException;
-//import java.io.Serializable;
-//import java.math.BigInteger;
-//import java.time.Duration;
-//import java.util.*;
-//
-///**
-// * 控制层。
-// *
-// * @author michael
-// * @since 2024-08-23
-// */
-//@RestController
-//@RequestMapping("/api/v1/aiBot")
-//public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
-//
-//    private final AiLlmService aiLlmService;
-//    private final AiBotWorkflowService aiBotWorkflowService;
-//    private final AiBotKnowledgeService aiBotKnowledgeService;
-//    private final AiBotMessageService aiBotMessageService;
-//    @Resource
-//    private SysApiKeyMapper aiBotApiKeyMapper;
-//    @Resource
-//    private AiBotConversationMessageService aiBotConversationMessageService;
-//    @Resource
-//    private AiBotConversationMessageMapper aiBotConversationMessageMapper;
-//    @Resource
-//    private AiBotService aiBotService;
-//    @Autowired
-//    @Qualifier("defaultCache") // 指定 Bean 名称
-//    private Cache<String, Object> cache;
-//    @Resource
-//    private AudioServiceManager audioServiceManager;
-//
-//    private static final Logger logger = LoggerFactory.getLogger(AiBotController.class);
-//
-//    public AiBotController(AiBotService service, AiLlmService aiLlmService, AiBotWorkflowService aiBotWorkflowService,
-//                           AiBotKnowledgeService aiBotKnowledgeService, AiBotMessageService aiBotMessageService) {
-//        super(service);
-//        this.aiLlmService = aiLlmService;
-//        this.aiBotWorkflowService = aiBotWorkflowService;
-//        this.aiBotKnowledgeService = aiBotKnowledgeService;
-//        this.aiBotMessageService = aiBotMessageService;
-//    }
-//
-//    @Resource
-//    private AiBotPluginsService aiBotPluginsService;
-//    @Resource
-//    private AiPluginToolService aiPluginToolService;
-//
-//    @PostMapping("updateOptions")
-//    @SaCheckPermission("/api/v1/aiBot/save")
-//    public Result<Void> updateOptions(@JsonBody("id")
-//                                BigInteger id, @JsonBody("options")
-//                                Map<String, Object> options) {
-//        AiBot aiBot = service.getById(id);
-//        Map<String, Object> existOptions = aiBot.getOptions();
-//        if (existOptions == null) {
-//            existOptions = new HashMap<>();
-//        }
-//        if (options != null) {
-//            existOptions.putAll(options);
-//        }
-//        aiBot.setOptions(existOptions);
-//        service.updateById(aiBot);
-//        return Result.ok();
-//    }
-//
-//    @PostMapping("updateLlmOptions")
-//    @SaCheckPermission("/api/v1/aiBot/save")
-//    public Result<Void> updateLlmOptions(@JsonBody("id")
-//                                   BigInteger id, @JsonBody("llmOptions")
-//                                   Map<String, Object> llmOptions) {
-//        AiBot aiBot = service.getById(id);
-//        Map<String, Object> existLlmOptions = aiBot.getLlmOptions();
-//        if (existLlmOptions == null) {
-//            existLlmOptions = new HashMap<>();
-//        }
-//        if (llmOptions != null) {
-//            existLlmOptions.putAll(llmOptions);
-//        }
-//        aiBot.setLlmOptions(existLlmOptions);
-//        service.updateById(aiBot);
-//        return Result.ok();
-//    }
-//
-//    @PostMapping("voiceInput")
-//    @SaIgnore
-//    public Result<String> voiceInput(@RequestParam("audio")
-//                             MultipartFile audioFile) {
-//
-//        String recognize = null;
-//        try {
-//            recognize = audioServiceManager.audioToText(audioFile.getInputStream());
-//        } catch (Exception e) {
-//            throw new RuntimeException(e);
-//        }
-//
-//        return Result.ok("", recognize);
-//    }
-//
-//    /**
-//     * 当前系统用户调用对话
-//     *
-//     * @param prompt
-//     * @param botId
-//     * @param sessionId
-//     * @param isExternalMsg
-//     * @param response
-//     * @return
-//     */
-//    @PostMapping("chat")
-//    @SaIgnore
-//    public SseEmitter chat(@JsonBody(value = "prompt", required = true)
-//                           String prompt, @JsonBody(value = "botId", required = true)
-//                           BigInteger botId, @JsonBody(value = "sessionId", required = true)
-//                           String sessionId, @JsonBody(value = "isExternalMsg")
-//                           int isExternalMsg, @JsonBody(value = "tempUserId")
-//                           String tempUserId, @JsonBody(value = "fileList")
-//                           List<String> fileList, HttpServletResponse response) {
-//        response.setContentType("text/event-stream");
-//
-//
-//        if (!StringUtils.hasLength(prompt)) {
-//            throw new BusinessException("提示词不能为空！");
-//        }
-//
-//
-//        AiBot aiBot = service.getById(botId);
-//
-//        if (aiBot == null) {
-//            return ChatManager.getInstance().sseEmitterForContent(JSON.toJSONString(Maps.of("content", "机器人不存在")));
-//        }
-//
-//        boolean login = StpUtil.isLogin();
-//
-//        if (!login && !aiBot.isAnonymousEnabled()) {
-//            return ChatManager.getInstance().sseEmitterForContent(JSON.toJSONString(Maps.of("content", "此bot不支持匿名访问")));
-//
-//        }
-//
-//        Map<String, Object> llmOptions = aiBot.getLlmOptions();
-//        String systemPrompt = llmOptions != null ?
-//                (String) llmOptions.get("systemPrompt") == null || !StringUtils.hasLength((String) llmOptions.get("systemPrompt")) ? "你是一个AI助手，请根据用户的问题给出清晰、准确的回答。" : (String) llmOptions.get("systemPrompt")
-//                : null;
-//        AiLlm aiLlm = aiLlmService.getById(aiBot.getLlmId());
-//
-//        if (aiLlm == null) {
-//            return ChatManager.getInstance().sseEmitterForContent(JSON.toJSONString(Maps.of("content", "LLM不存在")));
-//        }
-//
-//        Llm llm = aiLlm.toLlm();
-//
-//        if (llm == null) {
-//            return ChatManager.getInstance().sseEmitterForContent(JSON.toJSONString(Maps.of("content", "LLM获取为空")));
-//        }
-//        final HistoriesPrompt historiesPrompt = new HistoriesPrompt();
-//        if (llmOptions != null && llmOptions.get("maxMessageCount") != null) {
-//            Object maxMessageCount = llmOptions.get("maxMessageCount");
-//            historiesPrompt.setMaxAttachedMessageCount(Integer.parseInt(String.valueOf(maxMessageCount)));
-//        }
-//        if (StringUtils.hasLength(systemPrompt)) {
-//            historiesPrompt.setSystemMessage(SystemMessage.of(systemPrompt));
-//        }
-//        if (StpUtil.isLogin()) {
-//            AiBotMessageMemory memory = new AiBotMessageMemory(botId, SaTokenUtil.getLoginAccount().getId(), sessionId,
-//                    isExternalMsg, aiBotMessageService, aiBotConversationMessageMapper, aiBotConversationMessageService);
-//            historiesPrompt.setMemory(memory);
-//
-//        } else {
+import tech.aiflowy.common.ai.ChatManager;
+import tech.aiflowy.common.ai.MySseEmitter;
+import tech.aiflowy.common.audio.core.AudioServiceManager;
+import tech.aiflowy.common.domain.Result;
+import tech.aiflowy.common.satoken.util.SaTokenUtil;
+import tech.aiflowy.common.util.Maps;
+import tech.aiflowy.common.util.StringUtil;
+import tech.aiflowy.common.web.controller.BaseCurdController;
+import tech.aiflowy.common.web.exceptions.BusinessException;
+import tech.aiflowy.common.web.jsonbody.JsonBody;
+import tech.aiflowy.system.mapper.SysApiKeyMapper;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.Serializable;
+import java.math.BigInteger;
+import java.time.Duration;
+import java.util.*;
+
+/**
+ * 控制层。
+ *
+ * @author michael
+ * @since 2024-08-23
+ */
+@RestController
+@RequestMapping("/api/v1/aiBot")
+public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
+
+    private final AiLlmService aiLlmService;
+    private final AiBotWorkflowService aiBotWorkflowService;
+    private final AiBotKnowledgeService aiBotKnowledgeService;
+    private final AiBotMessageService aiBotMessageService;
+    @Resource
+    private SysApiKeyMapper aiBotApiKeyMapper;
+    @Resource
+    private AiBotConversationMessageService aiBotConversationMessageService;
+    @Resource
+    private AiBotConversationMessageMapper aiBotConversationMessageMapper;
+    @Resource
+    private AiBotService aiBotService;
+    @Autowired
+    @Qualifier("defaultCache") // 指定 Bean 名称
+    private Cache<String, Object> cache;
+    @Resource
+    private AudioServiceManager audioServiceManager;
+
+    private static final Logger logger = LoggerFactory.getLogger(AiBotController.class);
+
+    public AiBotController(AiBotService service, AiLlmService aiLlmService, AiBotWorkflowService aiBotWorkflowService,
+                           AiBotKnowledgeService aiBotKnowledgeService, AiBotMessageService aiBotMessageService) {
+        super(service);
+        this.aiLlmService = aiLlmService;
+        this.aiBotWorkflowService = aiBotWorkflowService;
+        this.aiBotKnowledgeService = aiBotKnowledgeService;
+        this.aiBotMessageService = aiBotMessageService;
+    }
+
+    @Resource
+    private AiBotPluginsService aiBotPluginsService;
+    @Resource
+    private AiPluginToolService aiPluginToolService;
+
+    @PostMapping("updateOptions")
+    @SaCheckPermission("/api/v1/aiBot/save")
+    public Result<Void> updateOptions(@JsonBody("id")
+                                BigInteger id, @JsonBody("options")
+                                Map<String, Object> options) {
+        AiBot aiBot = service.getById(id);
+        Map<String, Object> existOptions = aiBot.getOptions();
+        if (existOptions == null) {
+            existOptions = new HashMap<>();
+        }
+        if (options != null) {
+            existOptions.putAll(options);
+        }
+        aiBot.setOptions(existOptions);
+        service.updateById(aiBot);
+        return Result.ok();
+    }
+
+    @PostMapping("updateLlmOptions")
+    @SaCheckPermission("/api/v1/aiBot/save")
+    public Result<Void> updateLlmOptions(@JsonBody("id")
+                                   BigInteger id, @JsonBody("llmOptions")
+                                   Map<String, Object> llmOptions) {
+        AiBot aiBot = service.getById(id);
+        Map<String, Object> existLlmOptions = aiBot.getLlmOptions();
+        if (existLlmOptions == null) {
+            existLlmOptions = new HashMap<>();
+        }
+        if (llmOptions != null) {
+            existLlmOptions.putAll(llmOptions);
+        }
+        aiBot.setLlmOptions(existLlmOptions);
+        service.updateById(aiBot);
+        return Result.ok();
+    }
+
+    @PostMapping("voiceInput")
+    @SaIgnore
+    public Result<String> voiceInput(@RequestParam("audio")
+                             MultipartFile audioFile) {
+
+        String recognize = null;
+        try {
+            recognize = audioServiceManager.audioToText(audioFile.getInputStream());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        return Result.ok("", recognize);
+    }
+
+    /**
+     * 当前系统用户调用对话
+     *
+     * @param prompt
+     * @param botId
+     * @param sessionId
+     * @param isExternalMsg
+     * @param response
+     * @return
+     */
+    @PostMapping("chat")
+    @SaIgnore
+    public SseEmitter chat(@JsonBody(value = "prompt", required = true)
+                           String prompt, @JsonBody(value = "botId", required = true)
+                           BigInteger botId, @JsonBody(value = "sessionId", required = true)
+                           String sessionId, @JsonBody(value = "isExternalMsg")
+                           int isExternalMsg, @JsonBody(value = "tempUserId")
+                           String tempUserId, @JsonBody(value = "fileList")
+                           List<String> fileList, HttpServletResponse response) {
+        response.setContentType("text/event-stream");
+
+
+        if (!StringUtils.hasLength(prompt)) {
+            throw new BusinessException("提示词不能为空！");
+        }
+
+
+        AiBot aiBot = service.getById(botId);
+
+        if (aiBot == null) {
+            return ChatManager.getInstance().sseEmitterForContent(JSON.toJSONString(Maps.of("content", "机器人不存在")));
+        }
+
+        boolean login = StpUtil.isLogin();
+
+        if (!login && !aiBot.isAnonymousEnabled()) {
+            return ChatManager.getInstance().sseEmitterForContent(JSON.toJSONString(Maps.of("content", "此bot不支持匿名访问")));
+
+        }
+
+        Map<String, Object> llmOptions = aiBot.getLlmOptions();
+        String systemPrompt = llmOptions != null ?
+                (String) llmOptions.get("systemPrompt") == null || !StringUtils.hasLength((String) llmOptions.get("systemPrompt")) ? "你是一个AI助手，请根据用户的问题给出清晰、准确的回答。" : (String) llmOptions.get("systemPrompt")
+                : null;
+        AiLlm aiLlm = aiLlmService.getById(aiBot.getLlmId());
+
+        if (aiLlm == null) {
+            return ChatManager.getInstance().sseEmitterForContent(JSON.toJSONString(Maps.of("content", "LLM不存在")));
+        }
+
+        ChatModel chatModel = aiLlm.toChatModel();
+
+        if (chatModel == null) {
+            return ChatManager.getInstance().sseEmitterForContent(JSON.toJSONString(Maps.of("content", "LLM获取为空")));
+        }
+        final MemoryPrompt memoryPrompt = new MemoryPrompt();
+        if (llmOptions != null && llmOptions.get("maxMessageCount") != null) {
+            Object maxMessageCount = llmOptions.get("maxMessageCount");
+            memoryPrompt.setMaxAttachedMessageCount(Integer.parseInt(String.valueOf(maxMessageCount)));
+        }
+        if (StringUtils.hasLength(systemPrompt)) {
+            memoryPrompt.setSystemMessage(SystemMessage.of(systemPrompt));
+        }
+        if (StpUtil.isLogin()) {
+            AiBotMessageMemory memory = new AiBotMessageMemory(botId, SaTokenUtil.getLoginAccount().getId(), sessionId,
+                    isExternalMsg, aiBotMessageService, aiBotConversationMessageMapper, aiBotConversationMessageService);
+            memoryPrompt.setMemory(memory);
+
+        }
+        MySseEmitter emitter = new MySseEmitter(1000 * 60 * 300L);
+        chatModel.chatStream(prompt, new StreamResponseListener() {
+            @Override
+            public void onMessage(StreamContext context, AiMessageResponse response) {
+                // 使用 fullContent 获取当前已接收的完整内容
+                String fullText = response.getMessage().getFullContent();
+                String delta = response.getMessage().getContent(); // 仅本次增量
+                emitter.send(delta);
+                System.out.print(delta);
+            }
+
+            @Override
+            public void onStart(StreamContext context) {
+                System.out.println("[流式开始]");
+            }
+
+            @Override
+            public void onStop(StreamContext context) {
+                System.out.println("\n[流式正常结束]");
+                emitter.complete();
+            }
+
+            @Override
+            public void onFailure(StreamContext context, Throwable throwable) {
+                System.err.println("流式调用失败: " + throwable.getMessage());
+            }
+        });
+
+//        else {
 //            AiBotMessageIframeMemory memory = new AiBotMessageIframeMemory(botId, tempUserId, sessionId, cache,
 //                    aiBotConversationMessageService, prompt);
-//            historiesPrompt.setMemory(memory);
+//            memoryPrompt.setMemory(memory);
 //
 //        }
-//        boolean needEnglishName = AiBotChatUtil.needEnglishName(llm);
+//        boolean needEnglishName = AiBotChatUtil.needEnglishName(chatModel);
 //
 //        MySseEmitter emitter = new MySseEmitter(1000 * 60 * 300L);
-//        List<Function> functions = null;
+//        List<Tool> functions = null;
 //        try {
 //            functions = buildFunctionList(Maps.of("botId", botId).set("needEnglishName", needEnglishName));
 //        } catch (Exception throwables) {
@@ -252,7 +287,7 @@
 //
 //        ChatOptions chatOptions = getChatOptions(llmOptions);
 //
-//        aiBotConversationMessageService.needRefreshConversationTitle(sessionId, prompt, llm, botId, isExternalMsg);
+//        aiBotConversationMessageService.needRefreshConversationTitle(sessionId, prompt, chatModel, botId, isExternalMsg);
 //        try {
 //            emitter.send(SseEmitter.event().name("refreshSession").data(JSON.toJSONString(Maps.of("content", ""))));
 //        } catch (IOException e) {
@@ -262,7 +297,7 @@
 //        final OkHttpClient.Builder[] builder = {new OkHttpClient.Builder()};
 //        builder[0].connectTimeout(Duration.ofSeconds(30));
 //        builder[0].readTimeout(Duration.ofMinutes(20));
-//        OkHttpClientUtil.setOkHttpClientBuilder(builder[0]);
+//            OkHttpClientUtil.setOkHttpClientBuilder(builder[0]);
 //
 //        final String messageSessionId = UUID.randomUUID().toString().replace("-", "");
 //        final String connectId = UUID.randomUUID().toString();
@@ -284,26 +319,26 @@
 //
 //        if (!reActEnabled) {
 //            // 普通模式
-//            return normalChat(emitter, aiLlm, functions, prompt, fileList, historiesPrompt, chatOptions, finalWebSocket,
+//            return normalChat(emitter, aiLlm, functions, prompt, fileList, memoryPrompt, chatOptions, finalWebSocket,
 //                    finalAnswerContentBuffer, messageSessionId, voiceEnabled, builder, sessionId);
 //        } else {
 //            // ReAct 模式
-//            return reActChat(emitter, aiLlm, functions, prompt, fileList, historiesPrompt, chatOptions, finalWebSocket,
+//            return reActChat(emitter, aiLlm, functions, prompt, fileList, memoryPrompt, chatOptions, finalWebSocket,
 //                    finalAnswerContentBuffer, messageSessionId, voiceEnabled, builder);
-//        }
-//
-//    }
-//
+
+        return null;
+    }
+
 //    /**
 //     * ReAct 模式对话
 //     */
 //    private SseEmitter reActChat(
 //            MySseEmitter emitter,
 //            AiLlm aiLlm,
-//            List<Function> functions,
+//            List<Tool> functions,
 //            String prompt,
 //            List<String> fileList,
-//            HistoriesPrompt historiesPrompt,
+//            MemoryPrompt memoryPrompt,
 //            ChatOptions chatOptions,
 //            WebSocket finalWebSocket,
 //            StringBuilder finalAnswerContentBuffer,
@@ -315,9 +350,8 @@
 //
 //        ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
 //
-//        Llm llm = aiLlm.toLlm();
-//
-//        ReActAgent reActAgent = new ReActAgent(llm, functions, prompt, historiesPrompt);
+//        ChatModel llm = aiLlm.toChatModel();
+//        ReActAgent reActAgent = new ReActAgent(llm, functions, prompt, memoryPrompt);
 //        reActAgent.setChatOptions(chatOptions);
 //
 //        String promptTemplate = "你是一个 ReAct Agent,结合 Reasoning（推理）和 Action（行动）来解决问题。\n" +
@@ -362,13 +396,11 @@
 //        // 解决 https://gitee.com/aiflowy/aiflowy/issues/ICMRM2 根据大模型配置属性决定是否构建多模态消息
 //
 //        if (!"ollama".equals(aiLlm.getBrand()) && !"spark".equals(aiLlm.getBrand())) {
-//
 //            reActAgent.setPromptTemplate(promptTemplate);
-//            MultimodalMessageBuilder multimodalMessageBuilder = new MultimodalMessageBuilder();
-//            multimodalMessageBuilder.setFileList(fileList);
-//            reActAgent.setMessageBuilder(multimodalMessageBuilder);
+//            ReActMessageBuilder reActMessageBuilder = new ReActMessageBuilder();
+//            reActMessageBuilder.setFileList(fileList);
+//            reActAgent.setMessageBuilder(reActMessageBuilder);
 //        } else {
-//
 //            NormalMessageBuilder normalMessageBuilder = new NormalMessageBuilder();
 //            reActAgent.setMessageBuilder(normalMessageBuilder);
 //            reActAgent.setPromptTemplate(promptTemplate);
@@ -535,7 +567,7 @@
 //            }
 //
 //            @Override
-//            public void onActionNotMatched(ReActStep step, List<Function> functions) {
+//            public void onActionNotMatched(ReActStep step, List<Tool> functions) {
 //                logger.error("onActionNotMatched,{}", functions);
 //                emitter.sendAndComplete(JSON.toJSONString(Maps.of("content", "没有找到可用工具....")));
 //            }
@@ -674,14 +706,14 @@
 //        reActAgent.run();
 //        return emitter;
 //    }
-//
+
 //    private SseEmitter normalChat(
 //            MySseEmitter emitter,
 //            AiLlm aiLlm,
-//            List<Function> functions,
+//            List<Tool> tools,
 //            String prompt,
 //            List<String> fileList,
-//            HistoriesPrompt historiesPrompt,
+//            MemoryPrompt memoryPrompt,
 //            ChatOptions chatOptions,
 //            WebSocket finalWebSocket,
 //            StringBuilder finalAnswerContentBuffer,
@@ -690,24 +722,21 @@
 //            OkHttpClient.Builder[] builder,
 //            String sessionId
 //    ) {
-//        Llm llm = aiLlm.toLlm();
-//        HumanMessage humanMessage = new HumanMessage(prompt);
+//        ChatModel llm = aiLlm.toLlm();
+//        UserMessage humanMessage = new UserMessage(prompt);
 //
 //        if (!"ollama".equals(aiLlm.getBrand()) && !"spark".equals(aiLlm.getBrand())) {
-//
 //            // 构建多模态消息
-//
 //            humanMessage.setMetadataMap(
 //                    Maps.of("type", BotMessageTypeEnum.USER_INPUT.getValue())
 //                            .set("fileList", fileList)
 //                            .set("user_input", prompt)
 //            );
-//
 //        }
 //
 //
-//        humanMessage.addFunctions(functions);
-//        historiesPrompt.addMessage(humanMessage);
+//        humanMessage.addTools(tools);
+//        memoryPrompt.addMessage(humanMessage);
 //
 //
 //        ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
@@ -722,7 +751,7 @@
 //                try {
 //                    RequestContextHolder.setRequestAttributes(sra, true);
 //                    if (response != null) {
-//                        // 检查是否需要触发 Function Calling
+//                        // 检查是否需要触发 Tool Calling
 //                        StreamResponseListener.logger.info("是否需要调用function calling:{}", response.getFunctionCallers() != null && CollectionUtil
 //                                .hasItems(response.getFunctionCallers()));
 //                        if (response.getFunctionCallers() != null && CollectionUtil.hasItems(response
@@ -824,16 +853,16 @@
 //
 //        return emitter;
 //    }
-//
-//    @PostMapping("updateLlmId")
-//    @SaCheckPermission("/api/v1/aiBot/save")
-//    public Result<Void> updateBotLlmId(@RequestBody
-//                                 AiBot aiBot) {
-//        service.updateBotLlmId(aiBot);
-//        return Result.ok();
-//    }
-//
-//
+
+    @PostMapping("updateLlmId")
+    @SaCheckPermission("/api/v1/aiBot/save")
+    public Result<Void> updateBotLlmId(@RequestBody
+                                 AiBot aiBot) {
+        service.updateBotLlmId(aiBot);
+        return Result.ok();
+    }
+
+
 //    private AiBotExternalMsgJsonResult handleMessageResult(AiMessage aiMessage) {
 //        AiBotExternalMsgJsonResult messageResult = new AiBotExternalMsgJsonResult();
 //        messageResult.setCreated(new Date().getTime());
@@ -857,24 +886,24 @@
 //        messageResult.setStatus(aiMessage.getStatus().name());
 //        return messageResult;
 //    }
-//
-//    // 辅助方法：创建响应
-//    private Object createResponse(boolean stream, String content) {
-//        if (stream) {
-//            MySseEmitter emitter = new MySseEmitter((long) (1000 * 60 * 2));
-//            emitter.send(content);
-//            emitter.complete();
-//            return emitter;
-//        } else {
-//            return ResponseEntity.ok(content);
-//        }
-//    }
-//
-//    // 辅助方法：创建错误响应
-//    private Object createErrorResponse(Exception e) {
-//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-//    }
-//
+
+    // 辅助方法：创建响应
+    private Object createResponse(boolean stream, String content) {
+        if (stream) {
+            MySseEmitter emitter = new MySseEmitter((long) (1000 * 60 * 2));
+            emitter.send(content);
+            emitter.complete();
+            return emitter;
+        } else {
+            return ResponseEntity.ok(content);
+        }
+    }
+
+    // 辅助方法：创建错误响应
+    private Object createErrorResponse(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+    }
+
 //    /**
 //     * @param aiMessageResponse 大模型返回的消息
 //     * @param emitter
@@ -972,118 +1001,118 @@
 //
 //        return JSON.toJSONString("");
 //    }
-//
-//    @GetMapping("getDetail")
-//    @SaIgnore
-//    public Result<AiBot> getDetail(String id) {
-//        return Result.ok(aiBotService.getDetail(id));
-//    }
-//
-//    @Override
-//    @SaIgnore
-//    public Result<AiBot> detail(String id) {
-//        AiBot data = aiBotService.getDetail(id);
-//        if (data == null) {
-//            return Result.ok(data);
-//        }
-//
-//        Map<String, Object> llmOptions = data.getLlmOptions();
-//        if (llmOptions == null) {
-//            llmOptions = new HashMap<>();
-//        }
-//
-//        if (data.getLlmId() == null) {
-//            return Result.ok(data);
-//        }
-//
-//        BigInteger llmId = data.getLlmId();
-//        AiLlm llm = aiLlmService.getById(llmId);
-//
-//        if (llm == null) {
-//            data.setLlmId(null);
-//            return Result.ok(data);
-//        }
-//
-//        Map<String, Object> options = llm.getOptions();
-//
-//        if (options != null && !options.isEmpty()) {
-//
-//            // 获取是否多模态
-//            Boolean multimodal = (Boolean) options.get("multimodal");
-//            llmOptions.put("multimodal", multimodal != null && multimodal);
-//
-//        }
-//
-//        return Result.ok(data);
-//    }
-//
-//    @Override
-//    protected Result<?> onSaveOrUpdateBefore(AiBot entity, boolean isSave) {
-//
-//        String alias = entity.getAlias();
-//
-//        if (StringUtils.hasLength(alias)) {
-//            AiBot aiBot = service.getByAlias(alias);
-//
-//
-//            if (aiBot != null && isSave) {
-//                throw new BusinessException("别名已存在！");
-//            }
-//
-//            if (aiBot != null && aiBot.getId().compareTo(entity.getId()) != 0) {
-//                throw new BusinessException("别名已存在！");
-//            }
-//
-//        }
-//
-//
-//        if (isSave) {
-//            // 设置默认值
-//            entity.setLlmOptions(getDefaultLlmOptions());
-//        }
-//        return super.onSaveOrUpdateBefore(entity, isSave);
-//    }
-//
-//    private ChatOptions getChatOptions(Map<String, Object> llmOptions) {
-//        ChatOptions defaultOptions = new ChatOptions();
-//        if (llmOptions != null) {
-//            Object topK = llmOptions.get("topK");
-//            Object maxReplyLength = llmOptions.get("maxReplyLength");
-//            Object temperature = llmOptions.get("temperature");
-//            Object topP = llmOptions.get("topP");
-//            if (topK != null) {
-//                defaultOptions.setTopK(Integer.parseInt(String.valueOf(topK)));
-//            }
-//            if (maxReplyLength != null) {
-//                defaultOptions.setMaxTokens(Integer.parseInt(String.valueOf(maxReplyLength)));
-//            }
-//            if (temperature != null) {
-//                defaultOptions.setTemperature(Float.parseFloat(String.valueOf(temperature)));
-//            }
-//            if (topP != null) {
-//                defaultOptions.setTopP(Float.parseFloat(String.valueOf(topP)));
-//            }
-//        }
-//        return defaultOptions;
-//    }
-//
-//    private Map<String, Object> getDefaultLlmOptions() {
-//        Map<String, Object> defaultLlmOptions = new HashMap<>();
-//        defaultLlmOptions.put("temperature", 0.7);
-//        defaultLlmOptions.put("topK", 4);
-//        defaultLlmOptions.put("maxReplyLength", 2048);
-//        defaultLlmOptions.put("topP", 0.7);
-//        defaultLlmOptions.put("maxMessageCount", 10);
-//        return defaultLlmOptions;
-//    }
-//
-//    private Map<String, Object> errorRespnseMsg(int errorCode, String message) {
-//        HashMap<String, Object> result = new HashMap<>();
-//        result.put("error", errorCode);
-//        result.put("message", message);
-//        return result;
-//    }
-//
+
+    @GetMapping("getDetail")
+    @SaIgnore
+    public Result<AiBot> getDetail(String id) {
+        return Result.ok(aiBotService.getDetail(id));
+    }
+
+    @Override
+    @SaIgnore
+    public Result<AiBot> detail(String id) {
+        AiBot data = aiBotService.getDetail(id);
+        if (data == null) {
+            return Result.ok(data);
+        }
+
+        Map<String, Object> llmOptions = data.getLlmOptions();
+        if (llmOptions == null) {
+            llmOptions = new HashMap<>();
+        }
+
+        if (data.getLlmId() == null) {
+            return Result.ok(data);
+        }
+
+        BigInteger llmId = data.getLlmId();
+        AiLlm llm = aiLlmService.getById(llmId);
+
+        if (llm == null) {
+            data.setLlmId(null);
+            return Result.ok(data);
+        }
+
+        Map<String, Object> options = llm.getOptions();
+
+        if (options != null && !options.isEmpty()) {
+
+            // 获取是否多模态
+            Boolean multimodal = (Boolean) options.get("multimodal");
+            llmOptions.put("multimodal", multimodal != null && multimodal);
+
+        }
+
+        return Result.ok(data);
+    }
+
+    @Override
+    protected Result<?> onSaveOrUpdateBefore(AiBot entity, boolean isSave) {
+
+        String alias = entity.getAlias();
+
+        if (StringUtils.hasLength(alias)) {
+            AiBot aiBot = service.getByAlias(alias);
+
+
+            if (aiBot != null && isSave) {
+                throw new BusinessException("别名已存在！");
+            }
+
+            if (aiBot != null && aiBot.getId().compareTo(entity.getId()) != 0) {
+                throw new BusinessException("别名已存在！");
+            }
+
+        }
+
+
+        if (isSave) {
+            // 设置默认值
+            entity.setLlmOptions(getDefaultLlmOptions());
+        }
+        return super.onSaveOrUpdateBefore(entity, isSave);
+    }
+
+    private ChatOptions getChatOptions(Map<String, Object> llmOptions) {
+        ChatOptions defaultOptions = new ChatOptions();
+        if (llmOptions != null) {
+            Object topK = llmOptions.get("topK");
+            Object maxReplyLength = llmOptions.get("maxReplyLength");
+            Object temperature = llmOptions.get("temperature");
+            Object topP = llmOptions.get("topP");
+            if (topK != null) {
+                defaultOptions.setTopK(Integer.parseInt(String.valueOf(topK)));
+            }
+            if (maxReplyLength != null) {
+                defaultOptions.setMaxTokens(Integer.parseInt(String.valueOf(maxReplyLength)));
+            }
+            if (temperature != null) {
+                defaultOptions.setTemperature(Float.parseFloat(String.valueOf(temperature)));
+            }
+            if (topP != null) {
+                defaultOptions.setTopP(Float.parseFloat(String.valueOf(topP)));
+            }
+        }
+        return defaultOptions;
+    }
+
+    private Map<String, Object> getDefaultLlmOptions() {
+        Map<String, Object> defaultLlmOptions = new HashMap<>();
+        defaultLlmOptions.put("temperature", 0.7);
+        defaultLlmOptions.put("topK", 4);
+        defaultLlmOptions.put("maxReplyLength", 2048);
+        defaultLlmOptions.put("topP", 0.7);
+        defaultLlmOptions.put("maxMessageCount", 10);
+        return defaultLlmOptions;
+    }
+
+    private Map<String, Object> errorRespnseMsg(int errorCode, String message) {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("error", errorCode);
+        result.put("message", message);
+        return result;
+    }
+
 //    private AiBotExternalMsgJsonResult handleMessageStreamJsonResult(AiMessage message) {
 //        AiBotExternalMsgJsonResult result = new AiBotExternalMsgJsonResult();
 //        AiBotExternalMsgJsonResult.Choice choice = new AiBotExternalMsgJsonResult.Choice();
@@ -1114,13 +1143,13 @@
 //        return aiMessageResponse;
 //    }
 //
-//    private List<Function> buildFunctionList(Map<String, Object> buildParams) {
+//    private List<Tool> buildFunctionList(Map<String, Object> buildParams) {
 //
 //        if (buildParams == null || buildParams.isEmpty()) {
 //            throw new IllegalArgumentException("buildParams is empty");
 //        }
 //
-//        List<Function> functionList = new ArrayList<>();
+//        List<com.agentsflex.core.model.chat.tool.Tool> functionList = new ArrayList<>();
 //
 //        BigInteger botId = (BigInteger) buildParams.get("botId");
 //        if (botId == null) {
@@ -1139,7 +1168,7 @@
 //                .selectListWithRelationsByQuery(queryWrapper);
 //        if (aiBotWorkflows != null && !aiBotWorkflows.isEmpty()) {
 //            for (AiBotWorkflow aiBotWorkflow : aiBotWorkflows) {
-//                Function function = aiBotWorkflow.getWorkflow().toFunction(needEnglishName);
+//                Tool function = aiBotWorkflow.getWorkflow().toFunction(needEnglishName);
 //                functionList.add(function);
 //            }
 //        }
@@ -1151,7 +1180,7 @@
 //                .selectListWithRelationsByQuery(queryWrapper);
 //        if (aiBotKnowledges != null && !aiBotKnowledges.isEmpty()) {
 //            for (AiBotKnowledge aiBotKnowledge : aiBotKnowledges) {
-//                Function function = aiBotKnowledge.getKnowledge().toFunction(needEnglishName);
+//                Tool function = aiBotKnowledge.getKnowledge().toFunction(needEnglishName);
 //                functionList.add(function);
 //            }
 //        }
@@ -1187,15 +1216,15 @@
 //        return message.contains("暂不支持该接口") || message.contains("不支持接口") || message.contains("接口不支持") || message
 //                .contains("The tool call is not supported");
 //    }
-//
-//    @Override
-//    protected Result<?> onRemoveBefore(Collection<Serializable> ids) {
-//        QueryWrapper queryWrapperKnowledge = QueryWrapper.create().in(AiBotKnowledge::getBotId, ids);
-//        aiBotKnowledgeService.remove(queryWrapperKnowledge);
-//        QueryWrapper queryWrapperBotWorkflow = QueryWrapper.create().in(AiBotWorkflow::getBotId, ids);
-//        aiBotWorkflowService.remove(queryWrapperBotWorkflow);
-//        QueryWrapper queryWrapperBotPlugins = QueryWrapper.create().in(AiBotPlugins::getBotId, ids);
-//        aiBotPluginsService.remove(queryWrapperBotPlugins);
-//        return super.onRemoveBefore(ids);
-//    }
-//}
+
+    @Override
+    protected Result<?> onRemoveBefore(Collection<Serializable> ids) {
+        QueryWrapper queryWrapperKnowledge = QueryWrapper.create().in(AiBotKnowledge::getBotId, ids);
+        aiBotKnowledgeService.remove(queryWrapperKnowledge);
+        QueryWrapper queryWrapperBotWorkflow = QueryWrapper.create().in(AiBotWorkflow::getBotId, ids);
+        aiBotWorkflowService.remove(queryWrapperBotWorkflow);
+        QueryWrapper queryWrapperBotPlugins = QueryWrapper.create().in(AiBotPlugins::getBotId, ids);
+        aiBotPluginsService.remove(queryWrapperBotPlugins);
+        return super.onRemoveBefore(ids);
+    }
+}

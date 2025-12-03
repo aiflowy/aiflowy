@@ -1,11 +1,21 @@
 
 package tech.aiflowy.ai.entity;
 
+import com.agentsflex.core.model.chat.ChatModel;
+import com.agentsflex.llm.ollama.OllamaChatConfig;
+import com.agentsflex.llm.ollama.OllamaChatModel;
+import com.agentsflex.llm.openai.OpenAIChatConfig;
+import com.agentsflex.llm.openai.OpenAIChatModel;
 import com.mybatisflex.annotation.Table;
+import org.springframework.util.StringUtils;
 import tech.aiflowy.ai.entity.base.AiLlmBase;
+import tech.aiflowy.common.util.PropertiesUtil;
+import tech.aiflowy.common.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * 实体类。
@@ -69,68 +79,47 @@ public class AiLlm extends AiLlmBase {
         return features;
     }
 
-//    public Llm toLlm() {
-//        String brand = getBrand();
-//        if (StringUtil.noText(brand)) {
-//            return null;
-//        }
-//        switch (brand.toLowerCase()) {
-//
-//            case "ollama":
-//                return ollamaLlm();
-//            default:
-//                return openaiLLm();
-//        }
-//    }
-//
-//    private Llm ollamaLlm() {
-//        OllamaLlmConfig ollamaLlmConfig = new OllamaLlmConfig();
-//        ollamaLlmConfig.setEndpoint(getLlmEndpoint());
-//        ollamaLlmConfig.setApiKey(getLlmApiKey());
-//        ollamaLlmConfig.setModel(getLlmModel());
-//        ollamaLlmConfig.setDebug(true);
-//        return new OllamaLlm(ollamaLlmConfig);
-//    }
-//
-//    private Llm openaiLLm() {
-//        OpenAILlmConfig openAiLlmConfig = new OpenAILlmConfig();
-//        openAiLlmConfig.setEndpoint(getLlmEndpoint());
-//        openAiLlmConfig.setApiKey(getLlmApiKey());
-//        openAiLlmConfig.setModel(getLlmModel());
-//        openAiLlmConfig.setDefaultEmbeddingModel(getLlmModel());
-//        openAiLlmConfig.setDebug(true);
-//        Properties properties = PropertiesUtil.textToProperties(getLlmExtraConfig() == null ? "" : getLlmExtraConfig());
-//        String chatPath = properties.getProperty("chatPath");
-//        String embedPath = properties.getProperty("embedPath");
-//
-//        Map<String, Object> options = getOptions();
-//
-//        if (StringUtils.hasLength(chatPath)) {
-//            openAiLlmConfig.setChatPath(chatPath);
-//        } else {
-//            if (options != null) {
-//                String chatPathFromOptions = (String) options.get("chatPath");
-//                if (StringUtils.hasLength(chatPathFromOptions)) {
-//                    chatPath = chatPathFromOptions;
-//                    openAiLlmConfig.setChatPath(chatPath);
-//                }
-//                ;
-//            }
-//
-//        }
-//
-//        if (StringUtils.hasLength(embedPath)) {
-//            openAiLlmConfig.setEmbedPath(embedPath);
-//        } else {
-//            if (options != null) {
-//                String embedPathFromOptions = (String) options.get("embedPath");
-//                if (StringUtils.hasLength(embedPathFromOptions)) {
-//                    embedPath = embedPathFromOptions;
-//                    openAiLlmConfig.setEmbedPath(embedPath);
-//                }
-//            }
-//
-//        }
-//        return new OpenAILlm(openAiLlmConfig);
-//    }
+    public ChatModel toChatModel() {
+        String brand = getBrand();
+        if (StringUtil.noText(brand)) {
+            return null;
+        }
+        switch (brand.toLowerCase()) {
+            case "ollama":
+                return ollamaLlm();
+            default:
+                return openaiLLm();
+        }
+    }
+    private ChatModel ollamaLlm() {
+        OllamaChatConfig ollamaChatConfig = new OllamaChatConfig();
+        ollamaChatConfig.setEndpoint(getLlmEndpoint());
+        ollamaChatConfig.setApiKey(getLlmApiKey());
+        ollamaChatConfig.setModel(getLlmModel());
+        return new OllamaChatModel(ollamaChatConfig);
+    }
+    private ChatModel openaiLLm() {
+        OpenAIChatConfig openAIChatConfig = new OpenAIChatConfig();
+        openAIChatConfig.setEndpoint(getLlmEndpoint());
+        openAIChatConfig.setApiKey(getLlmApiKey());
+        openAIChatConfig.setModel(getLlmModel());
+        Properties properties = PropertiesUtil.textToProperties(getLlmExtraConfig() == null ? "" : getLlmExtraConfig());
+        String chatPath = properties.getProperty("chatPath");
+        Map<String, Object> options = getOptions();
+
+        if (StringUtils.hasLength(chatPath)) {
+            openAIChatConfig.setRequestPath(chatPath);
+        } else {
+            if (options != null) {
+                String chatPathFromOptions = (String) options.get("chatPath");
+                if (StringUtils.hasLength(chatPathFromOptions)) {
+                    chatPath = chatPathFromOptions;
+                    openAIChatConfig.setRequestPath(chatPath);
+                }
+                ;
+            }
+
+        }
+        return new OpenAIChatModel(openAIChatConfig);
+    }
 }
