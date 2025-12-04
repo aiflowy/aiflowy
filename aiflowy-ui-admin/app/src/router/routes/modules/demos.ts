@@ -1,52 +1,52 @@
-import type { RouteRecordRaw } from 'vue-router';
-
-import { $t } from '#/locales';
-
-const routes: RouteRecordRaw[] = [
-  {
-    meta: {
-      icon: 'ic:baseline-view-in-ar',
-      keepAlive: true,
-      order: 1000,
-      title: $t('demos.title'),
-    },
-    name: 'Demos',
-    path: '/demos',
-    children: [
-      {
-        meta: {
-          title: $t('demos.elementPlus'),
-        },
-        name: 'NaiveDemos',
-        path: '/demos/element',
-        component: () => import('#/views/demos/element/index.vue'),
-      },
-      {
-        meta: {
-          title: '卡片组件',
-        },
-        name: 'NaiveDemos1',
-        path: '/demos/cardTest',
-        component: () => import('#/views/demos/cardTest/index.vue'),
-      },
-      {
-        meta: {
-          title: '分类组件',
-        },
-        name: 'NaiveDemos2',
-        path: '/demos/categoryPanel',
-        component: () => import('#/views/demos/categoryPanel/index.vue'),
-      },
-      {
-        meta: {
-          title: $t('demos.form'),
-        },
-        name: 'BasicForm',
-        path: '/demos/form',
-        component: () => import('#/views/demos/form/basic.vue'),
-      },
-    ],
-  },
-];
-
-export default routes;
+// import type { RouteRecordRaw } from 'vue-router';
+//
+// import { $t } from '#/locales';
+//
+// const routes: RouteRecordRaw[] = [
+//   {
+//     meta: {
+//       icon: 'ic:baseline-view-in-ar',
+//       keepAlive: true,
+//       order: 1000,
+//       title: $t('demos.title'),
+//     },
+//     name: 'Demos',
+//     path: '/demos',
+//     children: [
+//       {
+//         meta: {
+//           title: $t('demos.elementPlus'),
+//         },
+//         name: 'NaiveDemos',
+//         path: '/demos/element',
+//         component: () => import('#/views/demos/element/index.vue'),
+//       },
+//       {
+//         meta: {
+//           title: '卡片组件',
+//         },
+//         name: 'NaiveDemos1',
+//         path: '/demos/cardTest',
+//         component: () => import('#/views/demos/cardTest/index.vue'),
+//       },
+//       {
+//         meta: {
+//           title: '分类组件',
+//         },
+//         name: 'NaiveDemos2',
+//         path: '/demos/categoryPanel',
+//         component: () => import('#/views/demos/categoryPanel/index.vue'),
+//       },
+//       {
+//         meta: {
+//           title: $t('demos.form'),
+//         },
+//         name: 'BasicForm',
+//         path: '/demos/form',
+//         component: () => import('#/views/demos/form/basic.vue'),
+//       },
+//     ],
+//   },
+// ];
+//
+// export default routes;

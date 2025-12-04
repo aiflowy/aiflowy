@@ -3,5 +3,6 @@
   "searchPlaceholder": "Please enter search content",
   "allCategories": "All",
   "history": "History",
-  "noDataAvailable": "No data available"
+  "noDataAvailable": "No data available",
+  "isRequired": " is required"
 }

@@ -56,7 +56,6 @@ interface UserMessage extends BaseMessage {
 
 interface AssistantMessage extends BaseMessage {
   role: 'assistant';
-  // options 不应该出现在 assistant 消息中
 }
 
 type Message = AssistantMessage | UserMessage;

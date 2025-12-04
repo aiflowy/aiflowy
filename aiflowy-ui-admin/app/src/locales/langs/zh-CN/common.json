@@ -3,5 +3,6 @@
   "searchPlaceholder": "请输入搜索内容",
   "allCategories": "全部",
   "history": "历史记录",
-  "noDataAvailable": "暂无数据"
+  "noDataAvailable": "暂无数据",
+  "isRequired": "不能为空"
 }

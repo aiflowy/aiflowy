@@ -18,5 +18,10 @@
   "modifiedBy": "ModifiedBy",
   "remark": "Remark",
   "isDeleted": "IsDeleted",
-  "roleIds": "Role"
+  "roleIds": "Role",
+  "oldPwd": "OldPassword",
+  "newPwd": "NewPassword",
+  "confirmPwd": "ConfirmPassword",
+  "repeatPwd": "Please confirm your password again",
+  "notSamePwd": "The two passwords are inconsistent"
 }

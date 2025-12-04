@@ -1,42 +1,29 @@
 <script setup lang="ts">
-import type {
-  BubbleListItemProps,
-  BubbleListProps,
-} from 'vue-element-plus-x/types/BubbleList';
+import type { BubbleListProps } from 'vue-element-plus-x/types/BubbleList';
 
 import type { BotInfo, Message } from '@aiflowy/types';
 
-import { onMounted, ref, watchEffect } from 'vue';
+import { onMounted, onUnmounted, ref, watchEffect } from 'vue';
 import { BubbleList, Sender } from 'vue-element-plus-x';
 
+import { useUserStore } from '@aiflowy/stores';
 import { cn, tryit, uuid } from '@aiflowy/utils';
 
-import {
-  CircleClose,
-  DocumentCopy,
-  Refresh,
-  Search,
-  Star,
-} from '@element-plus/icons-vue';
-import { ElButton, ElIcon } from 'element-plus';
+import { CircleClose, DocumentCopy, Refresh } from '@element-plus/icons-vue';
+import { ElAvatar, ElButton, ElIcon } from 'element-plus';
 
 import { getMessageList } from '#/api';
+import { sse } from '#/api/request';
 
 import BotAvatar from '../botAvatar/botAvatar.vue';
-
-type listType = BubbleListItemProps & {
-  key: number;
-  role: 'ai' | 'user';
-};
 
 const props = defineProps<{
   bot?: BotInfo;
   sessionId?: string;
 }>();
-const bubbleItems = ref<BubbleListProps<Message>['list']>(
-  // generateFakeItems(10),
-  [],
-);
+const { stop, postSse } = sse();
+const userStore = useUserStore();
+const bubbleItems = ref<BubbleListProps<Message>['list']>([]);
 
 watchEffect(async () => {
   if (props.bot && props.sessionId) {
@@ -63,31 +50,6 @@ watchEffect(async () => {
   }
 });
 
-// 示例调用
-// const bubbleItems = ref<BubbleListProps<listType>['list']>(
-//   generateFakeItems(10),
-// );
-const avatar = ref('https://avatars.githubusercontent.com/u/76239030?v=4');
-const avartAi = ref(
-  'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
-);
-
-// function generateFakeItems(count: number): listType[] {
-//   const messages: listType[] = [];
-//   for (let i = 0; i < count; i++) {
-//     const role = i % 2 === 0 ? 'ai' : 'user';
-//     const placement = role === 'ai' ? 'start' : 'end';
-//     const key = i + 1;
-//     messages.push({
-//       key,
-//       role,
-//       placement,
-//       noStyle: true, // 如果你不想用默认的气泡样式
-//     });
-//   }
-//   return messages;
-// }
-
 const senderRef = ref();
 const senderValue = ref('');
 const showHeaderFlog = ref(false);
@@ -95,6 +57,35 @@ const showHeaderFlog = ref(false);
 onMounted(() => {
   showHeaderFlog.value = true;
   senderRef.value.openHeader();
+
+  // if (props.bot && props.sessionId) {
+  //   postSse(
+  //     '/api/v1/aiBot/chat',
+  //     {
+  //       botId: props.bot.id,
+  //       fileList: [],
+  //       isExternalMsg: 1,
+  //       prompt: '你好',
+  //       sessionId: props.sessionId,
+  //       tempUserId: uuid() + props.bot.id,
+  //     },
+  //     {
+  //       onMessage(message) {
+  //         console.warn(message);
+  //       },
+  //       onError(err) {
+  //         console.error(err);
+  //       },
+  //       onFinished() {
+  //         console.warn('success');
+  //       },
+  //     },
+  //   );
+  // }
+});
+
+onUnmounted(() => {
+  console.log('unmounted');
 });
 
 function openCloseHeader() {
@@ -127,12 +118,12 @@ function closeHeader() {
         <BubbleList :list="bubbleItems" max-height="none" class="!h-full">
           <!-- 自定义头像 -->
           <template #avatar="{ item }">
-            <div class="avatar-wrapper">
-              <img
-                :src="item.role === 'assistant' ? avartAi : avatar"
-                alt="avatar"
-              />
-            </div>
+            <BotAvatar
+              v-if="item.role === 'assistant'"
+              :src="bot?.icon"
+              :size="40"
+            />
+            <ElAvatar v-else :src="userStore.userInfo?.avatar" :size="40" />
           </template>
 
           <!-- 自定义头部 -->
@@ -140,7 +131,9 @@ function closeHeader() {
             <div class="header-wrapper">
               <div class="header-name">
                 {{
-                  item.role === 'assistant' ? 'Element Plus X 🍧' : '🧁 用户'
+                  item.role === 'assistant'
+                    ? bot?.title
+                    : userStore.userInfo?.nickname
                 }}
               </div>
             </div>
@@ -150,11 +143,7 @@ function closeHeader() {
           <template #content="{ item }">
             <div class="content-wrapper">
               <div class="content-text">
-                {{
-                  item.role === 'assistant'
-                    ? item.content
-                    : item.options.user_input
-                }}
+                {{ item.content }}
               </div>
             </div>
           </template>
@@ -163,9 +152,13 @@ function closeHeader() {
           <template #footer="{ item }">
             <div class="footer-wrapper">
               <div class="footer-container">
-                <ElButton type="info" :icon="Refresh" size="small" circle />
-                <ElButton type="success" :icon="Search" size="small" circle />
-                <ElButton type="warning" :icon="Star" size="small" circle />
+                <ElButton
+                  v-if="item.role === 'assistant'"
+                  type="info"
+                  :icon="Refresh"
+                  size="small"
+                  circle
+                />
                 <ElButton
                   color="#626aef"
                   :icon="DocumentCopy"
@@ -174,26 +167,21 @@ function closeHeader() {
                 />
               </div>
               <div class="footer-time">
-                {{ item.role === 'ai' ? '下午 2:32' : '下午 2:33' }}
+                {{ new Date(item.created).toLocaleString() }}
               </div>
             </div>
           </template>
 
           <!-- 自定义 loading -->
-          <template #loading="{ item }">
+          <template #loading>
             <div class="loading-container">
-              <span>#{{ item.role }}-{{ item.key }}：</span>
-              <span>我</span>
-              <span>是</span>
-              <span>自</span>
-              <span>定</span>
-              <span>义</span>
-              <span>加</span>
-              <span>载</span>
-              <span>内</span>
-              <span>容</span>
-              <span>哦</span>
-              <span>~</span>
+              <span>AI</span>
+              <span>正</span>
+              <span>在</span>
+              <span>思</span>
+              <span>考</span>
+              <span>中</span>
+              <span>...</span>
             </div>
           </template>
         </BubbleList>

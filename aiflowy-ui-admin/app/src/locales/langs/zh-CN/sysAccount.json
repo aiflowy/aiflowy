@@ -18,5 +18,10 @@
   "modifiedBy": "修改者",
   "remark": "备注",
   "isDeleted": "删除标识",
-  "roleIds": "角色"
+  "roleIds": "角色",
+  "oldPwd": "旧密码",
+  "newPwd": "新密码",
+  "confirmPwd": "确认密码",
+  "repeatPwd": "请再次输入密码",
+  "notSamePwd": "两次输入的密码不一致"
 }

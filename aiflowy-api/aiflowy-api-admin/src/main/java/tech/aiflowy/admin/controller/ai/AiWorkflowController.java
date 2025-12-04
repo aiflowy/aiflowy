@@ -80,6 +80,18 @@ public class AiWorkflowController extends BaseCurdController<AiWorkflowService, 
         this.aiLlmService = aiLlmService;
     }
 
+    @GetMapping("/test")
+    @SaIgnore
+    public Result<Map<String, Object>> test() {
+        String id = "351890611582607360";
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("single", "a");
+        variables.put("resource", "b");
+        variables.put("vvv", "c");
+        Map<String, Object> execute = chainExecutor.execute(id, variables);
+        return Result.ok(execute);
+    }
+
     @PostMapping("/importWorkFlow")
     @SaCheckPermission("/api/v1/aiWorkflow/save")
     public Result<Void> importWorkFlow(AiWorkflow workflow, MultipartFile jsonFile) throws Exception {
@@ -95,9 +107,9 @@ public class AiWorkflowController extends BaseCurdController<AiWorkflowService, 
 
     @GetMapping("/exportWorkFlow")
     @SaCheckPermission("/api/v1/aiWorkflow/save")
-    public Result<?> exportWorkFlow(BigInteger id) {
+    public Result<String> exportWorkFlow(BigInteger id) {
         AiWorkflow workflow = service.getById(id);
-        return Result.ok("content", workflow.getContent());
+        return Result.ok("", workflow.getContent());
     }
 
     @GetMapping("getRunningParameters")

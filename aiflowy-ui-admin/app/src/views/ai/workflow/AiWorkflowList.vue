@@ -5,8 +5,6 @@ import type { ActionButton } from '#/components/page/CardList.vue';
 
 import { onMounted, ref } from 'vue';
 
-import { downloadFileFromBlob } from '@aiflowy/utils';
-
 import {
   CopyDocument,
   Delete,
@@ -163,12 +161,26 @@ function toDesignPage(row: any) {
   });
 }
 function exportJson(row: any) {
-  api.download(`/api/v1/aiWorkflow/exportWorkFlow?id=${row.id}`).then((res) => {
-    downloadFileFromBlob({
-      fileName: `${row.title}.json`,
-      source: res,
+  api
+    .get('/api/v1/aiWorkflow/exportWorkFlow', {
+      params: {
+        id: row.id,
+      },
+    })
+    .then((res) => {
+      const text = res.data;
+      const element = document.createElement('a');
+      element.setAttribute(
+        'href',
+        `data:text/plain;charset=utf-8,${encodeURIComponent(text)}`,
+      );
+      element.setAttribute('download', `${row.title}.json`);
+      element.style.display = 'none';
+      document.body.append(element);
+      element.click();
+      element.remove();
+      ElMessage.success(`导出成功，请等待下载`);
     });
-  });
 }
 </script>
 

@@ -2,5 +2,7 @@
   "title": "大模型配置",
   "modelOfChat": "对话模型供应商",
   "dialogModel" : "对话模型配置",
-  "modelName": "模型名称"
+  "modelName": "模型名称",
+  "basic": "基本设置",
+  "updatePwd": "修改密码"
 }

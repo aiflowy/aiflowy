@@ -10,6 +10,6 @@ public class ChainEventListenerForFront implements ChainEventListener {
 
     @Override
     public void onEvent(Event event, Chain chain) {
-
+        System.out.println(event);
     }
 }

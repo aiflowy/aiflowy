@@ -37,6 +37,7 @@ public class ChainConfig {
 
     @Bean(name = "chainExecutor")
     public ChainExecutor chainExecutor() {
+
         ChainExecutor chainExecutor = new ChainExecutor(new ChainDefinitionRepository() {
 
             @Override
@@ -55,7 +56,8 @@ public class ChainConfig {
 
             @Override
             public ChainState load(String instanceId) {
-                return (ChainState) cache.get(CHAIN_CACHE_KEY + instanceId);
+                ChainState chainState = (ChainState) cache.get(CHAIN_CACHE_KEY + instanceId);
+                return chainState == null ? new ChainState() : chainState;
             }
 
             @Override
@@ -69,7 +71,13 @@ public class ChainConfig {
             @Override
             public NodeState load(String instanceId, String nodeId) {
                 String key = NODE_CACHE_KEY + instanceId + ":" + nodeId;
-                return (NodeState) cache.get(key);
+                NodeState nodeState = (NodeState) cache.get(key);
+                if (nodeState == null) {
+                    nodeState = new NodeState();
+                    nodeState.setChainInstanceId(instanceId);
+                    nodeState.setNodeId(nodeId);
+                }
+                return nodeState;
             }
 
             @Override
