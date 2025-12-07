@@ -5,17 +5,11 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
 import com.agentsflex.core.message.SystemMessage;
-import com.agentsflex.core.message.ToolMessage;
 import com.agentsflex.core.message.UserMessage;
 import com.agentsflex.core.model.chat.ChatModel;
 import com.agentsflex.core.model.chat.ChatOptions;
-import com.agentsflex.core.model.chat.StreamResponseListener;
-import com.agentsflex.core.model.chat.response.AiMessageResponse;
-import com.agentsflex.core.model.chat.tool.GlobalToolInterceptors;
 import com.agentsflex.core.model.chat.tool.Tool;
-import com.agentsflex.core.model.client.StreamContext;
 import com.agentsflex.core.prompt.MemoryPrompt;
-import com.agentsflex.core.prompt.SimplePrompt;
 import com.alibaba.fastjson.JSON;
 import com.alicp.jetcache.Cache;
 import com.mybatisflex.core.query.QueryWrapper;
@@ -27,13 +21,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import tech.aiflowy.admin.controller.listener.ChatStreamListener;
 import tech.aiflowy.ai.entity.*;
 import tech.aiflowy.ai.mapper.AiBotConversationMessageMapper;
 import tech.aiflowy.ai.service.*;
 import tech.aiflowy.common.ai.ChatManager;
-import tech.aiflowy.common.ai.MySseEmitter;
-import tech.aiflowy.common.ai.inteceptor.ToolLoggingInterceptor;
 import tech.aiflowy.common.audio.core.AudioServiceManager;
 import tech.aiflowy.common.domain.Result;
 import tech.aiflowy.common.satoken.util.SaTokenUtil;
@@ -163,6 +154,7 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
                            int isExternalMsg, @JsonBody(value = "tempUserId")
                            String tempUserId, @JsonBody(value = "fileList")
                            List<String> fileList, HttpServletResponse response) {
+
         response.setContentType("text/event-stream");
         if (!StringUtils.hasLength(prompt)) {
             throw new BusinessException("提示词不能为空！");
@@ -209,29 +201,13 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
             memoryPrompt.setMemory(memory);
 
         }
-        UserMessage userMessage = new UserMessage(prompt);
+        UserMessage userMessage = new UserMessage("下面的是用户的提问，提问内容是：" + prompt);
         userMessage.setToolChoice("auto");
         userMessage.addTools(buildFunctionList(Maps.of("botId", botId).set("needEnglishName", false)));
         memoryPrompt.addMessage(userMessage);
         ChatOptions chatOptions = getChatOptions(llmOptions);
-        ChatStreamListener chatStreamListener = new ChatStreamListener(chatOptions, chatModel, memoryPrompt);
-        GlobalToolInterceptors.addInterceptor(new ToolLoggingInterceptor());
-        chatModel.chatStream(memoryPrompt, chatStreamListener, chatOptions);
+        return aiBotService.startChat(botId, chatModel, prompt, memoryPrompt, chatOptions, sessionId);
 
-//        AiMessageResponse aiMessageResponse = chatModel.chat(memoryPrompt, chatOptions);
-//        // 检查是否有工具调用请求
-//        if (aiMessageResponse.hasToolCalls()) {
-//            GlobalToolInterceptors.addInterceptor(new ToolLoggingInterceptor());
-//            // 执行并生成结果消息
-//            List<ToolMessage> results = aiMessageResponse.executeToolCallsAndGetToolMessages();
-//            //重新发起 chat
-//            String newPrompt = "请根据以下内容回答用户，内容是:\n" + results + "\n 用户的问题是：" + prompt;
-//            memoryPrompt.addMessage(new UserMessage(newPrompt));
-//            chatModel.chatStream(newPrompt, chatStreamListener, chatOptions);
-//        } else {
-//            chatModel.chatStream(memoryPrompt, chatStreamListener, chatOptions);
-//        }
-        return chatStreamListener.getEmitter();
     }
 
     @PostMapping("updateLlmId")
