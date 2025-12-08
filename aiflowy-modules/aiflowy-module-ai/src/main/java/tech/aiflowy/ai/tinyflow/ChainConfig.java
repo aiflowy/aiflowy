@@ -116,7 +116,7 @@ public class ChainConfig {
     }
 
     /**
-     * 步骤保存监听器
+     * 步骤保存监听器 - 自行实现
      */
     private void saveStepsListeners(ChainExecutor chainExecutor) {
         chainExecutor.addEventListener(new ChainEventListenerForSave());
