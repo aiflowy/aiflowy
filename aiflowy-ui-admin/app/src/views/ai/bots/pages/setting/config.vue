@@ -6,6 +6,7 @@ import { onMounted, ref, watch } from 'vue';
 import { tryit } from '@aiflowy/utils';
 
 import { Plus } from '@element-plus/icons-vue';
+import { useDebounceFn } from '@vueuse/core';
 import {
   ElCol,
   ElCollapse,
@@ -18,7 +19,7 @@ import {
   ElSlider,
 } from 'element-plus';
 
-import { getAiLlmList, updateLlmId } from '#/api';
+import { getAiLlmList, updateLlmId, updateLlmOptions } from '#/api';
 
 const props = defineProps<{
   bot?: BotInfo;
@@ -26,17 +27,25 @@ const props = defineProps<{
 }>();
 const options = ref<AiLlm[]>([]);
 const selectedId = ref<string>('');
+const llmConfig = ref({
+  maxMessageCount: 0,
+  maxReplyLength: 0,
+  temperature: 0,
+  topK: 0,
+  topP: 0,
+});
 
 watch(
-  () => ({
-    llmId: props.bot?.llmId,
-    hasSavePermission: props.hasSavePermission,
-  }),
+  props,
   (newValue) => {
     if (!newValue.hasSavePermission) {
       selectedId.value = '没有权限';
-    } else if (newValue.llmId) {
-      selectedId.value = newValue.llmId;
+    } else if (newValue.bot?.llmId) {
+      selectedId.value = newValue.bot.llmId;
+    }
+
+    if (newValue.bot) {
+      llmConfig.value = newValue.bot.llmOptions;
     }
   },
   { immediate: true },
@@ -66,6 +75,41 @@ const handleLlmChange = async (value: string) => {
     ElMessage.error(res?.message || '保存失败');
   }
 };
+const handleLlmOptionsChange = useDebounceFn(
+  (key: keyof typeof llmConfig.value, value: number) => {
+    const _value = handleInvalidNumber(value);
+
+    llmConfig.value.temperature = _value;
+    updateLlmOptions({
+      id: props.bot?.id || '',
+      llmOptions: {
+        [key]: _value,
+      },
+    });
+  },
+  300,
+);
+
+/** 处理不合规数值 */
+const handleInvalidNumber = (
+  value: number,
+  min = 0.1,
+  max = 1,
+  decimal = 1,
+) => {
+  if (Number.isNaN(value) || value < min) {
+    return min;
+  } else if (value > max) {
+    return max;
+  }
+
+  if (value.toString().includes('.')) {
+    const factor = 10 ** decimal;
+    return Math.floor(value * factor) / factor;
+  }
+
+  return value;
+};
 </script>
 
 <template>
@@ -83,13 +127,34 @@ const handleLlmChange = async (value: string) => {
           :disabled="!hasSavePermission"
           @change="handleLlmChange"
         />
+        <!-- 温度 -->
         <ElRow :gutter="12" align="middle">
           <ElCol :span="6" class="">温度</ElCol>
           <ElCol :span="10">
-            <ElSlider />
+            <ElSlider
+              :min="0.1"
+              :max="1"
+              :step="0.1"
+              :disabled="!hasSavePermission"
+              v-model="llmConfig.temperature"
+              @change="
+                (value) =>
+                  handleLlmOptionsChange('temperature', value as number)
+              "
+            />
           </ElCol>
           <ElCol :span="8">
-            <ElInputNumber />
+            <ElInputNumber
+              :min="0.1"
+              :max="1"
+              :step="0.1"
+              :disabled="!hasSavePermission"
+              v-model="llmConfig.temperature"
+              @change="
+                (value) =>
+                  handleLlmOptionsChange('temperature', value as number)
+              "
+            />
           </ElCol>
         </ElRow>
         <ElRow :gutter="12" align="middle">
