@@ -33,7 +33,7 @@ public class AiBotWorkflowServiceImpl extends ServiceImpl<AiBotWorkflowMapper, A
 
     @Override
     public void saveBotAndWorkflowTool(BigInteger botId, BigInteger[] workflowIds) {
-        this.remove(QueryWrapper.create().eq(AiBotKnowledge::getBotId, botId));
+        this.remove(QueryWrapper.create().eq(AiBotWorkflow::getBotId, botId));
         List<AiBotWorkflow> list = new ArrayList<>(workflowIds.length);
         for (BigInteger workflowId : workflowIds) {
             AiBotWorkflow aiBotWorkflow = new AiBotWorkflow();

@@ -59,7 +59,7 @@ public class AiBotPluginsServiceImpl extends ServiceImpl<AiBotPluginsMapper, AiB
 
     @Override
     public void saveBotAndPluginTool(BigInteger botId, BigInteger[] pluginToolIds) {
-        this.remove(QueryWrapper.create().eq(AiBotKnowledge::getBotId, botId));
+        this.remove(QueryWrapper.create().eq(AiBotPlugins::getBotId, botId));
         List<AiBotPlugins> list = new ArrayList<>(pluginToolIds.length);
         for (BigInteger pluginToolId : pluginToolIds) {
             AiBotPlugins aiBotPluginTool = new AiBotPlugins();

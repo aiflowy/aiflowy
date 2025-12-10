@@ -4,6 +4,7 @@ import type { AiLlm, BotInfo } from '@aiflowy/types';
 import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
+import { $t } from '@aiflowy/locales';
 import { tryit } from '@aiflowy/utils';
 
 import { Plus } from '@element-plus/icons-vue';
@@ -22,6 +23,7 @@ import {
 
 import { getAiLlmList, updateLlmId, updateLlmOptions } from '#/api';
 import { api } from '#/api/request';
+import CollapseViewItem from '#/components/collapseViewItem/CollapseViewItem.vue';
 import CommonSelectDataModal from '#/components/commonSelectModal/CommonSelectDataModal.vue';
 
 const props = defineProps<{
@@ -29,7 +31,7 @@ const props = defineProps<{
   hasSavePermission?: boolean;
 }>();
 const route = useRoute();
-const id = ref<string>((route.params.id as string) || '');
+const botId = ref<string>((route.params.id as string) || '');
 const options = ref<AiLlm[]>([]);
 const selectedId = ref<string>('');
 const llmConfig = ref({
@@ -55,14 +57,62 @@ watch(
   },
   { immediate: true },
 );
-const pluginToolData = ref<any>([]);
-onMounted(async () => {
-  const [, res] = await tryit(getAiLlmList({ supportFunctionCalling: true }));
+const pluginToolIdsData = ref<any>([]);
+const knowledgeIdsData = ref<any>([]);
+const workflowIdsData = ref<any>([]);
+
+const workflowData = ref<any[]>([]);
+const knowledgeData = ref<any[]>([]);
+const pluginToolData = ref<any[]>([]);
+const getAiBotPluginToolList = async () => {
   api
-    .post('/api/v1/aiPluginTool/tool/list', { botId: id.value })
+    .post('/api/v1/aiPluginTool/tool/list', { botId: botId.value })
     .then((res) => {
       pluginToolData.value = res.data;
+      pluginToolIdsData.value = res.data.map((item: any) => item.id);
     });
+};
+const getAiBotKnowledgeList = async () => {
+  api
+    .get('/api/v1/aiBotKnowledge/list', {
+      params: {
+        botId: botId.value,
+      },
+    })
+    .then((res) => {
+      knowledgeData.value = res.data.map((item: any) => {
+        return {
+          recordId: item.id,
+          ...item.knowledge,
+        };
+      });
+      knowledgeIdsData.value = res.data.map((item: any) => item.knowledgeId);
+    });
+};
+
+const getAiBotWorkflowList = async () => {
+  api
+    .get('/api/v1/aiBotWorkflow/list', {
+      params: {
+        botId: botId.value,
+      },
+    })
+    .then((res) => {
+      workflowData.value = res.data.map((item: any) => {
+        return {
+          recordId: item.id,
+          ...item.workflow,
+        };
+      });
+      workflowIdsData.value = res.data.map((item: any) => item.workflowId);
+    });
+};
+
+onMounted(async () => {
+  const [, res] = await tryit(getAiLlmList({ supportFunctionCalling: true }));
+  getAiBotPluginToolList();
+  getAiBotKnowledgeList();
+  getAiBotWorkflowList();
   if (res?.errorCode === 0) {
     options.value = res.data;
   }
@@ -120,10 +170,110 @@ const handleInvalidNumber = (
   return value;
 };
 const pluginToolDataRef = ref();
-const selectKnowledgeModalVisible = ref(false);
-const selectPluginToolModalVisible = ref(false);
+const knowledgeDataRef = ref();
+const workflowDataRef = ref();
+
 const handleAddPlugin = () => {
-  pluginToolDataRef.value.openDialog();
+  pluginToolDataRef.value.openDialog(pluginToolIdsData.value);
+};
+const handleAddKnowledge = () => {
+  knowledgeDataRef.value.openDialog(knowledgeIdsData.value);
+};
+const handleAddWorkflow = () => {
+  workflowDataRef.value.openDialog(workflowIdsData.value);
+};
+const confirmUpdateAiBotPlugin = (data: any) => {
+  api
+    .post('/api/v1/aiBotPlugins/updateBotPluginToolIds', {
+      botId: botId.value,
+      pluginToolIds: data,
+    })
+    .then((res) => {
+      if (res.errorCode === 0) {
+        ElMessage.success($t('message.updateOkMessage'));
+        getAiBotPluginToolList();
+      } else {
+        ElMessage.error(res.message);
+      }
+    });
+};
+
+const confirmUpdateAiBotKnowledge = (data: any) => {
+  api
+    .post('/api/v1/aiBotKnowledge/updateBotKnowledgeIds', {
+      botId: botId.value,
+      knowledgeIds: data,
+    })
+    .then((res) => {
+      if (res.errorCode === 0) {
+        ElMessage.success($t('message.updateOkMessage'));
+        getAiBotKnowledgeList();
+      } else {
+        ElMessage.error(res.message);
+      }
+    });
+};
+
+const confirmUpdateAiBotWorkflow = (data: any) => {
+  api
+    .post('/api/v1/aiBotWorkflow/updateBotWorkflowIds', {
+      botId: botId.value,
+      workflowIds: data,
+    })
+    .then((res) => {
+      if (res.errorCode === 0) {
+        ElMessage.success($t('message.updateOkMessage'));
+        getAiBotWorkflowList();
+      } else {
+        ElMessage.error(res.message);
+      }
+    });
+};
+const deletePluginTool = (item: any) => {
+  api
+    .post('/api/v1/aiBotPlugins/doRemove', {
+      botId: botId.value,
+      pluginToolId: item.id,
+    })
+    .then((res) => {
+      if (res.errorCode === 0) {
+        ElMessage.success($t('message.deleteOkMessage'));
+        getAiBotPluginToolList();
+      } else {
+        ElMessage.error(res.message);
+      }
+    });
+};
+
+const deleteKnowledge = (item: any) => {
+  api
+    .post('/api/v1/aiBotKnowledge/remove', {
+      id: item.recordId,
+    })
+    .then((res) => {
+      if (res.errorCode === 0) {
+        ElMessage.success($t('message.deleteOkMessage'));
+        getAiBotKnowledgeList();
+      } else {
+        ElMessage.error(res.message);
+      }
+    });
+};
+
+const deleteWorkflow = (item: any) => {
+  console.log('deleteWorkflow', item);
+  api
+    .post('/api/v1/aiBotWorkflow/remove', {
+      id: item.recordId,
+    })
+    .then((res) => {
+      if (res.errorCode === 0) {
+        ElMessage.success($t('message.deleteOkMessage'));
+        getAiBotWorkflowList();
+      } else {
+        ElMessage.error(res.message);
+      }
+    });
 };
 </script>
 
@@ -298,21 +448,27 @@ const handleAddPlugin = () => {
             <template #title>
               <div class="flex items-center justify-between pr-2">
                 <span>工作流</span>
-                <ElIcon>
-                  <Plus />
-                </ElIcon>
+                <span @click="handleAddWorkflow()">
+                  <ElIcon>
+                    <Plus />
+                  </ElIcon>
+                </span>
               </div>
             </template>
+            <CollapseViewItem :data="workflowData" @delete="deleteWorkflow" />
           </ElCollapseItem>
           <ElCollapseItem title="知识库">
             <template #title>
               <div class="flex items-center justify-between pr-2">
                 <span>知识库</span>
-                <ElIcon>
-                  <Plus />
-                </ElIcon>
+                <span @click="handleAddKnowledge()">
+                  <ElIcon>
+                    <Plus />
+                  </ElIcon>
+                </span>
               </div>
             </template>
+            <CollapseViewItem :data="knowledgeData" @delete="deleteKnowledge" />
           </ElCollapseItem>
           <ElCollapseItem title="插件">
             <template #title>
@@ -325,6 +481,11 @@ const handleAddPlugin = () => {
                 </span>
               </div>
             </template>
+            <CollapseViewItem
+              :data="pluginToolData"
+              title-key="name"
+              @delete="deletePluginTool"
+            />
           </ElCollapseItem>
         </ElCollapse>
       </div>
@@ -370,18 +531,24 @@ const handleAddPlugin = () => {
       ref="pluginToolDataRef"
       page-url="/api/v1/aiPlugin/pageByCategory"
       :is-select-plugin="true"
+      @get-data="confirmUpdateAiBotPlugin"
       :extra-query-params="{
         category: 0,
       }"
     />
-    <!-- 选择插件-->
+
+    <!-- 选择知识库-->
     <CommonSelectDataModal
-      ref="pluginToolDataRef"
-      page-url="/api/v1/aiPlugin/pageByCategory"
-      :is-select-plugin="true"
-      :extra-query-params="{
-        category: 0,
-      }"
+      ref="knowledgeDataRef"
+      page-url="/api/v1/aiKnowledge/page"
+      @get-data="confirmUpdateAiBotKnowledge"
+    />
+
+    <!-- 选择工作流-->
+    <CommonSelectDataModal
+      ref="workflowDataRef"
+      page-url="/api/v1/aiWorkflow/page"
+      @get-data="confirmUpdateAiBotWorkflow"
     />
   </div>
 </template>
