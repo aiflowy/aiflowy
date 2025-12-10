@@ -1,12 +1,21 @@
 package tech.aiflowy.common.ai.inteceptor;
 
+import com.agentsflex.core.model.chat.tool.GlobalToolInterceptors;
 import com.agentsflex.core.model.chat.tool.ToolChain;
 import com.agentsflex.core.model.chat.tool.ToolContext;
 import com.agentsflex.core.model.chat.tool.ToolInterceptor;
+import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.Map;
-
+@Component
 public class ToolLoggingInterceptor implements ToolInterceptor {
+
+    @PostConstruct
+    public void init() {
+        GlobalToolInterceptors.addInterceptor(this);
+    }
+
     @Override
     public Object intercept(ToolContext context, ToolChain chain) throws Exception {
         String toolName = context.getTool().getName();

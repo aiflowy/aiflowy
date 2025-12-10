@@ -11,6 +11,8 @@ import com.agentsflex.llm.ollama.OllamaChatConfig;
 import com.agentsflex.llm.ollama.OllamaChatModel;
 import com.agentsflex.llm.openai.OpenAIChatConfig;
 import com.agentsflex.llm.openai.OpenAIChatModel;
+import com.agentsflex.llm.qwen.QwenChatConfig;
+import com.agentsflex.llm.qwen.QwenChatModel;
 import com.mybatisflex.annotation.Table;
 import org.springframework.util.StringUtils;
 import tech.aiflowy.ai.entity.base.AiLlmBase;
@@ -104,12 +106,13 @@ public class AiLlm extends AiLlmBase {
         ollamaChatConfig.setModel(getLlmModel());
         return new OllamaChatModel(ollamaChatConfig);
     }
+
     private ChatModel openaiLLm() {
         OpenAIChatConfig openAIChatConfig = new OpenAIChatConfig();
         openAIChatConfig.setEndpoint(getLlmEndpoint());
         openAIChatConfig.setApiKey(getLlmApiKey());
         openAIChatConfig.setModel(getLlmModel());
-        openAIChatConfig.setLogEnabled(false);
+        openAIChatConfig.setLogEnabled(true);
         Properties properties = PropertiesUtil.textToProperties(getLlmExtraConfig() == null ? "" : getLlmExtraConfig());
         String chatPath = properties.getProperty("chatPath");
         Map<String, Object> options = getOptions();

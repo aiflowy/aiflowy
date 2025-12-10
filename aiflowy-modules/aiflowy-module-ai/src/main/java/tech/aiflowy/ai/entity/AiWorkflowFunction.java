@@ -1,9 +1,9 @@
 //package tech.aiflowy.ai.entity;
 //
-//import com.agentsflex.core.chain.Chain;
-//import com.agentsflex.core.chain.Parameter;
-//import com.agentsflex.core.llm.functions.BaseFunction;
+//import com.agentsflex.core.model.chat.tool.BaseTool;
+//import com.agentsflex.core.model.chat.tool.Parameter;
 //import dev.tinyflow.core.Tinyflow;
+//import dev.tinyflow.core.chain.Chain;
 //import tech.aiflowy.ai.service.AiWorkflowService;
 //import tech.aiflowy.ai.utils.TinyFlowConfigService;
 //import tech.aiflowy.common.util.SpringContextUtil;
@@ -13,7 +13,7 @@
 //import java.util.List;
 //import java.util.Map;
 //
-//public class AiWorkflowFunction extends BaseFunction {
+//public class AiWorkflowFunction extends BaseTool {
 //
 //    private BigInteger workflowId;
 //
@@ -32,16 +32,16 @@
 //    }
 //
 //
-//    static com.agentsflex.core.llm.functions.Parameter[] toParameters(AiWorkflow aiWorkflow) {
+//    static Parameter[] toParameters(AiWorkflow aiWorkflow) {
 //        List<Parameter> parameterDefs = aiWorkflow.toTinyflow().toChain().getParameters();
 //        if (parameterDefs == null || parameterDefs.isEmpty()) {
-//            return new com.agentsflex.core.llm.functions.Parameter[0];
+//            return new Parameter[0];
 //        }
 //
-//        com.agentsflex.core.llm.functions.Parameter[] parameters = new com.agentsflex.core.llm.functions.Parameter[parameterDefs.size()];
+//        Parameter[] parameters = new Parameter[parameterDefs.size()];
 //        for (int i = 0; i < parameterDefs.size(); i++) {
 //            Parameter parameterDef = parameterDefs.get(i);
-//            com.agentsflex.core.llm.functions.Parameter parameter = new com.agentsflex.core.llm.functions.Parameter();
+//            Parameter parameter = new Parameter();
 //            parameter.setName(parameterDef.getName());
 //            parameter.setDescription(parameterDef.getDescription());
 //            parameter.setType(parameterDef.getDataType().toString());

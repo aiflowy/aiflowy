@@ -141,7 +141,6 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
      * @param prompt
      * @param botId
      * @param sessionId
-     * @param isExternalMsg
      * @param response
      * @return
      */
@@ -151,9 +150,7 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
                            String prompt, @JsonBody(value = "botId", required = true)
                            BigInteger botId, @JsonBody(value = "sessionId", required = true)
                            String sessionId, @JsonBody(value = "isExternalMsg")
-                           int isExternalMsg, @JsonBody(value = "tempUserId")
-                           String tempUserId, @JsonBody(value = "fileList")
-                           List<String> fileList, HttpServletResponse response) {
+                           HttpServletResponse response) {
 
         response.setContentType("text/event-stream");
         if (!StringUtils.hasLength(prompt)) {
@@ -197,12 +194,10 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
 
         if (StpUtil.isLogin()) {
             AiBotMessageMemory memory = new AiBotMessageMemory(botId, SaTokenUtil.getLoginAccount().getId(), sessionId,
-                    isExternalMsg, aiBotMessageService, aiBotConversationMessageMapper, aiBotConversationMessageService);
+                    0, aiBotMessageService);
             memoryPrompt.setMemory(memory);
-
         }
         UserMessage userMessage = new UserMessage(prompt);
-        userMessage.setToolChoice("auto");
         userMessage.addTools(buildFunctionList(Maps.of("botId", botId).set("needEnglishName", false)));
         memoryPrompt.addMessage(userMessage);
         ChatOptions chatOptions = getChatOptions(llmOptions);

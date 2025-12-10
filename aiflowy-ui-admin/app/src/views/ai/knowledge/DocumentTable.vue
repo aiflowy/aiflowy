@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 
 import { $t } from '@aiflowy/locales';
+import { downloadFileFromBlob } from '@aiflowy/utils';
 
 import { Delete, Download, View } from '@element-plus/icons-vue';
 import {
@@ -15,7 +16,6 @@ import {
 
 import { api } from '#/api/request';
 import PageData from '#/components/page/PageData.vue';
-import { downloadFile } from '#/utils/downfile';
 
 const props = defineProps({
   knowledgeId: {
@@ -30,7 +30,12 @@ const handleView = (row: any) => {
   emits('viewDoc', row.id);
 };
 const handleDownload = (row: any) => {
-  downloadFile(row.documentPath, `${row.title}.${row.documentType}`);
+  api.download(row.documentPath).then((res) => {
+    downloadFileFromBlob({
+      fileName: `${row.title}.${row.documentType}`,
+      source: res,
+    });
+  });
 };
 const handleDelete = (row: any) => {
   ElMessageBox.confirm($t('message.deleteAlert'), $t('message.noticeTitle'), {

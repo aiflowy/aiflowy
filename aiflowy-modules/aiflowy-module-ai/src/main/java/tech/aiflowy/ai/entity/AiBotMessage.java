@@ -1,9 +1,6 @@
 package tech.aiflowy.ai.entity;
 
-import com.agentsflex.core.message.AiMessage;
-import com.agentsflex.core.message.Message;
-import com.agentsflex.core.message.SystemMessage;
-import com.agentsflex.core.message.UserMessage;
+import com.agentsflex.core.message.*;
 import com.agentsflex.core.model.chat.tool.Tool;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONReader;
@@ -62,6 +59,10 @@ public class AiBotMessage extends AiBotMessageBase {
             SystemMessage systemMessage = new SystemMessage();
             systemMessage.setContent(getContent());
             return systemMessage;
+        } else if ("function".equalsIgnoreCase(role)) {
+            ToolMessage toolMessage = new ToolMessage();
+            toolMessage.setContent(getContent());
+            return toolMessage;
         }
         return null;
 

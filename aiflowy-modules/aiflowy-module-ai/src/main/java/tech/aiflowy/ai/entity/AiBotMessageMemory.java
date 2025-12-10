@@ -1,6 +1,7 @@
 package tech.aiflowy.ai.entity;
 
 import com.agentsflex.core.model.chat.tool.Tool;
+import com.alibaba.fastjson.parser.Feature;
 import tech.aiflowy.ai.enums.BotMessageTypeEnum;
 import tech.aiflowy.ai.mapper.AiBotConversationMessageMapper;
 import tech.aiflowy.ai.service.AiBotConversationMessageService;
@@ -22,19 +23,13 @@ public class AiBotMessageMemory implements ChatMemory {
     private final String sessionId;
     private final int isExternalMsg;
     private final AiBotMessageService messageService;
-    private final AiBotConversationMessageMapper aiBotConversationMessageMapper;
-    private final AiBotConversationMessageService aiBotConversationService;
     public AiBotMessageMemory(BigInteger botId, BigInteger accountId, String sessionId, int isExternalMsg,
-                              AiBotMessageService messageService,
-                              AiBotConversationMessageMapper aiBotConversationMessageMapper,
-                              AiBotConversationMessageService aiBotConversationService ) {
+                              AiBotMessageService messageService ) {
         this.botId = botId;
         this.accountId = accountId;
         this.sessionId = sessionId;
         this.isExternalMsg = isExternalMsg;
         this.messageService = messageService;
-        this.aiBotConversationMessageMapper = aiBotConversationMessageMapper;
-        this.aiBotConversationService = aiBotConversationService;
     }
 
     @Override
@@ -53,7 +48,7 @@ public class AiBotMessageMemory implements ChatMemory {
 
         List<Message> messages = new ArrayList<>(sysAiMessages.size());
         for (AiBotMessage aiBotMessage : sysAiMessages) {
-            Message message = aiBotMessage.toMessage();
+            Message message = parseByRole(aiBotMessage);
             if (message != null) messages.add(message);
         }
         return messages;
@@ -63,59 +58,25 @@ public class AiBotMessageMemory implements ChatMemory {
     @Override
     public void addMessage(Message message) {
 
-        AiBotMessage aiMessage = new AiBotMessage();
-        aiMessage.setCreated(new Date());
-        aiMessage.setBotId(botId);
-        aiMessage.setAccountId(accountId);
-        aiMessage.setSessionId(sessionId);
-        aiMessage.setIsExternalMsg(isExternalMsg);
+        AiBotMessage dbMessage = new AiBotMessage();
+        dbMessage.setCreated(new Date());
+        dbMessage.setBotId(botId);
+        dbMessage.setAccountId(accountId);
+        dbMessage.setSessionId(sessionId);
+        dbMessage.setIsExternalMsg(isExternalMsg);
+        String jsonMessage = JSON.toJSONString(message, SerializerFeature.WriteClassName);
         if (message instanceof AiMessage) {
-            AiMessage m = (AiMessage) message;
-            aiMessage.setContent(m.getFullContent());
-            aiMessage.setRole("assistant");
-            aiMessage.setTotalTokens(m.getTotalTokens());
-            aiMessage.setPromptTokens(m.getPromptTokens());
-            aiMessage.setCompletionTokens(m.getCompletionTokens());
-            Map<String, Object> metadataMap = m.getMetadataMap();
-            aiMessage.setOptions(metadataMap);
-            List<ToolCall> toolCalls = m.getToolCalls();
-            if (CollectionUtil.isNotEmpty(toolCalls)) {
-                return;
-            }
-
+            dbMessage.setRole("assistant");
         } else if (message instanceof UserMessage) {
-
-            UserMessage hm = (UserMessage) message;
-            aiMessage.setContent(hm.getContent());
-            List<Tool> functions = hm.getTools();
-            aiMessage.setFunctions(JSON.toJSONString(functions, SerializerFeature.WriteClassName));
-            aiMessage.setRole("user");
-            Map<String, Object> metadataMap = hm.getMetadataMap();
-            if (metadataMap == null){
-                metadataMap = new HashMap<>();
-            }
-
-            Object type = metadataMap.get("type");
-            if (type != null) {
-                String t = type.toString();
-                if (!t.equals(String.valueOf(BotMessageTypeEnum.REACT_THINKING.getValue()))){
-                    metadataMap.put("type", BotMessageTypeEnum.TOOL_RESULT.getValue());
-                }
-            } else {
-                metadataMap.put("type", BotMessageTypeEnum.NORMAL.getValue());
-            }
-
-            aiMessage.setOptions(metadataMap);
-
+            dbMessage.setRole("user");
         }else if (message instanceof SystemMessage) {
-
-            aiMessage.setRole("system");
-            aiMessage.setContent(((SystemMessage) message).getContent());
-
+            dbMessage.setRole("system");
+        } else if (message instanceof ToolMessage) {
+            dbMessage.setRole("function");
         }
-        if (StrUtil.isNotEmpty(aiMessage.getContent())) {
-            messageService.save(aiMessage);
-        }
+        dbMessage.setContent(jsonMessage);
+        messageService.save(dbMessage);
+
     }
 
     @Override
@@ -126,5 +87,43 @@ public class AiBotMessageMemory implements ChatMemory {
     @Override
     public Object id() {
         return botId;
+    }
+
+    private Message parseByRole(AiBotMessage aiBotMessage) {
+        try {
+            String role = aiBotMessage.getRole();
+            if ("assistant".equals(role)) {
+                return JSON.parseObject(
+                        aiBotMessage.getContent(),
+                        AiMessage.class,
+                        Feature.SupportClassForName,
+                        Feature.SupportAutoType
+                );
+            } else if ("user".equals(role)) {
+                return JSON.parseObject(
+                        aiBotMessage.getContent(),
+                        UserMessage.class,
+                        Feature.SupportClassForName,
+                        Feature.SupportAutoType
+                );
+            } else if ("system".equals(role)) {
+                return JSON.parseObject(
+                        aiBotMessage.getContent(),
+                        SystemMessage.class,
+                        Feature.SupportClassForName,
+                        Feature.SupportAutoType
+                );
+            } else if ("function".equals(role)) {
+                return JSON.parseObject(
+                        aiBotMessage.getContent(),
+                        ToolMessage.class,
+                        Feature.SupportClassForName,
+                        Feature.SupportAutoType
+                );
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
