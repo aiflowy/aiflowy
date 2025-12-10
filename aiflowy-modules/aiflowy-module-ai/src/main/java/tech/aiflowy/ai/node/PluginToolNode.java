@@ -24,7 +24,7 @@ public class PluginToolNode extends BaseNode {
 
     @SuppressWarnings("unchecked")
     @Override
-    protected Map<String, Object> execute(Chain chain) {
+    public Map<String, Object> execute(Chain chain) {
         Map<String, Object> map = chain.getState().resolveParameters(this);
         AiPluginToolService bean = SpringContextUtil.getBean(AiPluginToolService.class);
         AiPluginTool tool = bean.getById(pluginId);

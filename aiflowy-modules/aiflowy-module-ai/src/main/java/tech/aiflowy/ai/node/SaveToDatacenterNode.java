@@ -30,7 +30,7 @@ public class SaveToDatacenterNode extends BaseNode {
     }
 
     @Override
-    protected Map<String, Object> execute(Chain chain) {
+    public Map<String, Object> execute(Chain chain) {
 
         Map<String, Object> map = chain.getState().resolveParameters(this);
         JSONObject json = new JSONObject(map);

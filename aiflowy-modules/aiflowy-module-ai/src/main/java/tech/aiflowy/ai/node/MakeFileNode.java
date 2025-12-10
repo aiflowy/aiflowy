@@ -33,7 +33,7 @@ public class MakeFileNode extends BaseNode {
     }
 
     @Override
-    protected Map<String, Object> execute(Chain chain) {
+    public Map<String, Object> execute(Chain chain) {
         Map<String, Object> map = chain.getState().resolveParameters(this);
 
         Map<String, Object> res = new HashMap<>();

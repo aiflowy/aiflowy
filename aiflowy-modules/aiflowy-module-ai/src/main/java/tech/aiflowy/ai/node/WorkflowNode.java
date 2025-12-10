@@ -21,7 +21,7 @@ public class WorkflowNode extends BaseNode {
     }
 
     @Override
-    protected Map<String, Object> execute(Chain chain) {
+    public Map<String, Object> execute(Chain chain) {
 
         Map<String, Object> params = chain.getState().resolveParameters(this);
         AiWorkflowService service = SpringContextUtil.getBean(AiWorkflowService.class);

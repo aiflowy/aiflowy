@@ -19,7 +19,7 @@ public class DocNode extends BaseNode {
     private static final Logger log = LoggerFactory.getLogger(DocNode.class);
 
     @Override
-    protected Map<String, Object> execute(Chain chain) {
+    public Map<String, Object> execute(Chain chain) {
         Map<String, Object> map = chain.getState().resolveParameters(this);
         Map<String, Object> res = new HashMap<>();
         String url = map.get("fileUrl").toString();
