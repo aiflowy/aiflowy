@@ -2,8 +2,17 @@ package tech.aiflowy.auth.entity;
 
 public class LoginVO {
 
+    /**
+     * token
+     */
     private String token;
+    /**
+     * 昵称
+     */
     private String nickname;
+    /**
+     * 头像
+     */
     private String avatar;
 
     public String getToken() {

@@ -12,6 +12,7 @@
     "modified": "最后修改时间",
     "modifiedBy": "最后修改的人",
     "englishName": "英文名称",
+    "status": "数据状态",
     "params": "执行参数",
     "steps": "执行步骤",
     "result": "执行结果",

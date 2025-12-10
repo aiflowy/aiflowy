@@ -1,18 +1,20 @@
 package tech.aiflowy.auth.entity;
 
+import javax.validation.constraints.NotEmpty;
+
 public class LoginDTO {
 
-    private String tenantCode;
+    /**
+     * 账号
+     */
+    @NotEmpty(message = "账号不能为空")
     private String account;
+
+    /**
+     * 密码
+     */
+    @NotEmpty(message = "密码不能为空")
     private String password;
-
-    public String getTenantCode() {
-        return tenantCode;
-    }
-
-    public void setTenantCode(String tenantCode) {
-        this.tenantCode = tenantCode;
-    }
 
     public String getAccount() {
         return account;

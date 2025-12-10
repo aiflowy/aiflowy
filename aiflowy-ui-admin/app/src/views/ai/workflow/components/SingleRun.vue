@@ -25,8 +25,8 @@ function submit() {
   singleRunForm.value?.validate((valid) => {
     if (valid) {
       const params = {
-        id: props.workflowId,
-        node: props.node,
+        workflowId: props.workflowId,
+        nodeId: props.node.id,
         variables: runParams.value,
       };
       submitLoading.value = true;

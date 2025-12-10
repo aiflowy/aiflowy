@@ -92,6 +92,12 @@ public class AiWorkflowBase extends DateEntity implements Serializable {
     @Column(comment = "最后修改的人")
     private BigInteger modifiedBy;
 
+    /**
+     * 数据状态
+     */
+    @Column(comment = "数据状态")
+    private Integer status;
+
     public BigInteger getId() {
         return id;
     }
@@ -196,5 +202,11 @@ public class AiWorkflowBase extends DateEntity implements Serializable {
         this.alias = alias;
     }
 
-    
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
 }

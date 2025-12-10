@@ -13,6 +13,7 @@ import {
 } from 'element-plus';
 
 import { api } from '#/api/request';
+import DictSelect from '#/components/dict/DictSelect.vue';
 import Cropper from '#/components/upload/Cropper.vue';
 import { $t } from '#/locales';
 
@@ -107,6 +108,9 @@ function closeDialog() {
       </ElFormItem>
       <ElFormItem prop="description" :label="$t('aiWorkflow.description')">
         <ElInput v-model.trim="entity.description" />
+      </ElFormItem>
+      <ElFormItem prop="status" :label="$t('aiWorkflow.status')">
+        <DictSelect v-model="entity.status" dict-code="dataStatus" />
       </ElFormItem>
     </ElForm>
     <template #footer>

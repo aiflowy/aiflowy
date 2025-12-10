@@ -12,6 +12,7 @@
     "modified": "Modified",
     "modifiedBy": "ModifiedBy",
     "englishName": "EnglishName",
+    "status": "Status",
     "params": "Params",
     "steps": "Steps",
     "result": "Result",

@@ -83,7 +83,7 @@ const actions: ActionButton[] = [
     permission: '',
     onClick: (row: any) => {
       showDialog({
-        title: `${row.title}复制`,
+        title: `${row.title}Copy`,
         content: row.content,
       });
     },
@@ -179,7 +179,7 @@ function exportJson(row: any) {
       document.body.append(element);
       element.click();
       element.remove();
-      ElMessage.success(`导出成功，请等待下载`);
+      ElMessage.success($t('message.downloadSuccess'));
     });
 }
 </script>

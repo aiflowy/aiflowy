@@ -9,10 +9,26 @@ import java.util.List;
  * 进行这么设计的原因，是为了适配不同的前段组件，不需要对数据进行字段转换
  */
 public class DictItem implements Serializable {
+
+    /**
+     * 值
+     */
     private Object value;
+    /**
+     * key
+     */
     private Object key;
+    /**
+     * 标签
+     */
     private String label;
+    /**
+     * 标题
+     */
     private String title;
+    /**
+     * 禁用
+     */
     private Boolean disabled;
     private Integer layerNo;
     private List<DictItem> children;
