@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import type { FormInstance } from 'element-plus';
-
 import type { ActionButton } from '#/components/page/CardList.vue';
 
-import { onMounted, ref } from 'vue';
+import { markRaw, onMounted, ref } from 'vue';
 
 import {
   CopyDocument,
@@ -14,18 +12,11 @@ import {
   Tools,
   VideoPlay,
 } from '@element-plus/icons-vue';
-import {
-  ElButton,
-  ElForm,
-  ElFormItem,
-  ElIcon,
-  ElInput,
-  ElMessage,
-  ElMessageBox,
-} from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus';
 
 import { api } from '#/api/request';
 import workflowIcon from '#/assets/ai/workflow/workflowIcon.png';
+import HeaderSearch from '#/components/headerSearch/HeaderSearch.vue';
 import CardList from '#/components/page/CardList.vue';
 import PageData from '#/components/page/PageData.vue';
 import PageSide from '#/components/page/PageSide.vue';
@@ -102,25 +93,27 @@ const actions: ActionButton[] = [
 onMounted(() => {
   initDict();
 });
-const formRef = ref<FormInstance>();
 const pageDataRef = ref();
 const saveDialog = ref();
-const formInline = ref({
-  title: '',
-});
 const dictStore = useDictStore();
+const headerButtons = [
+  {
+    key: 'create',
+    text: $t('button.add'),
+    icon: markRaw(Plus),
+    type: 'primary',
+    data: { action: 'create' },
+    permission: '/api/v1/aiWorkflow/save',
+  },
+];
+
 function initDict() {
   dictStore.fetchDictionary('dataStatus');
 }
-function search(formEl: FormInstance | undefined) {
-  formEl?.validate((valid) => {
-    if (valid) {
-      pageDataRef.value.setQuery(formInline.value);
-    }
-  });
-}
-function reset(formEl: FormInstance | undefined) {
-  formEl?.resetFields();
+const handleSearch = (params: string) => {
+  pageDataRef.value.setQuery({ title: params, isQueryOr: true });
+};
+function reset() {
   pageDataRef.value.setQuery({});
 }
 function showDialog(row: any) {
@@ -140,7 +133,7 @@ function remove(row: any) {
             instance.confirmButtonLoading = false;
             if (res.errorCode === 0) {
               ElMessage.success(res.message);
-              reset(formRef.value);
+              reset();
               done();
             }
           })
@@ -205,36 +198,13 @@ function changeCategory(categoryId: any) {
 </script>
 
 <template>
-  <div class="page-container">
+  <div class="space-y-6 p-6">
     <AiWorkflowModal ref="saveDialog" @reload="reset" />
-    <ElForm ref="formRef" :inline="true" :model="formInline">
-      <ElFormItem :label="$t('aiWorkflow.title')" prop="title">
-        <ElInput
-          v-model="formInline.title"
-          :placeholder="$t('aiWorkflow.title')"
-        />
-      </ElFormItem>
-      <ElFormItem>
-        <ElButton @click="search(formRef)" type="primary">
-          {{ $t('button.query') }}
-        </ElButton>
-        <ElButton @click="reset(formRef)">
-          {{ $t('button.reset') }}
-        </ElButton>
-      </ElFormItem>
-    </ElForm>
-    <div class="handle-div">
-      <ElButton
-        v-access:code="'/api/v1/aiWorkflow/save'"
-        @click="showDialog({})"
-        type="primary"
-      >
-        <ElIcon class="mr-1">
-          <Plus />
-        </ElIcon>
-        {{ $t('button.add') }}
-      </ElButton>
-    </div>
+    <HeaderSearch
+      :buttons="headerButtons"
+      @search="handleSearch"
+      @button-click="showDialog({})"
+    />
     <div class="flex gap-2.5">
       <PageSide
         list-url="/api/v1/aiWorkflowCategory/list"
@@ -249,7 +219,7 @@ function changeCategory(categoryId: any) {
           sortType: 'asc',
         }"
       />
-      <div class="mt-[-10px] flex-auto">
+      <div class="flex-auto">
         <PageData
           ref="pageDataRef"
           page-url="/api/v1/aiWorkflow/page"

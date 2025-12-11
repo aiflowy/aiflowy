@@ -130,7 +130,7 @@ const hiddenActions = computed(() => {
 .footer-div {
   display: flex;
   justify-content: space-between;
-  padding: 8px 34px;
+  padding: 8px 20px;
   border-radius: 8px;
   background-color: hsl(var(--background-deep));
 }
@@ -142,9 +142,9 @@ const hiddenActions = computed(() => {
 }
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(378px, 1fr));
-  gap: 24px;
-  min-width: min(100%, 900px); /* 确保至少显示3个卡片 */
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  min-width: max(100%, 600px); /* 确保至少显示2个卡片 */
 }
 
 .item-desc {
