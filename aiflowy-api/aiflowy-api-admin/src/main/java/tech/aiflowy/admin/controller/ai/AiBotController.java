@@ -149,7 +149,10 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
     public SseEmitter chat(
             @JsonBody(value = "prompt", required = true) String prompt,
             @JsonBody(value = "botId", required = true) BigInteger botId,
-            @JsonBody(value = "sessionId", required = true) String sessionId) {
+            @JsonBody(value = "sessionId", required = true) String sessionId,
+            @JsonBody(value = "messages") List<Map<String, String>>  messages
+
+    ) {
 
         if (!StringUtils.hasLength(prompt)) {
             throw new BusinessException("提示词不能为空！");
@@ -197,7 +200,7 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
         userMessage.addTools(buildFunctionList(Maps.of("botId", botId).set("needEnglishName", false)));
         memoryPrompt.addMessage(userMessage);
         ChatOptions chatOptions = getChatOptions(llmOptions);
-        return aiBotService.startChat(botId, chatModel, prompt, memoryPrompt, chatOptions, sessionId);
+        return aiBotService.startChat(botId, chatModel, prompt, memoryPrompt, chatOptions, sessionId, messages);
 
     }
 
