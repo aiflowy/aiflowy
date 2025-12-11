@@ -21,14 +21,12 @@ public class AiBotMessageMemory implements ChatMemory {
     private final BigInteger botId;
     private final BigInteger accountId;
     private final String sessionId;
-    private final int isExternalMsg;
     private final AiBotMessageService messageService;
-    public AiBotMessageMemory(BigInteger botId, BigInteger accountId, String sessionId, int isExternalMsg,
+    public AiBotMessageMemory(BigInteger botId, BigInteger accountId, String sessionId,
                               AiBotMessageService messageService ) {
         this.botId = botId;
         this.accountId = accountId;
         this.sessionId = sessionId;
-        this.isExternalMsg = isExternalMsg;
         this.messageService = messageService;
     }
 
@@ -38,7 +36,6 @@ public class AiBotMessageMemory implements ChatMemory {
                 .eq(AiBotMessage::getBotId, botId, true)
                 .eq(AiBotMessage::getAccountId, accountId, true)
                 .eq(AiBotMessage::getSessionId, sessionId, true)
-                .eq(AiBotMessage::getIsExternalMsg, isExternalMsg, true)
                 .orderBy(AiBotMessage::getCreated, true)
         );
 
@@ -63,7 +60,6 @@ public class AiBotMessageMemory implements ChatMemory {
         dbMessage.setBotId(botId);
         dbMessage.setAccountId(accountId);
         dbMessage.setSessionId(sessionId);
-        dbMessage.setIsExternalMsg(isExternalMsg);
         String jsonMessage = JSON.toJSONString(message, SerializerFeature.WriteClassName);
         if (message instanceof AiMessage) {
             dbMessage.setRole("assistant");

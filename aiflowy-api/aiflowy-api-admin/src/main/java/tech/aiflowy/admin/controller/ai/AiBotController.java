@@ -4,6 +4,7 @@ package tech.aiflowy.admin.controller.ai;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.map.MapUtil;
 import com.agentsflex.core.message.SystemMessage;
 import com.agentsflex.core.message.UserMessage;
 import com.agentsflex.core.model.chat.ChatModel;
@@ -87,8 +88,8 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
     @PostMapping("updateOptions")
     @SaCheckPermission("/api/v1/aiBot/save")
     public Result<Void> updateOptions(@JsonBody("id")
-                                BigInteger id, @JsonBody("options")
-                                Map<String, Object> options) {
+                                      BigInteger id, @JsonBody("options")
+                                      Map<String, Object> options) {
         AiBot aiBot = service.getById(id);
         Map<String, Object> existOptions = aiBot.getOptions();
         if (existOptions == null) {
@@ -105,8 +106,8 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
     @PostMapping("updateLlmOptions")
     @SaCheckPermission("/api/v1/aiBot/save")
     public Result<Void> updateLlmOptions(@JsonBody("id")
-                                   BigInteger id, @JsonBody("llmOptions")
-                                   Map<String, Object> llmOptions) {
+                                         BigInteger id, @JsonBody("llmOptions")
+                                         Map<String, Object> llmOptions) {
         AiBot aiBot = service.getById(id);
         Map<String, Object> existLlmOptions = aiBot.getLlmOptions();
         if (existLlmOptions == null) {
@@ -123,7 +124,7 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
     @PostMapping("voiceInput")
     @SaIgnore
     public Result<String> voiceInput(@RequestParam("audio")
-                             MultipartFile audioFile) {
+                                     MultipartFile audioFile) {
 
         String recognize = null;
         try {
@@ -136,24 +137,20 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
     }
 
     /**
-     * 当前系统用户调用对话
+     * 处理聊天请求的接口方法
      *
-     * @param prompt
-     * @param botId
-     * @param sessionId
-     * @param response
-     * @return
+     * @param prompt    用户输入的聊天内容，必须提供
+     * @param botId     聊天机器人的唯一标识符，必须提供
+     * @param sessionId 会话ID，用于标识当前对话会话，必须提供
+     * @return 返回SseEmitter对象，用于服务器向客户端推送聊天响应数据
      */
     @PostMapping("chat")
     @SaIgnore
     public SseEmitter chat(
             @JsonBody(value = "prompt", required = true) String prompt,
             @JsonBody(value = "botId", required = true) BigInteger botId,
-            @JsonBody(value = "sessionId", required = true) String sessionId,
-            @JsonBody(value = "isExternalMsg") int isExternalMsg,
-                           HttpServletResponse response) {
+            @JsonBody(value = "sessionId", required = true) String sessionId) {
 
-//        response.setContentType("text/event-stream");
         if (!StringUtils.hasLength(prompt)) {
             throw new BusinessException("提示词不能为空！");
         }
@@ -170,9 +167,7 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
         }
 
         Map<String, Object> llmOptions = aiBot.getLlmOptions();
-        String systemPrompt = llmOptions != null ?
-                (String) llmOptions.get("systemPrompt") == null || !StringUtils.hasLength((String) llmOptions.get("systemPrompt")) ? "你是一个AI助手，请根据用户的问题给出清晰、准确的回答。" : (String) llmOptions.get("systemPrompt")
-                : null;
+        String systemPrompt = MapUtil.getStr(llmOptions, "systemPrompt");
 
         AiLlm aiLlm = aiLlmService.getById(aiBot.getLlmId());
         if (aiLlm == null) {
@@ -184,9 +179,9 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
             return ChatManager.getInstance().sseEmitterForContent(JSON.toJSONString(Maps.of("content", "LLM获取为空")));
         }
         final MemoryPrompt memoryPrompt = new MemoryPrompt();
-        if (llmOptions != null && llmOptions.get("maxMessageCount") != null) {
-            Object maxMessageCount = llmOptions.get("maxMessageCount");
-            memoryPrompt.setMaxAttachedMessageCount(Integer.parseInt(String.valueOf(maxMessageCount)));
+        Integer maxMessageCount = MapUtil.getInt(llmOptions, "maxMessageCount");
+        if (maxMessageCount != null) {
+            memoryPrompt.setMaxAttachedMessageCount(maxMessageCount);
         }
 
         if (StringUtils.hasLength(systemPrompt)) {
@@ -195,7 +190,7 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
 
         if (StpUtil.isLogin()) {
             AiBotMessageMemory memory = new AiBotMessageMemory(botId, SaTokenUtil.getLoginAccount().getId(), sessionId,
-                    isExternalMsg, aiBotMessageService);
+                    aiBotMessageService);
             memoryPrompt.setMemory(memory);
         }
         UserMessage userMessage = new UserMessage(prompt);
@@ -209,7 +204,7 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
     @PostMapping("updateLlmId")
     @SaCheckPermission("/api/v1/aiBot/save")
     public Result<Void> updateBotLlmId(@RequestBody
-                                 AiBot aiBot) {
+                                       AiBot aiBot) {
         service.updateBotLlmId(aiBot);
         return Result.ok();
     }
@@ -363,8 +358,8 @@ public class AiBotController extends BaseCurdController<AiBotService, AiBot> {
 
         // 工作流 function 集合
         queryWrapper.eq(AiBotWorkflow::getBotId, botId);
-        List<AiBotWorkflow> aiBotWorkflows = aiBotWorkflowService.getMapper()
-                .selectListWithRelationsByQuery(queryWrapper);
+//        List<AiBotWorkflow> aiBotWorkflows = aiBotWorkflowService.getMapper()
+//                .selectListWithRelationsByQuery(queryWrapper);
 //        if (aiBotWorkflows != null && !aiBotWorkflows.isEmpty()) {
 //            for (AiBotWorkflow aiBotWorkflow : aiBotWorkflows) {
 //                Tool function = aiBotWorkflow.getWorkflow().toFunction(needEnglishName);
