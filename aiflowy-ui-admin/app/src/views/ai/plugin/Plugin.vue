@@ -8,11 +8,11 @@ import { Delete, Edit, Plus } from '@element-plus/icons-vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 
 import { api } from '#/api/request';
-import CardPage from '#/components/cardPage/CardPage.vue';
 import CategoryCrudPanel from '#/components/categoryPanel/CategoryCrudPanel.vue';
 import HeaderSearch from '#/components/headerSearch/HeaderSearch.vue';
 import CategorizeIcon from '#/components/icons/CategorizeIcon.vue';
 import PluginToolIcon from '#/components/icons/PluginToolIcon.vue';
+import CardPage from '#/components/page/CardList.vue';
 import PageData from '#/components/page/PageData.vue';
 import AddPluginModal from '#/views/ai/plugin/AddPluginModal.vue';
 import CategoryPluginModal from '#/views/ai/plugin/CategoryPluginModal.vue';
@@ -21,31 +21,46 @@ const router = useRouter();
 // 操作按钮配置
 const actions = ref([
   {
-    name: 'edit',
-    label: $t('button.edit'),
-    type: 'primary',
-    icon: markRaw(Edit),
+    icon: Edit,
+    text: $t('button.edit'),
+    className: '',
     permission: '/api/v1/aiPlugin/save',
+    onClick(item) {
+      aiPluginModalRef.value.openDialog(item);
+    },
   },
   {
-    name: 'tools',
-    label: $t('plugin.button.tools'),
-    type: 'success',
-    icon: markRaw(PluginToolIcon),
+    icon: PluginToolIcon,
+    text: $t('plugin.button.tools'),
+    className: '',
     permission: '/api/v1/aiPlugin/save',
+    onClick(item) {
+      router.push({
+        path: '/ai/plugin/tools',
+        query: {
+          id: item.id,
+          pageKey: '/ai/plugin',
+        },
+      });
+    },
   },
   {
-    name: 'categorize',
-    label: $t('plugin.button.categorize'),
-    icon: markRaw(CategorizeIcon),
+    icon: CategorizeIcon,
+    text: $t('plugin.button.categorize'),
+    className: '',
     permission: '/api/v1/aiPlugin/save',
+    onClick(item) {
+      categoryCategoryModal.value.openDialog(item);
+    },
   },
   {
-    name: 'delete',
-    label: $t('button.delete'),
-    type: 'info',
-    icon: markRaw(Delete),
+    icon: Delete,
+    text: $t('button.delete'),
+    className: '',
     permission: '/api/v1/aiPlugin/remove',
+    onClick(item) {
+      handleDelete(item);
+    },
   },
 ]);
 const categoryList = ref([]);
@@ -79,34 +94,6 @@ const handleDelete = (item) => {
         });
     })
     .catch(() => {});
-};
-// 处理操作按钮点击
-const handleAction = ({ action, item }) => {
-  // 根据不同的操作执行不同的逻辑
-  switch (action.name) {
-    case 'categorize': {
-      categoryCategoryModal.value.openDialog(item);
-      break;
-    }
-    case 'delete': {
-      handleDelete(item);
-      break;
-    }
-    case 'edit': {
-      aiPluginModalRef.value.openDialog(item);
-      break;
-    }
-    case 'tools': {
-      router.push({
-        path: '/ai/plugin/tools',
-        query: {
-          id: item.id,
-          pageKey: '/ai/plugin',
-        },
-      });
-      break;
-    }
-  }
 };
 
 const pageDataRef = ref();
@@ -213,7 +200,6 @@ const handleClickCategory = (item) => {
               description-key="description"
               :data="pageList"
               :actions="actions"
-              @action-click="handleAction"
             />
           </template>
         </PageData>
@@ -226,7 +212,7 @@ const handleClickCategory = (item) => {
 
 <style scoped>
 .knowledge-container {
-  padding: 20px;
+  padding: 24px;
   width: 100%;
   margin: 0 auto;
 }
@@ -238,13 +224,14 @@ h1 {
 }
 .plugin-content-container {
   display: flex;
+  gap: 24px;
   height: calc(100vh - 161px);
-  padding-top: 20px;
+  padding-top: 24px;
 }
 
 .plugin-content-data-container {
-  padding: 20px;
-  background-color: var(--el-bg-color);
+  /* padding: 20px; */
+  /* background-color: var(--el-bg-color); */
   width: 100%;
   border-top-right-radius: var(--el-border-radius-base);
   border-bottom-right-radius: var(--el-border-radius-base);

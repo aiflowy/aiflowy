@@ -68,6 +68,7 @@ const handleSearch = () => {
 
 const handleReset = () => {
   searchValue.value = '';
+  emit('search', '');
 };
 
 // 处理按钮点击
@@ -106,12 +107,12 @@ const handleDropdownClick = (button) => {
           />
         </div>
         <div>
-          <ElButton type="primary" @click="handleSearch">
+          <ElButton type="primary" auto-insert-space @click="handleSearch">
             {{ $t('button.query') }}
           </ElButton>
         </div>
         <div>
-          <ElButton @click="handleReset">
+          <ElButton auto-insert-space @click="handleReset">
             {{ $t('button.reset') }}
           </ElButton>
         </div>

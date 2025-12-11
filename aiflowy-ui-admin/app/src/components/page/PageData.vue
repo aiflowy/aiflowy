@@ -107,7 +107,7 @@ onMounted(() => {
       <div>
         <slot :page-list="pageList"></slot>
       </div>
-      <div class="pagination-container mx-auto w-fit">
+      <div v-if="pageInfo.total > pageInfo.pageSize" class="mx-auto mt-8 w-fit">
         <ElPagination
           v-model:current-page="pageInfo.pageNumber"
           v-model:page-size="pageInfo.pageSize"
@@ -122,9 +122,3 @@ onMounted(() => {
     <ElEmpty v-else />
   </div>
 </template>
-
-<style scoped>
-.pagination-container {
-  margin-top: 10px;
-}
-</style>

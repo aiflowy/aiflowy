@@ -34,7 +34,7 @@ const modalRef = ref<InstanceType<typeof Modal>>();
 const headerButtons = [
   {
     key: 'create',
-    text: $t('button.create'),
+    text: `${$t('button.create')} Bot`,
     icon: markRaw(Plus),
     type: 'primary',
     data: { action: 'create' },
@@ -110,7 +110,7 @@ const handleButtonClick = () => {
 </script>
 
 <template>
-  <div class="space-y-5 p-6">
+  <div class="space-y-6 p-6">
     <HeaderSearch
       :buttons="headerButtons"
       @search="handleSearch"

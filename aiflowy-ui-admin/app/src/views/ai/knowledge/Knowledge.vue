@@ -8,8 +8,8 @@ import { Delete, Edit, Notebook, Plus, Search } from '@element-plus/icons-vue';
 import { ElDialog, ElMessage, ElMessageBox } from 'element-plus';
 
 import { api } from '#/api/request';
-import CardPage from '#/components/cardPage/CardPage.vue';
 import HeaderSearch from '#/components/headerSearch/HeaderSearch.vue';
+import CardPage from '#/components/page/CardList.vue';
 import PageData from '#/components/page/PageData.vue';
 import AiKnowledgeModal from '#/views/ai/knowledge/AiKnowledgeModal.vue';
 import KnowledgeSearch from '#/views/ai/knowledge/KnowledgeSearch.vue';
@@ -19,31 +19,47 @@ const router = useRouter();
 // 操作按钮配置
 const actions = ref([
   {
-    name: 'edit',
-    label: $t('button.edit'),
-    type: 'primary',
-    icon: markRaw(Edit),
+    icon: Edit,
+    text: $t('button.edit'),
+    className: '',
     permission: '/api/v1/aiKnowledge/save',
+    onClick(row) {
+      aiKnowledgeModalRef.value.openDialog(row);
+    },
   },
   {
-    name: 'knowledge',
-    label: $t('aiKnowledge.actions.knowledge'),
-    type: 'success',
-    icon: markRaw(Notebook),
+    icon: Notebook,
+    text: $t('aiKnowledge.actions.knowledge'),
+    className: '',
     permission: '/api/v1/aiKnowledge/save',
+    onClick(row) {
+      router.replace({
+        path: '/ai/knowledge/document',
+        query: {
+          id: row.id,
+          pageKey: '/ai/knowledge',
+        },
+      });
+    },
   },
   {
-    name: 'retrieve',
-    label: $t('aiKnowledge.actions.retrieve'),
-    type: 'danger',
-    icon: markRaw(Search),
+    icon: Search,
+    text: $t('aiKnowledge.actions.retrieve'),
+    className: '',
+    permission: '',
+    onClick(row) {
+      selectSearchKnowledgeId.value = row.id;
+      searchKnowledgeModalVisible.value = true;
+    },
   },
   {
-    name: 'delete',
-    label: $t('button.delete'),
-    type: 'danger',
-    icon: markRaw(Delete),
+    text: $t('button.delete'),
+    icon: Delete,
+    className: '',
     permission: '/api/v1/aiKnowledge/remove',
+    onClick(row) {
+      handleDelete(row);
+    },
   },
 ]);
 
@@ -66,35 +82,6 @@ const handleDelete = (item) => {
 };
 const selectSearchKnowledgeId = ref('');
 const searchKnowledgeModalVisible = ref(false);
-// 处理操作按钮点击
-const handleAction = ({ action, item }) => {
-  // 根据不同的操作执行不同的逻辑
-  switch (action.name) {
-    case 'delete': {
-      handleDelete(item);
-      break;
-    }
-    case 'edit': {
-      aiKnowledgeModalRef.value.openDialog(item);
-      break;
-    }
-    case 'knowledge': {
-      router.replace({
-        path: '/ai/knowledge/document',
-        query: {
-          id: item.id,
-          pageKey: '/ai/knowledge',
-        },
-      });
-      break;
-    }
-    case 'retrieve': {
-      selectSearchKnowledgeId.value = item.id;
-      searchKnowledgeModalVisible.value = true;
-      break;
-    }
-  }
-};
 
 const pageDataRef = ref();
 const aiKnowledgeModalRef = ref();
@@ -145,7 +132,6 @@ const handleSearch = (params) => {
             description-key="description"
             :data="pageList"
             :actions="actions"
-            @action-click="handleAction"
           />
         </template>
       </PageData>
@@ -170,7 +156,7 @@ const handleSearch = (params) => {
 
 <style scoped>
 .knowledge-container {
-  padding: 20px;
+  padding: 24px;
   width: 100%;
   margin: 0 auto;
 }
@@ -184,6 +170,6 @@ h1 {
   color: #303133;
 }
 .kd-content-container {
-  margin-top: 20px;
+  margin-top: 24px;
 }
 </style>

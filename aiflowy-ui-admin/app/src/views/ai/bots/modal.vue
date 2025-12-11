@@ -74,7 +74,7 @@ defineExpose({
 <template>
   <ElDialog
     v-model="dialogVisible"
-    :title="$t(`button.${dialogType}`)"
+    :title="`${$t(`button.${dialogType}`)} Bot`"
     draggable
     align-center
   >
