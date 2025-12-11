@@ -186,7 +186,6 @@ const handleComplete = (_: TypewriterInstance, index: number) => {
 };
 
 const generateMockMessages = (refreshContent: string) => {
-
   const userMessage: ChatMessage = {
     role: 'user',
     id: Date.now().toString(),
@@ -327,7 +326,7 @@ const handleRefresh = () => {
             <ElButton v-if="sending" circle>
               <ElIcon size="30" color="#409eff"><SendingIcon /></ElIcon>
             </ElButton>
-            <ElButton v-else circle color="#0066FF" @click="handleSubmit">
+            <ElButton v-else circle color="#0066FF" @click="handleSubmit('')">
               <ElIcon><Promotion /></ElIcon>
             </ElButton>
           </ElSpace>
