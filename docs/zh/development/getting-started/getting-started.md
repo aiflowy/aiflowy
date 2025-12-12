@@ -36,7 +36,7 @@ AIFlowy 后端使用 SpringBoot 2.x + Agents-Flex + MyBatis-Flex 开发。
 
 在 AIFlowy 的根目录中，有一个叫sql的文件夹，里面包含了ddl语句和初始化数据。
 
-在 MySql 中创建好数据库后，分别执行 `aiflowy.ddl.sql` 和 `aiflowy.data.sql` 即可。
+在 MySql 中创建好数据库后，分别执行 `aiflowy-v2.ddl.sql` 和 `aiflowy-v2.data.sql` 即可。
 
 ### 第三步：修改配置文件
 

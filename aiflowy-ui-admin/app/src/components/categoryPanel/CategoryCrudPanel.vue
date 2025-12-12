@@ -3,7 +3,7 @@ import { computed, onMounted, ref, toRefs } from 'vue';
 
 import { $t } from '@aiflowy/locales';
 
-import { MoreFilled } from '@element-plus/icons-vue';
+import { MoreFilled, Plus } from '@element-plus/icons-vue';
 import {
   ElButton,
   ElDialog,
@@ -196,50 +196,50 @@ const handleDeleteClick = (event: any, item: any) => {
 </script>
 
 <template>
-  <div class="crud-category-container" :style="{ width: `${panelWidth}px` }">
-    <div class="crud-category-header">
-      <h3 class="crud-category-title">{{ title }}</h3>
-      <ElButton
-        type="primary"
-        @click="handleAdd"
-        :disabled="disabled"
-        size="small"
-      >
-        {{ $t('button.add') }}
-      </ElButton>
-    </div>
+  <div
+    class="flex h-full flex-col rounded-lg border border-[var(--el-border-color)] bg-[var(--el-bg-color)] p-2"
+    :style="{ width: `${panelWidth}px` }"
+  >
+    <div class="flex flex-1 flex-col gap-5">
+      <h3 class="text-base font-medium">{{ title }}</h3>
 
-    <div class="crud-category-content">
-      <div v-for="(item, index) in categoryData" :key="index">
-        <div
-          :class="{ selected: selectedCategory === item[finalValueKey] }"
-          class="crud-category-item"
-          @click="handleCategoryClick(item)"
-        >
-          <div>{{ item[titleKey] }}</div>
-          <div>
-            <ElDropdown @click.stop>
-              <span class="dropdown-trigger">
-                <ElIcon><MoreFilled /></ElIcon>
-              </span>
-              <template #dropdown>
-                <ElDropdownMenu>
-                  <ElDropdownItem @click="handleEditClick($event, item)">
-                    {{ $t('button.edit') }}
-                  </ElDropdownItem>
-                  <ElDropdownItem
-                    @click="handleDeleteClick($event, item)"
-                    divided
-                  >
-                    {{ $t('button.delete') }}
-                  </ElDropdownItem>
-                </ElDropdownMenu>
-              </template>
-            </ElDropdown>
+      <div class="flex-1 overflow-scroll">
+        <div v-for="(item, index) in categoryData" :key="index">
+          <div
+            :class="{ selected: selectedCategory === item[finalValueKey] }"
+            class="crud-category-item"
+            @click="handleCategoryClick(item)"
+          >
+            <div>{{ item[titleKey] }}</div>
+            <div v-if="item.id !== '0'">
+              <ElDropdown @click.stop>
+                <span class="dropdown-trigger">
+                  <ElIcon><MoreFilled /></ElIcon>
+                </span>
+                <template #dropdown>
+                  <ElDropdownMenu>
+                    <ElDropdownItem @click="handleEditClick($event, item)">
+                      {{ $t('button.edit') }}
+                    </ElDropdownItem>
+                    <ElDropdownItem
+                      @click="handleDeleteClick($event, item)"
+                      divided
+                      style="color: red"
+                    >
+                      {{ $t('button.delete') }}
+                    </ElDropdownItem>
+                  </ElDropdownMenu>
+                </template>
+              </ElDropdown>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
+    <ElButton @click="handleAdd" :icon="Plus" :disabled="disabled" plain>
+      {{ $t('button.add') }}
+    </ElButton>
 
     <!-- 无数据提示 -->
     <div v-if="categoryData.length === 0 && !loading" class="no-data">
@@ -276,33 +276,6 @@ const handleDeleteClick = (event: any, item: any) => {
 </template>
 
 <style scoped>
-.crud-category-container {
-  background-color: var(--el-bg-color);
-  height: 100%;
-}
-
-.crud-category-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-}
-
-.crud-category-title {
-  font-size: 16px;
-  font-weight: 500;
-  margin: 0;
-  color: #1989fa;
-}
-
-.crud-category-content {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  padding-left: 8px;
-  padding-right: 8px;
-}
-
 .crud-category-item:hover {
   background-color: var(--el-color-primary-light-9);
   cursor: pointer;
@@ -311,7 +284,6 @@ const handleDeleteClick = (event: any, item: any) => {
 .crud-category-item.selected {
   background-color: var(--el-color-primary-light-9);
   color: var(--el-text-color-primary);
-  font-weight: 600;
 }
 
 .no-data {
@@ -326,6 +298,7 @@ const handleDeleteClick = (event: any, item: any) => {
   padding: 8px 12px;
   height: 40px;
   border-radius: 8px;
+  font-size: 14px;
 }
 
 .crud-category-item :deep(.el-icon) {

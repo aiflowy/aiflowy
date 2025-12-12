@@ -3,14 +3,7 @@ import type { FormInstance } from 'element-plus';
 
 import { computed, onMounted, ref } from 'vue';
 
-import {
-  ArrowLeft,
-  ArrowRight,
-  Menu,
-  MoreFilled,
-  Plus,
-  Refresh,
-} from '@element-plus/icons-vue';
+import { Menu, MoreFilled, Plus } from '@element-plus/icons-vue';
 import {
   ElButton,
   ElDialog,
@@ -76,7 +69,7 @@ const panelWidth = computed(() => {
   return collapsed.value ? props.collapseWidth : props.expandWidth;
 });
 const list = ref<any>([]);
-const selected = ref(null);
+const selected = ref('');
 const listLoading = ref(false);
 const formData = ref<any>({});
 const dialogVisible = ref(false);
@@ -175,8 +168,64 @@ const formRules = computed(() => {
 </script>
 
 <template>
-  <div class="page-side-container" :style="{ width: `${panelWidth}px` }">
-    <div class="head">
+  <div
+    class="flex w-[225px] flex-col rounded-lg border border-[var(--el-border-color)] bg-[var(--el-bg-color)] p-2"
+    :style="{ width: `${panelWidth}px` }"
+  >
+    <div class="flex flex-1 flex-col gap-5">
+      <h3 class="text-base font-medium">{{ title }}</h3>
+
+      <div class="flex-1 overflow-scroll">
+        <div
+          v-for="item in listData"
+          :key="item[valueKey]"
+          class="list-item"
+          :class="{ selected: selected === item[valueKey] }"
+          @click="handleClick(item)"
+        >
+          <div class="flex items-center gap-1">
+            <div
+              class="ml-[-3px] flex items-center justify-center"
+              v-if="collapsed"
+            >
+              <ElTooltip placement="right" :content="item[nameKey]">
+                <ElIcon>
+                  <Menu />
+                </ElIcon>
+              </ElTooltip>
+            </div>
+            <div v-if="!collapsed">
+              {{ item[nameKey] }}
+            </div>
+          </div>
+          <div v-if="!collapsed && item[valueKey]">
+            <ElDropdown @click.stop>
+              <div class="icon-btn">
+                <ElIcon>
+                  <MoreFilled />
+                </ElIcon>
+              </div>
+              <template #dropdown>
+                <ElDropdownMenu>
+                  <ElDropdownItem @click="showDialog(item)">
+                    {{ $t('button.edit') }}
+                  </ElDropdownItem>
+                  <ElDropdownItem @click="remove(item)" style="color: red">
+                    {{ $t('button.delete') }}
+                  </ElDropdownItem>
+                </ElDropdownMenu>
+              </template>
+            </ElDropdown>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <ElButton @click="showDialog({})" :icon="Plus" plain>
+      {{ $t('button.add') }}
+    </ElButton>
+
+    <!-- <div class="head">
       <div class="flex items-center gap-0.5" v-if="!collapsed">
         <div class="icon-btn" @click="showDialog({})">
           <ElIcon>
@@ -198,8 +247,8 @@ const formRules = computed(() => {
           </ElIcon>
         </div>
       </div>
-    </div>
-    <div class="content" v-loading="listLoading">
+    </div> -->
+    <!-- <div class="content" v-loading="listLoading">
       <div
         v-for="item in listData"
         :key="item[valueKey]"
@@ -242,7 +291,7 @@ const formRules = computed(() => {
           </ElDropdown>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
   <ElDialog
     v-model="dialogVisible"
@@ -288,23 +337,6 @@ const formRules = computed(() => {
 </template>
 
 <style scoped>
-.page-side-container {
-  width: 225px;
-  border: 1px solid var(--el-border-color);
-  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  background-color: var(--el-bg-color);
-  border-radius: var(--el-border-radius-base);
-}
-.head {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px;
-  border-bottom: 1px solid var(--el-border-color);
-}
-.content {
-  padding: 10px;
-  height: 100%;
-}
 .icon-btn {
   display: flex;
   align-items: center;
@@ -328,6 +360,7 @@ const formRules = computed(() => {
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s;
+  font-size: 14px;
 }
 .list-item:hover {
   background-color: var(--el-color-primary-light-9);
