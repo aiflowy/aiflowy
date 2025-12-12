@@ -43,6 +43,10 @@ html .el-loading-mask {
   z-index: 1000;
 }
 
+.el-table__header-wrapper {
+  border-radius: 8px;
+}
+
 .el-table thead {
   --el-table-header-text-color: #323233;
 }
@@ -54,6 +58,10 @@ html .el-loading-mask {
 .el-table td.el-table__cell,
 .el-table th.el-table__cell.is-leaf {
   --el-table-border: none;
+}
+
+.el-table td.el-table__cell {
+  box-shadow: inset 0px -1px 0px 0px #F2F3F6;
 }
 
 .el-table--border .el-table__inner-wrapper:after,

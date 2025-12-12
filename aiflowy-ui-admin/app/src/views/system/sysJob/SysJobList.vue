@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FormInstance } from 'element-plus';
 
-import { onMounted, ref } from 'vue';
+import { markRaw, onMounted, ref } from 'vue';
 
 import {
   CaretRight,
@@ -17,10 +17,7 @@ import {
   ElDropdown,
   ElDropdownItem,
   ElDropdownMenu,
-  ElForm,
-  ElFormItem,
   ElIcon,
-  ElInput,
   ElMessage,
   ElMessageBox,
   ElTable,
@@ -28,6 +25,7 @@ import {
 } from 'element-plus';
 
 import { api } from '#/api/request';
+import HeaderSearch from '#/components/headerSearch/HeaderSearch.vue';
 import PageData from '#/components/page/PageData.vue';
 import { $t } from '#/locales';
 import { router } from '#/router';
@@ -38,27 +36,31 @@ import SysJobModal from './SysJobModal.vue';
 onMounted(() => {
   initDict();
 });
-const formRef = ref<FormInstance>();
+
 const pageDataRef = ref();
 const saveDialog = ref();
-const formInline = ref({
-  jobName: '',
-});
 const dictStore = useDictStore();
+const headerButtons = [
+  {
+    key: 'create',
+    text: $t('button.add'),
+    icon: markRaw(Plus),
+    type: 'primary',
+    data: { action: 'create' },
+    permission: '/api/v1/sysRole/save',
+  },
+];
+
 function initDict() {
   dictStore.fetchDictionary('jobType');
   dictStore.fetchDictionary('jobStatus');
   dictStore.fetchDictionary('yesOrNo');
   dictStore.fetchDictionary('misfirePolicy');
 }
-function search(formEl: FormInstance | undefined) {
-  formEl?.validate((valid) => {
-    if (valid) {
-      pageDataRef.value.setQuery(formInline.value);
-    }
-  });
-}
-function reset(formEl: FormInstance | undefined) {
+const handleSearch = (params: string) => {
+  pageDataRef.value.setQuery({ jobName: params, isQueryOr: true });
+};
+function reset(formEl?: FormInstance) {
   formEl?.resetFields();
   pageDataRef.value.setQuery({});
 }
@@ -79,7 +81,7 @@ function remove(row: any) {
             instance.confirmButtonLoading = false;
             if (res.errorCode === 0) {
               ElMessage.success(res.message);
-              reset(formRef.value);
+              reset();
               done();
             }
           })
@@ -104,7 +106,7 @@ function start(row: any) {
           instance.confirmButtonLoading = false;
           if (res.errorCode === 0) {
             ElMessage.success(res.message);
-            reset(formRef.value);
+            reset();
             done();
           }
         });
@@ -126,7 +128,7 @@ function stop(row: any) {
           instance.confirmButtonLoading = false;
           if (res.errorCode === 0) {
             ElMessage.success(res.message);
-            reset(formRef.value);
+            reset();
             done();
           }
         });
@@ -147,38 +149,13 @@ function toLogPage(row: any) {
 </script>
 
 <template>
-  <div class="flex h-full flex-col gap-1.5 p-6">
+  <div class="flex h-full flex-col gap-6 p-6">
     <SysJobModal ref="saveDialog" @reload="reset" />
-    <div class="flex items-center justify-between">
-      <ElForm ref="formRef" :inline="true" :model="formInline">
-        <ElFormItem :label="$t('sysJob.jobName')" prop="jobName">
-          <ElInput
-            v-model="formInline.jobName"
-            :placeholder="$t('sysJob.jobName')"
-          />
-        </ElFormItem>
-        <ElFormItem>
-          <ElButton @click="search(formRef)" type="primary">
-            {{ $t('button.query') }}
-          </ElButton>
-          <ElButton @click="reset(formRef)">
-            {{ $t('button.reset') }}
-          </ElButton>
-        </ElFormItem>
-      </ElForm>
-      <div class="handle-div">
-        <ElButton
-          v-access:code="'/api/v1/sysJob/save'"
-          @click="showDialog({})"
-          type="primary"
-        >
-          <ElIcon class="mr-1">
-            <Plus />
-          </ElIcon>
-          {{ $t('button.add') }}
-        </ElButton>
-      </div>
-    </div>
+    <HeaderSearch
+      :buttons="headerButtons"
+      @search="handleSearch"
+      @button-click="showDialog({})"
+    />
 
     <div class="bg-background flex-1 rounded-lg p-5">
       <PageData

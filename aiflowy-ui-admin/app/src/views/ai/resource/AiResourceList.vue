@@ -117,14 +117,14 @@ function download(row: any) {
     <AiResourceModal ref="saveDialog" @reload="reset" />
     <div class="flex items-center justify-between">
       <ElForm ref="formRef" :inline="true" :model="formInline">
-        <ElFormItem :label="$t('aiResource.resourceType')" prop="resourceType">
+        <ElFormItem prop="resourceType">
           <DictSelect
             v-model="formInline.resourceType"
             dict-code="resourceType"
             :placeholder="$t('aiResource.resourceType')"
           />
         </ElFormItem>
-        <ElFormItem :label="$t('aiResource.resourceName')" prop="resourceName">
+        <ElFormItem prop="resourceName">
           <ElInput
             v-model="formInline.resourceName"
             :placeholder="$t('aiResource.resourceName')"

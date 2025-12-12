@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FormInstance } from 'element-plus';
 
-import { ref } from 'vue';
+import { markRaw, ref } from 'vue';
 
 import { Delete, Edit, More, Plus } from '@element-plus/icons-vue';
 import {
@@ -10,10 +10,7 @@ import {
   ElDropdown,
   ElDropdownItem,
   ElDropdownMenu,
-  ElForm,
-  ElFormItem,
   ElIcon,
-  ElInput,
   ElMessage,
   ElMessageBox,
   ElTable,
@@ -22,6 +19,7 @@ import {
 } from 'element-plus';
 
 import { api } from '#/api/request';
+import HeaderSearch from '#/components/headerSearch/HeaderSearch.vue';
 import PageData from '#/components/page/PageData.vue';
 import { $t } from '#/locales';
 import SysApiKeyResourcePermissionList from '#/views/config/apikey/SysApiKeyResourcePermissionList.vue';
@@ -31,20 +29,37 @@ import SysApiKeyModal from './SysApiKeyModal.vue';
 const formRef = ref<FormInstance>();
 const pageDataRef = ref();
 const saveDialog = ref();
-const formInline = ref({
-  apiKey: '',
-  id: '',
-});
+const headerButtons = [
+  {
+    key: 'addApiKey',
+    text: $t('sysApiKey.addApiKey'),
+    icon: markRaw(Plus),
+    type: 'primary',
+    data: { action: 'create' },
+    permission: '',
+  },
+  {
+    key: 'addPermission',
+    text: $t('sysApiKeyResourcePermission.addPermission'),
+    icon: markRaw(Plus),
+    type: 'primary',
+    data: { action: 'create' },
+    permission: '',
+  },
+];
 
-function search(formEl: FormInstance | undefined) {
-  formEl?.validate((valid) => {
-    if (valid) {
-      pageDataRef.value.setQuery(formInline.value);
-    }
-  });
-}
+const handleSearch = (params: string) => {
+  pageDataRef.value.setQuery({ apiKey: params, isQueryOr: true });
+};
+const headerButtonClick = (action: any) => {
+  if (action.key === 'addApiKey') {
+    addNewApiKey();
+  } else if (action.key === 'addPermission') {
+    showAddPermissionDialog({});
+  }
+};
 
-function reset(formEl: FormInstance | undefined) {
+function reset(formEl?: FormInstance) {
   formEl?.resetFields();
   pageDataRef.value.setQuery({});
 }
@@ -104,40 +119,13 @@ function addNewApiKey() {
 </script>
 
 <template>
-  <div class="flex h-full flex-col gap-1.5 p-6">
+  <div class="flex h-full flex-col gap-6 p-6">
     <SysApiKeyModal ref="saveDialog" @reload="reset" />
-    <div class="flex items-center justify-between">
-      <ElForm ref="formRef" :inline="true" :model="formInline">
-        <ElFormItem :label="$t('sysApiKey.apiKey')" prop="apiKey">
-          <ElInput
-            v-model="formInline.apiKey"
-            :placeholder="$t('sysApiKey.apiKey')"
-          />
-        </ElFormItem>
-        <ElFormItem>
-          <ElButton @click="search(formRef)" type="primary">
-            {{ $t('button.query') }}
-          </ElButton>
-          <ElButton @click="reset(formRef)">
-            {{ $t('button.reset') }}
-          </ElButton>
-        </ElFormItem>
-      </ElForm>
-      <div class="handle-div">
-        <ElButton @click="addNewApiKey" type="primary">
-          <ElIcon class="mr-1">
-            <Plus />
-          </ElIcon>
-          {{ $t('sysApiKey.addApiKey') }}
-        </ElButton>
-        <ElButton @click="showAddPermissionDialog({})" type="primary">
-          <ElIcon class="mr-1">
-            <Plus />
-          </ElIcon>
-          {{ $t('sysApiKeyResourcePermission.addPermission') }}
-        </ElButton>
-      </div>
-    </div>
+    <HeaderSearch
+      :buttons="headerButtons"
+      @search="handleSearch"
+      @button-click="headerButtonClick"
+    />
 
     <div class="bg-background flex-1 rounded-lg p-5">
       <PageData
