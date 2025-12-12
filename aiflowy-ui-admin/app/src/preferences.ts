@@ -14,4 +14,7 @@ export const overridesPreferences = defineOverridesPreferences({
   widget: {
     timezone: false,
   },
+  theme: {
+    mode: 'light',
+  },
 });
