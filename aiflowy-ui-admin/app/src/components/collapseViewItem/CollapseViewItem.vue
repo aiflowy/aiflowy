@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import {ElAvatar, ElIcon, ElMessage, ElMessageBox} from 'element-plus';
-import { Delete } from "@element-plus/icons-vue";
-import {$t} from "@aiflowy/locales";
+import { $t } from '@aiflowy/locales';
+
+import { Delete } from '@element-plus/icons-vue';
+import { ElAvatar, ElIcon, ElMessageBox } from 'element-plus';
 
 const props = defineProps({
   data: {
@@ -46,11 +47,14 @@ const handleDelete = (item: any) => {
           <div>{{ item[descriptionKey] }}</div>
         </div>
       </div>
-      <div @click="handleDelete(item)" class="el-list-item-delete-container">
-        <ElIcon>
-          <Delete />
-        </ElIcon>
-      </div>
+      <ElIcon
+        color="var(--el-color-danger)"
+        size="20px"
+        @click="handleDelete(item)"
+        class="el-list-item-delete-container"
+      >
+        <Delete />
+      </ElIcon>
     </div>
   </div>
 </template>
@@ -60,12 +64,16 @@ const handleDelete = (item: any) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px;
-  background-color: var(--bot-back-item);
+  padding: 12px 24px 12px 12px;
+  background-color: var(--el-bg-color);
+  border-radius: 8px;
 }
 .collapse-item-container {
   display: flex;
   flex-direction: column;
+  gap: 12px;
+  background-color: #f5f5f5;
+  padding: 10px;
 }
 .el-list-item-container {
   display: flex;

@@ -404,5 +404,4 @@ const handleSearch = (query: string) => {
   border: none;
   background-color: #ffffff;
 }
-
 </style>

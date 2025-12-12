@@ -626,21 +626,21 @@ const handleUpdatePublishWx = () => {
                 </span>
               </div>
             </template>
-            <div>
+            <div class="question-container">
               <div
                 v-for="item in botInfo?.options?.presetQuestions"
                 :key="item.key"
               >
                 <div class="presetQues-container" v-if="item.description">
                   <span>{{ item.description }}</span>
-                  <span
-                    class="preset-delete"
+                  <ElIcon
+                    color="var(--el-color-danger)"
+                    size="20px"
                     @click="handleDeletePresetQuestion(item.key)"
+                    class="el-list-item-delete-container"
                   >
-                    <ElIcon>
-                      <Delete />
-                    </ElIcon>
-                  </span>
+                    <Delete />
+                  </ElIcon>
                 </div>
               </div>
             </div>
@@ -770,8 +770,9 @@ const handleUpdatePublishWx = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px;
-  background-color: var(--bot-back-item);
+  background-color: var(--el-bg-color);
+  padding: 12px 24px 12px 12px;
+  border-radius: 8px;
 }
 .preset-delete {
   cursor: pointer;
@@ -858,5 +859,27 @@ const handleUpdatePublishWx = () => {
 }
 .publish-container {
   flex: 1;
+}
+.el-list-item-delete-container {
+  cursor: pointer;
+}
+:deep(.el-collapse-item__content) {
+  height: 100%;
+  padding: 0;
+}
+
+.question-container {
+  background-color: #f5f5f5 !important;
+  width: 100%;
+  min-height: 120px;
+  height: auto;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+:deep(.el-collapse) {
+  height: 100%;
 }
 </style>
