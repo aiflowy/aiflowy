@@ -242,7 +242,6 @@ const handleClickCategory = (item) => {
           :default-form-data="{ name: '' }"
         /> -->
         <PageSide
-          :title="$t('plugin.pluginCategory')"
           label-key="name"
           value-key="id"
           :menus="categoryList"

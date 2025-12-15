@@ -96,7 +96,7 @@ const handleDelete = (row: any) => {
             </div>
           </template>
         </ElTableColumn>
-        <ElTableColumn :label="$t('common.handle')" min-width="120">
+        <ElTableColumn :label="$t('common.handle')" width="80">
           <template #default="{ row }">
             <ElDropdown>
               <ElButton link>
