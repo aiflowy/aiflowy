@@ -21,6 +21,8 @@ public class ChainExecutorConfig {
     private ChainStateRepository chainStateRepository;
     @Resource
     private NodeStateRepository nodeStateRepository;
+    @Resource
+    private ChainEventListenerForSave chainEventListenerForSave;
 
     @Bean(name = "chainExecutor")
     public ChainExecutor chainExecutor() {
@@ -38,7 +40,7 @@ public class ChainExecutorConfig {
      * 步骤保存监听器 - 自行实现
      */
     private void saveStepsListeners(ChainExecutor chainExecutor) {
-        chainExecutor.addEventListener(new ChainEventListenerForSave());
+        chainExecutor.addEventListener(chainEventListenerForSave);
         chainExecutor.addErrorListener(new ChainErrorListenerForSave());
         chainExecutor.addNodeErrorListener(new NodeErrorListenerForSave());
     }

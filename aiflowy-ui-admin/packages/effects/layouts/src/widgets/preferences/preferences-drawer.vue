@@ -466,7 +466,6 @@ async function handleReset() {
           {{ $t('preferences.copyPreferences') }}
         </AIFlowyButton>
         <AIFlowyButton
-          :disabled="!diffPreference"
           class="mr-4 w-full"
           size="sm"
           variant="ghost"
