@@ -5,15 +5,24 @@ import { useRouter } from 'vue-router';
 import { $t } from '@aiflowy/locales';
 
 import { Delete, Edit, Plus } from '@element-plus/icons-vue';
-import { ElMessage, ElMessageBox } from 'element-plus';
+import {
+  ElButton,
+  ElDialog,
+  ElForm,
+  ElFormItem,
+  ElInput,
+  ElMessage,
+  ElMessageBox,
+} from 'element-plus';
 
 import { api } from '#/api/request';
-import CategoryCrudPanel from '#/components/categoryPanel/CategoryCrudPanel.vue';
+// import CategoryCrudPanel from '#/components/categoryPanel/CategoryCrudPanel.vue';
 import HeaderSearch from '#/components/headerSearch/HeaderSearch.vue';
 import CategorizeIcon from '#/components/icons/CategorizeIcon.vue';
 import PluginToolIcon from '#/components/icons/PluginToolIcon.vue';
 import CardPage from '#/components/page/CardList.vue';
 import PageData from '#/components/page/PageData.vue';
+import PageSide from '#/components/page/PageSide.vue';
 import AddPluginModal from '#/views/ai/plugin/AddPluginModal.vue';
 import CategoryPluginModal from '#/views/ai/plugin/CategoryPluginModal.vue';
 
@@ -64,6 +73,31 @@ const actions = ref([
   },
 ]);
 const categoryList = ref([]);
+const controlBtns = [
+  {
+    icon: Edit,
+    label: $t('button.edit'),
+    onClick(row) {
+      isEdit.value = true;
+      dialogVisible.value = true;
+    },
+  },
+  {
+    type: 'danger',
+    icon: Delete,
+    label: $t('button.delete'),
+    onClick(row) {
+      handleDeleteCategory(row);
+    },
+  },
+];
+const footerButton = {
+  icon: Plus,
+  label: $t('button.add'),
+  onClick() {
+    handleAddCategory();
+  },
+};
 const getPluginCategoryList = async () => {
   return api.get('/api/v1/aiPluginCategories/list').then((res) => {
     if (res.errorCode === 0) {
@@ -108,6 +142,31 @@ const headerButtons = [
     data: { action: 'add' },
   },
 ];
+const pluginCategoryId = ref('0');
+const dialogVisible = ref(false); // 弹窗显隐
+const isEdit = ref(false); // 是否为编辑模式
+const formData = ref({ name: '' });
+
+/**
+ * 编辑按钮点击事件
+ * @param {object} row - 表格当前行数据
+ */
+const handleEdit = (row) => {
+  isEdit.value = true;
+  // 使用提取原始数据的方法
+  formData.value = extractFromProxy(row);
+  dialogVisible.value = true;
+};
+const handleSubmit = () => {
+  // 触发对应事件，传递表单数据
+  if (isEdit.value) {
+    handleEditCategory(formData.value);
+  } else {
+    handleAddCategory(formData.value);
+  }
+  // 提交后关闭弹窗
+  dialogVisible.value = false;
+};
 const handleButtonClick = (event, _item) => {
   switch (event.key) {
     case 'add': {
@@ -116,7 +175,6 @@ const handleButtonClick = (event, _item) => {
     }
   }
 };
-const pluginCategoryId = ref('0');
 const handleSearch = (params) => {
   pageDataRef.value.setQuery({ title: params, isQueryOr: true });
 };
@@ -154,7 +212,7 @@ const handleDeleteCategory = (params) => {
     });
 };
 const handleClickCategory = (item) => {
-  pageDataRef.value.setQuery({ category: item.item.id });
+  pageDataRef.value.setQuery({ category: item.id });
 };
 </script>
 
@@ -170,7 +228,7 @@ const handleClickCategory = (item) => {
     </div>
     <div class="plugin-content-container">
       <div class="category-panel-container">
-        <CategoryCrudPanel
+        <!-- <CategoryCrudPanel
           :title="$t('plugin.pluginCategory')"
           title-key="name"
           :panel-width="220"
@@ -182,6 +240,15 @@ const handleClickCategory = (item) => {
           @click="handleClickCategory"
           value-key="id"
           :default-form-data="{ name: '' }"
+        /> -->
+        <PageSide
+          :title="$t('plugin.pluginCategory')"
+          label-key="name"
+          value-key="id"
+          :menus="categoryList"
+          :control-btns="controlBtns"
+          :footer-button="footerButton"
+          @change="handleClickCategory"
         />
       </div>
 
@@ -209,6 +276,29 @@ const handleClickCategory = (item) => {
     </div>
     <AddPluginModal ref="aiPluginModalRef" @reload="handleSearch" />
     <CategoryPluginModal ref="categoryCategoryModal" @reload="handleSearch" />
+    <ElDialog
+      :title="
+        isEdit ? `${$t('button.edit')}${title}` : `${$t('button.add')}${title}`
+      "
+      v-model="dialogVisible"
+      width="500px"
+      :close-on-click-modal="false"
+    >
+      <ElForm :model="formData" status-icon>
+        <ElFormItem :prop="titleKey">
+          <ElInput v-model.trim="formData[titleKey]" />
+        </ElFormItem>
+      </ElForm>
+
+      <template #footer>
+        <ElButton @click="dialogVisible = false">
+          {{ $t('button.cancel') }}
+        </ElButton>
+        <ElButton type="primary" @click="handleSubmit">
+          {{ $t('button.confirm') }}
+        </ElButton>
+      </template>
+    </ElDialog>
   </div>
 </template>
 
