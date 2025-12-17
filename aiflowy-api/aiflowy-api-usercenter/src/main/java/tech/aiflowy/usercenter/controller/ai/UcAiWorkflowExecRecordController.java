@@ -1,6 +1,7 @@
 package tech.aiflowy.usercenter.controller.ai;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.hutool.core.util.StrUtil;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import tech.aiflowy.common.satoken.util.SaTokenUtil;
 import tech.aiflowy.common.web.controller.BaseCurdController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigInteger;
 
 /**
@@ -53,6 +55,29 @@ public class UcAiWorkflowExecRecordController extends BaseCurdController<AiWorkf
         w.eq(AiWorkflowRecordStep::getRecordId, id);
         recordStepService.remove(w);
         return Result.ok();
+    }
+
+    @GetMapping("getPage")
+    public Result<Page<AiWorkflowExecRecord>> getPage(HttpServletRequest request,
+                                                   String sortKey,
+                                                   String sortType,
+                                                   Long pageNumber,
+                                                   Long pageSize,
+                                                   String queryBegin,
+                                                   String queryEnd) {
+        if (pageNumber == null || pageNumber < 1) {
+            pageNumber = 1L;
+        }
+        if (pageSize == null || pageSize < 1) {
+            pageSize = 10L;
+        }
+
+        QueryWrapper queryWrapper = buildQueryWrapper(request);
+        if (StrUtil.isNotEmpty(queryBegin) && StrUtil.isNotEmpty(queryEnd)) {
+            queryWrapper.between(AiWorkflowExecRecord::getStartTime, queryBegin, queryEnd);
+        }
+        queryWrapper.orderBy(buildOrderBy(sortKey, sortType, getDefaultOrderBy()));
+        return Result.ok(queryPage(new Page<>(pageNumber, pageSize), queryWrapper));
     }
 
     @Override

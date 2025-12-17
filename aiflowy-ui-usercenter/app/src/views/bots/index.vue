@@ -38,7 +38,7 @@ function getWorkflowList() {
   pageLoading.value = true;
   api
     .get('/userCenter/aiWorkflow/list', {
-      params: { status: 1, ...queryParams.value },
+      params: { ...queryParams.value },
     })
     .then((res) => {
       pageLoading.value = false;

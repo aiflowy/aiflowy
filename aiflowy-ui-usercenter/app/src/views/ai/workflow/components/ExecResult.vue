@@ -12,8 +12,13 @@ export interface ExecResultProps {
   nodeJson: any;
   initSignal?: boolean;
   pollingData?: any;
+  showMessage?: boolean;
 }
-const props = defineProps<ExecResultProps>();
+const props = withDefaults(defineProps<ExecResultProps>(), {
+  initSignal: false,
+  showMessage: true,
+  pollingData: {},
+});
 
 const finalNode = computed(() => {
   const nodes = props.nodeJson;
@@ -40,12 +45,16 @@ watch(
   () => props.pollingData,
   (newVal) => {
     if (newVal.status === 20) {
-      ElMessage.success($t('message.success'));
+      if (props.showMessage) {
+        ElMessage.success($t('message.success'));
+      }
       result.value = newVal.result;
       success.value = true;
     }
     if (newVal.status === 21) {
-      ElMessage.error($t('message.fail'));
+      if (props.showMessage) {
+        ElMessage.error($t('message.fail'));
+      }
       result.value = newVal.message;
       success.value = false;
     }
