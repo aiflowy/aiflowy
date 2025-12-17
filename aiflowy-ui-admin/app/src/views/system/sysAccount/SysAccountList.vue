@@ -3,7 +3,7 @@ import type { FormInstance } from 'element-plus';
 
 import { markRaw, onMounted, ref } from 'vue';
 
-import { Delete, Edit, More, Plus } from '@element-plus/icons-vue';
+import { Delete, Edit, MoreFilled, Plus } from '@element-plus/icons-vue';
 import {
   ElAvatar,
   ElButton,
@@ -185,7 +185,7 @@ function isAdmin(data: any) {
                 <ElDropdown v-if="!isAdmin(row)">
                   <ElButton link>
                     <ElIcon>
-                      <More />
+                      <MoreFilled />
                     </ElIcon>
                   </ElButton>
 

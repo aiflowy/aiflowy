@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router';
 
 import { $t } from '@aiflowy/locales';
 
-import { Delete, Edit, More } from '@element-plus/icons-vue';
+import { Delete, Edit, MoreFilled } from '@element-plus/icons-vue';
 import {
   ElButton,
   ElDropdown,
@@ -98,7 +98,7 @@ const pluginToolReload = () => {
           <template #default="scope">
             <ElDropdown>
               <ElIcon>
-                <More />
+                <MoreFilled />
               </ElIcon>
 
               <template #dropdown>

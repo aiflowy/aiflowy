@@ -17,7 +17,7 @@ const SvgQQChatIcon = createIconifyIcon('svg:qqchat');
 const SvgWeChatIcon = createIconifyIcon('svg:wechat');
 const SvgDingDingIcon = createIconifyIcon('svg:dingding');
 const SvgTDesignIcon = createIconifyIcon('svg:tdesign-logo');
-const SvgBotIcon = createIconifyIcon('svg:bot');
+const SvgTalkIcon = createIconifyIcon('svg:talk');
 const SvgPluginIcon = createIconifyIcon('svg:plugin');
 const SvgWorkflowIcon = createIconifyIcon('svg:workflow');
 const SvgKnowledgeIcon = createIconifyIcon('svg:knowledge');
@@ -42,7 +42,6 @@ export {
   SvgAvatar3Icon,
   SvgAvatar4Icon,
   SvgBellIcon,
-  SvgBotIcon,
   SvgCakeIcon,
   SvgCardIcon,
   SvgDataCenterIcon,
@@ -60,6 +59,7 @@ export {
   SvgResourceIcon,
   SvgRoleIcon,
   SvgSettingIcon,
+  SvgTalkIcon,
   SvgTDesignIcon,
   SvgTimeIcon,
   SvgWeChatIcon,

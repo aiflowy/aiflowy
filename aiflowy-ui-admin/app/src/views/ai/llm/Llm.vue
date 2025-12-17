@@ -3,7 +3,7 @@ import { markRaw, nextTick, onMounted, ref } from 'vue';
 
 import { $t } from '@aiflowy/locales';
 
-import { DeleteFilled, Edit, More, Plus } from '@element-plus/icons-vue';
+import { DeleteFilled, Edit, MoreFilled, Plus } from '@element-plus/icons-vue';
 import {
   ElButton,
   ElDropdown,
@@ -199,7 +199,7 @@ const handleSuccess = () => {
                   <ElDropdown>
                     <ElButton link>
                       <ElIcon>
-                        <More />
+                        <MoreFilled />
                       </ElIcon>
                     </ElButton>
 

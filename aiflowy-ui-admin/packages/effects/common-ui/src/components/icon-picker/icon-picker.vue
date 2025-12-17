@@ -87,7 +87,7 @@ watchDebounced(
   async (prefix) => {
     if (prefix && prefix !== 'svg' && props.autoFetchApi) {
       innerIcons.value = [
-        'svg:bot',
+        'svg:talk',
         'svg:plugin',
         'svg:workflow',
         'svg:knowledge',

@@ -3,7 +3,7 @@ import type { FormInstance } from 'element-plus';
 
 import { onMounted, ref } from 'vue';
 
-import { Delete, Edit, More, Plus } from '@element-plus/icons-vue';
+import { Delete, Edit, MoreFilled, Plus } from '@element-plus/icons-vue';
 import {
   ElButton,
   ElDropdown,
@@ -165,7 +165,7 @@ function getTree() {
             <ElDropdown>
               <ElButton link>
                 <ElIcon>
-                  <More />
+                  <MoreFilled />
                 </ElIcon>
               </ElButton>
 

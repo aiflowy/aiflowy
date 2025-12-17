@@ -3,7 +3,7 @@ import { ref } from 'vue';
 
 import { $t } from '@aiflowy/locales';
 
-import { Delete, Edit, More } from '@element-plus/icons-vue';
+import { Delete, Edit, MoreFilled } from '@element-plus/icons-vue';
 import {
   ElButton,
   ElDialog,
@@ -114,7 +114,7 @@ const form = ref({
               <ElDropdown>
                 <ElButton link>
                   <ElIcon>
-                    <More />
+                    <MoreFilled />
                   </ElIcon>
                 </ElButton>
 

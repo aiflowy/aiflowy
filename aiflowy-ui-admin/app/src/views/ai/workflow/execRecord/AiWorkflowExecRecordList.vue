@@ -7,7 +7,7 @@ import { useRoute, useRouter } from 'vue-router';
 import {
   ArrowLeft,
   DeleteFilled,
-  More,
+  MoreFilled,
   Operation,
 } from '@element-plus/icons-vue';
 import {
@@ -221,7 +221,7 @@ function getTagType(row: any) {
               <ElDropdown>
                 <ElButton link>
                   <ElIcon>
-                    <More />
+                    <MoreFilled />
                   </ElIcon>
                 </ElButton>
                 <template #dropdown>

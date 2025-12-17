@@ -9,7 +9,7 @@ import {
   Delete,
   Download,
   Edit,
-  More,
+  MoreFilled,
   Plus,
   View,
 } from '@element-plus/icons-vue';
@@ -244,7 +244,7 @@ function download(row: any) {
                 <ElDropdown>
                   <ElButton link>
                     <ElIcon>
-                      <More />
+                      <MoreFilled />
                     </ElIcon>
                   </ElButton>
 

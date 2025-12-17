@@ -1,0 +1,15 @@
+<svg width="1em" height="1em" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>talk</title>
+    <g id="页面-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icon未选中备份" transform="translate(-25, -111)" fill-rule="nonzero">
+            <g id="编组-8" transform="translate(12, 65)">
+                <g id="talk" transform="translate(13, 46)">
+                    <rect id="矩形" fill="currentColor" opacity="0" x="0" y="0" width="16" height="16"></rect>
+                    <path d="M7.99915141,14 C7.86337738,14 7.72760335,13.9590551 7.61219542,13.8788714 L4.5623712,11.7480315 L3.00266699,11.7480315 C1.89780579,11.7480315 1,10.8387139 1,9.72125984 L1,3.02677165 C1,1.90931759 1.89950297,1 3.00266699,1 L12.997333,1 C14.1021942,1 15,1.90931759 15,3.02677165 L15,9.72296588 C15,10.8404199 14.100497,11.7497375 12.997333,11.7497375 L11.4376288,11.7497375 L8.38610741,13.8788714 C8.27069948,13.9590551 8.13492545,14 7.99915141,14 Z" id="形状结合" stroke="currentColor"></path>
+                    <rect id="矩形" fill="currentColor" x="3" y="3.8" width="5.6" height="1" rx="0.5"></rect>
+                    <rect id="矩形备份-5" fill="currentColor" x="3" y="7" width="7.2" height="1" rx="0.5"></rect>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

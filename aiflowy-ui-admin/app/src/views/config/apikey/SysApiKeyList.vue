@@ -3,7 +3,7 @@ import type { FormInstance } from 'element-plus';
 
 import { markRaw, ref } from 'vue';
 
-import { Delete, Edit, More, Plus } from '@element-plus/icons-vue';
+import { Delete, Edit, MoreFilled, Plus } from '@element-plus/icons-vue';
 import {
   ElButton,
   ElDialog,
@@ -176,7 +176,7 @@ function addNewApiKey() {
                 <ElDropdown>
                   <ElButton link>
                     <ElIcon>
-                      <More />
+                      <MoreFilled />
                     </ElIcon>
                   </ElButton>
 

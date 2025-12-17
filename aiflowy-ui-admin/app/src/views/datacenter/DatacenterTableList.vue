@@ -3,7 +3,7 @@ import type { FormInstance } from 'element-plus';
 
 import { markRaw, onMounted, ref } from 'vue';
 
-import { Delete, Edit, More, Plus, View } from '@element-plus/icons-vue';
+import { Delete, Edit, MoreFilled, Plus, View } from '@element-plus/icons-vue';
 import {
   ElButton,
   ElDropdown,
@@ -143,7 +143,7 @@ function toDetailPage(row: any) {
                 <ElDropdown>
                   <ElButton link>
                     <ElIcon>
-                      <More />
+                      <MoreFilled />
                     </ElIcon>
                   </ElButton>
 

@@ -14,7 +14,8 @@ import {
 
 import { api } from '#/api/request';
 import DictSelect from '#/components/dict/DictSelect.vue';
-import Cropper from '#/components/upload/Cropper.vue';
+// import Cropper from '#/components/upload/Cropper.vue';
+import UploadAvatar from '#/components/upload/UploadAvatar.vue';
 import { $t } from '#/locales';
 
 const emit = defineEmits(['reload']);
@@ -95,7 +96,8 @@ function closeDialog() {
       :rules="rules"
     >
       <ElFormItem prop="icon" :label="$t('aiWorkflow.icon')">
-        <Cropper v-model="entity.icon" crop />
+        <!-- <Cropper v-model="entity.icon" crop /> -->
+        <UploadAvatar v-model="entity.icon" />
       </ElFormItem>
       <ElFormItem prop="title" :label="$t('aiWorkflow.title')">
         <ElInput v-model.trim="entity.title" />

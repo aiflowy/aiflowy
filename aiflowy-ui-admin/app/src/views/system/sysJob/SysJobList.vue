@@ -8,7 +8,7 @@ import {
   CircleCloseFilled,
   Delete,
   Edit,
-  More,
+  MoreFilled,
   Plus,
   Tickets,
 } from '@element-plus/icons-vue';
@@ -223,7 +223,7 @@ function toLogPage(row: any) {
                 <ElDropdown>
                   <ElButton link>
                     <ElIcon>
-                      <More />
+                      <MoreFilled />
                     </ElIcon>
                   </ElButton>
 
