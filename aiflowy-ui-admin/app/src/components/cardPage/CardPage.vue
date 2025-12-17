@@ -1,6 +1,8 @@
 <script setup>
 import { computed } from 'vue';
 
+import { preferences } from '@aiflowy/preferences';
+
 import { MoreFilled } from '@element-plus/icons-vue';
 import {
   ElAvatar,
@@ -135,7 +137,9 @@ const filteredActions = computed(() => {
     </div>
 
     <div v-if="data.length === 0" class="empty-state">
-      <ElEmpty image="/empty.png" />
+      <ElEmpty
+        :image="`/empty${preferences.theme.mode === 'dark' ? '-dark' : ''}.png`"
+      />
     </div>
   </div>
 </template>

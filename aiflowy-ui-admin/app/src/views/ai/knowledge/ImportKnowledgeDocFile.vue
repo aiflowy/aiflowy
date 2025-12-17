@@ -82,9 +82,7 @@ const finishImport = () => {
           <ElStep>
             <template #icon>
               <div class="flex items-center gap-2">
-                <div
-                  class="h-8 w-8 rounded-full bg-[var(--el-text-color-placeholder)]"
-                >
+                <div class="h-8 w-8 rounded-full bg-[var(--step-item-bg)]">
                   <span class="text-accent-foreground text-sm/8">1</span>
                 </div>
                 <span class="text-base">{{
@@ -96,9 +94,7 @@ const finishImport = () => {
           <ElStep>
             <template #icon>
               <div class="flex items-center gap-2">
-                <div
-                  class="h-8 w-8 rounded-full bg-[var(--el-text-color-placeholder)]"
-                >
+                <div class="h-8 w-8 rounded-full bg-[var(--step-item-bg)]">
                   <span class="text-accent-foreground text-sm/8">2</span>
                 </div>
                 <span class="text-base">{{
@@ -110,9 +106,7 @@ const finishImport = () => {
           <ElStep>
             <template #icon>
               <div class="flex items-center gap-2">
-                <div
-                  class="h-8 w-8 rounded-full bg-[var(--el-text-color-placeholder)]"
-                >
+                <div class="h-8 w-8 rounded-full bg-[var(--step-item-bg)]">
                   <span class="text-accent-foreground text-sm/8">3</span>
                 </div>
                 <span class="text-base">{{
@@ -124,9 +118,7 @@ const finishImport = () => {
           <ElStep>
             <template #icon>
               <div class="flex items-center gap-2">
-                <div
-                  class="h-8 w-8 rounded-full bg-[var(--el-text-color-placeholder)]"
-                >
+                <div class="h-8 w-8 rounded-full bg-[var(--step-item-bg)]">
                   <span class="text-accent-foreground text-sm/8">4</span>
                 </div>
                 <span class="text-base">{{
@@ -234,12 +226,27 @@ const finishImport = () => {
 .knw-file-confirm {
   width: 100%;
 }
+
+:deep(.el-step__head) {
+  --step-item-bg: rgba(0, 0, 0, 0.06);
+  --step-item-solid-bg: rgba(0, 0, 0, 0.15);
+  --accent-foreground: rgba(0, 0, 0, 0.45);
+}
+:deep(.el-step__head:where(.dark, .dark *)) {
+  --step-item-bg: var(--el-text-color-placeholder);
+  --step-item-solid-bg: var(--el-text-color-placeholder);
+  --accent-foreground: var(--primary-foreground);
+}
+:deep(.el-step__head.is-finish) {
+  --step-item-bg: hsl(var(--primary));
+  --step-item-solid-bg: hsl(var(--primary));
+  --accent-foreground: var(--primary-foreground);
+}
 :deep(.el-step__icon.is-icon) {
   width: 120px;
   background-color: var(--table-header-bg-color);
 }
-:deep(.el-step__head.is-finish) {
-  --el-text-color-placeholder: hsl(var(--primary));
-  --accent-foreground: var(--primary-foreground);
+:deep(.el-step__line) {
+  background-color: var(--step-item-solid-bg);
 }
 </style>

@@ -79,8 +79,8 @@ const handleSearch = (query: string) => {
     align-center
   >
     <template #header>
-      <div class="select-modal-header-container">
-        <p class="el-dialog__title mb-2">{{ props.title }}</p>
+      <div>
+        <p class="el-dialog__title mb-4">{{ props.title }}</p>
         <HeaderSearch @search="handleSearch" />
       </div>
     </template>
@@ -179,10 +179,6 @@ const handleSearch = (query: string) => {
   overflow: auto; */
   background-color: var(--bot-select-data-item-back);
   border-radius: 8px;
-}
-
-.select-modal-header-container {
-  margin-bottom: 20px;
 }
 
 .title-wrapper {

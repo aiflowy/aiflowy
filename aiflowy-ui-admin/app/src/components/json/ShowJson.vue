@@ -26,7 +26,10 @@ watch(
 <template>
   <div class="res-container">
     <JsonViewer v-if="value" :value="value" copyable :theme="themeMode" />
-    <ElEmpty image="/empty.png" v-else />
+    <ElEmpty
+      :image="`/empty${preferences.theme.mode === 'dark' ? '-dark' : ''}.png`"
+      v-else
+    />
   </div>
 </template>
 

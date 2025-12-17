@@ -3,6 +3,7 @@ import type { Component } from 'vue';
 
 import { ref, watch } from 'vue';
 
+import { preferences } from '@aiflowy/preferences';
 import { cn } from '@aiflowy/utils';
 
 import { MoreFilled } from '@element-plus/icons-vue';
@@ -159,7 +160,10 @@ const isComponent = (icon: any) => {
             </template>
           </ElDropdown>
         </div>
-        <ElEmpty v-if="menus.length <= 0" image="/empty.png" />
+        <ElEmpty
+          v-if="menus.length <= 0"
+          :image="`/empty${preferences.theme.mode === 'dark' ? '-dark' : ''}.png`"
+        />
       </div>
     </div>
 
@@ -188,10 +192,14 @@ const isComponent = (icon: any) => {
   font-size: 14px;
 }
 .list-item:hover {
-  background-color: var(--el-color-primary-light-9);
+  background-color: hsl(var(--accent));
 }
 .list-item.selected {
-  background-color: var(--el-color-primary-light-8);
-  color: var(--el-color-primary);
+  background-color: hsl(var(--primary) / 15%);
+  color: hsl(var(--primary));
+}
+.list-item.selected:where(.dark, .dark *) {
+  background-color: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
 }
 </style>

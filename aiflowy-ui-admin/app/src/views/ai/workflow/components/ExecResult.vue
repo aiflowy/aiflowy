@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 
+import { preferences } from '@aiflowy/preferences';
+
 import { ElEmpty, ElMessage, ElRow } from 'element-plus';
 
 import ShowJson from '#/components/json/ShowJson.vue';
@@ -84,7 +86,10 @@ function getResult(res: any) {
       <ShowJson :value="result" />
     </div>
     <div>
-      <ElEmpty image="/empty.png" v-if="!result" />
+      <ElEmpty
+        :image="`/empty${preferences.theme.mode === 'dark' ? '-dark' : ''}.png`"
+        v-if="!result"
+      />
     </div>
   </div>
 </template>

@@ -86,7 +86,24 @@ watchDebounced(
   () => props.prefix,
   async (prefix) => {
     if (prefix && prefix !== 'svg' && props.autoFetchApi) {
-      innerIcons.value = await fetchIconsData(prefix);
+      innerIcons.value = [
+        'svg:bot',
+        'svg:plugin',
+        'svg:workflow',
+        'svg:knowledge',
+        'svg:resource',
+        'svg:data-center',
+        'svg:llm',
+        'svg:account',
+        'svg:role',
+        'svg:menu',
+        'svg:department',
+        'svg:time',
+        'svg:log',
+        'svg:setting',
+        'svg:api',
+        ...(await fetchIconsData(prefix)),
+      ];
     }
   },
   { immediate: true, debounce: 500, maxWait: 1000 },

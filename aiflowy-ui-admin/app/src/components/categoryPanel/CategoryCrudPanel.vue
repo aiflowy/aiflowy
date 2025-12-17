@@ -2,6 +2,7 @@
 import { computed, onMounted, ref, toRefs } from 'vue';
 
 import { $t } from '@aiflowy/locales';
+import { preferences } from '@aiflowy/preferences';
 
 import { Delete, Edit, MoreFilled, Plus } from '@element-plus/icons-vue';
 import {
@@ -243,7 +244,10 @@ const handleDeleteClick = (event: any, item: any) => {
 
     <!-- 无数据提示 -->
     <div v-if="categoryData.length === 0 && !loading" class="no-data">
-      <ElEmpty image="/empty.png" :description="$t('common.noDataAvailable')" />
+      <ElEmpty
+        :image="`/empty${preferences.theme.mode === 'dark' ? '-dark' : ''}.png`"
+        :description="$t('common.noDataAvailable')"
+      />
     </div>
 
     <!-- 新增/编辑弹窗 -->

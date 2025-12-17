@@ -6,6 +6,7 @@ import { Conversations } from 'vue-element-plus-x';
 import { useRoute, useRouter } from 'vue-router';
 
 import { IconifyIcon } from '@aiflowy/icons';
+import { preferences } from '@aiflowy/preferences';
 import { tryit, uuid } from '@aiflowy/utils';
 
 import {
@@ -131,7 +132,10 @@ const updateActive = (_sessionId?: number | string) => {
           show-built-in-menu-type="hover"
           @update:active="updateActive"
         />
-        <ElEmpty image="/empty.png" v-show="sessionList.length === 0" />
+        <ElEmpty
+          :image="`/empty${preferences.theme.mode === 'dark' ? '-dark' : ''}.png`"
+          v-show="sessionList.length === 0"
+        />
       </div>
     </ElAside>
     <ElMain>

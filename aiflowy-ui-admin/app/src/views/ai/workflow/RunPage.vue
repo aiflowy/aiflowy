@@ -4,9 +4,10 @@ import { useRoute } from 'vue-router';
 
 import { sortNodes } from '@aiflowy/utils';
 
-import { ElCard, ElCol, ElRow } from 'element-plus';
+import { ElAvatar, ElCard, ElCol, ElRow } from 'element-plus';
 
 import { api } from '#/api/request';
+import workflowIcon from '#/assets/ai/workflow/workflowIcon.png';
 import { $t } from '#/locales';
 import ExecResult from '#/views/ai/workflow/components/ExecResult.vue';
 import WorkflowForm from '#/views/ai/workflow/components/WorkflowForm.vue';
@@ -53,41 +54,61 @@ function onAsyncExecute(info: any) {
 </script>
 
 <template>
-  <div v-loading="pageLoading" class="container p-2.5">
-    <ElRow :gutter="10">
+  <div
+    v-loading="pageLoading"
+    class="bg-background-deep flex h-full w-full flex-col gap-6 overflow-hidden p-6"
+  >
+    <div
+      class="flex h-[150px] shrink-0 items-center gap-6 rounded-lg border border-[var(--el-border-color)] bg-[var(--el-bg-color)] pl-11"
+    >
+      <ElAvatar :src="workflowInfo.icon ?? workflowIcon" :size="72" />
+      <div class="flex flex-col gap-5">
+        <span class="text-3xl font-medium">{{ workflowInfo.title }}</span>
+        <span class="text-base">{{ workflowInfo.description }}</span>
+      </div>
+    </div>
+    <ElRow class="flex-1" :gutter="10">
       <ElCol :span="10">
-        <ElCard
-          shadow="never"
-          class="mb-2.5"
-          body-style="height: 300px;overflow-y: auto"
-        >
-          <div class="mb-2.5 font-semibold">
-            {{ $t('aiWorkflow.params') }}：
-          </div>
-          <WorkflowForm
-            v-if="runParams && tinyFlowData"
-            ref="workflowForm"
-            :workflow-id="workflowId"
-            :workflow-params="runParams"
-            :on-submit="onSubmit"
-            :on-async-execute="onAsyncExecute"
-            :tiny-flow-data="tinyFlowData"
-          />
-        </ElCard>
-        <ElCard shadow="never" body-style="height: 300px;overflow-y: auto">
-          <div class="mb-2.5 font-semibold">{{ $t('aiWorkflow.steps') }}：</div>
-          <WorkflowSteps
-            v-if="tinyFlowData"
-            :workflow-id="workflowId"
-            :node-json="sortNodes(tinyFlowData)"
-            :init-signal="initState"
-            :polling-data="chainInfo"
-            @resume="resumeChain"
-          />
-        </ElCard>
+        <div class="flex h-full flex-col gap-2.5">
+          <ElCard
+            shadow="never"
+            class="flex-1"
+            body-class="overflow-auto h-full"
+          >
+            <div class="mb-2.5 font-semibold">
+              {{ $t('aiWorkflow.params') }}：
+            </div>
+            <WorkflowForm
+              v-if="runParams && tinyFlowData"
+              ref="workflowForm"
+              :workflow-id="workflowId"
+              :workflow-params="runParams"
+              :on-submit="onSubmit"
+              :on-async-execute="onAsyncExecute"
+              :tiny-flow-data="tinyFlowData"
+            />
+          </ElCard>
+          <ElCard
+            shadow="never"
+            class="flex-1"
+            body-class="overflow-auto h-full"
+          >
+            <div class="mb-2.5 font-semibold">
+              {{ $t('aiWorkflow.steps') }}：
+            </div>
+            <WorkflowSteps
+              v-if="tinyFlowData"
+              :workflow-id="workflowId"
+              :node-json="sortNodes(tinyFlowData)"
+              :init-signal="initState"
+              :polling-data="chainInfo"
+              @resume="resumeChain"
+            />
+          </ElCard>
+        </div>
       </ElCol>
       <ElCol :span="14">
-        <ElCard shadow="never" body-style="height: 612px;overflow-y: auto">
+        <ElCard shadow="never" class="h-full" body-class="h-full overflow-auto">
           <div class="mb-2.5 mt-2.5 font-semibold">
             {{ $t('aiWorkflow.result') }}：
           </div>
@@ -103,9 +124,3 @@ function onAsyncExecute(info: any) {
     </ElRow>
   </div>
 </template>
-
-<style scoped>
-.container {
-  background: var(--el-bg-color-page);
-}
-</style>

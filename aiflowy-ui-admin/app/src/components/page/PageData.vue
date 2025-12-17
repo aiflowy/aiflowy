@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref, watch } from 'vue';
 
+import { preferences } from '@aiflowy/preferences';
+
 import { ElEmpty, ElPagination } from 'element-plus';
 
 import { api } from '#/api/request';
@@ -119,6 +121,9 @@ onMounted(() => {
         />
       </div>
     </template>
-    <ElEmpty image="/empty.png" v-else />
+    <ElEmpty
+      :image="`/empty${preferences.theme.mode === 'dark' ? '-dark' : ''}.png`"
+      v-else
+    />
   </div>
 </template>

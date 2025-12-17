@@ -111,7 +111,7 @@ const backDoc = () => {
             @click="handleCategoryClick"
           />
         </div>
-        <div class="doc-table-content">
+        <div class="doc-table-content border border-[var(--el-border-color)]">
           <div v-if="selectedCategory === 'documentList'" class="doc-table">
             <div class="doc-header" v-if="!viewDocVisible">
               <HeaderSearch
