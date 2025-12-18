@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import type {
-  BubbleListItemProps,
-  BubbleListProps,
-} from 'vue-element-plus-x/types/BubbleList';
-
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import { BubbleList } from 'vue-element-plus-x';
 
 import { CopyDocument, EditPen, RefreshRight } from '@element-plus/icons-vue';
@@ -44,12 +39,10 @@ import { ElAvatar, ElButton } from 'element-plus';
 //     loading: true,
 //   },
 // ];
-defineProps({
-  messageList: {
-    type: Array<any>,
-    default: () => [],
-  },
-});
+interface Props {
+  messages: any[];
+}
+defineProps<Props>();
 const avatar = ref('https://avatars.githubusercontent.com/u/76239030?v=4');
 const avartAi = ref(
   'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
@@ -57,7 +50,7 @@ const avartAi = ref(
 </script>
 
 <template>
-  <BubbleList :list="messageList" max-height="calc(100vh - 345px)">
+  <BubbleList :list="messages" max-height="calc(100vh - 345px)">
     <!-- 自定义头像 -->
     <template #avatar="{ item }">
       <ElAvatar

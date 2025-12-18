@@ -44,6 +44,9 @@ function addMessage(message: any) {
     messageList.value[index] = message;
   }
 }
+function setMessageList(messages: any) {
+  messageList.value = messages;
+}
 </script>
 
 <template>
@@ -83,7 +86,7 @@ function addMessage(message: any) {
       </ElSpace>
     </ElAside>
     <ElMain class="p-6 pl-0">
-      <ChatContainer :bot="currentBot">
+      <ChatContainer :bot="currentBot" :on-message-list="setMessageList">
         <template #default="{ sessionId }">
           <div class="flex h-full flex-col justify-between">
             <ChatBubbleList :messages="messageList" />

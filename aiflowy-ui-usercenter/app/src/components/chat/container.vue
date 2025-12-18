@@ -15,12 +15,11 @@ import {
   CardTitle,
 } from '#/components/card';
 
-const props = defineProps({
-  bot: {
-    type: Object,
-    required: true,
-  },
-});
+interface Props {
+  bot: any;
+  onMessageList?: (list: any[]) => void;
+}
+const props = defineProps<Props>();
 const sessionList = ref<any>([]);
 const currentSession = ref<any>({});
 watch(
@@ -50,6 +49,21 @@ function addSession() {
 }
 function clickSession(session: any) {
   currentSession.value = session;
+  getMessageList();
+}
+function getMessageList() {
+  api
+    .get('/userCenter/aiBotMessage/getMessages', {
+      params: {
+        botId: props.bot.id,
+        sessionId: currentSession.value.sessionId,
+      },
+    })
+    .then((res) => {
+      if (res.errorCode === 0) {
+        props.onMessageList?.(res.data);
+      }
+    });
 }
 </script>
 
