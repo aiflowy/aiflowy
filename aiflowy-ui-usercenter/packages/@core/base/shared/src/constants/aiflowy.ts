@@ -17,4 +17,4 @@ export const APP_LOGO_URL =
 /**
  * @zh_CN AIFlowy Admin 首页地址
  */
-export const APP_PREVIEW_URL = 'https://www.aiflowy.tech';
+export const APP_PREVIEW_URL = 'https://aiflowy.tech';

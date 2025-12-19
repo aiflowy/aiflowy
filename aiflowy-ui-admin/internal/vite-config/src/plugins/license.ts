@@ -33,12 +33,12 @@ async function viteLicensePlugin(
   * AIFlowy Admin
   * Version: ${version}
   * Author: aiflowy
-  * Copyright (C) 2024 AIFlowy
+  * Copyright (C) 2026 AIFlowy
   * License: MIT License
   * Description: ${description}
   * Date Created: ${date}
   * Homepage: ${homepage}
-  * Contact: ann.aiflowy@gmail.com
+  * Contact: fuhai999@gmail.com
 */
               `.trim();
 
