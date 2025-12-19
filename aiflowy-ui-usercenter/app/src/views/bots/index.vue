@@ -94,7 +94,7 @@ function handleTagClick(tag: any) {
           :to="`/workflow/${workflow.id}`"
         >
           <Card
-            class="border-border h-[168px] max-w-none flex-col gap-3 rounded-xl border p-6 pb-0 pr-4 transition hover:-translate-y-2 hover:shadow-md"
+            class="border-border bg-background h-[168px] max-w-none flex-col gap-3 rounded-xl border p-6 pb-0 pr-4 transition hover:-translate-y-2 hover:shadow-md"
           >
             <CardContent class="flex-row items-center gap-3">
               <CardAvatar

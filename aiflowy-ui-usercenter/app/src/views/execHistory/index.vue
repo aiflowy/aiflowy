@@ -235,11 +235,6 @@ function getDateRange() {
 }
 
 .el-select :deep(.el-select__wrapper) {
-  --el-fill-color-blank: #f6f6f6;
   --el-border-radius-base: 8px;
-}
-
-:deep(.el-date-editor) {
-  --el-input-bg-color: #f6f6f6;
 }
 </style>
