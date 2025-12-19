@@ -14,7 +14,6 @@ import {
 import { api } from '#/api/request';
 import { $t } from '#/locales';
 
-const emit = defineEmits(['reload']);
 const options = ref<any[]>([]);
 const getLlmList = (providerId: string) => {
   api.get(`/api/v1/aiLlm/list?providerId=${providerId}`, {}).then((res) => {
@@ -73,18 +72,13 @@ const closeDialog = () => {
     align-center
     width="482"
   >
-    <ElForm
-      ref="formDataRef"
-      :model="formData"
-      status-icon
-      :rules="rules"
-    >
+    <ElForm ref="formDataRef" :model="formData" status-icon :rules="rules">
       <ElFormItem prop="llmId">
         <ElSelect v-model="formData.llmId">
           <ElOption
             v-for="item in options"
             :key="item.id"
-            :label="`${item.aiLlmProvider.providerName}/${item.title}`"
+            :label="item.title"
             :value="item.id || ''"
           />
         </ElSelect>

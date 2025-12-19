@@ -101,13 +101,13 @@ public class AiKnowledgeBase extends DateEntity implements Serializable {
      * Embedding 模型ID
      */
     @Column(comment = "Embedding 模型ID")
-    private Long vectorEmbedLlmId;
+    private BigInteger vectorEmbedLlmId;
 
     /**
      * 重排 模型ID
      */
     @Column(comment = "重排 模型ID")
-    private Long rerankLlmId;
+    private BigInteger rerankLlmId;
 
     /**
      * 创建时间
@@ -227,13 +227,7 @@ public class AiKnowledgeBase extends DateEntity implements Serializable {
         this.vectorStoreConfig = vectorStoreConfig;
     }
 
-    public Long getVectorEmbedLlmId() {
-        return vectorEmbedLlmId;
-    }
-
-    public void setVectorEmbedLlmId(Long vectorEmbedLlmId) {
-        this.vectorEmbedLlmId = vectorEmbedLlmId;
-    }
+    public BigInteger getVectorEmbedLlmId() {return vectorEmbedLlmId;}
 
     public Date getCreated() {
         return created;
@@ -275,13 +269,11 @@ public class AiKnowledgeBase extends DateEntity implements Serializable {
         this.options = options;
     }
 
-    public Long getRerankLlmId() {
-        return rerankLlmId;
-    }
+    public void setVectorEmbedLlmId(BigInteger vectorEmbedLlmId) {this.vectorEmbedLlmId = vectorEmbedLlmId;}
 
-    public void setRerankLlmId(Long rerankLlmId) {
-        this.rerankLlmId = rerankLlmId;
-    }
+    public BigInteger getRerankLlmId() {return rerankLlmId;}
+
+    public void setRerankLlmId(BigInteger rerankLlmId) {this.rerankLlmId = rerankLlmId;}
 
     public Boolean getSearchEngineEnable() {
         return searchEngineEnable;

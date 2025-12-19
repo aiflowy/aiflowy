@@ -2,8 +2,10 @@
 package tech.aiflowy.ai.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import com.agentsflex.core.document.Document;
 import com.agentsflex.core.model.chat.ChatModel;
 import com.agentsflex.core.model.embedding.EmbeddingModel;
+import com.agentsflex.core.model.rerank.RerankModel;
 import com.agentsflex.core.store.VectorData;
 import com.alicp.jetcache.Cache;
 import com.mybatisflex.core.query.QueryWrapper;
@@ -22,10 +24,7 @@ import tech.aiflowy.common.web.exceptions.BusinessException;
 
 import javax.annotation.Resource;
 import java.math.BigInteger;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -118,40 +117,23 @@ public class AiLlmServiceImpl extends ServiceImpl<AiLlmMapper, AiLlm> implements
 
 
     private void verifyRerankLlm(AiLlm llm) {
-//        try {
-//            DefaultRerankModelConfig rerankModelConfig = new DefaultRerankModelConfig();
-//
-//            rerankModelConfig.setModel(llm.getLlmModel());
-//            rerankModelConfig.setEndpoint(llm.getLlmEndpoint());
-//            rerankModelConfig.setApiKey(llm.getLlmApiKey());
-//            rerankModelConfig.setDebug(true);
-//
-//            Map<String, Object> options = llm.getOptions();
-//            if (options == null) {
-//                throw new BusinessException("options为空");
-//            }
-//
-//            if (options.get("rerankPath") == null || !StringUtils.hasLength((String) options.get("rerankPath"))) {
-//                throw new BusinessException("rerankPath未配置");
-//            }
-//
-//            String reankPath = (String) options.get("rerankPath");
-//            rerankModelConfig.setBasePath(reankPath);
-//
-//            DefaultRerankModel rerankModel = new DefaultRerankModel(rerankModelConfig);
-//
-//            String query = "我和吴彦祖谁帅？";
-//            ArrayList<Document> documentList = new ArrayList<>();
-//            documentList.add(new Document("你比陈冠希帅"));
-//            documentList.add(new Document("你比吴彦祖帅"));
-//            documentList.add(new Document("你比谢霆锋帅"));
-//            List<Document> rerank = rerankModel.rerank(query, documentList);
-//            log.info("校验结果：{}", rerank);
-//        } catch (Exception e) {
-//            log.error("校验失败：{}", e.getMessage());
-//            throw new BusinessException("校验未通过，请前往后端日志查看详情！");
-//
-//        }
+        RerankModel rerankModel = llm.toRerankModel();
+        List<Document> documents = new ArrayList<>();
+        documents.add(Document.of("Paris is the capital of France."));
+        documents.add(Document.of("London is the capital of England."));
+        documents.add(Document.of("Tokyo is the capital of Japan."));
+        documents.add(Document.of("Beijing is the capital of China."));
+        documents.add(Document.of("Washington, D.C. is the capital of the United States."));
+        documents.add(Document.of("Moscow is the capital of Russia."));
+        try {
+            List<Document> rerank = rerankModel.rerank("What is the capital of France?", documents);
+            if (rerank == null || rerank.isEmpty()) {
+                throw new BusinessException("校验未通过，请前往后端日志查看详情！");
+            }
+        } catch (Exception e) {
+            log.error("校验失败：{}", e.getMessage());
+            throw new BusinessException("校验未通过，请前往后端日志查看详情！");
+        }
     }
 
     private void verifyEmbedLlm(AiLlm llm) {

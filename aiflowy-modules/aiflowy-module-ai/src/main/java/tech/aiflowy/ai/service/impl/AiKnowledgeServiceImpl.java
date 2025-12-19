@@ -2,6 +2,7 @@ package tech.aiflowy.ai.service.impl;
 
 
 import com.agentsflex.core.document.Document;
+import com.agentsflex.core.model.rerank.RerankModel;
 import com.agentsflex.core.store.DocumentStore;
 import com.agentsflex.core.store.SearchWrapper;
 import com.agentsflex.core.store.StoreOptions;
@@ -71,7 +72,7 @@ public class AiKnowledgeServiceImpl extends ServiceImpl<AiKnowledgeMapper, AiKno
             throw new BusinessException("知识库没有配置向量库");
         }
 
-        AiLlm aiLlm = llmService.getById(knowledge.getVectorEmbedLlmId());
+        AiLlm aiLlm = llmService.getLlmInstance(knowledge.getVectorEmbedLlmId());
         if (aiLlm == null) {
             throw new BusinessException("知识库没有配置向量模型");
         }
@@ -130,14 +131,9 @@ public class AiKnowledgeServiceImpl extends ServiceImpl<AiKnowledgeMapper, AiKno
                 return formatDocuments(needRerankDocuments);
             }
 
-            AiLlm aiLlmRerank = llmService.getById(knowledge.getRerankLlmId());
-            if (aiLlmRerank == null) {
-                return formatDocuments(needRerankDocuments);
-            }
-
-            DefaultRerankModel rerankModel = getRerankModel(aiLlmRerank);
+            RerankModel rerankModel = aiLlm.toRerankModel();
             if (rerankModel == null) {
-                throw new BusinessException("重排模型配置失败");
+                return formatDocuments(needRerankDocuments);
             }
 
             needRerankDocuments.forEach(item -> item.setScore(null));

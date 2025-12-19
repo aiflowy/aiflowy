@@ -43,7 +43,7 @@ public class AiLlm extends AiLlmBase {
     @RelationManyToOne(selfField = "providerId", targetField = "id")
     private AiLlmProvider aiLlmProvider;
 
-    public final static String LlmEndpoint = "llmEndpoint";
+    public final static String Llm_Endpoint = "llmEndpoint";
     public final static String Chat_path = "chatPath";
     public final static String Embed_path = "embedPath";
     public final static String Rerank_path = "rerankPath";
@@ -73,7 +73,7 @@ public class AiLlm extends AiLlmBase {
 
     private ChatModel ollamaLlm() {
         OllamaChatConfig ollamaChatConfig = new OllamaChatConfig();
-        ollamaChatConfig.setEndpoint(getLlmEndpoint());
+        ollamaChatConfig.setEndpoint(getPath(Llm_Endpoint));
         ollamaChatConfig.setApiKey(getLlmApiKey());
         ollamaChatConfig.setModel(getLlmModel());
         return new OllamaChatModel(ollamaChatConfig);
@@ -81,15 +81,16 @@ public class AiLlm extends AiLlmBase {
 
     private ChatModel deepSeekLLm() {
         DeepseekConfig deepseekConfig = new DeepseekConfig();
-        deepseekConfig.setEndpoint(getLlmEndpoint());
+        deepseekConfig.setEndpoint(getPath(Llm_Endpoint));
         deepseekConfig.setApiKey(getLlmApiKey());
         deepseekConfig.setModel(getLlmModel());
+        deepseekConfig.setRequestPath(getPath(Chat_path));
         return new DeepseekChatModel(deepseekConfig);
     }
 
     private ChatModel openaiLLm() {
         OpenAIChatConfig openAIChatConfig = new OpenAIChatConfig();
-        openAIChatConfig.setEndpoint(getLlmEndpoint());
+        openAIChatConfig.setEndpoint(getPath(Llm_Endpoint));
         openAIChatConfig.setApiKey(getLlmApiKey());
         openAIChatConfig.setModel(getLlmModel());
         openAIChatConfig.setLogEnabled(true);
@@ -99,7 +100,7 @@ public class AiLlm extends AiLlmBase {
 
     public RerankModel toRerankModel() {
         String rerankPath = getPath(Rerank_path);
-        String endpoint = getPath(LlmEndpoint);
+        String endpoint = getPath(Llm_Endpoint);
         String apiKey = getLlmApiKey();
         switch (getAiLlmProvider().getProviderName().toLowerCase()) {
             case "gitee":
@@ -114,9 +115,8 @@ public class AiLlm extends AiLlmBase {
     }
 
     public EmbeddingModel toEmbeddingModel() {
-        Map<String, Object> options = getOptions();
-        String embedPath = (String) options.get(Embed_path);;
-        String endpoint = (String) options.get(LlmEndpoint);
+        String embedPath = getPath(Embed_path);;
+        String endpoint = getPath(Llm_Endpoint);
         String providerName = getAiLlmProvider().getProviderName();
         if (StringUtil.noText(providerName)) {
             return null;
@@ -151,7 +151,7 @@ public class AiLlm extends AiLlmBase {
     public String getPath (String key) {
         Map<String, Object> options = getOptions();
         String path = "";
-        if (LlmEndpoint.equals(key)) {
+        if (Llm_Endpoint.equals(key)) {
             path = getLlmEndpoint();
         }
 
@@ -160,7 +160,7 @@ public class AiLlm extends AiLlmBase {
             if (path == null && StringUtils.hasLength(pathFromOptions)) {
                 path = pathFromOptions;
             } else {
-                if (LlmEndpoint.equals(key)) {
+                if (Llm_Endpoint.equals(key)) {
                     path = this.getAiLlmProvider().getEndPoint();
                 } else if (Chat_path.equals(key)){
                     path = this.getAiLlmProvider().getChatPath();

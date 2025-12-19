@@ -50,11 +50,6 @@ const chatModelListData = ref([]);
 const embeddingModelListData = ref([]);
 const rerankModelListData = ref([]);
 
-const modelListMap = ref({
-  chatModel: chatModelListData,
-  embeddingModel: embeddingModelListData,
-  rerankModel: rerankModelListData,
-});
 const getLlmDetailList = (providerId) => {
   api
     .get(`/api/v1/aiLlm/getList?providerId=${providerId}&added=true`, {})
@@ -249,6 +244,7 @@ const handleFormBlur = async () => {
       endPoint: llmProviderForm.value.endPoint,
       chatPath: llmProviderForm.value.chatPath,
       embedPath: llmProviderForm.value.embedPath,
+      rerankPath: llmProviderForm.value.rerankPath,
     });
 
     if (res.errorCode === 0) {
