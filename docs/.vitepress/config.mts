@@ -117,32 +117,33 @@ function sidebarDevelopment(): DefaultTheme.SidebarItem[] {
             text: '前端相关',
             collapsed: false,
             items: [
-                {
-                    text: 'React', collapsed: false, items: [
+                // {
+                //     text: 'React', collapsed: false, items: [
                         {text: '路由管理', link: 'front/routes'},
                         {text: '状态管理', link: 'front/state'},
                         {text: 'Hooks', link: 'front/hooks'},
                         {text: '组件使用', link: 'front/components'},
                         {text: '国际化', link: 'front/locales'}
-                    ]
-                },
-                {text: 'Vue', collapsed: false},
+                //     ]
+                // },
+                // {text: 'Vue', collapsed: false},
             ]
         },
         {
             text: '后端相关',
             collapsed: false,
             items: [
-                {text: 'Controller', link: '/backend/controller'},
+                {text: '控制器', link: '/backend/controller'},
                 {text: '权限管理', link: '/backend/permission_management'},
                 {text: '验证码', link: '/backend/captcha'},
                 {text: '数据字典', link: '/backend/data_dictionary'},
                 {text: '文件管理', link: '/backend/file_management'},
-                {text: '其他', link: '/backend/other'}
+                {text: '自定义节点', link: '/ai/custom-node'},
+                // {text: '其他', link: '/backend/other'}
             ]
         },
         {
-            text: 'AI 相关',
+            text: 'API 文档',
             collapsed: false,
             items: [
                 {text: '大语言模型', link: '/ai/language-model'},
@@ -168,24 +169,22 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
             collapsed: false,
             items: [
                 {text: '什么是 AIFlowy？', link: 'info/what-is-aiflowy'},
+                {text: '5分钟快速入门', link: 'info/specifications'},
                 {text: '技术规格', link: 'info/specifications'},
                 {text: '更新记录', link: 'changes'},
             ]
         },
         {
-            text: 'Bot 应用',
+            text: '对话助手',
             collapsed: false,
             items: [
-                {text: '什么是 Bot', link: 'bot-application/what-is-a-bot'},
+                {text: '什么是对话助手', link: 'bot-application/what-is-a-bot'},
                 {text: '快速开始', link: 'bot-application/quick-start'},
                 {text: '挂载知识库', link: 'bot-application/mount-knowledge'},
                 {text: '挂载插件', link: 'bot-application/mount-plugins'},
                 {text: '挂载工作流', link: 'bot-application/mount-workflow'},
                 {text: 'Web 客户端', link: 'bot-application/bot-web-client'},
-                {
-                    text: 'IFrame 嵌入',
-                    link: 'system/iframe.md',
-                },
+                {text: 'IFrame 嵌入', link: 'system/iframe.md',},
                 {text: '通过 ApiKey 请求 bot', link: 'bot-application/bot-api-key'},
                 {text: '实时语音播报', link: 'bot-application/bot-tts'},
                 {text: 'bot 接入微信公众号', link: 'bot-application/wechat-mp'},
@@ -308,7 +307,6 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
                     text: '系统设置',
                     link: 'system/settings.md',
                 },
-
             ]
         }
     ]

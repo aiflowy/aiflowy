@@ -26,9 +26,9 @@ import SendingIcon from '../icons/SendingIcon.vue';
 
 const props = defineProps<{
   bot?: BotInfo;
-  // 是否显示对话列表
-  showChatConversations: boolean;
   sessionId?: string;
+  // 是否显示对话列表
+  showChatConversations?: boolean;
 }>();
 const botStore = useBotStore();
 interface historyMessageType {
@@ -116,7 +116,6 @@ watchEffect(async () => {
         sessionId: props.sessionId,
         botId: props.bot.id,
         tempUserId: uuid() + props.bot.id,
-        isExternalMsg: 1,
       }),
     );
 
@@ -156,7 +155,7 @@ const handleSubmit = async (refreshContent: string) => {
   }
   sending.value = true;
   lastUserMessage.value = currentPrompt;
-  if (props.isExternalMsg === 0) {
+  if (!props.showChatConversations) {
     messages.value.push({
       role: 'user',
       content: currentPrompt,
