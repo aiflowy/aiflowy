@@ -43,10 +43,10 @@ CREATE TABLE `tb_bot_api_key`
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'bot apiKey 表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
--- Table structure for tb_bot_conversation_message
+-- Table structure for tb_bot_conversation
 -- ----------------------------
-DROP TABLE IF EXISTS `tb_bot_conversation_message`;
-CREATE TABLE `tb_bot_conversation_message`
+DROP TABLE IF EXISTS `tb_bot_conversation`;
+CREATE TABLE `tb_bot_conversation`
 (
     `session_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '会话id',
     `title`      varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '会话标题',
