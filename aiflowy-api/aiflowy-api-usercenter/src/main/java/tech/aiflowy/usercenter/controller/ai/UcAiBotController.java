@@ -169,7 +169,6 @@ public class UcAiBotController extends BaseCurdController<AiBotService, AiBot> {
         boolean login = StpUtil.isLogin();
         if (!login && !aiBot.isAnonymousEnabled()) {
             return ChatManager.getInstance().sseEmitterForContent(JSON.toJSONString(Maps.of("content", "此bot不支持匿名访问")));
-
         }
 
         Map<String, Object> llmOptions = aiBot.getLlmOptions();

@@ -3,6 +3,7 @@ package tech.aiflowy.ai.entity;
 import com.agentsflex.core.model.chat.tool.BaseTool;
 import com.agentsflex.core.model.chat.tool.Parameter;
 import dev.tinyflow.core.chain.ChainDefinition;
+import dev.tinyflow.core.chain.DataType;
 import dev.tinyflow.core.chain.runtime.ChainExecutor;
 import tech.aiflowy.common.util.SpringContextUtil;
 
@@ -44,7 +45,9 @@ public class AiWorkflowFunction extends BaseTool {
             Parameter parameter = new Parameter();
             parameter.setName(parameterDef.getName());
             parameter.setDescription(parameterDef.getDescription());
-            parameter.setType(parameterDef.getDataType().toString());
+            DataType dataType = parameterDef.getDataType();
+            if (dataType == null) dataType = DataType.String;
+            parameter.setType(dataType.toString());
             parameter.setRequired(parameterDef.isRequired());
             parameters[i] = parameter;
         }

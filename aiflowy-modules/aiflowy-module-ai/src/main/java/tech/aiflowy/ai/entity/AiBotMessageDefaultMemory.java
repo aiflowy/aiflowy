@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static tech.aiflowy.ai.entity.AiBotMessageMemory.parseByRole;
 
 public class AiBotMessageDefaultMemory extends DefaultChatMemory {
 
@@ -33,7 +32,7 @@ public class AiBotMessageDefaultMemory extends DefaultChatMemory {
             AiBotMessage aiBotMessage = new AiBotMessage();
             aiBotMessage.setRole(msg.get("role"));
             aiBotMessage.setContent(msg.get("content"));
-            Message message = parseByRole(aiBotMessage);
+            Message message = aiBotMessage.getContentAsMessage();
             list.add(message);
         }
         return list;

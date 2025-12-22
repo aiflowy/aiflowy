@@ -112,7 +112,6 @@ public class AiBotServiceImpl extends ServiceImpl<AiBotMapper, AiBot> implements
             ServletRequestAttributes sra = (ServletRequestAttributes) requestAttributes;
             RequestContextHolder.setRequestAttributes(sra, true);
             StreamResponseListener streamResponseListener = new ChatStreamListener(chatModel, memoryPrompt, emitter);
-
             chatModel.chatStream(memoryPrompt, streamResponseListener);
         });
 

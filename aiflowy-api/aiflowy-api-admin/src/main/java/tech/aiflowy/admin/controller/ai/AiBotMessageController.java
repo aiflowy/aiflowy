@@ -3,23 +3,21 @@ package tech.aiflowy.admin.controller.ai;
 import cn.dev33.satoken.annotation.SaIgnore;
 import com.agentsflex.core.message.Message;
 import com.agentsflex.core.message.ToolMessage;
-import org.springframework.web.bind.annotation.*;
-import tech.aiflowy.ai.entity.AiBotMessage;
-import tech.aiflowy.ai.entity.AiBotMessageMemory;
-import tech.aiflowy.ai.service.AiBotMessageService;
-import tech.aiflowy.common.annotation.UsePermission;
-import tech.aiflowy.common.domain.Result;
-import tech.aiflowy.common.web.controller.BaseCurdController;
-import tech.aiflowy.common.satoken.util.SaTokenUtil;
 import com.agentsflex.core.util.Maps;
 import com.agentsflex.core.util.StringUtil;
 import com.mybatisflex.core.query.QueryWrapper;
+import org.springframework.web.bind.annotation.*;
+import tech.aiflowy.ai.entity.AiBotMessage;
+import tech.aiflowy.ai.service.AiBotMessageService;
+import tech.aiflowy.common.annotation.UsePermission;
+import tech.aiflowy.common.domain.Result;
+import tech.aiflowy.common.satoken.util.SaTokenUtil;
+import tech.aiflowy.common.web.controller.BaseCurdController;
 import tech.aiflowy.common.web.jsonbody.JsonBody;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Bot 消息记录表 控制层。
@@ -61,7 +59,7 @@ public class AiBotMessageController extends BaseCurdController<AiBotMessageServi
 
         List<Maps> maps = new ArrayList<>();
         for (AiBotMessage aiBotMessage : list) {
-            Message message = AiBotMessageMemory.parseByRole(aiBotMessage);
+            Message message = aiBotMessage.getContentAsMessage();
             if (message instanceof ToolMessage) {
                continue;
             }
