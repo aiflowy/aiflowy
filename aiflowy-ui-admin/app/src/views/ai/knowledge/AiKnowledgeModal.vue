@@ -107,7 +107,7 @@ function save() {
       btnLoading.value = true;
       api
         .post(
-          isAdd.value ? 'api/v1/aiKnowledge/save' : 'api/v1/aiKnowledge/update',
+          isAdd.value ? 'api/v1/documentCollection/save' : 'api/v1/documentCollection/update',
           entity.value,
         )
         .then((res) => {
@@ -150,44 +150,44 @@ function closeDialog() {
     >
       <ElFormItem
         prop="icon"
-        :label="$t('aiKnowledge.icon')"
+        :label="$t('documentCollection.icon')"
         style="display: flex; align-items: center"
       >
         <UploadAvatar v-model="entity.icon" />
       </ElFormItem>
-      <ElFormItem prop="title" :label="$t('aiKnowledge.title')">
+      <ElFormItem prop="title" :label="$t('documentCollection.title')">
         <ElInput
           v-model.trim="entity.title"
-          :placeholder="$t('aiKnowledge.placeholder.title')"
+          :placeholder="$t('documentCollection.placeholder.title')"
         />
       </ElFormItem>
-      <ElFormItem prop="alias" :label="$t('aiKnowledge.alias')">
+      <ElFormItem prop="alias" :label="$t('documentCollection.alias')">
         <ElInput v-model.trim="entity.alias" />
       </ElFormItem>
-      <ElFormItem prop="englishName" :label="$t('aiKnowledge.englishName')">
+      <ElFormItem prop="englishName" :label="$t('documentCollection.englishName')">
         <ElInput v-model.trim="entity.englishName" />
       </ElFormItem>
-      <ElFormItem prop="description" :label="$t('aiKnowledge.description')">
+      <ElFormItem prop="description" :label="$t('documentCollection.description')">
         <ElInput
           v-model.trim="entity.description"
           :rows="4"
           type="textarea"
-          :placeholder="$t('aiKnowledge.placeholder.description')"
+          :placeholder="$t('documentCollection.placeholder.description')"
         />
       </ElFormItem>
       <ElFormItem
         prop="vectorStoreEnable"
-        :label="$t('aiKnowledge.vectorStoreEnable')"
+        :label="$t('documentCollection.vectorStoreEnable')"
       >
         <ElSwitch v-model="entity.vectorStoreEnable" />
       </ElFormItem>
       <ElFormItem
         prop="vectorStoreType"
-        :label="$t('aiKnowledge.vectorStoreType')"
+        :label="$t('documentCollection.vectorStoreType')"
       >
         <ElSelect
           v-model="entity.vectorStoreType"
-          :placeholder="$t('aiKnowledge.placeholder.vectorStoreType')"
+          :placeholder="$t('documentCollection.placeholder.vectorStoreType')"
         >
           <ElOption
             v-for="item in vecotrDatabaseList"
@@ -199,16 +199,16 @@ function closeDialog() {
       </ElFormItem>
       <ElFormItem
         prop="vectorStoreCollection"
-        :label="$t('aiKnowledge.vectorStoreCollection')"
+        :label="$t('documentCollection.vectorStoreCollection')"
       >
         <ElInput
           v-model.trim="entity.vectorStoreCollection"
-          :placeholder="$t('aiKnowledge.placeholder.vectorStoreCollection')"
+          :placeholder="$t('documentCollection.placeholder.vectorStoreCollection')"
         />
       </ElFormItem>
       <ElFormItem
         prop="vectorStoreConfig"
-        :label="$t('aiKnowledge.vectorStoreConfig')"
+        :label="$t('documentCollection.vectorStoreConfig')"
       >
         <ElInput
           v-model.trim="entity.vectorStoreConfig"
@@ -218,11 +218,11 @@ function closeDialog() {
       </ElFormItem>
       <ElFormItem
         prop="vectorEmbedLlmId"
-        :label="$t('aiKnowledge.vectorEmbedLlmId')"
+        :label="$t('documentCollection.vectorEmbedLlmId')"
       >
         <ElSelect
           v-model="entity.vectorEmbedLlmId"
-          :placeholder="$t('aiKnowledge.placeholder.embedLlm')"
+          :placeholder="$t('documentCollection.placeholder.embedLlm')"
         >
           <ElOption
             v-for="item in embeddingLlmList"
@@ -232,10 +232,10 @@ function closeDialog() {
           />
         </ElSelect>
       </ElFormItem>
-      <ElFormItem prop="rerankLlmId" :label="$t('aiKnowledge.rerankLlmId')">
+      <ElFormItem prop="rerankLlmId" :label="$t('documentCollection.rerankLlmId')">
         <ElSelect
           v-model="entity.rerankLlmId"
-          :placeholder="$t('aiKnowledge.placeholder.rerankLlm')"
+          :placeholder="$t('documentCollection.placeholder.rerankLlm')"
         >
           <ElOption
             v-for="item in rerankerLlmList"
@@ -247,7 +247,7 @@ function closeDialog() {
       </ElFormItem>
       <ElFormItem
         prop="searchEngineEnable"
-        :label="$t('aiKnowledge.searchEngineEnable')"
+        :label="$t('documentCollection.searchEngineEnable')"
       >
         <ElSwitch v-model="entity.searchEngineEnable" />
       </ElFormItem>

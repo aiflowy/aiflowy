@@ -66,7 +66,7 @@ public class DocumentChunkController extends BaseCurdController<DocumentChunkSer
                 return Result.fail(2, "知识库没有配置向量库");
             }
             // 设置向量模型
-            Model model = modelService.getById(knowledge.getVectorEmbedLlmId());
+            Model model = modelService.getById(knowledge.getVectorEmbedModelId());
             if (model == null) {
                 return Result.fail(3, "知识库没有配置向量模型");
             }
@@ -101,7 +101,7 @@ public class DocumentChunkController extends BaseCurdController<DocumentChunkSer
             return Result.fail(3, "知识库没有配置向量库");
         }
         // 设置向量模型
-        Model model = modelService.getById(knowledge.getVectorEmbedLlmId());
+        Model model = modelService.getById(knowledge.getVectorEmbedModelId());
         if (model == null) {
             return Result.fail(4, "知识库没有配置向量模型");
         }

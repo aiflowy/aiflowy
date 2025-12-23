@@ -101,13 +101,13 @@ public class DocumentCollectionBase extends DateEntity implements Serializable {
      * Embedding 模型ID
      */
     @Column(comment = "Embedding 模型ID")
-    private BigInteger vectorEmbedLlmId;
+    private BigInteger vectorEmbedModelId;
 
     /**
      * 重排 模型ID
      */
     @Column(comment = "重排 模型ID")
-    private BigInteger rerankLlmId;
+    private BigInteger rerankModelId;
 
     /**
      * 创建时间
@@ -227,7 +227,7 @@ public class DocumentCollectionBase extends DateEntity implements Serializable {
         this.vectorStoreConfig = vectorStoreConfig;
     }
 
-    public BigInteger getVectorEmbedLlmId() {return vectorEmbedLlmId;}
+    public BigInteger getVectorEmbedModelId() {return vectorEmbedModelId;}
 
     public Date getCreated() {
         return created;
@@ -269,11 +269,11 @@ public class DocumentCollectionBase extends DateEntity implements Serializable {
         this.options = options;
     }
 
-    public void setVectorEmbedLlmId(BigInteger vectorEmbedLlmId) {this.vectorEmbedLlmId = vectorEmbedLlmId;}
+    public void setVectorEmbedModelId(BigInteger vectorEmbedModelId) {this.vectorEmbedModelId = vectorEmbedModelId;}
 
-    public BigInteger getRerankLlmId() {return rerankLlmId;}
+    public BigInteger getRerankModelId() {return rerankModelId;}
 
-    public void setRerankLlmId(BigInteger rerankLlmId) {this.rerankLlmId = rerankLlmId;}
+    public void setRerankModelId(BigInteger rerankModelId) {this.rerankModelId = rerankModelId;}
 
     public Boolean getSearchEngineEnable() {
         return searchEngineEnable;

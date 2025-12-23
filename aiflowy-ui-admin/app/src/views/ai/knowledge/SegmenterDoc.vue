@@ -23,21 +23,21 @@ const form = reactive({
 });
 const fileTypes = [
   {
-    label: $t('aiKnowledge.splitterDoc.document'),
+    label: $t('documentCollection.splitterDoc.document'),
     value: 'doc',
   },
 ];
 const splitterNames = [
   {
-    label: $t('aiKnowledge.splitterDoc.simpleDocumentSplitter'),
+    label: $t('documentCollection.splitterDoc.simpleDocumentSplitter'),
     value: 'SimpleDocumentSplitter',
   },
   {
-    label: $t('aiKnowledge.splitterDoc.simpleTokenizeSplitter'),
+    label: $t('documentCollection.splitterDoc.simpleTokenizeSplitter'),
     value: 'SimpleTokenizeSplitter',
   },
   {
-    label: $t('aiKnowledge.splitterDoc.regexDocumentSplitter'),
+    label: $t('documentCollection.splitterDoc.regexDocumentSplitter'),
     value: 'RegexDocumentSplitter',
   },
 ];
@@ -70,7 +70,7 @@ defineExpose({
       class="custom-form"
     >
       <ElFormItem
-        :label="$t('aiKnowledge.splitterDoc.fileType')"
+        :label="$t('documentCollection.splitterDoc.fileType')"
         prop="fileType"
       >
         <ElSelect v-model="form.fileType">
@@ -83,7 +83,7 @@ defineExpose({
         </ElSelect>
       </ElFormItem>
       <ElFormItem
-        :label="$t('aiKnowledge.splitterDoc.splitterName')"
+        :label="$t('documentCollection.splitterDoc.splitterName')"
         prop="splitterName"
       >
         <ElSelect v-model="form.splitterName">
@@ -96,7 +96,7 @@ defineExpose({
         </ElSelect>
       </ElFormItem>
       <ElFormItem
-        :label="$t('aiKnowledge.splitterDoc.chunkSize')"
+        :label="$t('documentCollection.splitterDoc.chunkSize')"
         v-if="
           form.splitterName === 'SimpleDocumentSplitter' ||
           form.splitterName === 'SimpleTokenizeSplitter'
@@ -106,7 +106,7 @@ defineExpose({
         <ElSlider v-model="form.chunkSize" show-input :max="2048" />
       </ElFormItem>
       <ElFormItem
-        :label="$t('aiKnowledge.splitterDoc.overlapSize')"
+        :label="$t('documentCollection.splitterDoc.overlapSize')"
         v-if="
           form.splitterName === 'SimpleDocumentSplitter' ||
           form.splitterName === 'SimpleTokenizeSplitter'
@@ -116,7 +116,7 @@ defineExpose({
         <ElSlider v-model="form.overlapSize" show-input :max="2048" />
       </ElFormItem>
       <ElFormItem
-        :label="$t('aiKnowledge.splitterDoc.regex')"
+        :label="$t('documentCollection.splitterDoc.regex')"
         prop="regex"
         v-if="form.splitterName === 'RegexDocumentSplitter'"
       >

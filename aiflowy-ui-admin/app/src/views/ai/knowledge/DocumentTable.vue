@@ -67,7 +67,7 @@ const handleDelete = (row: any) => {
   >
     <template #default="{ pageList }">
       <ElTable :data="pageList" style="width: 100%" size="large">
-        <ElTableColumn prop="fileName" :label="$t('aiKnowledge.fileName')">
+        <ElTableColumn prop="fileName" :label="$t('documentCollection.fileName')">
           <template #default="{ row }">
             <span class="file-name-container">
               <ElImage :src="documentIcon" class="mr-1" />
@@ -79,15 +79,15 @@ const handleDelete = (row: any) => {
         </ElTableColumn>
         <ElTableColumn
           prop="documentType"
-          :label="$t('aiKnowledge.documentType')"
+          :label="$t('documentCollection.documentType')"
           width="180"
         />
         <ElTableColumn
           prop="chunkCount"
-          :label="$t('aiKnowledge.knowledgeCount')"
+          :label="$t('documentCollection.knowledgeCount')"
           width="180"
         />
-        <ElTableColumn :label="$t('aiKnowledge.createdModifyTime')" width="200">
+        <ElTableColumn :label="$t('documentCollection.createdModifyTime')" width="200">
           <template #default="{ row }">
             <div class="time-container">
               <span>{{ row.created }}</span>

@@ -71,12 +71,14 @@ const handleDelete = (item) => {
     type: 'warning',
   })
     .then(() => {
-      api.post('/api/v1/documentCollection/remove', { id: item.id }).then((res) => {
-        if (res.errorCode === 0) {
-          ElMessage.success($t('message.deleteOkMessage'));
-          pageDataRef.value.setQuery({});
-        }
-      });
+      api
+        .post('/api/v1/documentCollection/remove', { id: item.id })
+        .then((res) => {
+          if (res.errorCode === 0) {
+            ElMessage.success($t('message.deleteOkMessage'));
+            pageDataRef.value.setQuery({});
+          }
+        });
     })
     .catch(() => {});
 };

@@ -100,12 +100,12 @@ const form = ref({
         <ElTable :data="pageList" style="width: 100%" size="large">
           <ElTableColumn
             prop="sorting"
-            :label="$t('aiKnowledge.sorting')"
+            :label="$t('documentCollection.sorting')"
             width="180"
           />
           <ElTableColumn
             prop="content"
-            :label="$t('aiKnowledge.content')"
+            :label="$t('documentCollection.content')"
             min-width="240"
           />
           <ElTableColumn :label="$t('common.handle')">

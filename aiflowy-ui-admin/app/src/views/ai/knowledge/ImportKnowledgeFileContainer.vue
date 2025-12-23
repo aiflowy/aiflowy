@@ -67,12 +67,12 @@ function handleRemove(row: any) {
       <ElTable :data="fileData" style="width: 100%" size="large">
         <ElTableColumn
           prop="fileName"
-          :label="$t('aiKnowledge.importDoc.fileName')"
+          :label="$t('documentCollection.importDoc.fileName')"
           width="250"
         />
         <ElTableColumn
           prop="progressUpload"
-          :label="$t('aiKnowledge.importDoc.progressUpload')"
+          :label="$t('documentCollection.importDoc.progressUpload')"
           width="180"
         >
           <template #default="{ row }">
@@ -86,7 +86,7 @@ function handleRemove(row: any) {
         </ElTableColumn>
         <ElTableColumn
           prop="fileSize"
-          :label="$t('aiKnowledge.importDoc.fileSize')"
+          :label="$t('documentCollection.importDoc.fileSize')"
         >
           <template #default="{ row }">
             <span>{{ formatFileSize(row.fileSize) }}</span>

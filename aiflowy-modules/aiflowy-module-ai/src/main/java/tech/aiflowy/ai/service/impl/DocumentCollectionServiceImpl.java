@@ -69,7 +69,7 @@ public class DocumentCollectionServiceImpl extends ServiceImpl<DocumentCollectio
             throw new BusinessException("知识库没有配置向量库");
         }
 
-        Model model = llmService.getLlmInstance(knowledge.getVectorEmbedLlmId());
+        Model model = llmService.getLlmInstance(knowledge.getVectorEmbedModelId());
         if (model == null) {
             throw new BusinessException("知识库没有配置向量模型");
         }

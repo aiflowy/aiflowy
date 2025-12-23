@@ -86,7 +86,7 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
                 .as("dt")// 主表
                 .leftJoin("tb_document_chunk")
                 .as("ck").on("dt.id = ck.document_id") // 左连接
-                .where("dt.knowledge_id = ?", knowledgeId); // 条件 1
+                .where("dt.collection_id = ?", knowledgeId); // 条件 1
         // 动态添加 fileName 条件
         if (fileName != null && !fileName.trim().isEmpty()) {
             queryWrapper.and("dt.title LIKE CONCAT('%', ?, '%')", fileName); // 条件 2
@@ -120,7 +120,7 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
             return false;
         }
 
-        Model model = modelService.getById(knowledge.getVectorEmbedLlmId());
+        Model model = modelService.getById(knowledge.getVectorEmbedModelId());
         if (model == null) {
             return false;
         }
@@ -260,7 +260,7 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
             throw new BusinessException("向量数据库类型未设置");
         }
         // 设置向量模型
-        Model model = modelService.getById(knowledge.getVectorEmbedLlmId());
+        Model model = modelService.getById(knowledge.getVectorEmbedModelId());
         if (model == null) {
             throw new BusinessException("该知识库未配置大模型");
         }

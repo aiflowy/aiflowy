@@ -37,8 +37,8 @@ const back = () => {
   router.push({ path: '/ai/knowledge' });
 };
 const categoryData = [
-  { key: 'documentList', name: $t('aiKnowledge.documentList') },
-  { key: 'knowledgeSearch', name: $t('aiKnowledge.knowledgeRetrieval') },
+  { key: 'documentList', name: $t('documentCollection.documentList') },
+  { key: 'knowledgeSearch', name: $t('documentCollection.knowledgeRetrieval') },
 ];
 const headerButtons = [
   {
