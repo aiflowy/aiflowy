@@ -4,7 +4,7 @@ import tech.aiflowy.common.annotation.UsePermission;
 import tech.aiflowy.common.web.controller.BaseCurdController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import tech.aiflowy.system.entity.SysApiKeyResourcePermission;
+import tech.aiflowy.system.entity.SysApiKeyResource;
 import tech.aiflowy.system.service.SysApiKeyResourceService;
 
 /**
@@ -16,7 +16,7 @@ import tech.aiflowy.system.service.SysApiKeyResourceService;
 @RestController
 @RequestMapping("/api/v1/sysApiKeyResourcePermission")
 @UsePermission(moduleName = "/api/v1/sysApiKey")
-public class SysApiKeyResourceController extends BaseCurdController<SysApiKeyResourceService, SysApiKeyResourcePermission> {
+public class SysApiKeyResourceController extends BaseCurdController<SysApiKeyResourceService, SysApiKeyResource> {
     public SysApiKeyResourceController(SysApiKeyResourceService service) {
         super(service);
     }
