@@ -23,7 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/aiLlmBrand")
 @UsePermission(moduleName = "/api/v1/aiLlm")
-public class AiLlmBrandController extends BaseController {
+public class ModelBrandController extends BaseController {
 
     @Resource
     private Cache<String, Object> cache;

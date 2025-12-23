@@ -42,7 +42,7 @@ import java.util.*;
  */
 @RestController
 @RequestMapping("/api/v1/aiWorkflow")
-public class AiWorkflowController extends BaseCurdController<WorkflowService, Workflow> {
+public class WorkflowController extends BaseCurdController<WorkflowService, Workflow> {
     private final ModelService modelService;
 
     @Resource
@@ -56,7 +56,7 @@ public class AiWorkflowController extends BaseCurdController<WorkflowService, Wo
     @Resource
     private TinyFlowService tinyFlowService;
 
-    public AiWorkflowController(WorkflowService service, ModelService modelService) {
+    public WorkflowController(WorkflowService service, ModelService modelService) {
         super(service);
         this.modelService = modelService;
     }

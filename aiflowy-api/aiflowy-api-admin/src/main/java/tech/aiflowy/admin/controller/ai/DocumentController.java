@@ -43,7 +43,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/v1/aiDocument")
 @UsePermission(moduleName = "/api/v1/aiKnowledge")
-public class AiDocumentController extends BaseCurdController<DocumentService, Document> {
+public class DocumentController extends BaseCurdController<DocumentService, Document> {
 
     private final DocumentCollectionService knowledgeService;
 
@@ -56,9 +56,9 @@ public class AiDocumentController extends BaseCurdController<DocumentService, Do
     private  String fileUploadPath;
 
 
-    public AiDocumentController(DocumentService service,
-                                DocumentCollectionService knowledgeService,
-                                DocumentChunkService documentChunkService, ModelService modelService) {
+    public DocumentController(DocumentService service,
+                              DocumentCollectionService knowledgeService,
+                              DocumentChunkService documentChunkService, ModelService modelService) {
         super(service);
         this.knowledgeService = knowledgeService;
     }

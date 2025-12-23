@@ -28,10 +28,10 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/aiBotMessage")
 @UsePermission(moduleName = "/api/v1/aiBot")
-public class AiBotMessageController extends BaseCurdController<BotMessageService, BotMessage> {
+public class BotMessageController extends BaseCurdController<BotMessageService, BotMessage> {
     private final BotMessageService botMessageService;
 
-    public AiBotMessageController(BotMessageService service, BotMessageService botMessageService) {
+    public BotMessageController(BotMessageService service, BotMessageService botMessageService) {
         super(service);
         this.botMessageService = botMessageService;
     }

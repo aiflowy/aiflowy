@@ -36,7 +36,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1/aiDocumentChunk")
 @UsePermission(moduleName = "/api/v1/aiKnowledge")
-public class AiDocumentChunkController extends BaseCurdController<DocumentChunkService, DocumentChunk> {
+public class DocumentChunkController extends BaseCurdController<DocumentChunkService, DocumentChunk> {
 
     @Resource
     DocumentCollectionService documentCollectionService;
@@ -47,7 +47,7 @@ public class AiDocumentChunkController extends BaseCurdController<DocumentChunkS
     @Resource
     DocumentChunkService documentChunkService;
 
-    public AiDocumentChunkController(DocumentChunkService service) {
+    public DocumentChunkController(DocumentChunkService service) {
         super(service);
     }
 

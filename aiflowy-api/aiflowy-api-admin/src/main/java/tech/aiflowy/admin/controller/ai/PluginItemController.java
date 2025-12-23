@@ -34,8 +34,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/aiPluginTool")
 @UsePermission(moduleName = "/api/v1/aiPlugin")
-public class AiPluginToolController extends BaseCurdController<PluginItemService, PluginItem> {
-    public AiPluginToolController(PluginItemService service) {
+public class PluginItemController extends BaseCurdController<PluginItemService, PluginItem> {
+    public PluginItemController(PluginItemService service) {
         super(service);
     }
 

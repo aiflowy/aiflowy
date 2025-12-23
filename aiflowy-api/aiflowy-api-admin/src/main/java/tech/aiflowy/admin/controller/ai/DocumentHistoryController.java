@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/v1/aiDocumentHistory")
-public class AiDocumentHistoryController extends BaseCurdController<DocumentHistoryService, DocumentHistory> {
-    public AiDocumentHistoryController(DocumentHistoryService service) {
+public class DocumentHistoryController extends BaseCurdController<DocumentHistoryService, DocumentHistory> {
+    public DocumentHistoryController(DocumentHistoryService service) {
         super(service);
     }
 }

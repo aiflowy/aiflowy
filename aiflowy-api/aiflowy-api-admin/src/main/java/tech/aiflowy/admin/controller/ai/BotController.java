@@ -47,7 +47,7 @@ import java.util.*;
  */
 @RestController
 @RequestMapping("/api/v1/aiBot")
-public class AiBotController extends BaseCurdController<BotService, Bot> {
+public class BotController extends BaseCurdController<BotService, Bot> {
 
     private final ModelService modelService;
     private final BotWorkflowService botWorkflowService;
@@ -67,10 +67,10 @@ public class AiBotController extends BaseCurdController<BotService, Bot> {
     @Resource
     private AudioServiceManager audioServiceManager;
 
-    private static final Logger logger = LoggerFactory.getLogger(AiBotController.class);
+    private static final Logger logger = LoggerFactory.getLogger(BotController.class);
 
-    public AiBotController(BotService service, ModelService modelService, BotWorkflowService botWorkflowService,
-                           BotDocumentCollectionService botDocumentCollectionService, BotMessageService botMessageService) {
+    public BotController(BotService service, ModelService modelService, BotWorkflowService botWorkflowService,
+                         BotDocumentCollectionService botDocumentCollectionService, BotMessageService botMessageService) {
         super(service);
         this.modelService = modelService;
         this.botWorkflowService = botWorkflowService;

@@ -27,12 +27,12 @@ import java.math.BigInteger;
 @RestController
 @RequestMapping("/api/v1/aiWorkflowExecRecord")
 @UsePermission(moduleName = "/api/v1/aiWorkflow")
-public class AiWorkflowExecRecordController extends BaseCurdController<WorkflowExecResultService, WorkflowExecResult> {
+public class WorkflowExecResultController extends BaseCurdController<WorkflowExecResultService, WorkflowExecResult> {
 
     @Resource
     private WorkflowExecStepService recordStepService;
 
-    public AiWorkflowExecRecordController(WorkflowExecResultService service) {
+    public WorkflowExecResultController(WorkflowExecResultService service) {
         super(service);
     }
 

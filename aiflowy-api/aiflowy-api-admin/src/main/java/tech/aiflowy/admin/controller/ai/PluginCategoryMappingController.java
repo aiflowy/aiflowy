@@ -20,8 +20,8 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/v1/aiPluginCategoryRelation")
-public class AiPluginCategoryRelationController extends BaseCurdController<PluginCategoryMappingService, PluginCategoryMapping> {
-    public AiPluginCategoryRelationController(PluginCategoryMappingService service) {
+public class PluginCategoryMappingController extends BaseCurdController<PluginCategoryMappingService, PluginCategoryMapping> {
+    public PluginCategoryMappingController(PluginCategoryMappingService service) {
         super(service);
     }
 

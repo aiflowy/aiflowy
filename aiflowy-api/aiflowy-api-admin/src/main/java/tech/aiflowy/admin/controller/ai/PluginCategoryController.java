@@ -22,8 +22,8 @@ import javax.annotation.Resource;
 @RestController
 @RequestMapping("/api/v1/aiPluginCategories")
 @UsePermission(moduleName = "/api/v1/aiPlugin")
-public class AiPluginCategoriesController extends BaseCurdController<PluginCategoryService, PluginCategory> {
-    public AiPluginCategoriesController(PluginCategoryService service) {
+public class PluginCategoryController extends BaseCurdController<PluginCategoryService, PluginCategory> {
+    public PluginCategoryController(PluginCategoryService service) {
         super(service);
     }
 

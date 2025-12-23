@@ -23,8 +23,8 @@ import java.util.Date;
  */
 @RestController
 @RequestMapping("/api/v1/aiResource")
-public class AiResourceController extends BaseCurdController<ResourceService, Resource> {
-    public AiResourceController(ResourceService service) {
+public class ResourceController extends BaseCurdController<ResourceService, Resource> {
+    public ResourceController(ResourceService service) {
         super(service);
     }
 

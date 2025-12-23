@@ -24,8 +24,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/aiBotKnowledge")
 @UsePermission(moduleName = "/api/v1/aiBot")
-public class AiBotKnowledgeController extends BaseCurdController<BotDocumentCollectionService, BotDocumentCollection> {
-    public AiBotKnowledgeController(BotDocumentCollectionService service) {
+public class BotDocumentCollectionController extends BaseCurdController<BotDocumentCollectionService, BotDocumentCollection> {
+    public BotDocumentCollectionController(BotDocumentCollectionService service) {
         super(service);
     }
 

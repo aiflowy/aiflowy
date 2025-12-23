@@ -27,9 +27,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/aiBotPlugins")
 @UsePermission(moduleName = "/api/v1/aiBot")
-public class AiBotPluginsController extends BaseCurdController<BotPluginService, BotPlugin> {
+public class BotPluginController extends BaseCurdController<BotPluginService, BotPlugin> {
 
-    public AiBotPluginsController(BotPluginService service) {
+    public BotPluginController(BotPluginService service) {
         super(service);
     }
 

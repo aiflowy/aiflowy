@@ -25,8 +25,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/aiBotWorkflow")
 @UsePermission(moduleName = "/api/v1/aiBot")
-public class AiBotWorkflowController extends BaseCurdController<BotWorkflowService, BotWorkflow> {
-    public AiBotWorkflowController(BotWorkflowService service) {
+public class BotWorkflowController extends BaseCurdController<BotWorkflowService, BotWorkflow> {
+    public BotWorkflowController(BotWorkflowService service) {
         super(service);
     }
 

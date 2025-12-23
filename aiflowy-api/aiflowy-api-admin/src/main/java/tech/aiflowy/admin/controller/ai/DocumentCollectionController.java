@@ -33,7 +33,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/v1/aiKnowledge")
-public class AiKnowledgeController extends BaseCurdController<DocumentCollectionService, DocumentCollection> {
+public class DocumentCollectionController extends BaseCurdController<DocumentCollectionService, DocumentCollection> {
 
     private final DocumentChunkService chunkService;
     private final ModelService llmService;
@@ -41,7 +41,7 @@ public class AiKnowledgeController extends BaseCurdController<DocumentCollection
     @Resource
     private BotDocumentCollectionService botDocumentCollectionService;
 
-    public AiKnowledgeController(DocumentCollectionService service, DocumentChunkService chunkService, ModelService llmService) {
+    public DocumentCollectionController(DocumentCollectionService service, DocumentChunkService chunkService, ModelService llmService) {
         super(service);
         this.chunkService = chunkService;
         this.llmService = llmService;

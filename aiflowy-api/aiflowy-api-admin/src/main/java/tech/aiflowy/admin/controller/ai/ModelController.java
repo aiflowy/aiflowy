@@ -33,9 +33,9 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/api/v1/aiLlm")
-public class AiLlmController extends BaseCurdController<ModelService, Model> {
+public class ModelController extends BaseCurdController<ModelService, Model> {
 
-    public AiLlmController(ModelService service) {
+    public ModelController(ModelService service) {
         super(service);
     }
 

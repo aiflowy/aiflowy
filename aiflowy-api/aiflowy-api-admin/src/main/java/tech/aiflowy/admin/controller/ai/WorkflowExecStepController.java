@@ -28,12 +28,12 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/v1/aiWorkflowRecordStep")
 @UsePermission(moduleName = "/api/v1/aiWorkflow")
-public class AiWorkflowRecordStepController extends BaseCurdController<WorkflowExecStepService, WorkflowExecStep> {
+public class WorkflowExecStepController extends BaseCurdController<WorkflowExecStepService, WorkflowExecStep> {
 
     @Resource
     private WorkflowExecResultService execRecordService;
 
-    public AiWorkflowRecordStepController(WorkflowExecStepService service) {
+    public WorkflowExecStepController(WorkflowExecStepService service) {
         super(service);
     }
 

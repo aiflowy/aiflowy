@@ -25,8 +25,8 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/v1/aiPlugin")
-public class AiPluginController extends BaseCurdController<PluginService, Plugin> {
-    public AiPluginController(PluginService service) {
+public class PluginController extends BaseCurdController<PluginService, Plugin> {
+    public PluginController(PluginService service) {
         super(service);
     }
 

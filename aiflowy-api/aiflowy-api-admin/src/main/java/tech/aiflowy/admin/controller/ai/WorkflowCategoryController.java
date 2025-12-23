@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/aiWorkflowCategory")
 @UsePermission(moduleName = "/api/v1/aiWorkflow")
-public class AiWorkflowCategoryController extends BaseCurdController<WorkflowCategoryService, WorkflowCategory> {
+public class WorkflowCategoryController extends BaseCurdController<WorkflowCategoryService, WorkflowCategory> {
 
-    public AiWorkflowCategoryController(WorkflowCategoryService service) {
+    public WorkflowCategoryController(WorkflowCategoryService service) {
         super(service);
     }
 
