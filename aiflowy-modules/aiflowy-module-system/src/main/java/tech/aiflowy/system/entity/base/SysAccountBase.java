@@ -1,13 +1,12 @@
 package tech.aiflowy.system.entity.base;
 
-import tech.aiflowy.common.entity.DateEntity;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
+import tech.aiflowy.common.entity.DateEntity;
 
 
 public class SysAccountBase extends DateEntity implements Serializable {
@@ -29,7 +28,7 @@ public class SysAccountBase extends DateEntity implements Serializable {
     /**
      * 租户ID
      */
-    @Column(comment = "租户ID", tenantId = true)
+    @Column(tenantId = true, comment = "租户ID")
     private BigInteger tenantId;
 
     /**
@@ -113,7 +112,7 @@ public class SysAccountBase extends DateEntity implements Serializable {
     /**
      * 删除标识
      */
-    @Column(comment = "删除标识")
+    @Column(isLogicDelete = true, comment = "删除标识")
     private Integer isDeleted;
 
     public BigInteger getId() {

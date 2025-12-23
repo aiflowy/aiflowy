@@ -1,18 +1,17 @@
 package tech.aiflowy.ai.entity.base;
 
-import tech.aiflowy.common.entity.DateTreeEntity;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.core.handler.FastjsonTypeHandler;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.Map;
+import tech.aiflowy.common.entity.DateEntity;
 
 
-public class DocumentBase extends DateTreeEntity implements Serializable {
+public class DocumentBase extends DateEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -23,7 +22,7 @@ public class DocumentBase extends DateTreeEntity implements Serializable {
      * 知识库ID
      */
     @Column(comment = "知识库ID")
-    private BigInteger knowledgeId;
+    private BigInteger collectionId;
 
     /**
      * 文档类型 pdf/word/aieditor 等
@@ -83,7 +82,7 @@ public class DocumentBase extends DateTreeEntity implements Serializable {
      * 创建人ID
      */
     @Column(comment = "创建人ID")
-    private BigInteger createdBy;
+    private Long createdBy;
 
     /**
      * 最后的修改时间
@@ -95,7 +94,7 @@ public class DocumentBase extends DateTreeEntity implements Serializable {
      * 最后的修改人的ID
      */
     @Column(comment = "最后的修改人的ID")
-    private BigInteger modifiedBy;
+    private Long modifiedBy;
 
     public BigInteger getId() {
         return id;
@@ -105,12 +104,12 @@ public class DocumentBase extends DateTreeEntity implements Serializable {
         this.id = id;
     }
 
-    public BigInteger getKnowledgeId() {
-        return knowledgeId;
+    public BigInteger getCollectionId() {
+        return collectionId;
     }
 
-    public void setKnowledgeId(BigInteger knowledgeId) {
-        this.knowledgeId = knowledgeId;
+    public void setCollectionId(BigInteger collectionId) {
+        this.collectionId = collectionId;
     }
 
     public String getDocumentType() {
@@ -185,11 +184,11 @@ public class DocumentBase extends DateTreeEntity implements Serializable {
         this.created = created;
     }
 
-    public BigInteger getCreatedBy() {
+    public Long getCreatedBy() {
         return createdBy;
     }
 
-    public void setCreatedBy(BigInteger createdBy) {
+    public void setCreatedBy(Long createdBy) {
         this.createdBy = createdBy;
     }
 
@@ -201,11 +200,11 @@ public class DocumentBase extends DateTreeEntity implements Serializable {
         this.modified = modified;
     }
 
-    public BigInteger getModifiedBy() {
+    public Long getModifiedBy() {
         return modifiedBy;
     }
 
-    public void setModifiedBy(BigInteger modifiedBy) {
+    public void setModifiedBy(Long modifiedBy) {
         this.modifiedBy = modifiedBy;
     }
 

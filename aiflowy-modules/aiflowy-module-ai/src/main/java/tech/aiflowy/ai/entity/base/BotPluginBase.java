@@ -1,9 +1,12 @@
 package tech.aiflowy.ai.entity.base;
 
+import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
+import com.mybatisflex.core.handler.FastjsonTypeHandler;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.Map;
 
 
 public class BotPluginBase implements Serializable {
@@ -15,9 +18,10 @@ public class BotPluginBase implements Serializable {
 
     private BigInteger botId;
 
-    private BigInteger pluginToolId;
+    private BigInteger pluginItemId;
 
-    private String options;
+    @Column(typeHandler = FastjsonTypeHandler.class)
+    private Map<String, Object> options;
 
     public BigInteger getId() {
         return id;
@@ -35,19 +39,19 @@ public class BotPluginBase implements Serializable {
         this.botId = botId;
     }
 
-    public BigInteger getPluginToolId() {
-        return pluginToolId;
+    public BigInteger getPluginItemId() {
+        return pluginItemId;
     }
 
-    public void setPluginToolId(BigInteger pluginToolId) {
-        this.pluginToolId = pluginToolId;
+    public void setPluginItemId(BigInteger pluginItemId) {
+        this.pluginItemId = pluginItemId;
     }
 
-    public String getOptions() {
+    public Map<String, Object> getOptions() {
         return options;
     }
 
-    public void setOptions(String options) {
+    public void setOptions(Map<String, Object> options) {
         this.options = options;
     }
 

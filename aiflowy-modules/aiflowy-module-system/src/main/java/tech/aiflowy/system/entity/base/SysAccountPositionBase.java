@@ -3,7 +3,6 @@ package tech.aiflowy.system.entity.base;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 

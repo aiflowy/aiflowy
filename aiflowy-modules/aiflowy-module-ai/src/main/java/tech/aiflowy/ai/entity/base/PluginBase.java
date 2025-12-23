@@ -25,21 +25,15 @@ public class PluginBase implements Serializable {
     private String alias;
 
     /**
-     * 图标地址
+     * 名称
      */
-    @Column(comment = "图标地址")
-    private String icon;
-
-    /**
-     * 插件名称
-     */
-    @Column(comment = "插件名称")
+    @Column(comment = "名称")
     private String name;
 
     /**
-     * 插件名称
+     * 描述
      */
-    @Column(comment = "插件名称")
+    @Column(comment = "描述")
     private String description;
 
     /**
@@ -55,41 +49,64 @@ public class PluginBase implements Serializable {
     private String baseUrl;
 
     /**
-     * 请求头
+     * 认证方式  【apiKey/none】
      */
-    @Column(comment = "请求头")
-    private String headers;
-
-    /**
-     * 位置 将apiKey【存放在headers 或 query中】
-     */
-    @Column(comment = "位置")
-    private String position;
-
-    /**
-     * 认证方式
-     */
-    @Column(comment = "认证方式")
+    @Column(comment = "认证方式  【apiKey/none】")
     private String authType;
-
-    /**
-     * tokenKey
-     */
-    @Column(comment = "tokenKey")
-    private String tokenKey;
-
-    /**
-     * tokenValue
-     */
-    @Column(comment = "tokenValue")
-    private String tokenValue;
-
 
     /**
      * 创建时间
      */
     @Column(comment = "创建时间")
     private Date created;
+
+    /**
+     * 图标地址
+     */
+    @Column(comment = "图标地址")
+    private String icon;
+
+    /**
+     * 认证参数位置 【headers, query】
+     */
+    @Column(comment = "认证参数位置 【headers, query】")
+    private String position;
+
+    /**
+     * 请求头
+     */
+    @Column(comment = "请求头")
+    private String headers;
+
+    /**
+     * token键
+     */
+    @Column(comment = "token键")
+    private String tokenKey;
+
+    /**
+     * token值
+     */
+    @Column(comment = "token值")
+    private String tokenValue;
+
+    /**
+     * 部门id
+     */
+    @Column(comment = "部门id")
+    private Long deptId;
+
+    /**
+     * 租户id
+     */
+    @Column(tenantId = true, comment = "租户id")
+    private Long tenantId;
+
+    /**
+     * 创建人
+     */
+    @Column(comment = "创建人")
+    private Long createdBy;
 
     public BigInteger getId() {
         return id;
@@ -99,12 +116,12 @@ public class PluginBase implements Serializable {
         this.id = id;
     }
 
-    public String getIcon() {
-        return icon;
+    public String getAlias() {
+        return alias;
     }
 
-    public void setIcon(String icon) {
-        this.icon = icon;
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public String getName() {
@@ -139,14 +156,6 @@ public class PluginBase implements Serializable {
         this.baseUrl = baseUrl;
     }
 
-    public String getHeaders() {
-        return headers;
-    }
-
-    public void setHeaders(String headers) {
-        this.headers = headers;
-    }
-
     public String getAuthType() {
         return authType;
     }
@@ -163,12 +172,28 @@ public class PluginBase implements Serializable {
         this.created = created;
     }
 
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
     public String getPosition() {
         return position;
     }
 
     public void setPosition(String position) {
         this.position = position;
+    }
+
+    public String getHeaders() {
+        return headers;
+    }
+
+    public void setHeaders(String headers) {
+        this.headers = headers;
     }
 
     public String getTokenKey() {
@@ -187,13 +212,28 @@ public class PluginBase implements Serializable {
         this.tokenValue = tokenValue;
     }
 
-    public String getAlias() {
-        return alias;
+    public Long getDeptId() {
+        return deptId;
     }
 
-    public void setAlias(String alias) {
-        this.alias = alias;
+    public void setDeptId(Long deptId) {
+        this.deptId = deptId;
     }
 
-    
+    public Long getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(Long tenantId) {
+        this.tenantId = tenantId;
+    }
+
+    public Long getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(Long createdBy) {
+        this.createdBy = createdBy;
+    }
+
 }

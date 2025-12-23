@@ -1,13 +1,12 @@
 package tech.aiflowy.system.entity.base;
 
-import tech.aiflowy.common.entity.DateEntity;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
+import tech.aiflowy.common.entity.DateEntity;
 
 
 public class SysRoleBase extends DateEntity implements Serializable {
@@ -23,7 +22,7 @@ public class SysRoleBase extends DateEntity implements Serializable {
     /**
      * 租户ID
      */
-    @Column(comment = "租户ID", tenantId = true)
+    @Column(tenantId = true, comment = "租户ID")
     private BigInteger tenantId;
 
     /**
@@ -77,25 +76,25 @@ public class SysRoleBase extends DateEntity implements Serializable {
     /**
      * 删除标识
      */
-    @Column(comment = "删除标识", isLogicDelete = true)
+    @Column(isLogicDelete = true, comment = "删除标识")
     private Integer isDeleted;
 
     /**
-     * 数据权限
+     * 数据权限(EnumDataScope)
      */
-    @Column(comment = "数据权限")
+    @Column(comment = "数据权限(EnumDataScope)")
     private Integer dataScope;
 
     /**
-     * 菜单权限是否父子联动
+     * 菜单树选择项是否关联显示
      */
-    @Column(comment = "菜单权限是否父子联动")
+    @Column(comment = "菜单树选择项是否关联显示")
     private Boolean menuCheckStrictly;
 
     /**
-     * 部门权限是否父子联动
+     * 部门树选择项是否关联显示
      */
-    @Column(comment = "部门权限是否父子联动")
+    @Column(comment = "部门树选择项是否关联显示")
     private Boolean deptCheckStrictly;
 
     public BigInteger getId() {

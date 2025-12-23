@@ -1,15 +1,14 @@
 package tech.aiflowy.system.entity.base;
 
-import tech.aiflowy.common.entity.DateEntity;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.core.handler.FastjsonTypeHandler;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.Map;
+import tech.aiflowy.common.entity.DateEntity;
 
 
 public class SysDictBase extends DateEntity implements Serializable {

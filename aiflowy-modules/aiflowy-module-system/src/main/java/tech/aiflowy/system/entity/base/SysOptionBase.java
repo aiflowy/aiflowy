@@ -1,8 +1,6 @@
 package tech.aiflowy.system.entity.base;
 
 import com.mybatisflex.annotation.Column;
-import com.mybatisflex.annotation.Id;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 
@@ -14,13 +12,13 @@ public class SysOptionBase implements Serializable {
     /**
      * 租户ID
      */
-    @Column(comment = "租户ID", tenantId = true)
+    @Column(tenantId = true, comment = "租户ID")
     private BigInteger tenantId;
 
     /**
      * 配置KEY
      */
-    @Id(comment = "配置KEY")
+    @Column(comment = "配置KEY")
     private String key;
 
     /**

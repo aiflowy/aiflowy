@@ -3,11 +3,12 @@ package tech.aiflowy.ai.entity.base;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
-import tech.aiflowy.common.entity.DateEntity;
-
+import com.mybatisflex.core.handler.FastjsonTypeHandler;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.Map;
+import tech.aiflowy.common.entity.DateEntity;
 
 
 public class ResourceBase extends DateEntity implements Serializable {
@@ -29,7 +30,7 @@ public class ResourceBase extends DateEntity implements Serializable {
     /**
      * 租户ID
      */
-    @Column(comment = "租户ID", tenantId = true)
+    @Column(tenantId = true, comment = "租户ID")
     private BigInteger tenantId;
 
     /**
@@ -95,13 +96,13 @@ public class ResourceBase extends DateEntity implements Serializable {
     /**
      * 扩展项
      */
-    @Column(comment = "扩展项")
-    private String options;
+    @Column(typeHandler = FastjsonTypeHandler.class, comment = "扩展项")
+    private Map<String, Object> options;
 
     /**
      * 删除标识
      */
-    @Column(comment = "删除标识", isLogicDelete = true)
+    @Column(isLogicDelete = true, comment = "删除标识")
     private Integer isDeleted;
 
     /**
@@ -214,11 +215,11 @@ public class ResourceBase extends DateEntity implements Serializable {
         this.modifiedBy = modifiedBy;
     }
 
-    public String getOptions() {
+    public Map<String, Object> getOptions() {
         return options;
     }
 
-    public void setOptions(String options) {
+    public void setOptions(Map<String, Object> options) {
         this.options = options;
     }
 
@@ -237,4 +238,5 @@ public class ResourceBase extends DateEntity implements Serializable {
     public void setFileSize(BigInteger fileSize) {
         this.fileSize = fileSize;
     }
+
 }

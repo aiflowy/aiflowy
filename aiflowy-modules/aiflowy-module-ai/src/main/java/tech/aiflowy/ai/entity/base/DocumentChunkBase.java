@@ -3,7 +3,6 @@ package tech.aiflowy.ai.entity.base;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 
@@ -25,7 +24,7 @@ public class DocumentChunkBase implements Serializable {
      * 知识库ID
      */
     @Column(comment = "知识库ID")
-    private BigInteger knowledgeId;
+    private BigInteger documentCollectionId;
 
     /**
      * 分块内容
@@ -34,18 +33,10 @@ public class DocumentChunkBase implements Serializable {
     private String content;
 
     /**
-     * 分块顺序
+     * 分割顺序
      */
-    @Column(comment = "分块顺序")
-    private Integer sorting;
-
-    public Integer getSorting() {
-        return sorting;
-    }
-
-    public void setSorting(Integer sorting) {
-        this.sorting = sorting;
-    }
+    @Column(comment = "分割顺序")
+    private Long sorting;
 
     public BigInteger getId() {
         return id;
@@ -63,12 +54,12 @@ public class DocumentChunkBase implements Serializable {
         this.documentId = documentId;
     }
 
-    public BigInteger getKnowledgeId() {
-        return knowledgeId;
+    public BigInteger getDocumentCollectionId() {
+        return documentCollectionId;
     }
 
-    public void setKnowledgeId(BigInteger knowledgeId) {
-        this.knowledgeId = knowledgeId;
+    public void setDocumentCollectionId(BigInteger documentCollectionId) {
+        this.documentCollectionId = documentCollectionId;
     }
 
     public String getContent() {
@@ -77,6 +68,14 @@ public class DocumentChunkBase implements Serializable {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Long getSorting() {
+        return sorting;
+    }
+
+    public void setSorting(Long sorting) {
+        this.sorting = sorting;
     }
 
 }

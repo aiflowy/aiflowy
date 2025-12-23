@@ -3,9 +3,11 @@ package tech.aiflowy.job.entity.base;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
+import com.mybatisflex.core.handler.FastjsonTypeHandler;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.Map;
 
 
 public class SysJobLogBase implements Serializable {
@@ -33,8 +35,8 @@ public class SysJobLogBase implements Serializable {
     /**
      * 任务参数
      */
-    @Column(comment = "任务参数")
-    private String jobParams;
+    @Column(typeHandler = FastjsonTypeHandler.class, comment = "任务参数")
+    private Map<String, Object> jobParams;
 
     /**
      * 执行结果
@@ -102,11 +104,11 @@ public class SysJobLogBase implements Serializable {
         this.jobName = jobName;
     }
 
-    public String getJobParams() {
+    public Map<String, Object> getJobParams() {
         return jobParams;
     }
 
-    public void setJobParams(String jobParams) {
+    public void setJobParams(Map<String, Object> jobParams) {
         this.jobParams = jobParams;
     }
 

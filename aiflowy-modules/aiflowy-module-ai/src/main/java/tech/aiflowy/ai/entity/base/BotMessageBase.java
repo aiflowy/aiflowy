@@ -1,22 +1,24 @@
 package tech.aiflowy.ai.entity.base;
 
-import tech.aiflowy.common.entity.DateEntity;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.core.handler.FastjsonTypeHandler;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.Map;
+import tech.aiflowy.common.entity.DateEntity;
 
 
 public class BotMessageBase extends DateEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id(keyType = KeyType.Generator, value = "snowFlakeId")
+    /**
+     * ID
+     */
+    @Id(keyType = KeyType.Generator, value = "snowFlakeId", comment = "ID")
     private BigInteger id;
 
     /**
@@ -38,9 +40,9 @@ public class BotMessageBase extends DateEntity implements Serializable {
     private BigInteger conversationId;
 
     /**
-     * 角色
+     * 角色[user|assistant]
      */
-    @Column(comment = "角色")
+    @Column(comment = "角色[user|assistant]")
     private String role;
 
     /**
@@ -55,7 +57,10 @@ public class BotMessageBase extends DateEntity implements Serializable {
     @Column(comment = "图片")
     private String image;
 
-    @Column(typeHandler = FastjsonTypeHandler.class)
+    /**
+     * 选项
+     */
+    @Column(typeHandler = FastjsonTypeHandler.class, comment = "选项")
     private Map<String, Object> options;
 
     /**
@@ -65,9 +70,9 @@ public class BotMessageBase extends DateEntity implements Serializable {
     private Date created;
 
     /**
-     * 修改时间
+     * 更新时间
      */
-    @Column(comment = "修改时间")
+    @Column(comment = "更新时间")
     private Date modified;
 
     public BigInteger getId() {
@@ -134,23 +139,20 @@ public class BotMessageBase extends DateEntity implements Serializable {
         this.options = options;
     }
 
-    @Override
     public Date getCreated() {
         return created;
     }
 
-    @Override
     public void setCreated(Date created) {
         this.created = created;
     }
 
-    @Override
     public Date getModified() {
         return modified;
     }
 
-    @Override
     public void setModified(Date modified) {
         this.modified = modified;
     }
+
 }

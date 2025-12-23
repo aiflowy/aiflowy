@@ -3,7 +3,6 @@ package tech.aiflowy.ai.entity.base;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
@@ -24,12 +23,6 @@ public class PluginItemBase implements Serializable {
      */
     @Column(comment = "插件id")
     private BigInteger pluginId;
-
-    /**
-     * 英文名称
-     */
-    @Column(comment = "英文名称")
-    private String englishName;
 
     /**
      * 名称
@@ -83,13 +76,19 @@ public class PluginItemBase implements Serializable {
      * 服务状态[0 下线 1 上线]
      */
     @Column(comment = "服务状态[0 下线 1 上线]")
-    private int serviceStatus;
+    private Integer serviceStatus;
 
     /**
      * 调试状态【0失败 1成功】
      */
     @Column(comment = "调试状态【0失败 1成功】")
-    private int debugStatus;
+    private Integer debugStatus;
+
+    /**
+     * 英文名称
+     */
+    @Column(comment = "英文名称")
+    private String englishName;
 
     public BigInteger getId() {
         return id;
@@ -171,19 +170,21 @@ public class PluginItemBase implements Serializable {
         this.requestMethod = requestMethod;
     }
 
-    public int getServiceStatus() {
+    public Integer getServiceStatus() {
         return serviceStatus;
     }
 
-    public void setServiceStatus(int serviceStatus) {
+    public void setServiceStatus(Integer serviceStatus) {
         this.serviceStatus = serviceStatus;
     }
 
-    public int getDebugStatus() {
+    public Integer getDebugStatus() {
         return debugStatus;
     }
 
-    public void setDebugStatus(int debugStatus) {this.debugStatus = debugStatus;}
+    public void setDebugStatus(Integer debugStatus) {
+        this.debugStatus = debugStatus;
+    }
 
     public String getEnglishName() {
         return englishName;
@@ -192,4 +193,5 @@ public class PluginItemBase implements Serializable {
     public void setEnglishName(String englishName) {
         this.englishName = englishName;
     }
+
 }

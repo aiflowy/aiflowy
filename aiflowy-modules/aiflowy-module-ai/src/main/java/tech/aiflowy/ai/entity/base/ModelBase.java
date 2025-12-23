@@ -4,7 +4,6 @@ import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.core.handler.FastjsonTypeHandler;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Map;
@@ -14,7 +13,10 @@ public class ModelBase implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id(keyType = KeyType.Generator, value = "snowFlakeId")
+    /**
+     * ID
+     */
+    @Id(keyType = KeyType.Generator, value = "snowFlakeId", comment = "ID")
     private BigInteger id;
 
     /**
@@ -26,7 +28,7 @@ public class ModelBase implements Serializable {
     /**
      * 租户ID
      */
-    @Column(comment = "租户ID", tenantId = true)
+    @Column(tenantId = true, comment = "租户ID")
     private BigInteger tenantId;
 
     /**
@@ -53,12 +55,17 @@ public class ModelBase implements Serializable {
     @Column(comment = "描述")
     private String description;
 
-
     /**
      * 大模型请求地址
      */
     @Column(comment = "大模型请求地址")
     private String endpoint;
+
+    /**
+     * 请求路径
+     */
+    @Column(comment = "请求路径")
+    private String requestPath;
 
     /**
      * 大模型名称
@@ -79,75 +86,75 @@ public class ModelBase implements Serializable {
     private String extraConfig;
 
     /**
-     * provider
-     */
-    @Column(comment = "provider")
-    private String provider;
-
-    /**
-     * providerId
-     */
-    @Column(comment = "providerId")
-    private BigInteger providerId;
-
-    /**
-     * groupName
-     */
-    @Column(comment = "groupName")
-    private String groupName;
-
-    /**
-     * modelType
-     */
-    @Column(comment = "modelType")
-    private String modelType;
-
-    /**
      * 其他配置内容
      */
     @Column(typeHandler = FastjsonTypeHandler.class, comment = "其他配置内容")
     private Map<String, Object> options;
 
     /**
-     * added 是否已添加
+     * 分组名称
      */
-    @Column(comment = "added")
-    private Boolean added;
+    @Column(comment = "分组名称")
+    private String groupName;
 
     /**
-     * canDelete 是否能删除，系统添加的默认不允许删除
+     * 模型类型
      */
-    @Column(comment = "canDelete")
-    private Boolean canDelete;
+    @Column(comment = "模型类型")
+    private String modelType;
 
     /**
-     * supportReasoning 是否支持推理
+     * 供应商
      */
-    @Column(comment = "supportReasoning")
+    @Column(comment = "供应商")
+    private String provider;
+
+    /**
+     * 是否支持推理
+     */
+    @Column(comment = "是否支持推理")
     private Boolean supportReasoning;
 
     /**
-     * supportTool 是否支持工具
+     * 是否支持工具
      */
-    @Column(comment = "supportTool")
+    @Column(comment = "是否支持工具")
     private Boolean supportTool;
 
     /**
-     * supportEmbedding 是否支持向量化
+     * 是否支持嵌入
      */
-    @Column(comment = "supportEmbedding")
+    @Column(comment = "是否支持嵌入")
     private Boolean supportEmbedding;
 
     /**
-     * supportRerank 是否支持重排
+     * 是否支持重排
      */
-    @Column(comment = "supportRerank")
+    @Column(comment = "是否支持重排")
     private Boolean supportRerank;
 
     /**
-     * supportFree 是否消耗免费
+     * 供应商id
      */
-    @Column(comment = "supportFree")
+    @Column(comment = "供应商id")
+    private BigInteger providerId;
+
+    /**
+     * 是否添加
+     */
+    @Column(comment = "是否添加")
+    private Boolean added;
+
+    /**
+     * 是否能删除
+     */
+    @Column(comment = "是否能删除")
+    private Boolean canDelete;
+
+    /**
+     * 是否免费
+     */
+    @Column(comment = "是否免费")
     private Boolean supportFree;
 
     public BigInteger getId() {
@@ -214,6 +221,14 @@ public class ModelBase implements Serializable {
         this.endpoint = endpoint;
     }
 
+    public String getRequestPath() {
+        return requestPath;
+    }
+
+    public void setRequestPath(String requestPath) {
+        this.requestPath = requestPath;
+    }
+
     public String getModelName() {
         return modelName;
     }
@@ -246,76 +261,92 @@ public class ModelBase implements Serializable {
         this.options = options;
     }
 
-    public String getModelType() {return modelType;}
-
-    public void setModelType(String modelType) {this.modelType = modelType;}
-
-    public String getGroupName() {return groupName;}
-
-    public void setGroupName(String groupName) {this.groupName = groupName;}
-
-    public String getProvider() {return provider;}
-
-    public void setProvider(String provider) {this.provider = provider;}
-
-    public BigInteger getProviderId() {return providerId;}
-
-    public void setProviderId(BigInteger providerId) {this.providerId = providerId;}
-
-    public Boolean getAdded() {return added;}
-
-    public void setAdded(Boolean added) {this.added = added;}
-
-    public Boolean getCanDelete() {return canDelete;}
-
-    public void setCanDelete(Boolean canDelete) {this.canDelete = canDelete;}
-
-    public Boolean getSupportReasoning() {return supportReasoning;}
-
-    public void setSupportReasoning(Boolean supportReasoning) {this.supportReasoning = supportReasoning;}
-
-    public Boolean getSupportTool() {return supportTool;}
-
-    public void setSupportTool(Boolean supportTool) {this.supportTool = supportTool;}
-
-    public Boolean getSupportEmbedding() {return supportEmbedding;}
-
-    public void setSupportEmbedding(Boolean supportEmbedding) {this.supportEmbedding = supportEmbedding;}
-
-    public Boolean getSupportRerank() {return supportRerank;}
-
-    public void setSupportRerank(Boolean supportRerank) {this.supportRerank = supportRerank;}
-
-    public Boolean getSupportFree() {return supportFree;}
-
-    public void setSupportFree(Boolean supportFree) {this.supportFree = supportFree;}
-
-    @Override
-    public String toString() {
-        return "ModelBase{" +
-                "id=" + id +
-                ", deptId=" + deptId +
-                ", tenantId=" + tenantId +
-                ", title='" + title + '\'' +
-                ", brand='" + brand + '\'' +
-                ", icon='" + icon + '\'' +
-                ", description='" + description + '\'' +
-                ", endpoint='" + endpoint + '\'' +
-                ", modelName='" + modelName + '\'' +
-                ", apiKey='" + apiKey + '\'' +
-                ", extraConfig='" + extraConfig + '\'' +
-                ", provider='" + provider + '\'' +
-                ", providerId=" + providerId +
-                ", groupName='" + groupName + '\'' +
-                ", modelType='" + modelType + '\'' +
-                ", options=" + options +
-                ", added=" + added +
-                ", canDelete=" + canDelete +
-                ", supportReasoning=" + supportReasoning +
-                ", supportTool=" + supportTool +
-                ", supportEmbedding=" + supportEmbedding +
-                ", supportRerank=" + supportRerank +
-                ", supportFree=" + supportFree +
-                '}';
+    public String getGroupName() {
+        return groupName;
     }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
+
+    public String getModelType() {
+        return modelType;
+    }
+
+    public void setModelType(String modelType) {
+        this.modelType = modelType;
+    }
+
+    public String getProvider() {
+        return provider;
+    }
+
+    public void setProvider(String provider) {
+        this.provider = provider;
+    }
+
+    public Boolean getSupportReasoning() {
+        return supportReasoning;
+    }
+
+    public void setSupportReasoning(Boolean supportReasoning) {
+        this.supportReasoning = supportReasoning;
+    }
+
+    public Boolean getSupportTool() {
+        return supportTool;
+    }
+
+    public void setSupportTool(Boolean supportTool) {
+        this.supportTool = supportTool;
+    }
+
+    public Boolean getSupportEmbedding() {
+        return supportEmbedding;
+    }
+
+    public void setSupportEmbedding(Boolean supportEmbedding) {
+        this.supportEmbedding = supportEmbedding;
+    }
+
+    public Boolean getSupportRerank() {
+        return supportRerank;
+    }
+
+    public void setSupportRerank(Boolean supportRerank) {
+        this.supportRerank = supportRerank;
+    }
+
+    public BigInteger getProviderId() {
+        return providerId;
+    }
+
+    public void setProviderId(BigInteger providerId) {
+        this.providerId = providerId;
+    }
+
+    public Boolean getAdded() {
+        return added;
+    }
+
+    public void setAdded(Boolean added) {
+        this.added = added;
+    }
+
+    public Boolean getCanDelete() {
+        return canDelete;
+    }
+
+    public void setCanDelete(Boolean canDelete) {
+        this.canDelete = canDelete;
+    }
+
+    public Boolean getSupportFree() {
+        return supportFree;
+    }
+
+    public void setSupportFree(Boolean supportFree) {
+        this.supportFree = supportFree;
+    }
+
 }

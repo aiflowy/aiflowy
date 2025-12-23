@@ -1,15 +1,14 @@
 package tech.aiflowy.ai.entity.base;
 
-import tech.aiflowy.common.entity.DateEntity;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.core.handler.FastjsonTypeHandler;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.Map;
+import tech.aiflowy.common.entity.DateEntity;
 
 
 public class BotBase extends DateEntity implements Serializable {
@@ -37,7 +36,7 @@ public class BotBase extends DateEntity implements Serializable {
     /**
      * 租户ID
      */
-    @Column(comment = "租户ID", tenantId = true)
+    @Column(tenantId = true, comment = "租户ID")
     private BigInteger tenantId;
 
     /**
@@ -104,7 +103,7 @@ public class BotBase extends DateEntity implements Serializable {
      * 数据状态
      */
     @Column(comment = "数据状态")
-    private Integer status;
+    private Boolean status;
 
     /**
      * 分类ID
@@ -118,6 +117,14 @@ public class BotBase extends DateEntity implements Serializable {
 
     public void setId(BigInteger id) {
         this.id = id;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public BigInteger getDeptId() {
@@ -216,19 +223,11 @@ public class BotBase extends DateEntity implements Serializable {
         this.modifiedBy = modifiedBy;
     }
 
-    public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
-
-    public Integer getStatus() {
+    public Boolean getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(Boolean status) {
         this.status = status;
     }
 
@@ -239,4 +238,5 @@ public class BotBase extends DateEntity implements Serializable {
     public void setCategoryId(BigInteger categoryId) {
         this.categoryId = categoryId;
     }
+
 }

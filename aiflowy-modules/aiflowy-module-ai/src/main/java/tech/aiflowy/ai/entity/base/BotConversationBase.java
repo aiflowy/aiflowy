@@ -2,7 +2,7 @@ package tech.aiflowy.ai.entity.base;
 
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
-
+import com.mybatisflex.annotation.KeyType;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
@@ -15,7 +15,7 @@ public class BotConversationBase implements Serializable {
     /**
      * 会话id
      */
-    @Id(comment = "会话id")
+    @Id(keyType = KeyType.Generator, value = "snowFlakeId", comment = "会话id")
     private BigInteger id;
 
     /**
@@ -25,15 +25,15 @@ public class BotConversationBase implements Serializable {
     private String title;
 
     /**
-     * BotId
+     * botid
      */
-    @Column(comment = "BotId")
+    @Column(comment = "botid")
     private BigInteger botId;
 
     /**
-     * 用户id
+     * 账户 id
      */
-    @Column(comment = "用户id")
+    @Column(comment = "账户 id")
     private BigInteger accountId;
 
     /**
@@ -81,4 +81,5 @@ public class BotConversationBase implements Serializable {
     public void setCreated(Date created) {
         this.created = created;
     }
+
 }

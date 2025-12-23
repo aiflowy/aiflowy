@@ -3,7 +3,6 @@ package tech.aiflowy.system.entity.base;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
@@ -13,7 +12,10 @@ public class SysLogBase implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id(keyType = KeyType.Generator, value = "snowFlakeId")
+    /**
+     * ID
+     */
+    @Id(keyType = KeyType.Generator, value = "snowFlakeId", comment = "ID")
     private BigInteger id;
 
     /**

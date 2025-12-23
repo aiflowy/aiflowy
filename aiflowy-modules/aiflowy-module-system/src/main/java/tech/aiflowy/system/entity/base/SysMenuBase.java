@@ -1,16 +1,15 @@
 package tech.aiflowy.system.entity.base;
 
-import tech.aiflowy.common.tree.TreeNode;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
+import tech.aiflowy.common.entity.DateTreeEntity;
 
 
-public class SysMenuBase extends TreeNode implements Serializable {
+public class SysMenuBase extends DateTreeEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -113,7 +112,7 @@ public class SysMenuBase extends TreeNode implements Serializable {
     /**
      * 删除标识
      */
-    @Column(comment = "删除标识", isLogicDelete = true)
+    @Column(isLogicDelete = true, comment = "删除标识")
     private Integer isDeleted;
 
     public BigInteger getId() {

@@ -3,14 +3,11 @@ package tech.aiflowy.job.entity.base;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
+import com.mybatisflex.core.handler.FastjsonTypeHandler;
 import java.io.Serializable;
 import java.math.BigInteger;
-import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
-
-import com.mybatisflex.core.handler.FastjsonTypeHandler;
 import tech.aiflowy.common.entity.DateEntity;
 
 
@@ -33,7 +30,7 @@ public class SysJobBase extends DateEntity implements Serializable {
     /**
      * 租户ID
      */
-    @Column(comment = "租户ID", tenantId = true)
+    @Column(tenantId = true, comment = "租户ID")
     private BigInteger tenantId;
 
     /**
@@ -51,7 +48,7 @@ public class SysJobBase extends DateEntity implements Serializable {
     /**
      * 任务参数
      */
-    @Column(typeHandler = FastjsonTypeHandler.class, comment = "任务参数  存放 json")
+    @Column(typeHandler = FastjsonTypeHandler.class, comment = "任务参数")
     private Map<String, Object> jobParams;
 
     /**
@@ -75,7 +72,7 @@ public class SysJobBase extends DateEntity implements Serializable {
     /**
      * 其他配置
      */
-    @Column(typeHandler = FastjsonTypeHandler.class, comment = "扩展字段  存放 json")
+    @Column(typeHandler = FastjsonTypeHandler.class, comment = "其他配置")
     private Map<String, Object> options;
 
     /**
@@ -117,7 +114,7 @@ public class SysJobBase extends DateEntity implements Serializable {
     /**
      * 删除标识
      */
-    @Column(comment = "删除标识", isLogicDelete = true)
+    @Column(isLogicDelete = true, comment = "删除标识")
     private Integer isDeleted;
 
     public BigInteger getId() {

@@ -1,22 +1,24 @@
 package tech.aiflowy.ai.entity.base;
 
-import tech.aiflowy.common.entity.DateEntity;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.core.handler.FastjsonTypeHandler;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.Map;
+import tech.aiflowy.common.entity.DateEntity;
 
 
 public class DocumentCollectionBase extends DateEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @Id(keyType = KeyType.Generator, value = "snowFlakeId")
+    /**
+     * Id
+     */
+    @Id(keyType = KeyType.Generator, value = "snowFlakeId", comment = "Id")
     private BigInteger id;
 
     /**
@@ -34,7 +36,7 @@ public class DocumentCollectionBase extends DateEntity implements Serializable {
     /**
      * 租户ID
      */
-    @Column(comment = "租户ID", tenantId = true)
+    @Column(tenantId = true, comment = "租户ID")
     private BigInteger tenantId;
 
     /**
@@ -48,12 +50,6 @@ public class DocumentCollectionBase extends DateEntity implements Serializable {
      */
     @Column(comment = "标题")
     private String title;
-
-    /**
-     * 英文名称
-     */
-    @Column(comment = "英文名称")
-    private String englishName;
 
     /**
      * 描述
@@ -92,22 +88,10 @@ public class DocumentCollectionBase extends DateEntity implements Serializable {
     private String vectorStoreConfig;
 
     /**
-     * 是否启用搜索引擎
-     */
-    @Column(comment = "是否启用搜索引擎")
-    private Boolean searchEngineEnable;
-
-    /**
      * Embedding 模型ID
      */
     @Column(comment = "Embedding 模型ID")
-    private BigInteger vectorEmbedModelId;
-
-    /**
-     * 重排 模型ID
-     */
-    @Column(comment = "重排 模型ID")
-    private BigInteger rerankModelId;
+    private Long vectorEmbedModelId;
 
     /**
      * 创建时间
@@ -139,12 +123,38 @@ public class DocumentCollectionBase extends DateEntity implements Serializable {
     @Column(typeHandler = FastjsonTypeHandler.class, comment = "其他配置")
     private Map<String, Object> options;
 
+    /**
+     * 重排模型id
+     */
+    @Column(comment = "重排模型id")
+    private Long rerankModelId;
+
+    /**
+     * 是否启用搜索引擎
+     */
+    @Column(comment = "是否启用搜索引擎")
+    private Boolean searchEngineEnable;
+
+    /**
+     * 英文名称
+     */
+    @Column(comment = "英文名称")
+    private String englishName;
+
     public BigInteger getId() {
         return id;
     }
 
     public void setId(BigInteger id) {
         this.id = id;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public BigInteger getDeptId() {
@@ -227,7 +237,13 @@ public class DocumentCollectionBase extends DateEntity implements Serializable {
         this.vectorStoreConfig = vectorStoreConfig;
     }
 
-    public BigInteger getVectorEmbedModelId() {return vectorEmbedModelId;}
+    public Long getVectorEmbedModelId() {
+        return vectorEmbedModelId;
+    }
+
+    public void setVectorEmbedModelId(Long vectorEmbedModelId) {
+        this.vectorEmbedModelId = vectorEmbedModelId;
+    }
 
     public Date getCreated() {
         return created;
@@ -269,11 +285,13 @@ public class DocumentCollectionBase extends DateEntity implements Serializable {
         this.options = options;
     }
 
-    public void setVectorEmbedModelId(BigInteger vectorEmbedModelId) {this.vectorEmbedModelId = vectorEmbedModelId;}
+    public Long getRerankModelId() {
+        return rerankModelId;
+    }
 
-    public BigInteger getRerankModelId() {return rerankModelId;}
-
-    public void setRerankModelId(BigInteger rerankModelId) {this.rerankModelId = rerankModelId;}
+    public void setRerankModelId(Long rerankModelId) {
+        this.rerankModelId = rerankModelId;
+    }
 
     public Boolean getSearchEngineEnable() {
         return searchEngineEnable;
@@ -291,13 +309,4 @@ public class DocumentCollectionBase extends DateEntity implements Serializable {
         this.englishName = englishName;
     }
 
-    public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
-
-    
 }

@@ -3,11 +3,12 @@ package tech.aiflowy.datacenter.entity.base;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
-import tech.aiflowy.common.entity.DateEntity;
-
+import com.mybatisflex.core.handler.FastjsonTypeHandler;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.Map;
+import tech.aiflowy.common.entity.DateEntity;
 
 
 public class DatacenterTableFieldBase extends DateEntity implements Serializable {
@@ -77,8 +78,8 @@ public class DatacenterTableFieldBase extends DateEntity implements Serializable
     /**
      * 扩展项
      */
-    @Column(comment = "扩展项")
-    private String options;
+    @Column(typeHandler = FastjsonTypeHandler.class, comment = "扩展项")
+    private Map<String, Object> options;
 
     public BigInteger getId() {
         return id;
@@ -160,11 +161,12 @@ public class DatacenterTableFieldBase extends DateEntity implements Serializable
         this.modifiedBy = modifiedBy;
     }
 
-    public String getOptions() {
+    public Map<String, Object> getOptions() {
         return options;
     }
 
-    public void setOptions(String options) {
+    public void setOptions(Map<String, Object> options) {
         this.options = options;
     }
+
 }

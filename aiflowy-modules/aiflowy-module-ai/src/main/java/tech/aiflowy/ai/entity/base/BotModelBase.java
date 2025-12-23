@@ -4,7 +4,6 @@ import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.core.handler.FastjsonTypeHandler;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Map;
@@ -19,7 +18,7 @@ public class BotModelBase implements Serializable {
 
     private BigInteger botId;
 
-    private BigInteger llmId;
+    private BigInteger modelId;
 
     @Column(typeHandler = FastjsonTypeHandler.class)
     private Map<String, Object> options;
@@ -40,12 +39,12 @@ public class BotModelBase implements Serializable {
         this.botId = botId;
     }
 
-    public BigInteger getLlmId() {
-        return llmId;
+    public BigInteger getModelId() {
+        return modelId;
     }
 
-    public void setLlmId(BigInteger llmId) {
-        this.llmId = llmId;
+    public void setModelId(BigInteger modelId) {
+        this.modelId = modelId;
     }
 
     public Map<String, Object> getOptions() {

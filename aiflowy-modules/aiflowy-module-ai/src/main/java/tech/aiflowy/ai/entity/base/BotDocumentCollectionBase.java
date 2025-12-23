@@ -4,7 +4,6 @@ import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.core.handler.FastjsonTypeHandler;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Map;
@@ -19,7 +18,7 @@ public class BotDocumentCollectionBase implements Serializable {
 
     private BigInteger botId;
 
-    private BigInteger knowledgeId;
+    private BigInteger documentCollectionId;
 
     @Column(typeHandler = FastjsonTypeHandler.class)
     private Map<String, Object> options;
@@ -40,12 +39,12 @@ public class BotDocumentCollectionBase implements Serializable {
         this.botId = botId;
     }
 
-    public BigInteger getKnowledgeId() {
-        return knowledgeId;
+    public BigInteger getDocumentCollectionId() {
+        return documentCollectionId;
     }
 
-    public void setKnowledgeId(BigInteger knowledgeId) {
-        this.knowledgeId = knowledgeId;
+    public void setDocumentCollectionId(BigInteger documentCollectionId) {
+        this.documentCollectionId = documentCollectionId;
     }
 
     public Map<String, Object> getOptions() {

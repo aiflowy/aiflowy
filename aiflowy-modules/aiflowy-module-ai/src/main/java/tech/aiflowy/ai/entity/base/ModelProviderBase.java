@@ -3,11 +3,10 @@ package tech.aiflowy.ai.entity.base;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
-import tech.aiflowy.common.entity.DateEntity;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
+import tech.aiflowy.common.entity.DateEntity;
 
 
 public class ModelProviderBase extends DateEntity implements Serializable {
@@ -25,12 +24,6 @@ public class ModelProviderBase extends DateEntity implements Serializable {
      */
     @Column(comment = "供应商名称")
     private String providerName;
-
-    /**
-     * 供应商
-     */
-    @Column(comment = "供应商")
-    private String provider;
 
     /**
      * 创建时间
@@ -75,22 +68,28 @@ public class ModelProviderBase extends DateEntity implements Serializable {
     private String endpoint;
 
     /**
-     * chatPath
+     * 对话地址
      */
-    @Column(comment = "chatPath")
+    @Column(comment = "对话地址")
     private String chatPath;
 
     /**
-     * embedPath
+     * 向量地址
      */
-    @Column(comment = "embedPath")
+    @Column(comment = "向量地址")
     private String embedPath;
 
     /**
-     * rerankPath
+     * 重排路径
      */
-    @Column(comment = "rerankPath")
+    @Column(comment = "重排路径")
     private String rerankPath;
+
+    /**
+     * 供应商
+     */
+    @Column(comment = "供应商")
+    private String provider;
 
     public BigInteger getId() {
         return id;
@@ -107,15 +106,6 @@ public class ModelProviderBase extends DateEntity implements Serializable {
     public void setProviderName(String providerName) {
         this.providerName = providerName;
     }
-
-    public String getProvider() {
-        return provider;
-    }
-
-    public void setProvider(String provider) {
-        this.provider = provider;
-    }
-
 
     public Date getCreated() {
         return created;
@@ -157,23 +147,52 @@ public class ModelProviderBase extends DateEntity implements Serializable {
         this.icon = icon;
     }
 
-    public String getApiKey() {return apiKey;}
+    public String getApiKey() {
+        return apiKey;
+    }
 
-    public void setApiKey(String apiKey) {this.apiKey = apiKey;}
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
 
-    public String getEndpoint() {return endpoint;}
+    public String getEndpoint() {
+        return endpoint;
+    }
 
-    public void setEndpoint(String endpoint) {this.endpoint = endpoint;}
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
+    }
 
-    public String getChatPath() {return chatPath;}
+    public String getChatPath() {
+        return chatPath;
+    }
 
-    public void setChatPath(String chatPath) {this.chatPath = chatPath;}
+    public void setChatPath(String chatPath) {
+        this.chatPath = chatPath;
+    }
 
-    public String getEmbedPath() {return embedPath;}
+    public String getEmbedPath() {
+        return embedPath;
+    }
 
-    public void setEmbedPath(String embedPath) {this.embedPath = embedPath;}
+    public void setEmbedPath(String embedPath) {
+        this.embedPath = embedPath;
+    }
 
-    public String getRerankPath() {return rerankPath;}
+    public String getRerankPath() {
+        return rerankPath;
+    }
 
-    public void setRerankPath(String rerankPath) {this.rerankPath = rerankPath;}
+    public void setRerankPath(String rerankPath) {
+        this.rerankPath = rerankPath;
+    }
+
+    public String getProvider() {
+        return provider;
+    }
+
+    public void setProvider(String provider) {
+        this.provider = provider;
+    }
+
 }

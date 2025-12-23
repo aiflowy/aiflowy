@@ -1,13 +1,12 @@
 package tech.aiflowy.ai.entity.base;
 
-import tech.aiflowy.common.entity.DateEntity;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
+import tech.aiflowy.common.entity.DateEntity;
 
 
 public class WorkflowBase extends DateEntity implements Serializable {
@@ -35,7 +34,7 @@ public class WorkflowBase extends DateEntity implements Serializable {
     /**
      * 租户ID
      */
-    @Column(comment = "租户ID", tenantId = true)
+    @Column(tenantId = true, comment = "租户ID")
     private BigInteger tenantId;
 
     /**
@@ -43,12 +42,6 @@ public class WorkflowBase extends DateEntity implements Serializable {
      */
     @Column(comment = "标题")
     private String title;
-
-    /**
-     * 英文名称
-     */
-    @Column(comment = "英文名称")
-    private String englishName;
 
     /**
      * 描述
@@ -93,6 +86,12 @@ public class WorkflowBase extends DateEntity implements Serializable {
     private BigInteger modifiedBy;
 
     /**
+     * 英文名称
+     */
+    @Column(comment = "英文名称")
+    private String englishName;
+
+    /**
      * 数据状态
      */
     @Column(comment = "数据状态")
@@ -110,6 +109,14 @@ public class WorkflowBase extends DateEntity implements Serializable {
 
     public void setId(BigInteger id) {
         this.id = id;
+    }
+
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
     public BigInteger getDeptId() {
@@ -200,14 +207,6 @@ public class WorkflowBase extends DateEntity implements Serializable {
         this.englishName = englishName;
     }
 
-    public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
-
     public Integer getStatus() {
         return status;
     }
@@ -223,4 +222,5 @@ public class WorkflowBase extends DateEntity implements Serializable {
     public void setCategoryId(BigInteger categoryId) {
         this.categoryId = categoryId;
     }
+
 }

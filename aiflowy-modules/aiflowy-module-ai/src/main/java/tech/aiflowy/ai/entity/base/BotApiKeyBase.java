@@ -3,7 +3,9 @@ package tech.aiflowy.ai.entity.base;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
+import com.mybatisflex.core.handler.FastjsonTypeHandler;
 import java.io.Serializable;
+import java.util.Map;
 
 
 public class BotApiKeyBase implements Serializable {
@@ -37,8 +39,8 @@ public class BotApiKeyBase implements Serializable {
     /**
      * 预留拓展配置的字段
      */
-    @Column(comment = "预留拓展配置的字段")
-    private String options;
+    @Column(typeHandler = FastjsonTypeHandler.class, comment = "预留拓展配置的字段")
+    private Map<String, Object> options;
 
     public Long getId() {
         return id;
@@ -72,20 +74,12 @@ public class BotApiKeyBase implements Serializable {
         this.salt = salt;
     }
 
-    public String getOptions() {
+    public Map<String, Object> getOptions() {
         return options;
     }
 
-    public void setOptions(String options) {
+    public void setOptions(Map<String, Object> options) {
         this.options = options;
     }
 
-    @Override
-    public String toString() {
-        return "AiBotApiKeyBase{" + "id=" + id + ", apiKey='" + apiKey + '\'' + ", botId=" + botId + ", salt='" + salt
-            + '\'' + ", options='" + options + '\'' + '}';
-    }
-
-
-    
 }

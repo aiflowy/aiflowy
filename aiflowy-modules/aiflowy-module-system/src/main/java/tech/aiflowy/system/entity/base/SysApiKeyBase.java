@@ -3,7 +3,6 @@ package tech.aiflowy.system.entity.base;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
-
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
@@ -17,7 +16,7 @@ public class SysApiKeyBase implements Serializable {
      * id
      */
     @Id(keyType = KeyType.Generator, value = "snowFlakeId", comment = "id")
-    private Long id;
+    private BigInteger id;
 
     /**
      * apiKey
@@ -26,28 +25,28 @@ public class SysApiKeyBase implements Serializable {
     private String apiKey;
 
     /**
+     * 创建时间
+     */
+    @Column(comment = "创建时间")
+    private Date created;
+
+    /**
+     * 状态1启用 2失效
+     */
+    @Column(comment = "状态1启用 2失效")
+    private Integer status;
+
+    /**
      * 部门id
      */
-    @Column(comment = "deptId")
+    @Column(comment = "部门id")
     private BigInteger deptId;
 
     /**
      * 租户id
      */
-    @Column(comment = "tenantId")
+    @Column(tenantId = true, comment = "租户id")
     private BigInteger tenantId;
-
-    /**
-     * 创建人
-     */
-    @Column(comment = "userId")
-    private BigInteger createdBy;
-
-    /**
-     * 创建时间
-     */
-    @Column(comment = "创建时间")
-    private Date created;
 
     /**
      * 失效时间
@@ -56,16 +55,16 @@ public class SysApiKeyBase implements Serializable {
     private Date expiredAt;
 
     /**
-     * 状态1启用 2失效
+     * 创建人
      */
-    @Column(comment = "状态1启用 2失效")
-    private Integer status;
+    @Column(comment = "创建人")
+    private BigInteger createdBy;
 
-    public Long getId() {
+    public BigInteger getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(BigInteger id) {
         this.id = id;
     }
 
@@ -109,10 +108,6 @@ public class SysApiKeyBase implements Serializable {
         this.tenantId = tenantId;
     }
 
-    public BigInteger getCreatedBy() {return createdBy;}
-
-    public void setCreatedBy(BigInteger createdBy) {this.createdBy = createdBy;}
-
     public Date getExpiredAt() {
         return expiredAt;
     }
@@ -120,4 +115,13 @@ public class SysApiKeyBase implements Serializable {
     public void setExpiredAt(Date expiredAt) {
         this.expiredAt = expiredAt;
     }
+
+    public BigInteger getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(BigInteger createdBy) {
+        this.createdBy = createdBy;
+    }
+
 }
