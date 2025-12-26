@@ -1,6 +1,7 @@
 
 package tech.aiflowy.ai.entity;
 
+import cn.hutool.core.util.StrUtil;
 import com.agentsflex.core.model.chat.ChatModel;
 import com.agentsflex.core.model.embedding.EmbeddingModel;
 import com.agentsflex.core.model.rerank.RerankModel;
@@ -22,6 +23,7 @@ import com.mybatisflex.annotation.RelationManyToOne;
 import com.mybatisflex.annotation.Table;
 import tech.aiflowy.ai.entity.base.ModelBase;
 import tech.aiflowy.common.util.StringUtil;
+import tech.aiflowy.common.web.exceptions.BusinessException;
 
 /**
  * 实体类。
@@ -57,57 +59,45 @@ public class Model extends ModelBase {
         }
         switch (providerType.toLowerCase()) {
             case "ollama":
-                return ollamaLlm();
+                OllamaChatConfig ollamaChatConfig = new OllamaChatConfig();
+                ollamaChatConfig.setEndpoint(checkAndGetEndpoint());
+                ollamaChatConfig.setApiKey(checkAndGetApiKey());
+                ollamaChatConfig.setModel(checkAndGetModelName());
+                return new OllamaChatModel(ollamaChatConfig);
             case "deepseek":
-                return deepSeekLLm();
+                DeepseekConfig deepseekConfig = new DeepseekConfig();
+                deepseekConfig.setProvider(getModelProvider().getProviderType());
+                deepseekConfig.setEndpoint(checkAndGetEndpoint());
+                deepseekConfig.setApiKey(checkAndGetApiKey());
+                deepseekConfig.setModel(checkAndGetModelName());
+                deepseekConfig.setRequestPath(checkAndGetRequestPath());
+                return new DeepseekChatModel(deepseekConfig);
             default:
-                return openaiLLm();
+                OpenAIChatConfig openAIChatConfig = new OpenAIChatConfig();
+                openAIChatConfig.setProvider(getModelProvider().getProviderType());
+                openAIChatConfig.setEndpoint(checkAndGetEndpoint());
+                openAIChatConfig.setApiKey(checkAndGetApiKey());
+                openAIChatConfig.setModel(checkAndGetModelName());
+                openAIChatConfig.setRequestPath(checkAndGetRequestPath());
+                return new OpenAIChatModel(openAIChatConfig);
         }
-    }
-
-    private ChatModel ollamaLlm() {
-        OllamaChatConfig ollamaChatConfig = new OllamaChatConfig();
-        ollamaChatConfig.setEndpoint(getEndpoint());
-        ollamaChatConfig.setApiKey(getApiKey());
-        ollamaChatConfig.setModel(getModelName());
-        return new OllamaChatModel(ollamaChatConfig);
-    }
-
-    private ChatModel deepSeekLLm() {
-        DeepseekConfig deepseekConfig = new DeepseekConfig();
-        deepseekConfig.setProvider(getModelProvider().getProviderType());
-        deepseekConfig.setEndpoint(getEndpoint());
-        deepseekConfig.setApiKey(getApiKey());
-        deepseekConfig.setModel(getModelName());
-        deepseekConfig.setRequestPath(getRequestPath());
-        return new DeepseekChatModel(deepseekConfig);
-    }
-
-    private ChatModel openaiLLm() {
-        OpenAIChatConfig openAIChatConfig = new OpenAIChatConfig();
-        openAIChatConfig.setProvider(getModelProvider().getProviderType());
-        openAIChatConfig.setEndpoint(getEndpoint());
-        openAIChatConfig.setApiKey(getApiKey());
-        openAIChatConfig.setModel(getModelName());
-        openAIChatConfig.setRequestPath(getRequestPath());
-        return new OpenAIChatModel(openAIChatConfig);
     }
 
     public RerankModel toRerankModel() {
         switch (modelProvider.getProviderType().toLowerCase()) {
             case "gitee":
                 GiteeRerankModelConfig giteeRerankModelConfig = new GiteeRerankModelConfig();
-                giteeRerankModelConfig.setApiKey(getApiKey());
-                giteeRerankModelConfig.setEndpoint(getEndpoint());
-                giteeRerankModelConfig.setModel(getModelName());
-                giteeRerankModelConfig.setRequestPath(getRequestPath());
+                giteeRerankModelConfig.setApiKey(checkAndGetApiKey());
+                giteeRerankModelConfig.setEndpoint(checkAndGetEndpoint());
+                giteeRerankModelConfig.setModel(checkAndGetModelName());
+                giteeRerankModelConfig.setRequestPath(checkAndGetRequestPath());
                 return new GiteeRerankModel(giteeRerankModelConfig);
             default:
                 DefaultRerankModelConfig defaultRerankModelConfig = new DefaultRerankModelConfig();
-                defaultRerankModelConfig.setApiKey(getApiKey());
-                defaultRerankModelConfig.setEndpoint(getEndpoint());
-                defaultRerankModelConfig.setRequestPath(getRequestPath());
-                defaultRerankModelConfig.setModel(getModelName());
+                defaultRerankModelConfig.setApiKey(checkAndGetApiKey());
+                defaultRerankModelConfig.setEndpoint(checkAndGetEndpoint());
+                defaultRerankModelConfig.setRequestPath(checkAndGetRequestPath());
+                defaultRerankModelConfig.setModel(checkAndGetModelName());
                 return new DefaultRerankModel(defaultRerankModelConfig);
         }
     }
@@ -120,20 +110,47 @@ public class Model extends ModelBase {
         switch (providerType.toLowerCase()) {
             case "ollama":
                 OllamaEmbeddingConfig ollamaEmbeddingConfig = new OllamaEmbeddingConfig();
-                ollamaEmbeddingConfig.setEndpoint(getEndpoint());
+                ollamaEmbeddingConfig.setEndpoint(checkAndGetEndpoint());
                 ollamaEmbeddingConfig.setApiKey(getApiKey());
-                ollamaEmbeddingConfig.setModel(getModelName());
+                ollamaEmbeddingConfig.setModel(checkAndGetModelName());
                 ollamaEmbeddingConfig.setRequestPath(getRequestPath());
                 return new OllamaEmbeddingModel(ollamaEmbeddingConfig);
             default:
                 OpenAIEmbeddingConfig openAIEmbeddingConfig = new OpenAIEmbeddingConfig();
-                openAIEmbeddingConfig.setEndpoint(getEndpoint());
-                openAIEmbeddingConfig.setApiKey(getApiKey());
-                openAIEmbeddingConfig.setModel(getModelName());
-                openAIEmbeddingConfig.setRequestPath(getRequestPath());
+                openAIEmbeddingConfig.setEndpoint(checkAndGetEndpoint());
+                openAIEmbeddingConfig.setApiKey(checkAndGetApiKey());
+                openAIEmbeddingConfig.setModel(checkAndGetModelName());
+                openAIEmbeddingConfig.setRequestPath(checkAndGetRequestPath());
                 return new OpenAIEmbeddingModel(openAIEmbeddingConfig);
         }
     }
 
+    public String checkAndGetRequestPath() {
+        if (StrUtil.isEmpty(getRequestPath())){
+            throw new BusinessException("请求地址不能为空");
+        }
+        return getRequestPath();
+    }
+
+    public String checkAndGetApiKey() {
+        if (StrUtil.isEmpty(getApiKey())) {
+            throw new BusinessException("API 密钥不能为空");
+        }
+        return getApiKey();
+    }
+
+    public String checkAndGetEndpoint() {
+        if (StrUtil.isEmpty(getEndpoint())){
+            throw new BusinessException("API 地址不能为空");
+        }
+        return getEndpoint();
+    }
+
+    public String checkAndGetModelName() {
+        if (StrUtil.isEmpty(getModelName())){
+            throw new BusinessException("模型名称不能为空");
+        }
+        return getModelName();
+    }
 
 }
