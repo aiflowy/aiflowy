@@ -11,10 +11,10 @@ import { api } from '#/api/request';
 import bookIcon from '#/assets/ai/knowledge/book.svg';
 import HeaderSearch from '#/components/headerSearch/HeaderSearch.vue';
 import PageSide from '#/components/page/PageSide.vue';
-import ChunkDocumentTable from '#/views/ai/knowledge/ChunkDocumentTable.vue';
-import DocumentTable from '#/views/ai/knowledge/DocumentTable.vue';
-import ImportKnowledgeDocFile from '#/views/ai/knowledge/ImportKnowledgeDocFile.vue';
-import KnowledgeSearch from '#/views/ai/knowledge/KnowledgeSearch.vue';
+import ChunkDocumentTable from '#/views/ai/documentCollection/ChunkDocumentTable.vue';
+import DocumentTable from '#/views/ai/documentCollection/DocumentTable.vue';
+import ImportKnowledgeDocFile from '#/views/ai/documentCollection/ImportKnowledgeDocFile.vue';
+import KnowledgeSearch from '#/views/ai/documentCollection/KnowledgeSearch.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -36,7 +36,7 @@ onMounted(() => {
   getKnowledge();
 });
 const back = () => {
-  router.push({ path: '/ai/knowledge' });
+  router.push({ path: '/ai/documentCollection' });
 };
 const categoryData = [
   { key: 'documentList', name: $t('documentCollection.documentList') },

@@ -4,7 +4,7 @@ import { useRoute } from 'vue-router';
 
 import { api } from '#/api/request';
 import CategoryPanel from '#/components/categoryPanel/CategoryPanel.vue';
-import PreviewSearchKnowledge from '#/views/ai/knowledge/PreviewSearchKnowledge.vue';
+import PreviewSearchKnowledge from '#/views/ai/documentCollection/PreviewSearchKnowledge.vue';
 
 export interface FileInfo {
   filePath: string;

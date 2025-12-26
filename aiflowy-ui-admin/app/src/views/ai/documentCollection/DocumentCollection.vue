@@ -14,8 +14,8 @@ import defaultIcon from '#/assets/ai/knowledge/book.svg';
 import HeaderSearch from '#/components/headerSearch/HeaderSearch.vue';
 import CardPage from '#/components/page/CardList.vue';
 import PageData from '#/components/page/PageData.vue';
-import AiKnowledgeModal from '#/views/ai/knowledge/AiKnowledgeModal.vue';
-import KnowledgeSearch from '#/views/ai/knowledge/KnowledgeSearch.vue';
+import DocumentCollectionModal from '#/views/ai/documentCollection/DocumentCollectionModal.vue';
+import KnowledgeSearch from '#/views/ai/documentCollection/KnowledgeSearch.vue';
 
 const router = useRouter();
 
@@ -37,10 +37,10 @@ const actions: ActionButton[] = [
     permission: '/api/v1/documentCollection/save',
     onClick(row) {
       router.replace({
-        path: '/ai/knowledge/document',
+        path: '/ai/documentCollection/document',
         query: {
           id: row.id,
-          pageKey: '/ai/knowledge',
+          pageKey: '/ai/documentCollection',
         },
       });
     },
@@ -67,7 +67,7 @@ const actions: ActionButton[] = [
 ];
 
 onMounted(() => {});
-const handleDelete = (item) => {
+const handleDelete = (item: any) => {
   ElMessageBox.confirm($t('message.deleteAlert'), $t('message.noticeTitle'), {
     confirmButtonText: $t('message.ok'),
     cancelButtonText: $t('message.cancel'),
@@ -100,7 +100,7 @@ const headerButtons = [
     permission: '/api/v1/documentCollection/save',
   },
 ];
-const handleButtonClick = (event, _item) => {
+const handleButtonClick = (event: any, _item: any) => {
   switch (event.key) {
     case 'add': {
       aiKnowledgeModalRef.value.openDialog({});
@@ -108,7 +108,7 @@ const handleButtonClick = (event, _item) => {
     }
   }
 };
-const handleSearch = (params) => {
+const handleSearch = (params: any) => {
   pageDataRef.value.setQuery({ title: params, isQueryOr: true });
 };
 </script>
@@ -143,7 +143,7 @@ const handleSearch = (params) => {
       </PageData>
     </div>
     <!--    新增知识库模态框-->
-    <AiKnowledgeModal ref="aiKnowledgeModalRef" @reload="handleSearch" />
+    <DocumentCollectionModal ref="aiKnowledgeModalRef" @reload="handleSearch" />
     <!--    知识检索模态框-->
     <ElDialog
       v-model="searchKnowledgeModalVisible"

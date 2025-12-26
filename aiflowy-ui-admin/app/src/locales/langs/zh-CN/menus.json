@@ -18,7 +18,8 @@
     "workflow": "工作流",
     "plugin": "插件",
     "model": "大模型",
-    "knowledge": "知识库"
+    "documentCollection": "知识库",
+    "knowledge": "知识管理"
   },
   "settings": {
     "title": "系统配置",

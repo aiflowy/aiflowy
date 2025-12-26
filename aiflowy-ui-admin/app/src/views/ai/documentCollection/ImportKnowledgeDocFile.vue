@@ -12,10 +12,10 @@ import {
   ElSteps,
 } from 'element-plus';
 
-import ComfirmImportDocument from '#/views/ai/knowledge/ComfirmImportDocument.vue';
-import ImportKnowledgeFileContainer from '#/views/ai/knowledge/ImportKnowledgeFileContainer.vue';
-import SegmenterDoc from '#/views/ai/knowledge/SegmenterDoc.vue';
-import SplitterDocPreview from '#/views/ai/knowledge/SplitterDocPreview.vue';
+import ComfirmImportDocument from '#/views/ai/documentCollection/ComfirmImportDocument.vue';
+import ImportKnowledgeFileContainer from '#/views/ai/documentCollection/ImportKnowledgeFileContainer.vue';
+import SegmenterDoc from '#/views/ai/documentCollection/SegmenterDoc.vue';
+import SplitterDocPreview from '#/views/ai/documentCollection/SplitterDocPreview.vue';
 
 const emits = defineEmits(['importBack']);
 const back = () => {

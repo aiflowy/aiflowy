@@ -17,8 +17,9 @@
     "datacenter": "Datacenter",
     "workflow": "Workflow",
     "plugin": "Plugin",
-    "llm": "LLM",
-    "knowledge": "Knowledge"
+    "model": "Model",
+    "documentCollection": "DocumentCollection",
+    "knowledge": "DocumentManagement"
   },
   "settings": {
     "title": "SettingsConfiguration",

@@ -6,7 +6,7 @@ import { $t } from '@aiflowy/locales';
 import { ElButton, ElInput, ElMessage } from 'element-plus';
 
 import { api } from '#/api/request';
-import PreviewSearchKnowledge from '#/views/ai/knowledge/PreviewSearchKnowledge.vue';
+import PreviewSearchKnowledge from '#/views/ai/documentCollection/PreviewSearchKnowledge.vue';
 
 const props = defineProps({
   knowledgeId: {

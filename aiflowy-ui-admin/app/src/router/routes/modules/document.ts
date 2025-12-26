@@ -10,11 +10,11 @@ const routes: RouteRecordRaw[] = [
       hideInTab: true,
       hideInBreadcrumb: true,
       fullPathKey: true,
-      activePath: '/ai/knowledge',
+      activePath: '/ai/documentCollection',
     },
     name: 'Document',
-    path: '/ai/knowledge/document',
-    component: () => import('#/views/ai/knowledge/Document.vue'),
+    path: '/ai/documentCollection/document',
+    component: () => import('#/views/ai/documentCollection/Document.vue'),
   },
 ];
 

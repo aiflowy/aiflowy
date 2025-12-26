@@ -756,7 +756,7 @@ const handleUpdatePublishWx = () => {
 
     <!-- 选择知识库-->
     <CommonSelectDataModal
-      :title="$t('menus.ai.knowledge')"
+      :title="$t('menus.ai.documentCollection')"
       width="730"
       ref="knowledgeDataRef"
       page-url="/api/v1/documentCollection/page"

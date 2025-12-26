@@ -71,7 +71,8 @@ defineExpose({
       </h3>
       <span class="preview-stats" v-if="props.data.length > 0">
         {{ $t('documentCollection.total') }}
-        {{ total > 0 ? total : data.length }} {{ $t('documentCollection.segments') }}
+        {{ total > 0 ? total : data.length }}
+        {{ $t('documentCollection.segments') }}
       </span>
     </div>
 
