@@ -559,8 +559,8 @@ const idMainContent = ELEMENT_ID_MAIN_CONTENT;
               class="my-0 mr-1 rounded-md"
               @click="handleHeaderToggle"
             >
-              <IconifyIcon v-if="showSidebar" icon="ep:fold" />
-              <IconifyIcon v-else icon="ep:expand" />
+              <IconifyIcon v-if="showSidebar" icon="svg:fold" class="h-4 w-4" />
+              <IconifyIcon v-else icon="svg:fold" class="h-4 w-4 rotate-180" />
             </AIFlowyIconButton>
           </template>
           <slot name="header"></slot>

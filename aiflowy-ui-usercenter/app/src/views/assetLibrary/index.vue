@@ -151,30 +151,30 @@ function handleOperation(type: string) {
       </ElSpace>
       <div class="flex w-full items-center justify-between">
         <ElSpace class="text-2xl text-[#969799]">
-          <button
-            type="button"
+          <IconifyIcon
+            icon="svg:list"
             :class="
               cn(
-                'hover:text-primary active:text-primary/50 border-border rounded-sm border bg-white p-1',
-                viewType === 'list' && 'text-primary',
+                'h-8 w-8 cursor-pointer text-[#969799]',
+                viewType === 'list'
+                  ? 'text-primary'
+                  : 'hover:text-foreground dark:hover:text-accent',
               )
             "
             @click="viewType = 'list'"
-          >
-            <IconifyIcon icon="mdi:format-list-bulleted" />
-          </button>
-          <button
-            type="button"
+          />
+          <IconifyIcon
+            icon="svg:grid"
             :class="
               cn(
-                'hover:text-primary active:text-primary/50 border-border rounded-sm border bg-white p-1',
-                viewType === 'grid' && 'text-primary',
+                'h-8 w-8 cursor-pointer text-[#969799]',
+                viewType === 'grid'
+                  ? 'text-primary'
+                  : 'hover:text-foreground dark:hover:text-accent',
               )
             "
             @click="viewType = 'grid'"
-          >
-            <IconifyIcon icon="mdi:view-grid-outline" />
-          </button>
+          />
         </ElSpace>
         <div class="flex items-center gap-2.5">
           <div
