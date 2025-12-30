@@ -4,5 +4,17 @@
   "category": "问题类型",
   "description": "问题摘要",
   "contactInformation": "联系方式",
-  "submittedAt": "提交时间"
+  "submittedAt": "提交时间",
+  "functionalFailure": "功能故障",
+  "optimizationSuggestions": "优化建议",
+  "accountIssue": "账号问题",
+  "other": "其它",
+  "notViewed": "未查看",
+  "viewed": "已查看",
+  "processed": "已处理",
+  "closed/Invalid": "已关闭/无效",
+  "markedSuccessfully": "标记成功！",
+  "basicInformation": "基础信息",
+  "feedbackContent": "反馈内容",
+  "attachments": "附件"
 }
