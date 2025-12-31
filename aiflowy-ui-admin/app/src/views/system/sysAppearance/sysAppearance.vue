@@ -213,10 +213,10 @@ function handleInputChange(e: Event) {
 }
 async function handleSubmit() {
   loading.value = true;
-  const [, res] = await tryit(api.post)(
-    '/api/v1/sysOption/saveOption',
-    preferences,
-  );
+  const [, res] = await tryit(api.post)('/api/v1/sysOption/saveOption', {
+    key: 'ui_config',
+    value: preferences,
+  });
 
   if (res && res.errorCode === 0) {
     ElMessage.success($t('message.saveOkMessage'));
@@ -603,7 +603,7 @@ async function handleSubmit() {
             "
           />
           <span class="text-foreground/50 text-sm">{{
-            $t('sysAppearance.Only .jpg format supported')
+            $t('sysAppearance.OnlyJPG')
           }}</span>
         </div>
       </div>
