@@ -20,7 +20,7 @@ useElementPlusDesignTokens();
 onMounted(async () => {
   const [, res] = await tryit(api.get)('/api/v1/public/getUiConfig');
   if (res && res.errorCode === 0) {
-    updatePreferences(assign<Preferences>(res.data.value, preferences));
+    updatePreferences(assign<Preferences>(res.data, preferences));
   }
 });
 </script>
