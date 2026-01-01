@@ -19,6 +19,7 @@
   "remark": "备注",
   "isDeleted": "删除标识",
   "roleIds": "角色",
+  "positionIds": "岗位",
   "oldPwd": "旧密码",
   "newPwd": "新密码",
   "confirmPwd": "确认密码",

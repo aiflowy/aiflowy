@@ -41,6 +41,7 @@ const entity = ref<any>({
   deptIdList: '',
   status: '',
   remark: '',
+  positionIds: [],
 });
 const btnLoading = ref(false);
 const rules = ref({
@@ -148,6 +149,9 @@ function closeDialog() {
       </ElFormItem>
       <ElFormItem prop="roleIds" :label="$t('sysAccount.roleIds')">
         <DictSelect multiple v-model="entity.roleIds" dict-code="sysRole" />
+      </ElFormItem>
+      <ElFormItem prop="positionIds" :label="$t('sysAccount.positionIds')">
+        <DictSelect multiple v-model="entity.positionIds" dict-code="sysPosition" />
       </ElFormItem>
     </ElForm>
     <template #footer>
