@@ -40,6 +40,7 @@
         <snakeyaml.version>2.4</snakeyaml.version>
         <x-file-storage.version>2.2.1</x-file-storage.version>
         <aliyun-oss.version>3.16.1</aliyun-oss.version>
+        <netty.version>4.1.130.Final</netty.version>
     </properties>
     <dependencyManagement>
         <dependencies>
