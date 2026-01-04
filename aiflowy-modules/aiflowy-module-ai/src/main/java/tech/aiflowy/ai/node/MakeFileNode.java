@@ -63,12 +63,12 @@ public class MakeFileNode extends BaseNode {
         // 创建一个新的Word文档
         XWPFDocument doc = new XWPFDocument();
         // 创建样式
-        CTStyle ctStyle = CTStyle.Factory.newInstance();
-        ctStyle.setStyleId("IndentStyle");
-        CTPPrGeneral pPr = ctStyle.addNewPPr();
-        CTInd ind = pPr.addNewInd();
-        ind.setFirstLine(400);
-        doc.createStyles().addStyle(new XWPFStyle(ctStyle));
+//        CTStyle ctStyle = CTStyle.Factory.newInstance();
+//        ctStyle.setStyleId("IndentStyle");
+//        CTPPrGeneral pPr = ctStyle.addNewPPr();
+//        CTInd ind = pPr.addNewInd();
+//        ind.setFirstLine(400);
+//        doc.createStyles().addStyle(new XWPFStyle(ctStyle));
 
         for (String str : split) {
             // 创建段落
