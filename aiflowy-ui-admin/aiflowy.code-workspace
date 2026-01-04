@@ -5,10 +5,6 @@
       "path": "app",
     },
     {
-      "name": "@aiflowy/docs",
-      "path": "docs",
-    },
-    {
       "name": "@aiflowy/commitlint-config",
       "path": "internal/lint-configs/commitlint-config",
     },
@@ -143,10 +139,6 @@
     {
       "name": "@aiflowy/utils",
       "path": "packages/utils",
-    },
-    {
-      "name": "@aiflowy/playground",
-      "path": "playground",
     },
     {
       "name": "@aiflowy/turbo-run",
