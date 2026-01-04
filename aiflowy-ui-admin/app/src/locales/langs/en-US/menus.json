@@ -12,6 +12,9 @@
     "sysFeedback": "UserFeedback",
     "sysAppearance": "Appearance"
   },
+  "sysPosition": {
+    "title": "Position"
+  },
   "ai": {
     "bots": "ChatAssistant",
     "title": "AI",

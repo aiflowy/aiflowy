@@ -12,6 +12,9 @@
     "sysFeedback": "用户反馈",
     "sysAppearance": "外观设置"
   },
+  "sysPosition": {
+    "title": "岗位管理"
+  },
   "ai": {
     "bots": "聊天助手",
     "title": "AI能力",
