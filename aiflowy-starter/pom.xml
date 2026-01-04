@@ -11,6 +11,7 @@
 
     <artifactId>aiflowy-starter</artifactId>
     <packaging>pom</packaging>
+
     <modules>
         <module>aiflowy-starter-admin</module>
         <module>aiflowy-starter-all</module>
@@ -18,12 +19,5 @@
         <module>aiflowy-starter-usercenter</module>
         <module>aiflowy-starter-codegen</module>
     </modules>
-
-
-    <properties>
-        <maven.compiler.source>8</maven.compiler.source>
-        <maven.compiler.target>8</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
 </project>
