@@ -586,58 +586,6 @@ async function handleSubmit() {
         </div>
       </div>
 
-      <!-- Logo -->
-      <div class="flex flex-col gap-2.5">
-        <span class="text-sm font-medium">Logo</span>
-        <div class="flex flex-wrap gap-5">
-          <div class="flex flex-col gap-2">
-            <span class="text-muted-foreground text-xs">
-              {{ $t('preferences.theme.light') }}：
-            </span>
-            <Cropper
-              accept="image/*"
-              :model-value="preferences.logo.source"
-              @upload-success="
-                (url) =>
-                  updatePreferences({
-                    logo: { source: url },
-                  })
-              "
-            />
-          </div>
-          <div class="flex flex-col gap-2">
-            <span class="text-muted-foreground text-xs">
-              {{ $t('preferences.theme.dark') }}：
-            </span>
-            <Cropper
-              accept="image/*"
-              :model-value="preferences.logo.sourceDark"
-              @upload-success="
-                (url) =>
-                  updatePreferences({
-                    logo: { sourceDark: url },
-                  })
-              "
-            />
-          </div>
-          <div class="flex flex-col gap-2">
-            <span class="text-muted-foreground text-xs">
-              {{ $t('sysAppearance.Thumbnail') }}：
-            </span>
-            <Cropper
-              accept="image/*"
-              :model-value="preferences.logo.sourceMini"
-              @upload-success="
-                (url) =>
-                  updatePreferences({
-                    logo: { sourceMini: url },
-                  })
-              "
-            />
-          </div>
-        </div>
-      </div>
-
       <!-- 登录页图片 -->
       <div class="flex flex-col gap-2.5">
         <span class="text-sm font-medium">{{
