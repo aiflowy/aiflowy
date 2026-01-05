@@ -63,19 +63,29 @@ function changeStatus(row: any) {
   const newStatus = row.status === 1 ? 0 : 1;
   const actionText = newStatus === 1 ? '启用' : '禁用';
 
-  ElMessageBox.confirm(`确认要${actionText}"${row.positionName}"吗？`, $t('message.noticeTitle'), {
-    confirmButtonText: $t('message.ok'),
-    cancelButtonText: $t('message.cancel'),
-    type: 'warning',
-  }).then(() => {
-    api.post('/api/v1/sysPosition/changeStatus', { id: row.id, status: newStatus })
-      .then((res) => {
-        if (res.errorCode === 0) {
-          ElMessage.success('操作成功');
-          pageDataRef.value.reload();
-        }
-      });
-  }).catch(() => {});
+  ElMessageBox.confirm(
+    `确认要${actionText}"${row.positionName}"吗？`,
+    $t('message.noticeTitle'),
+    {
+      confirmButtonText: $t('message.ok'),
+      cancelButtonText: $t('message.cancel'),
+      type: 'warning',
+    },
+  )
+    .then(() => {
+      api
+        .post('/api/v1/sysPosition/changeStatus', {
+          id: row.id,
+          status: newStatus,
+        })
+        .then((res) => {
+          if (res.errorCode === 0) {
+            ElMessage.success('操作成功');
+            pageDataRef.value.reload();
+          }
+        });
+    })
+    .catch(() => {});
 }
 
 function remove(row: any) {
@@ -124,33 +134,56 @@ function remove(row: any) {
       >
         <template #default="{ pageList }">
           <ElTable :data="pageList" border>
-            <ElTableColumn prop="positionName" :label="$t('sysPosition.positionName') || '岗位名称'">
+            <ElTableColumn
+              prop="positionName"
+              :label="$t('sysPosition.positionName') || '岗位名称'"
+            >
               <template #default="{ row }">
                 {{ row.positionName }}
               </template>
             </ElTableColumn>
-            <ElTableColumn prop="positionCode" :label="$t('sysPosition.positionCode') || '岗位编码'">
+            <ElTableColumn
+              prop="positionCode"
+              :label="$t('sysPosition.positionCode') || '岗位编码'"
+            >
               <template #default="{ row }">
                 {{ row.positionCode }}
               </template>
             </ElTableColumn>
-            <ElTableColumn prop="sortNo" :label="$t('sysPosition.sortNo') || '排序'" width="80" align="center">
+            <ElTableColumn
+              prop="sortNo"
+              :label="$t('sysPosition.sortNo') || '排序'"
+              width="80"
+              align="center"
+            >
               <template #default="{ row }">
                 {{ row.sortNo }}
               </template>
             </ElTableColumn>
-            <ElTableColumn prop="status" :label="$t('sysPosition.status') || '状态'" width="100" align="center">
+            <ElTableColumn
+              prop="status"
+              :label="$t('sysPosition.status') || '状态'"
+              width="100"
+              align="center"
+            >
               <template #default="{ row }">
-                 <ElButton
-                    :type="row.status === 1 ? 'success' : 'info'"
-                    link
-                    @click="changeStatus(row)"
-                 >
-                    {{ dictStore.getDictLabel('dataStatus', row.status) || (row.status === 1 ? '启用' : '禁用') }}
-                 </ElButton>
+                <ElButton
+                  :type="row.status === 1 ? 'success' : 'info'"
+                  link
+                  @click="changeStatus(row)"
+                >
+                  {{
+                    dictStore.getDictLabel('dataStatus', row.status) ||
+                    (row.status === 1 ? '启用' : '禁用')
+                  }}
+                </ElButton>
               </template>
             </ElTableColumn>
-            <ElTableColumn prop="created" :label="$t('sysPosition.created')" width="180">
+            <ElTableColumn
+              prop="created"
+              :label="$t('sysPosition.created')"
+              width="180"
+            >
               <template #default="{ row }">
                 {{ row.created }}
               </template>

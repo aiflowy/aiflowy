@@ -87,13 +87,17 @@ INSERT INTO `tb_sys_menu` (`id`, `parent_id`, `menu_type`, `menu_title`, `menu_u
 INSERT INTO `tb_sys_menu` (`id`, `parent_id`, `menu_type`, `menu_title`, `menu_url`, `component`, `menu_icon`, `is_show`, `permission_tag`, `sort_no`, `status`, `created`, `created_by`, `modified`, `modified_by`, `remark`) VALUES (363435949415337984, 363168956276838400, 1, '保存', '', '', '', 0, '/api/v1/sysUserFeedback/save', 2, 0, '2025-12-30 10:25:43', 1, '2025-12-30 10:26:10', 1, '');
 
 INSERT INTO `tb_sys_menu` (`id`, `parent_id`, `menu_type`, `menu_title`, `menu_url`, `component`, `menu_icon`, `is_show`, `sort_no`, `status`, `created`, `created_by`, `modified`, `modified_by`, `remark`) 
-VALUES (183724390000000001, 258052082618335232, 0, 'menus.sysPosition.title', '/sys/sysPosition', '/system/sysPosition/SysPositionList', 'Setting', 1, 100, 1, NOW(), 0, NOW(), 0, '岗位管理菜单');
+VALUES (183724390000000001, 258052082618335232, 0, 'menus.system.sysPosition', '/sys/sysPosition', '/system/sysPosition/SysPositionList', 'svg:account', 1, 100, 1, NOW(), 0, NOW(), 0, '岗位管理菜单');
 
 INSERT INTO `tb_sys_menu` (`id`, `parent_id`, `menu_title`, `menu_url`, `permission_tag`, `menu_type`, `sort_no`, `is_show`, `status`, `created`, `created_by`, `modified`, `modified_by`, `remark`) 
 VALUES 
 (183724390000000002, 183724390000000001, '查询', '', '/api/v1/sysPosition/query', 1, 100, 0, 1, NOW(), 0, NOW(), 0, '岗位管理-查询'),
 (183724390000000003, 183724390000000001, '保存', '', '/api/v1/sysPosition/save', 1, 101, 0, 1, NOW(), 0, NOW(), 0, '岗位管理-保存'),
 (183724390000000004, 183724390000000001, '删除', '', '/api/v1/sysPosition/remove', 1, 102, 0, 1, NOW(), 0, NOW(), 0, '岗位管理-删除');
+
+INSERT INTO `tb_sys_menu` (`id`, `parent_id`, `menu_type`, `menu_title`, `menu_url`, `component`, `menu_icon`, `is_show`, `permission_tag`, `sort_no`, `status`, `created`, `created_by`, `modified`, `modified_by`, `remark`) VALUES (363786713330745344, 258052082618335232, 0, 'menus.system.oauth', '/oauth/config', '/system/sysOption/oauth', 'svg:oauth', 1, '', 70, 0, '2025-12-31 09:39:31', 363530635138777088, '2026-01-05 09:12:56', 1, '');
+INSERT INTO `tb_sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES (363786713469157376, 1, 363786713330745344);
+
 -- ----------------------------
 -- Records of tb_sys_role
 -- ----------------------------

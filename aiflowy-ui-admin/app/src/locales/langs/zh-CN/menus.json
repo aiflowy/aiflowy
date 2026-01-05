@@ -10,10 +10,8 @@
     "sysJob": "定时任务",
     "sysLog": "日志管理",
     "sysFeedback": "用户反馈",
-    "sysAppearance": "外观设置"
-  },
-  "sysPosition": {
-    "title": "岗位管理"
+    "sysAppearance": "外观设置",
+    "oauth": "认证设置"
   },
   "ai": {
     "bots": "聊天助手",

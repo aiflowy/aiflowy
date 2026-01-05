@@ -10,10 +10,8 @@
     "sysJob": "Job",
     "sysLog": "Log",
     "sysFeedback": "UserFeedback",
-    "sysAppearance": "Appearance"
-  },
-  "sysPosition": {
-    "title": "Position"
+    "sysAppearance": "Appearance",
+    "oauth": "OAuth"
   },
   "ai": {
     "bots": "ChatAssistant",
