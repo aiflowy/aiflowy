@@ -88,5 +88,9 @@
             <artifactId>aiflowy-common-chat-protocol</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.agentsflex</groupId>
+            <artifactId>agents-flex-mcp</artifactId>
+        </dependency>
     </dependencies>
 </project>

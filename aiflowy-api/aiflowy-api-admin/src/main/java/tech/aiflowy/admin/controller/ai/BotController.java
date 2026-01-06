@@ -88,6 +88,10 @@ public class BotController extends BaseCurdController<BotService, Bot> {
     private BotPluginService botPluginService;
     @Resource
     private PluginItemService pluginItemService;
+    @Resource
+    private BotMcpService botMcpService;
+    @Resource
+    private McpService mcpService;
 
     @GetMapping("/generateConversationId")
     public Result<Long> generateConversationId() {
@@ -395,6 +399,14 @@ public class BotController extends BaseCurdController<BotService, Bot> {
             }
         }
 
+        // MCP function 集合
+        queryWrapper = QueryWrapper.create();
+        queryWrapper.eq(BotMcp::getBotId, botId);
+        List<BotMcp> botMcpList = botMcpService.getMapper().selectListWithRelationsByQuery(queryWrapper);
+        botMcpList.forEach(botMcp -> {
+            Tool tool = mcpService.toFunction(botMcp);
+            functionList.add(tool);
+        });
 
         return functionList;
     }

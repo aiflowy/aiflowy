@@ -17,6 +17,10 @@ import {
 import HeaderSearch from '#/components/headerSearch/HeaderSearch.vue';
 import PageData from '#/components/page/PageData.vue';
 
+interface SelectedMcpTool {
+  name: string;
+  description: string;
+}
 const props = defineProps({
   title: { type: String, default: '' },
   width: { type: String, default: '80%' },
@@ -25,8 +29,10 @@ const props = defineProps({
     type: Array as PropType<string[]>,
     default: () => [],
   },
+  titleKey: { type: String, default: 'name' },
   pageUrl: { type: String, default: '' },
-  isSelectPlugin: { type: Boolean, default: false },
+  hasParent: { type: Boolean, default: false },
+  isSelectMcp: { type: Boolean, default: false },
 });
 
 const emit = defineEmits(['getData']);
@@ -34,15 +40,63 @@ const dialogVisible = ref(false);
 const pageDataRef = ref();
 const loading = ref(false);
 const selectedIds = ref<(number | string)[]>([]);
-
+// 存储上一级id与选中tool.name的关联关系
+const selectedToolMap = ref<Record<number | string, SelectedMcpTool[]>>({});
 defineExpose({
   openDialog(defaultSelectedIds: (number | string)[]) {
     selectedIds.value = defaultSelectedIds ? [...defaultSelectedIds] : [];
     dialogVisible.value = true;
   },
+  /**
+   * MCP专属弹窗打开方法（适配MCP回显，传递格式化后的MCP数据）
+   * @param selectMcpMap - MCP已选数据映射（键：MCP父级ID，值：工具名称+描述数组）
+   */
+  openMcpDialog(selectMcpMap: Record<number | string, SelectedMcpTool[]>) {
+    selectedIds.value = [];
+    selectedToolMap.value = structuredClone(selectMcpMap);
+    dialogVisible.value = true;
+  },
 });
 const isSelected = (id: number | string) => {
   return selectedIds.value.includes(id);
+};
+
+const isSelectedMcp = (parentId: number | string, toolName: string) => {
+  // 查找当前parentId下是否存在该tool.name的工具
+  return !!selectedToolMap.value[parentId]?.some(
+    (tool) => tool.name === toolName,
+  );
+};
+
+const toggleSelectionMcp = (
+  mcpId: number | string,
+  toolName: string,
+  toolDescription: string,
+  checked: any,
+) => {
+  if (checked) {
+    if (!selectedToolMap.value[mcpId]) {
+      selectedToolMap.value[mcpId] = []; // 初始化空数组
+    }
+    const isExisted = selectedToolMap.value[mcpId]?.some(
+      (tool) => tool.name === toolName,
+    );
+    if (!isExisted) {
+      selectedToolMap.value[mcpId]?.push({
+        name: toolName,
+        description: toolDescription,
+      });
+    }
+  } else {
+    if (selectedToolMap.value[mcpId]) {
+      selectedToolMap.value[mcpId] = selectedToolMap.value[mcpId].filter(
+        (tool) => tool.name !== toolName,
+      );
+      if (selectedToolMap.value[mcpId].length === 0) {
+        delete selectedToolMap.value[mcpId];
+      }
+    }
+  }
 };
 
 const toggleSelection = (id: number | string, checked: any) => {
@@ -52,11 +106,39 @@ const toggleSelection = (id: number | string, checked: any) => {
     selectedIds.value = selectedIds.value.filter((i) => i !== id);
   }
 };
+
+/**
+ * 封装：获取MCP选中的结构化信息（包含name和description）
+ * @returns {Record<number | string, string[][]>[]} 符合要求的数据：[{ 上一级id: [[name1, description1], [name2, description2]] }]
+ */
+const getMcpSelectedInfo = (): Record<number | string, string[][]>[] => {
+  const mcpSelectedResult: Record<number | string, string[][]>[] = [];
+
+  Object.entries(selectedToolMap.value).forEach(([parentId, selectedTools]) => {
+    // 转换每个工具为 [name, description] 一维数组
+    const formattedToolList: string[][] = selectedTools.map((tool) => [
+      tool.name,
+      tool.description,
+    ]);
+
+    mcpSelectedResult.push({
+      [parentId]: formattedToolList,
+    });
+  });
+
+  return mcpSelectedResult;
+};
+
 const handleSubmitRun = () => {
-  emit('getData', selectedIds.value);
+  if (props?.isSelectMcp) {
+    emit('getData', getMcpSelectedInfo());
+  } else {
+    emit('getData', selectedIds.value);
+  }
   dialogVisible.value = false;
   return selectedIds.value;
 };
+
 const handleSearch = (query: string) => {
   const tempParams = {} as Record<string, string>;
   props.searchParams.forEach((paramName) => {
@@ -92,7 +174,7 @@ const handleSearch = (query: string) => {
         :extra-query-params="extraQueryParams"
       >
         <template #default="{ pageList }">
-          <template v-if="isSelectPlugin">
+          <template v-if="hasParent">
             <div class="container-second">
               <ElCollapse
                 accordion
@@ -110,24 +192,54 @@ const handleSearch = (query: string) => {
                         <ElAvatar v-else src="/favicon.png" shape="circle" />
                       </div>
                       <div class="title-right-container">
-                        <div class="title">{{ item.name }}</div>
+                        <div class="title">{{ item[titleKey] }}</div>
                         <div class="desc">{{ item.description }}</div>
                       </div>
                     </div>
                   </template>
-                  <div v-for="tool in item.tools" :key="tool.id">
-                    <div class="content-title-wrapper">
-                      <div class="content-left-container">
-                        <div class="title-right-container">
-                          <div class="title">{{ tool.name }}</div>
-                          <div class="desc">{{ tool.description }}</div>
+                  <!--选择插件-->
+                  <div v-if="!isSelectMcp">
+                    <div v-for="tool in item.tools" :key="tool.id">
+                      <div class="content-title-wrapper">
+                        <div class="content-left-container">
+                          <div class="title-right-container">
+                            <div class="title">{{ tool.name }}</div>
+                            <div class="desc">{{ tool.description }}</div>
+                          </div>
+                        </div>
+                        <div>
+                          <ElCheckbox
+                            :model-value="isSelected(tool.id)"
+                            @change="(val) => toggleSelection(tool.id, val)"
+                          />
                         </div>
                       </div>
-                      <div>
-                        <ElCheckbox
-                          :model-value="isSelected(tool.id)"
-                          @change="(val) => toggleSelection(tool.id, val)"
-                        />
+                    </div>
+                  </div>
+                  <!--选择MCP-->
+                  <div v-if="isSelectMcp">
+                    <div v-for="tool in item.tools" :key="tool.name">
+                      <div class="content-title-wrapper">
+                        <div class="content-left-container">
+                          <div class="title-right-container">
+                            <div class="title">{{ tool.name }}</div>
+                            <div class="desc">{{ tool.description }}</div>
+                          </div>
+                        </div>
+                        <div>
+                          <ElCheckbox
+                            :model-value="isSelectedMcp(item.id, tool.name)"
+                            @change="
+                              (val) =>
+                                toggleSelectionMcp(
+                                  item.id,
+                                  tool.name,
+                                  tool.description,
+                                  val,
+                                )
+                            "
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>

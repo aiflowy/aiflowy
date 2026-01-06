@@ -1,0 +1,20 @@
+{
+  "id": "Id",
+  "title": "Title",
+  "description": "Description",
+  "configJson": "ConfigJson",
+  "deptId": "DeptId",
+  "tenantId": "TenantId",
+  "created": "Created",
+  "createdBy": "CreatedBy",
+  "modified": "Modified",
+  "modifiedBy": "ModifiedBy",
+  "status": "Status",
+  "modal": {
+    "config": "Config",
+    "tool": "Tool",
+    "table": {
+      "availableTools": "Available Tools"
+    }
+  }
+}

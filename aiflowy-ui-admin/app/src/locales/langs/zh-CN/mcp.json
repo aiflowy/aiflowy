@@ -1,0 +1,20 @@
+{
+  "id": "id",
+  "title": "名称",
+  "description": "描述",
+  "configJson": "MCP配置JSON",
+  "deptId": "部门ID",
+  "tenantId": "租户ID",
+  "created": "创建时间",
+  "createdBy": "创建者ID",
+  "modified": "修改时间",
+  "modifiedBy": "修改者ID",
+  "status": "是否启用",
+  "modal": {
+    "config": "配置",
+    "tool": "工具",
+    "table": {
+      "availableTools": "可用工具"
+    }
+  }
+}

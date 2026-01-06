@@ -37,6 +37,10 @@ import PublishWxOfficalAccount from '#/components/chat/PublishWxOfficalAccount.v
 import CollapseViewItem from '#/components/collapseViewItem/CollapseViewItem.vue';
 import CommonSelectDataModal from '#/components/commonSelectModal/CommonSelectDataModal.vue';
 
+interface SelectedMcpTool {
+  name: string;
+  description: string;
+}
 const props = defineProps<{
   bot?: BotInfo;
   hasSavePermission?: boolean;
@@ -75,6 +79,7 @@ watch(
 const pluginToolIdsData = ref<any>([]);
 const knowledgeIdsData = ref<any>([]);
 const workflowIdsData = ref<any>([]);
+const mcpToolData = ref<any>([]);
 
 const workflowData = ref<any[]>([]);
 const knowledgeData = ref<any[]>([]);
@@ -86,6 +91,11 @@ const getAiBotPluginToolList = async () => {
       pluginToolData.value = res.data;
       pluginToolIdsData.value = res.data.map((item: any) => item.id);
     });
+};
+const getAiBotMcpToolList = async () => {
+  api.get(`/api/v1/botMcp/list?botId=${botId.value}`).then((res) => {
+    mcpToolData.value = res.data;
+  });
 };
 const getAiBotKnowledgeList = async () => {
   api
@@ -154,6 +164,7 @@ onMounted(async () => {
   getAiBotPluginToolList();
   getAiBotKnowledgeList();
   getAiBotWorkflowList();
+  getAiBotMcpToolList();
   getBotDetail();
   getLlmListData();
 });
@@ -202,9 +213,14 @@ const pluginToolDataRef = ref();
 const knowledgeDataRef = ref();
 const workflowDataRef = ref();
 const publishWxRef = ref();
+const mcpToolDataRef = ref();
 
 const handleAddPlugin = () => {
   pluginToolDataRef.value.openDialog(pluginToolIdsData.value);
+};
+const handleAddMcpTool = () => {
+  const formattedSelectedMcp = formatSelectedMcpData();
+  mcpToolDataRef.value.openMcpDialog(formattedSelectedMcp);
 };
 const handleAddKnowledge = () => {
   knowledgeDataRef.value.openDialog(knowledgeIdsData.value);
@@ -259,6 +275,21 @@ const confirmUpdateAiBotWorkflow = (data: any) => {
       }
     });
 };
+const confirmUpdateAiBotMcp = (data: any) => {
+  api
+    .post('/api/v1/botMcp/updateBotMcpToolIds', {
+      botId: botId.value,
+      mcpSelectedData: data,
+    })
+    .then((res) => {
+      if (res.errorCode === 0) {
+        ElMessage.success($t('message.updateOkMessage'));
+        getAiBotMcpToolList();
+      } else {
+        ElMessage.error(res.message);
+      }
+    });
+};
 const deletePluginTool = (item: any) => {
   api
     .post('/api/v1/botPlugins/doRemove', {
@@ -269,6 +300,21 @@ const deletePluginTool = (item: any) => {
       if (res.errorCode === 0) {
         ElMessage.success($t('message.deleteOkMessage'));
         getAiBotPluginToolList();
+      } else {
+        ElMessage.error(res.message);
+      }
+    });
+};
+
+const deleteBotMcpTool = (item: any) => {
+  api
+    .post('/api/v1/botMcp/remove', {
+      id: item.id,
+    })
+    .then((res) => {
+      if (res.errorCode === 0) {
+        ElMessage.success($t('message.deleteOkMessage'));
+        getAiBotMcpToolList();
       } else {
         ElMessage.error(res.message);
       }
@@ -370,6 +416,27 @@ const handleUpdatePublishWx = () => {
         ElMessage.error(res.message);
       }
     });
+};
+const formatSelectedMcpData = () => {
+  // 定义格式化后的结果，与组件内selectedToolMap结构一致
+  const formattedData: Record<number | string, SelectedMcpTool[]> = {};
+
+  // 遍历已有的MCP工具列表（mcpToolData.value）
+  mcpToolData.value.forEach((mcpItem: any) => {
+    const mcpParentId = mcpItem.mcpId || mcpItem.id;
+
+    const toolInfo: SelectedMcpTool = {
+      name: mcpItem.mcpToolName,
+      description: mcpItem.mcpToolDescription,
+    };
+
+    if (!formattedData[mcpParentId]) {
+      formattedData[mcpParentId] = [];
+    }
+    formattedData[mcpParentId].push(toolInfo);
+  });
+
+  return formattedData;
 };
 </script>
 
@@ -610,6 +677,29 @@ const handleUpdatePublishWx = () => {
               @delete="deletePluginTool"
             />
           </ElCollapseItem>
+          <ElCollapseItem title="MCP">
+            <template #title>
+              <div class="flex items-center justify-between pr-2">
+                <span>MCP</span>
+                <div class="collapse-right-container">
+                  <span class="badge-circle">
+                    {{ mcpToolData.length }}
+                  </span>
+                  <span @click="handleAddMcpTool()">
+                    <ElIcon>
+                      <Plus />
+                    </ElIcon>
+                  </span>
+                </div>
+              </div>
+            </template>
+            <CollapseViewItem
+              :data="mcpToolData"
+              title-key="mcpToolName"
+              description-key="mcpToolDescription"
+              @delete="deleteBotMcpTool"
+            />
+          </ElCollapseItem>
         </ElCollapse>
       </div>
     </div>
@@ -732,7 +822,7 @@ const handleUpdatePublishWx = () => {
       width="730"
       ref="pluginToolDataRef"
       page-url="/api/v1/plugin/pageByCategory"
-      :is-select-plugin="true"
+      :has-parent="true"
       @get-data="confirmUpdateAiBotPlugin"
       :extra-query-params="{
         category: 0,
@@ -755,6 +845,18 @@ const handleUpdatePublishWx = () => {
       ref="workflowDataRef"
       page-url="/api/v1/workflow/page"
       @get-data="confirmUpdateAiBotWorkflow"
+    />
+
+    <!-- 选择MCP-->
+    <CommonSelectDataModal
+      :title="$t('menus.ai.mcp')"
+      width="730"
+      ref="mcpToolDataRef"
+      page-url="/api/v1/mcp/page"
+      title-key="title"
+      :has-parent="true"
+      :is-select-mcp="true"
+      @get-data="confirmUpdateAiBotMcp"
     />
 
     <!--预设问题-->

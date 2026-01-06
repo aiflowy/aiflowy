@@ -1106,5 +1106,45 @@ CREATE TABLE `tb_sys_user_feedback`
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
+-- ----------------------------
+-- Table structure for tb_mcp
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_mcp`;
+CREATE TABLE `tb_mcp`
+(
+    `id`          bigint(0) UNSIGNED NOT NULL COMMENT 'id',
+    `title`       varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '标题',
+    `description` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '描述',
+    `config_json` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '完整MCP配置JSON',
+    `dept_id`     bigint(0) UNSIGNED NOT NULL COMMENT '部门ID',
+    `tenant_id`   bigint(0) UNSIGNED NOT NULL COMMENT '租户ID',
+    `created`     datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+    `created_by`  bigint(0) UNSIGNED NULL DEFAULT NULL COMMENT '创建者ID',
+    `modified`    datetime(0) NULL DEFAULT NULL COMMENT '修改时间',
+    `modified_by` bigint(0) UNSIGNED NULL DEFAULT NULL COMMENT '修改者ID',
+    `status`      tinyint(1) NULL DEFAULT 0 COMMENT '是否启用',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'mcp表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for tb_mcp
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_mcp`;
+CREATE TABLE `tb_mcp`
+(
+    `id`          bigint(0) UNSIGNED NOT NULL COMMENT 'id',
+    `title`       varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '标题',
+    `description` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '描述',
+    `config_json` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '完整MCP配置JSON',
+    `dept_id`     bigint(0) UNSIGNED NOT NULL COMMENT '部门ID',
+    `tenant_id`   bigint(0) UNSIGNED NOT NULL COMMENT '租户ID',
+    `created`     datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+    `created_by`  bigint(0) UNSIGNED NULL DEFAULT NULL COMMENT '创建者ID',
+    `modified`    datetime(0) NULL DEFAULT NULL COMMENT '修改时间',
+    `modified_by` bigint(0) UNSIGNED NULL DEFAULT NULL COMMENT '修改者ID',
+    `status`      tinyint(1) NULL DEFAULT 0 COMMENT '是否启用',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = 'mcp表' ROW_FORMAT = Dynamic;
+
 SET
 FOREIGN_KEY_CHECKS = 1;
