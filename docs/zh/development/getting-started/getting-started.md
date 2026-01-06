@@ -3,47 +3,59 @@
 
 # 快速开始
 
-## 前言
+## 欢迎使用 AIFlowy
 
-欢迎使用 AIFlowy ，在阅读文档的过程中，如果您对文档有任何的问题，可在 AIFlowy 的交流群里进行交流。
+感谢您选择 AIFlowy！本指南将帮助您在几分钟内完成本地环境搭建并成功运行 AIFlowy。  
+如在使用过程中遇到问题，欢迎加入 [AIFlowy 技术交流群](#)（请替换为实际链接）进行讨论。
 
-## 章节目的
 
-本章节的目的，是为了帮助您快速的使用 AIFlowy，把 AIFlowy 运行起来。
 
-## 环境准备
+## 本章目标
 
-AIFlowy 后端使用 SpringBoot 2.x + Agents-Flex + MyBatis-Flex 开发。
+- 快速完成 AIFlowy 后端与前端的本地部署
+- 验证系统是否正常运行
+- 为后续开发与定制打下基础
 
-前端使用 React 18.2 + ant design + Zustand 开发。
 
-因此，要求您的电脑环境必须安装以下内容：
- - JDK 1.8 +
- - Maven 3.9+
- - Node v20+
- - NPM v10+
- - MySQL 8.x
 
-## 运行 AIFlowy 后端部分
+## 环境要求
 
-### 第一步：把项目导入到 IDEA 开发工具
+AIFlowy 采用现代化技术栈，需确保您的开发环境满足以下要求：
 
-打开 idea 开发工具，然后选择 file -> open 菜单，选择 AIFlowy 的目录即可。如下图所示：
+### 后端（Java）
+- **JDK 17+**（推荐 OpenJDK 17）
+- **Maven 3.9+**
+- **MySQL 8.x**
 
-![open_in_idea.png](resource/open_in_idea.png)
+### 前端（Web）
+- **Node.js v22+**
+- **pnpm v10+**
 
-### 第二步：创建数据库以及初始化数据
+> 💡 提示：可通过 `java -version`、`mvn -v`、`node -v`、`pnpm -v` 等命令验证版本。
 
-在 AIFlowy 的根目录中，有一个叫sql的文件夹，里面包含了ddl语句和初始化数据。
 
-在 MySql 中创建好数据库后，分别执行 `aiflowy-v2.ddl.sql` 和 `aiflowy-v2.data.sql` 即可。
 
-### 第三步：修改配置文件
+## 1. 启动后端服务
 
-创建好数据库以及初始化数据后，我们需要修改项目的数据库配置文件 `application.yml`，如下图所示：
-![db_config.png](resource/db_config.png)
+### 1.1 导入项目到 IDEA
 
-内容如下：
+1. 打开 IntelliJ IDEA
+2. 选择 **File → Open**，定位到 AIFlowy 项目根目录并打开  
+   ![open_in_idea.png](resource/open_in_idea.png)
+
+### 1.2 初始化数据库
+
+1. 在 MySQL 中创建数据库（例如 `aiflowy`）
+2. 执行项目根目录 `/sql` 下的两个脚本：
+    - `aiflowy-v2.ddl.sql`（建表）
+    - `aiflowy-v2.data.sql`（初始数据）
+
+> ✅ 建议使用 `utf8mb4` 字符集和 `utf8mb4_unicode_ci` 排序规则。
+
+### 1.3 配置数据库连接
+
+编辑 `aiflowy-starter/aiflowy-starter-all/src/main/resources/application.yml`，更新以下内容：
+
 ```yaml
 spring:
   datasource:
@@ -52,89 +64,100 @@ spring:
     password: 123456
 ```
 
- - url： jdbc 链接数据库的 URL 内容，注意： url 参数需要添加 `useInformationSchema=true` 已保证 JDBC 能够正常获取表的 `comment` 信息。
- - username：数据库账号
- - password：数据库密码
+> ⚠️ **注意**：`useInformationSchema=true` 是必须的，用于支持 MyBatis-Flex 正确读取表注释。
 
-**修改文件存储信息（如需要）**
-- 本地存储
+#### （可选）配置文件存储方式
+
+##### 本地存储（默认）
 ```yaml
 spring:
   web:
     resources:
-      # 示例：windows【file: C:\aiflowy\file】 linux【file: /www/aiflowy/file】
-      static-locations: file:your_path
-aiflowy: 
+      static-locations: file:/your/local/path  # 例如：file:/www/aiflowy/file（Linux）或 file:C:/aiflowy/file（Windows）
+
+aiflowy:
   storage:
     local:
-      # 示例：windows【C:\aiflowy\file】 linux【file: /www/aiflowy/file】
-      root: your_path
-      # 后端接口地址
+      root: /your/local/path
       prefix: 'http://localhost:8080/static'
 ```
-- s3存储
-```yml
+
+##### S3 兼容存储（如 MinIO、AWS S3）
+```yaml
 aiflowy:
   storage:
     type: s3
     s3:
-      access-key: access
-      secret-key: secret
-      endpoint: "http://xxx.xxx"
-      region: "region"
-      bucket-name: "your_bucket_name"
-      access-policy: 2
+      access-key: your-access-key
+      secret-key: your-secret-key
+      endpoint: "http://your-s3-endpoint"
+      region: "your-region"
+      bucket-name: "your-bucket"
+      access-policy: 2  # 1=私有, 2=公共读
       prefix: public
 ```
-### 第四步：运行项目
 
-在开始运行 AIFlowy 之前，建议在终端（Terminal）下执行 Maven 编译命令：`mvn clean package`，对项目进行编译，如下图所示：
+### 1.4 编译并启动应用
 
-![mvn.png](resource/mvn.png)
+1. 在项目根目录执行 Maven 编译：
+   ```bash
+   mvn clean package -DskipTests
+   ```
+   ![mvn.png](resource/mvn.png)
 
-命令执行完毕后，正常情况下会出现编译成功的信息 BUILD SUCCESS，如下图所示：
+2. 编译成功后，运行主启动类：
+    - 模块：`aiflowy-starter-all`
+    - 类路径：`com.aiflowy.starter.MainApplication`
 
-![mvn_finished.png](resource/mvn_finished.png)
-> 若过程中出现错误，有可能是 JDK 版本不正确，或者 Maven 安装不正确等问题，此时可以在 AIFlowy 的交流群里进行交流。
+   ![run.png](resource/run.png)
 
-项目编译完成后，运行 `aiflowy-starter` 模块下的 `MainApplication.java` 类，即可。如图：
+> 🔧 **常见问题**：若提示 `Command line is too long`，请在 IDEA 运行配置中将 `Shorten command line` 改为 **JAR manifest**  
+> ![shorten.png](resource/shorten.png)
 
-![run.png](resource/run.png)
 
-若是遇到 `Error running MainApplication. Command line is too long.` 错误，修改一下运行配置，如下图所示：
-![shorten.png](resource/shorten.png)
 
-## 运行 AIFlowy 前端部分
+## 2. 启动前端控制台
 
-### React 版本
+### 2.1 安装依赖
 
-在运行前端程序之前，需要您的电脑安装好 Node 环境，注意版本为 v20+ ，我们进入到 `aiflowy-ui-react` 目录下，通过执行 npm install 命令来安装前端所需的依赖。
+进入前端目录并安装依赖：
 
-若在执行 npm install 出现网络问题（400 Bad Request 等错误），可以通过尝试使用如下方案解决：
-```shell
-# 取消代理设置
-npm config set proxy null
-npm config set https-proxy null
-
-# 清空缓存
-npm cache clean --force
-
-# 设置国内镜像
-npm config set registry https://registry.npmmirror.com
+```bash
+cd aiflowy-ui-admin
+pnpm install
 ```
 
-安装完依赖后，我们通过执行 npm run dev 即可启动前端程序，如下图所示：
+> 🌐 **网络问题处理**（如 400/500 错误）：
+> ```bash
+> npm config set proxy null
+> npm config set https-proxy null
+> npm cache clean --force
+> npm config set registry https://registry.npmmirror.com
+> ```
 
-![npm_run_dev.png](resource/npm_run_dev.png)
+### 2.2 启动开发服务器
 
-启动完成后，我们通过浏览器访问控制台显示的地址：`http://localhost:8899` 即可访问到 AIFlowy 的程序，如下图所示：
+```bash
+pnpm dev
+```
 
+成功启动后，终端将显示访问地址（默认 `http://localhost:8899`）：  
+![pnpm_dev.png](resource/pnpm_dev.png)
+
+打开浏览器访问该地址，看到登录页即表示前端启动成功：  
 ![login_page.png](resource/login_page.png)
 
-> 默认登录账号密码：admin/123456
+> 🔑 **默认账号**：`admin` / `123456`
 
-到此，AIFlowy 正常启动，关于其更多的信息请阅读其他章节文档或者技术交流群里交流。
 
-### Vue 版本
 
-> 敬请期待...
+## 下一步
+
+🎉 恭喜！您已成功运行 AIFlowy。  
+接下来，您可以：
+- 阅读 [核心概念](#) 了解架构设计
+- 查看 [API 文档](#) 接入自定义智能体
+- 加入社区讨论定制化需求与最佳实践
+
+> 📣 如遇问题，请优先查阅 [常见问题 FAQ](#) 或联系社区支持。
+

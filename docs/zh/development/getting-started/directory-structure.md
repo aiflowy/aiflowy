@@ -1,77 +1,125 @@
-# 目录结构
+# 项目目录结构
 
-## 项目结构
+AIFlowy 采用模块化设计，前后端分离架构，便于扩展与维护。以下是完整的项目结构说明。
 
-```
-├── aiflowy-commons                 # 公共模块
-├── aiflowy-modules                 # 业务模块
-└── aiflowy-starter                 # 启动项目
-├── aiflowy-ui-react                # react 端
-├── aiflowy-ui-vue                  # vue 端
-├── docs                            # 文档
-├── sql                             # sql 脚本
-├── pom.xml
-└── README.md                       # 项目介绍
-```
+## 📁 后端结构（Java）
 
-## 后端目录结构
+### 🧩 核心模块分层
 
 ```
-├── aiflowy-commons                 # 公共模块
-│   ├── aiflowy-common-ai           # ai 相关的基础配置
-│   ├── aiflowy-common-all          
-│   ├── aiflowy-common-base         # 一些公用资源
-│   ├── aiflowy-common-cache        # 缓存相关
-│   ├── aiflowy-common-file-storage # 文件存储相关
-│   ├── aiflowy-common-options      # 系统配置相关
-│   ├── aiflowy-common-satoken      # sa-token 配置
-│   ├── aiflowy-common-sms          # 短信相关
-│   ├── aiflowy-common-tcaptcha     # 验证码相关
-│   ├── aiflowy-common-web          # web 相关通用配置
-│   └── pom.xml
-├── aiflowy-modules                 # 业务模块
-│   ├── aiflowy-module-ai           # ai 相关，如插件、知识库等
-│   ├── aiflowy-module-auth         # 鉴权模块
-│   ├── aiflowy-module-autoconfig   # 自动配置
-│   ├── aiflowy-module-common       # 公共模块
-│   ├── aiflowy-module-core         # 核心模块，如字典加载器等
-│   ├── aiflowy-module-log          # 日志模块
-│   ├── aiflowy-module-system       # 系统模块，如用户、角色、菜单等
-│   └── pom.xml
-└── aiflowy-starter                 # 启动项目
+aiflowy-api/                # 接口定义层（按业务域拆分）
+├── aiflowy-api-admin        # 后台管理 API（受权限保护）
+├── aiflowy-api-mcp          # MCP（Model Control Protocol）服务 API
+├── aiflowy-api-public       # 公开 API（供第三方或前端调用）
+├── aiflowy-api-usercenter   # 用户中心 API
+└── pom.xml
 ```
 
-## 前端目录结构 - React
 ```
-├── dist                       # 编译产物，正式部署用到其内容
-├── mock                       # Mokc 数据，数据模拟
-├── public                     # 公共静态资源文件，其目录下的 url 结构不会发生变化
-├── src
-│   ├── assets                 # 一些静态文件，比如图片等
-│   ├── components             # AIFlowy 的自定义组件
-│   ├── hooks                  # AIFlowy 的自定义 hook 文件
-│   ├── libs                   # 一些工具类
-│   ├── locales                # 国际化相关
-│   ├── pages                  # 页面的根目录
-│   │   ├── ai                 # ai 相关的页面
-│   │   ├── commons            # 通用页面
-│   │   └── system             # 系统相关页面
-│   ├── routers
-│   │   └── router.tsx         # 路由的自动加载处理
-│   ├── store
-│   │   └── appStore.ts        # Zustand 的 store 模块
-│   ├── types                  # 涉及的一些通用类定义
-│   │   ├── Page.ts
-│   │   └── Result.ts
-│   ├── App.less               # 整个 APP 涉及的一些通用样式
-│   ├── App.tsx                # App 初始化跟节点
-│   ├── config.tsx             # 整个前端应用的一些配置
-│   ├── main.tsx               # 启动入口
-│   └── vite-env.d.ts          
-├── index.html                 # 入口文件
-├── tsconfig.json              # Typescript 的一些配置
-├── tsconfig.node.json         # Node 的一些配置
-├── package-lock.json           
-├── package.json               # 依赖以及项目配置
-└── vite.config.ts             # vite 编译的环境变量的配置
+aiflowy-commons/            # 通用工具与共享组件
+├── aiflowy-common-ai            # AI 相关通用能力（如 LLM 工具封装）
+├── aiflowy-common-all           # 聚合所有 commons 子模块（用于 starter）
+├── aiflowy-common-audio         # 音频处理支持
+├── aiflowy-common-base          # 基础工具类（日期、字符串、加密等）
+├── aiflowy-common-captcha       # 图形/滑块验证码
+├── aiflowy-common-cache         # 缓存抽象（支持 Redis 等）
+├── aiflowy-common-chat-protocol # AIFlowy 对话协议模型定义（与 aiflowy-chat-protocol.md 对应）
+├── aiflowy-common-file-storage  # 文件存储抽象（本地 / S3 / MinIO）
+├── aiflowy-common-options       # 系统配置读取与管理
+├── aiflowy-common-satoken       # Sa-Token 认证集成
+├── aiflowy-common-sms           # 短信服务封装
+├── aiflowy-common-web           # Web 层通用组件（拦截器、异常处理器、响应封装等）
+└── pom.xml
 ```
+
+```
+aiflowy-modules/            # 业务功能实现模块
+├── aiflowy-module-ai            # AI 核心逻辑（智能体、流程编排等）
+├── aiflowy-module-autoconfig    # Spring Boot 自动配置
+├── aiflowy-module-datacenter    # 数据中心（知识库、向量存储等）
+├── aiflowy-module-job           # 异步任务与调度
+├── aiflowy-module-log           # 操作日志与审计
+├── aiflowy-module-system        # 系统管理（用户、角色、菜单、权限）
+└── pom.xml
+```
+
+### 🚀 启动入口（Starter）
+
+```
+aiflowy-starter/            # 应用启动模块（按场景组合）
+├── aiflowy-starter-admin        # 仅启动后台管理服务
+├── aiflowy-starter-all          # 启动全部功能（开发/测试环境推荐）
+├── aiflowy-starter-codegen      # 代码生成器（基于 MyBatis-Flex）
+├── aiflowy-starter-public       # 仅启动公开 API 服务
+├── aiflowy-starter-usercenter   # 仅启动用户中心服务
+└── pom.xml
+```
+
+> 💡 后端使用 **Spring Boot 3.x + Agents-Flex + MyBatis-Flex**，模块间通过 Maven 依赖解耦，支持按需组合部署。
+
+
+
+## 🌐 前端结构（Vue 3 + TypeScript）
+
+```
+aiflowy-ui-admin/           # 后台管理系统（基于 Element Plus）
+├── app/                     # 核心业务代码（pages, components, stores 等）
+├── package.json
+└── packages/                # 内部共享 UI 组件或业务包
+```
+
+```
+aiflowy-ui-usercenter/      # 用户中心前端
+├── app/
+├── package.json
+└── packages/
+```
+
+```
+aiflowy-ui-websdk/          # Web 嵌入式 SDK（供第三方网站集成对话能力）
+├── src/                     # SDK 源码（Vue + TypeScript）
+├── public/                  # 静态资源
+├── index.html
+├── package.json
+├── tsconfig.json
+└── readme.md                # SDK 使用说明
+```
+
+> 💡 前端统一使用 **pnpm** 管理依赖，支持 Monorepo 风格开发。
+
+
+
+## 📚 文档与资源
+
+```
+docs/                       # 项目文档（基于静态站点生成器，如 VitePress）
+├── zh/                      # 中文文档
+├── assets/                  # 文档图片等资源
+├── index.md                 # 文档首页
+└── package.json
+```
+
+```
+sql/                        # 数据库初始化脚本
+├── aiflowy-v2.ddl.sql       # 建表语句（含注释）
+└── aiflowy-v2.data.sql      # 初始数据（管理员账号、系统配置等）
+```
+
+```
+aiflowy-chat-protocol.md    # AIFlowy AI 对话传输协议规范（JSON Schema + 字段说明）
+```
+
+
+
+## 🧭 快速定位建议
+
+| 场景          | 推荐入口 |
+|-------------|--|
+| 本地全量开发      | `aiflowy-starter-all` + `aiflowy-ui-admin` |
+| 仅调试公开 API   | `aiflowy-starter-public` |
+| 集成对话能力      | `aiflowy-ui-websdk` + `aiflowy-api-public` |
+| 扩展 AI 能力    | `aiflowy-module-ai` + `aiflowy-common-ai` |
+
+
+
+此结构设计遵循 **高内聚、低耦合** 原则，便于团队协作、功能扩展与多环境部署。如需自定义模块组合，请参考各 `pom.xml` 依赖声明。
