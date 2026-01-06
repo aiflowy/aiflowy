@@ -7,7 +7,7 @@ import cloud.tianai.captcha.common.response.ApiResponse;
 import com.alibaba.fastjson2.JSON;
 import org.springframework.web.bind.annotation.*;
 import tech.aiflowy.common.domain.Result;
-import tech.aiflowy.common.tcaptcha.tainai.CaptchaData;
+import tech.aiflowy.common.captcha.tainai.CaptchaData;
 import tech.aiflowy.system.entity.SysOption;
 import tech.aiflowy.system.service.SysOptionService;
 

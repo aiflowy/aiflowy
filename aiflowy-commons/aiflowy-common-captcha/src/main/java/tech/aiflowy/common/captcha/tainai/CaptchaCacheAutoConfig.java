@@ -1,4 +1,4 @@
-package tech.aiflowy.common.tcaptcha.tainai;
+package tech.aiflowy.common.captcha.tainai;
 
 import cloud.tianai.captcha.cache.CacheStore;
 import cloud.tianai.captcha.cache.impl.LocalCacheStore;

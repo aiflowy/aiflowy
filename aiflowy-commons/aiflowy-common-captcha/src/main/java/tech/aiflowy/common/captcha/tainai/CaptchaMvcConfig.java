@@ -1,4 +1,4 @@
-package tech.aiflowy.common.tcaptcha.tainai;
+package tech.aiflowy.common.captcha.tainai;
 
 import jakarta.annotation.Resource;
 import org.springframework.context.annotation.Configuration;
