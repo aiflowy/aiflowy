@@ -46,17 +46,4 @@ public class PublicController {
         }
         return ApiResponse.ofSuccess(data.getId());
     }
-
-    /**
-     * 获取UI配置
-     */
-    @GetMapping("/getUiConfig")
-    public Result<Map<String, Object>> getUiConfig() {
-        Map<String, Object> res = new HashMap<>();
-        SysOption option = sysOptionService.getByOptionKey("ui_config");
-        if (option != null) {
-            res = JSON.parseObject(option.getValue());
-        }
-        return Result.ok(res);
-    }
 }

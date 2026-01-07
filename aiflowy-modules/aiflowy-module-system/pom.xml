@@ -40,9 +40,5 @@
             <groupId>tech.aiflowy</groupId>
             <artifactId>aiflowy-module-log</artifactId>
         </dependency>
-        <dependency>
-            <groupId>tech.aiflowy</groupId>
-            <artifactId>aiflowy-common-third-auth</artifactId>
-        </dependency>
     </dependencies>
 </project>

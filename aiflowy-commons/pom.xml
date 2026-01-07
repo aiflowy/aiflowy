@@ -23,7 +23,6 @@
         <module>aiflowy-common-satoken</module>
         <module>aiflowy-common-audio</module>
         <module>aiflowy-common-chat-protocol</module>
-        <module>aiflowy-common-third-auth</module>
     </modules>
 
 </project>

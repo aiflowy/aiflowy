@@ -8,17 +8,14 @@ import { useAppConfig } from '@aiflowy/hooks';
 import { $t } from '@aiflowy/locales';
 import { preferences } from '@aiflowy/preferences';
 
-import { ElDivider } from 'element-plus';
-
 import { api } from '#/api/request';
-import dingTalkImg from '#/assets/login/dingding-60.png';
-import wxImg from '#/assets/login/wx-60.png';
 import { useAuthStore } from '#/store';
 
 defineOptions({ name: 'Login' });
 onMounted(() => {});
 
 const authStore = useAuthStore();
+
 const { apiURL } = useAppConfig(import.meta.env, import.meta.env.PROD);
 
 type PlatformType = 'ding_talk' | 'wx_web';
@@ -101,12 +98,6 @@ function getAuthUrl(platform: PlatformType) {
     },
   });
 }
-async function platformLogin(platform: PlatformType) {
-  const { errorCode, data } = await getAuthUrl(platform);
-  if (errorCode === 0) {
-    window.location.href = data;
-  }
-}
 </script>
 
 <template>
@@ -119,23 +110,6 @@ async function platformLogin(platform: PlatformType) {
       @submit="onSubmit"
     />
     <div id="captcha-box" class="captcha-div"></div>
-    <ElDivider content-position="center">
-      {{ $t('common.otherLoginType') }}
-    </ElDivider>
-    <div class="flex-center flex gap-[20px]">
-      <img
-        class="platform-icon"
-        :src="wxImg"
-        alt=""
-        @click="platformLogin('wx_web')"
-      />
-      <img
-        class="platform-icon"
-        :src="dingTalkImg"
-        alt=""
-        @click="platformLogin('ding_talk')"
-      />
-    </div>
   </div>
 </template>
 
