@@ -40,7 +40,7 @@ const formData = reactive({
   id: '',
   icon: '',
   providerName: '',
-  provider: '',
+  providerType: '',
   apiKey: '',
   endpoint: '',
   chatPath: '',
@@ -58,7 +58,7 @@ const rules = {
       trigger: 'blur',
     },
   ],
-  provider: [
+  providerType: [
     {
       required: true,
       message: $t('message.required'),
@@ -138,7 +138,7 @@ const handleChangeProvider = (val: string) => {
         <ElInput v-model.trim="formData.providerName" />
       </ElFormItem>
       <ElFormItem prop="provider" :label="$t('llmProvider.apiType')">
-        <ElSelect v-model="formData.provider" @change="handleChangeProvider">
+        <ElSelect v-model="formData.providerType" @change="handleChangeProvider">
           <ElOption
             v-for="item in providerOptions"
             :key="item.value"
