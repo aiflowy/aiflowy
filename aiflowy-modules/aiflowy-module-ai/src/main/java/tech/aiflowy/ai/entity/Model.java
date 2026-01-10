@@ -61,7 +61,9 @@ public class Model extends ModelBase {
             case "ollama":
                 OllamaChatConfig ollamaChatConfig = new OllamaChatConfig();
                 ollamaChatConfig.setEndpoint(checkAndGetEndpoint());
-                ollamaChatConfig.setApiKey(checkAndGetApiKey());
+                if(StringUtil.hasText(getApiKey())){
+                    ollamaChatConfig.setApiKey(checkAndGetApiKey());
+                }
                 ollamaChatConfig.setModel(checkAndGetModelName());
                 ollamaChatConfig.setProvider(getModelProvider().getProviderName());
                 return new OllamaChatModel(ollamaChatConfig);
