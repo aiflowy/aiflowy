@@ -11,25 +11,28 @@ AIFlowy is an **enterprise-grade, open-source AI application (agent) development
 While AIFlowy competes with mainstream platforms such as Coze, and Dify, it distinguishes itself through a **strong focus on real-world enterprise needs and regulatory considerations**—reflected in its architecture, feature set, and scenario-driven design. AIFlowy supports the full lifecycle of AI applications, from bot creation and RAG knowledge bases to AI workflow orchestration and model management.
 
 
-## ✨ Core Features
+## ✨ AIFlowy Core Features
 
 ### 🧠 AI Capabilities
-- ✅ Intelligent Bot Creation & Publishing
-- ✅ Plugin System (supports custom tool integration)
-- ✅ RAG Knowledge Base (supports document upload, parsing, and retrieval)
-- ✅ AI Workflow Orchestration (visual workflow editor with conditions, branches, and loops)
-- ✅ Media Center (AI-generated images, audio, video, etc.)
-- ✅ Data Hub (custom data tables with workflow read/write capabilities)
-- ✅ Multi-Model Management (unified integration of mainstream LLMs)
-- ✅ MCP (Model Context Protocol) integration, execution, and auto-invocation
+- ✅ Intelligent Bot Building and Deployment
+- ✅ Plugin System (Supports custom tool integration)
+- ✅ RAG Knowledge Base (Supports document upload, parsing, and retrieval)
+- ✅ AI Workflow Orchestration (Visual workflow + conditions/branches/loops)
+- ✅ Media Center (AI-generated images, audio, videos, etc.)
+- ✅ Data Hub (Custom data tables + workflow read/write capabilities)
+- ✅ Multi-Model Management (Unified access to mainstream large language models)
+- ✅ MCP integration, execution, mounting to chat assistant, and automatic invocation
+
 
 ### 🔐 System Management
-- ✅ User / Role / Department / Position / Permission System
-- ✅ Menu & System Configuration
+- ✅ User/Role/Department/Position/Permission System
+- ✅ Menu and System Configuration
 - ✅ Access Tokens (API Keys)
 - ✅ Scheduled Tasks & Operation Logs
-- ✅ User Feedback & UI Customization
-- ✅ Authentication Configuration (supports multiple login strategies)
+- ✅ User Feedback & Appearance Customization
+- ✅ Authentication Method Configuration (Supports multiple login strategies)
+- ✅ Internationalization Support (Currently fully supports Chinese and English)
+
 
 ### 🔜 Upcoming Roadmap
 - [ ] Enhanced RAG retrieval accuracy and multimodal support
