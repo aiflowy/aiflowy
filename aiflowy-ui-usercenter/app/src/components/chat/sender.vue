@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { inject, ref } from 'vue';
 
+import { uuid } from '@aiflowy/utils';
+
 import { Promotion } from '@element-plus/icons-vue';
 import { ElButton, ElIcon } from 'element-plus';
 
@@ -28,14 +30,14 @@ function sendMessage() {
   };
   btnLoading.value = true;
   props.addMessage?.({
-    key: crypto.randomUUID(),
+    key: uuid(),
     role: 'user',
     placement: 'end',
     content: senderValue.value,
     typing: true,
   });
   senderValue.value = '';
-  const msgKey = crypto.randomUUID();
+  const msgKey = uuid();
   let str = '';
   sseClient.post('/userCenter/bot/chat', data, {
     onMessage(res) {
