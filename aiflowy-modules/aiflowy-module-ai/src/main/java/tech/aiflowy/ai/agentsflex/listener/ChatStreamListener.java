@@ -66,7 +66,7 @@ public class ChatStreamListener implements StreamResponseListener {
                     this.canStop = true;
                 }
                 String delta = aiMessageResponse.getMessage().getContent();
-                if (StringUtil.hasText(delta)) {
+                if (delta != null) {
                     ChatEnvelope<Map<String, String>> chatEnvelope = new ChatEnvelope<>();
                     chatEnvelope.setDomain(ChatDomain.LLM);
                     chatEnvelope.setType(ChatType.MESSAGE);
