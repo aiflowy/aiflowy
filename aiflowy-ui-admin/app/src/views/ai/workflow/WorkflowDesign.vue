@@ -256,7 +256,7 @@ function onAsyncExecute(info: any) {
       <div>
         <ElButton :icon="ArrowLeft" link @click="router.back()">
           <span
-            class="w-[500px] overflow-hidden text-ellipsis text-nowrap text-base"
+            class="max-w-[500px] overflow-hidden text-ellipsis text-nowrap text-base"
             style="font-size: 14px"
             :title="workflowInfo.title"
           >
