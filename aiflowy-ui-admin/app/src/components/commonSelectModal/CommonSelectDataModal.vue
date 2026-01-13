@@ -34,6 +34,7 @@ const props = defineProps({
   pageUrl: { type: String, default: '' },
   hasParent: { type: Boolean, default: false },
   isSelectMcp: { type: Boolean, default: false },
+  singleSelect: { type: Boolean, default: false },
 });
 
 const emit = defineEmits(['getData']);
@@ -102,9 +103,20 @@ const toggleSelectionMcp = (
 
 const toggleSelection = (id: number | string, checked: any) => {
   if (checked) {
-    selectedIds.value.push(id);
+    // 单选模式：先清空已选，再添加当前项
+    if (props.singleSelect) {
+      selectedIds.value = [id];
+    } else {
+      // 多选模式：追加当前项（避免重复）
+      if (!selectedIds.value.includes(id)) {
+        selectedIds.value.push(id);
+      }
+    }
   } else {
-    selectedIds.value = selectedIds.value.filter((i) => i !== id);
+    // 取消选中：仅多选模式生效，单选模式不允许取消（可选）
+    if (!props.singleSelect) {
+      selectedIds.value = selectedIds.value.filter((i) => i !== id);
+    }
   }
 };
 

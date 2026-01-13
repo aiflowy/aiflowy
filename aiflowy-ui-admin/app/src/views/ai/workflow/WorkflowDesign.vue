@@ -213,6 +213,7 @@ function onAsyncExecute(info: any) {
       ref="pluginSelectRef"
       page-url="/api/v1/plugin/page"
       :has-parent="true"
+      single-select
       @get-data="(v) => handleChoose(nodeNames.pluginNode, v)"
     />
     <ElDrawer
