@@ -73,28 +73,37 @@ spring:
 spring:
   web:
     resources:
-      static-locations: file:/your/local/path  # 例如：file:/www/aiflowy/file（Linux）或 file:C:/aiflowy/file（Windows）
-
+      # 例如：file:/www/aiflowy/file（Linux）或 file:C:/aiflowy/file（Windows）
+      static-locations: file:/your/local/path  
+  mvc:
+    # ！！！ 注意，这里要和下面的 aiflowy.storage.local.prefix 的后面路径保持一致！
+    static-path-pattern: /attachment/**
 aiflowy:
-  storage:
-    local:
-      root: /your/local/path
-      prefix: 'http://localhost:8080/static'
+   storage:
+      type: local # xFileStorage / local
+      # 本地文件存储配置
+      local:
+         # 示例：windows【C:\aiflowy\attachment】 linux【/www/aiflowy/attachment】
+         root: /your/local/path
+         # URL 拼接地址
+         prefix: http://localhost:8080/attachment    # ！！！ 注意，这里要和下面的 aiflowy.storage.local.root 保持一致
 ```
 
-##### S3 兼容存储（如 MinIO、AWS S3）
+##### 第三方存储（如阿里云 OSS）
 ```yaml
-aiflowy:
-  storage:
-    type: s3
-    s3:
-      access-key: your-access-key
-      secret-key: your-secret-key
-      endpoint: "http://your-s3-endpoint"
-      region: "your-region"
-      bucket-name: "your-bucket"
-      access-policy: 2  # 1=私有, 2=公共读
-      prefix: public
+# xFileStorage存储文件配置
+dromara:
+   x-file-storage: #文件存储配置
+      default-platform: aliyun-oss-1 #默认使用的存储平台
+      aliyun-oss:
+         - platform: aliyun-oss-1 # 存储平台标识
+           enable-storage: true  # 启用存储
+           access-key: yourAccessKeyId
+           secret-key: yourAccessKeySecret
+           end-point: yourEndpoint # 示例：https://oss-cn-beijing.aliyuncs.com
+           bucket-name: yourBucketName
+           domain: yourDomain # 访问域名，注意“/”结尾，例如：https://bucketname.oss-cn-shanghai.aliyuncs.com/
+           base-path: attachment # 基础路径
 ```
 
 ### 1.4 编译并启动应用
@@ -106,7 +115,7 @@ aiflowy:
    ![mvn.png](resource/mvn.png)
 
 2. 编译成功后，运行主启动类：
-    - 模块：`aiflowy-starter-all`
+    - 模块：`aiflowy-starter -->  aiflowy-starter-all`
     - 类路径：`com.aiflowy.starter.MainApplication`
 
    ![run.png](resource/run.png)
@@ -141,7 +150,7 @@ pnpm install
 pnpm dev
 ```
 
-成功启动后，终端将显示访问地址（默认 `http://localhost:8899`）：  
+成功启动后，终端将显示访问地址（默认 `http://localhost:5090`）：  
 ![pnpm_dev.png](resource/pnpm_dev.png)
 
 打开浏览器访问该地址，看到登录页即表示前端启动成功：  
