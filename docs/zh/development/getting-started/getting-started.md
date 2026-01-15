@@ -86,7 +86,7 @@ aiflowy:
          # 示例：windows【C:\aiflowy\attachment】 linux【/www/aiflowy/attachment】
          root: /your/local/path
          # URL 拼接地址
-         prefix: http://localhost:8080/attachment    # ！！！ 注意，这里要和下面的 aiflowy.storage.local.root 保持一致
+         prefix: http://localhost:8080/attachment
 ```
 
 ##### 第三方存储（如阿里云 OSS）

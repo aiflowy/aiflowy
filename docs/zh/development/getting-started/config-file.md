@@ -1,71 +1,152 @@
 # 配置文件
 
-## 数据库配置
-
 ```yml
+server:
+  port: 8080
+  address: 0.0.0.0
+  shutdown: graceful
+  # 启用HTTP响应压缩
+  compression:
+    enabled: true
+  servlet:
+    encoding:
+      enabled: true
+      charset: UTF-8 # 必须设置 UTF-8，避免 WebFlux 流式返回（AI 场景）会乱码问题
+      force: true
 spring:
+  profiles:
+    active: dev
   datasource:
+    # ！！！ 注意：useInformationSchema=true 是必须的，用于支持 MyBatis-Flex 正确读取表注释。
     url: jdbc:mysql://127.0.0.1:3306/aiflowy?useInformationSchema=true&characterEncoding=utf-8
     username: root
     password: 123456
-```
-
-## 本地文件配置
-```yml
-spring:
   servlet:
     multipart:
       max-file-size: 100MB
       max-request-size: 100MB
   web:
     resources:
-      # 此处要和下面的 aiflowy.storage.local.root 一致。
-      # 如 root: 'D://files'，那这里就该是 static-locations: file:D://files
-      static-locations: classpath:/public
+      # 示例：windows【file: C:\aiflowy\attachment】 linux【file: /www/aiflowy/attachment】
+      static-locations: file:C:\aiflowy\attachment
   mvc:
-    static-path-pattern: /static/**
+    pathmatch:
+      matching-strategy: ant_path_matcher
+    # 静态资源路径，用于访问本地文件
+    # ！！！ 注意，这里要和下面的 aiflowy.storage.local.prefix 后面的路径 /attachment 保持一致！
+    static-path-pattern: /attachment/**
+  # quartz 相关配置
+  quartz:
+    startup-delay: 1
+    job-store-type: jdbc
+    jdbc:
+      platform: mysql
+      initialize-schema: never
+    properties:
+      org:
+        quartz:
+          jobStore:
+            misfireThreshold: 1000
+            # 如果数据库大小写敏感，可将ddl里的相关表名改为大写
+            tablePrefix: TB_QRTZ_
+          threadPool:
+            threadCount: 20
+            threadPriority: 5
+  threads:
+    virtual:
+      enabled: true
 aiflowy:
-  storage:
-    local:
-      # 默认存储在classpath下的public目录
-      # target/public 下
-      root: ''
-```
-
-默认存储在本地。
-
-另外，我们也可以去实现自己的存储类型，只需要编写一个类，实现 `FileStorageService` 接口，并通过 `@Component` 注解为当前的实现类型取个名字，例如：
-
-```java
-@Component("myStorage")
-public class MyFileStorageServiceImpl implements FileStorageService {
-
-    @Override
-    public String save(MultipartFile file) {
-        // 在这里，去实现你的文件存储逻辑
-    }
-
-    @Override
-    public InputStream readStream(String path) throws IOException {
-        // 在这里，去实现你的文件存储逻辑
-    }
-    
-}
-```
-此时，我们添加如下配置，即可把当前 APP 的存储类型修改为你自己的实现类：
-```yml
-aiflowy:
-  storage:
-    type: myStorage
-```
-
-## 其他配置
-```yml
-aiflowy:
-  # ollama 服务地址
-  ollama:
-    host: http://127.0.0.1:11434
-  # 不进行登录拦截的路径
+  # 语音播放、识别服务（阿里云）
+  audio:
+    type: aliAudioService
+    ali:
+      access-key-id: xxx
+      access-key-secret: xxx
+      app-key: xxx
+      voice: siyue
   login:
-    excludes: /api/v1/auth/**, /static/**
+    # 放行接口路径
+    excludes: /api/v1/auth/**, /static/**, /userCenter/auth/**, /userCenter/public/**
+  storage:
+    type: local # xFileStorage / local
+    # 本地文件存储配置
+    local:
+      # 示例：windows【C:\aiflowy\attachment】 linux【/www/aiflowy/attachment】
+      root: C:\aiflowy\attachment
+      # 后端接口地址
+      prefix: http://localhost:8080/attachment
+# xFileStorage存储文件配置
+dromara:
+  x-file-storage: #文件存储配置
+    default-platform: aliyun-oss-1 #默认使用的存储平台
+    aliyun-oss:
+      - platform: aliyun-oss-1 # 存储平台标识
+        enable-storage: true  # 启用存储
+        access-key: yourAccessKeyId
+        secret-key: yourAccessKeySecret
+        end-point: yourEndpoint # 示例：https://oss-cn-beijing.aliyuncs.com
+        bucket-name: yourBucketName
+        domain: yourDomain # 访问域名，注意“/”结尾，例如：https://bucketname.oss-cn-shanghai.aliyuncs.com/
+        base-path: attachment # 基础路径
+# 自定义节点相关配置
+node:
+  # 文件内容提取节点，默认使用简单文档读取器，可自行实现 ReadDocService
+  reader: 'defaultReader'
+  # gitee 文档读取的实现，需要配置gitee的appKey
+  gitee:
+    appKey: 'xxx'
+  # 搜索引擎节点 - 目前只支持博查搜索
+  bochaai:
+    apiKey: 'xxx'
+jetcache:
+  # 缓存类型，可选值：local/remote/both CacheConfig 类初始化
+  cacheType: local
+  statIntervalMinutes: 15
+  areaInCacheName: false
+  local:
+    default:
+      type: linkedhashmap
+      keyConvertor: fastjson
+  remote:
+    default:
+      type: redis
+      keyConvertor: fastjson2
+      broadcastChannel: projectA
+      valueEncoder: java
+      valueDecoder: java
+      poolConfig:
+        minIdle: 5
+        maxIdle: 20
+        maxTotal: 50
+      host: 127.0.0.1
+      port: 6379
+      password: pwd
+      database: 0
+# 多路召回搜索引擎配置
+rag:
+  searcher:
+    # 搜索方式 默认lucene
+    # type : elasticSearch / lucene
+    type: lucene
+    lucene:
+      indexDirPath: ./luceneKnowledge
+    elastic:
+      host: https://127.0.0.1:9200
+      userName: elastic
+      password: elastic
+      indexName: aiflowy
+logging:
+  file:
+    path: .logs/
+    name: aiflowy.log
+  level:
+    root: info
+    tech.aiflowy.ai: debug
+# 行为验证码配置
+captcha:
+  # 初始化默认资源
+  init-default-resource: true
+  # 开启二次验证
+  secondary:
+    enabled: true
 ```

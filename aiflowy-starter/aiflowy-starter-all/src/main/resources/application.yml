@@ -14,6 +14,7 @@ spring:
   profiles:
     active: dev
   datasource:
+    # ！！！ 注意：useInformationSchema=true 是必须的，用于支持 MyBatis-Flex 正确读取表注释。
     url: jdbc:mysql://127.0.0.1:3306/aiflowy?useInformationSchema=true&characterEncoding=utf-8
     username: root
     password: 123456
@@ -28,7 +29,10 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+    # 静态资源路径，用于访问本地文件
+    # ！！！ 注意，这里要和下面的 aiflowy.storage.local.prefix 后面的路径 /attachment 保持一致！
     static-path-pattern: /attachment/**
+  # quartz 相关配置
   quartz:
     startup-delay: 1
     job-store-type: jdbc
@@ -40,6 +44,7 @@ spring:
         quartz:
           jobStore:
             misfireThreshold: 1000
+            # 如果数据库大小写敏感，可将ddl里的相关表名改为大写
             tablePrefix: TB_QRTZ_
           threadPool:
             threadCount: 20
@@ -57,19 +62,16 @@ aiflowy:
       app-key: xxx
       voice: siyue
   login:
+    # 放行接口路径
     excludes: /api/v1/auth/**, /static/**, /userCenter/auth/**, /userCenter/public/**
-  # 后台页面访问域名
-  admin-page-domain: http://localhost:5090
   storage:
     type: local # xFileStorage / local
     # 本地文件存储配置
     local:
       # 示例：windows【C:\aiflowy\attachment】 linux【/www/aiflowy/attachment】
       root: C:\aiflowy\attachment
-      # root: /Users/michael/Desktop/test
       # 后端接口地址
       prefix: http://localhost:8080/attachment
-      # prefix: http://aiflowy.s7.tunnelfrp.com/static
 # xFileStorage存储文件配置
 dromara:
   x-file-storage: #文件存储配置
@@ -83,8 +85,11 @@ dromara:
         bucket-name: yourBucketName
         domain: yourDomain # 访问域名，注意“/”结尾，例如：https://bucketname.oss-cn-shanghai.aliyuncs.com/
         base-path: attachment # 基础路径
+# 自定义节点相关配置
 node:
+  # 文件内容提取节点，默认使用简单文档读取器，可自行实现 ReadDocService
   reader: 'defaultReader'
+  # gitee 文档读取的实现，需要配置gitee的appKey
   gitee:
     appKey: 'xxx'
   # 搜索引擎节点 - 目前只支持博查搜索
@@ -134,7 +139,10 @@ logging:
   level:
     root: info
     tech.aiflowy.ai: debug
+# 行为验证码配置
 captcha:
+  # 初始化默认资源
   init-default-resource: true
+  # 开启二次验证
   secondary:
     enabled: true
