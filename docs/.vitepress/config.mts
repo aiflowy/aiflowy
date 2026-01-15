@@ -136,7 +136,7 @@ function sidebarDevelopment(): DefaultTheme.SidebarItem[] {
             items: [
                 {text: '代码生成器', link: 'backend/code-generator'},
                 {text: '权限管理', link: 'backend/permission_management'},
-                {text: '验证码', link: 'backend/captcha'},
+                {text: '行为验证码', link: 'backend/captcha'},
                 {text: '数据字典', link: 'backend/data_dictionary'},
                 {text: '文件管理', link: 'backend/file_management'},
                 {text: '自定义节点', link: 'ai/custom-node'},

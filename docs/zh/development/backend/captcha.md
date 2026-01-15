@@ -1,104 +1,70 @@
-# 腾讯云验证码
+# 行为验证码
+行为验证码框架为：[tianai-captcha](https://gitee.com/dromara/tianai-captcha)
 
-![img.png](resource/img.png)
+## 验证逻辑
+### 后端
+`tech.aiflowy.common.captcha.tainai.CaptchaMvcConfig`
+类配置了需要验证的接口，通过获取请求体中的 `validToken` 字段来判断行为验证码是否验证完成。
 
-## 前言
+行为验证和业务代码是解耦的设计，需要用验证码来限制的接口都可以在这里配置，拦截器会自动进行验证，业务代码无需做任何处理。
 
-腾讯云验证码（Captcha）基于十道安全栅栏， 为网页、App、小程序开发者打造立体、全面的人机验证，最大程度地保护注册登录、活动秒杀、点赞发帖、数据保护等各大场景下的业务安全，同时为您提供更精细化的用户体验。
-官方网站：https://cloud.tencent.com/document/product/1110
+### 前端
+如需对某个操作进行验证码验证，可参考
 
-注意：
+`aiflowy-ui-admin > app > src > views > _core > authentication > login.vue`
 
-腾讯云验证码是收费的，但是价格极低，而且体验极好，在一般的个人站点中，充值 100 用 1 年问题不大。
+中的代码。
 
-## 如何使用？
-
-在 AIFlowy 中，已经内置了 腾讯云验证码 的对接，可以通过在 application.yml添加如下的配置轻松使用。
-
-```yml
-AIFlowy:
-  tcaptcha:
-    enable:
-    secret-id:
-    secret-key:
-    app-secret-key:
-    captcha-app-id:
-    valid-path-patterns:
-```
-
-- **enable**: 是否启用，`boolean` 类型。
-- **secret-id**: 秘钥 ID，通过 [https://console.cloud.tencent.com/cam/capi](https://console.cloud.tencent.com/cam/capi) 可以创建或查看。
-- **secret-key**: 秘钥 KEY，通过 [https://console.cloud.tencent.com/cam/capi](https://console.cloud.tencent.com/cam/capi) 可以创建或查看。
-- **captcha-app-id**: 验证码 app id，在 [https://console.cloud.tencent.com/captcha/graphical](https://console.cloud.tencent.com/captcha/graphical) 可以创建或查看。
-- **app-secret-key**: 验证码 app 的秘钥 key，在 [https://console.cloud.tencent.com/captcha/graphical](https://console.cloud.tencent.com/captcha/graphical) 可以创建或查看。
-- **valid-path-patterns**: 验证路径，哪些路径需要通过腾讯验证码进行验证。
-
-## 登录验证
-
-```yml
-AIFlowy:
-  tcaptcha:
-    enable: true
-    secret-id: AKID894sT****
-    secret-key: e4KUULw****
-    captcha-app-id: 19308****
-    app-secret-key: 6IwI6o***
-    valid-path-patterns: /api/v1/account/login
-```
-在 valid-path-patterns中，添加对 /api/v1/account/login路径的验证功能。当开启如上配置后，前端登录自动进行验证码验证。
-
-## 自定义验证
-
-在 APP 中，除了登录功能以外，如果我们还需要验证码进行验证，这需要这两个步骤：
-1、后台添加对该路径的拦截。
-2、前台使用 useCaptchaHook 调用拦截。
-
-## 后台添加拦截
-
-后台拦截配置主要是通过 application.yml添加 AIFlowy.tcaptcha.valid=path-patterns的配置，如下所示：
-
-```yml
-AIFlowy:
-  tcaptcha:
-    enable: true
-    secret-id: AKID894sT****
-    secret-key: e4KUULw****
-    captcha-app-id: 19308****
-    app-secret-key: 6IwI6o***
-    valid-path-patterns: /api/v1/account/login, 要拦截的 URL
-```
-
-## 前台使用  useCaptchaHook 拦截
-
-```tsx
-const MyComponent: React.FC = () => {
-
-    // 使用 useCaptcha hook
-    const {startCaptcha} = useCaptcha();
- 
-    const startDoSomeThing = ()=>{
-      // 开始弹出验证码并让用户进行验证
-      startCaptcha((randstr, ticket) => {
-              //验证成功，把 randstr，ticket 传给后台
-              doSomeThing({
-                  data: {
-                      randstr,
-                      ticket,
-                      ...values, //其他的业务数据
-                  }
-              }).then((resp) => {
-                  //....
-              }).catch((e) => {
-                  message.error("网络错误：" + e)
-              })
-          })
-    }
-
-    return (
-         <Button onClick={()=>{startDoSomeThing()}}>
-            登 录
-        </Button>
-    )
+```js
+function onSubmit(values: any) {
+  // config 对象为TAC验证码的一些配置和验证的回调
+  const config = {
+    // 生成接口 (必选项,必须配置, 要符合tianai-captcha默认验证码生成接口规范)
+    requestCaptchaDataUrl: `${apiURL}/api/v1/public/getCaptcha`,
+    // 验证接口 (必选项,必须配置, 要符合tianai-captcha默认验证码校验接口规范)
+    validCaptchaUrl: `${apiURL}/api/v1/public/check`,
+    // 验证码绑定的div块 (必选项,必须配置)
+    bindEl: '#captcha-box',
+    // 验证成功回调函数(必选项,必须配置)
+    validSuccess: (res: any, _: any, tac: any) => {
+      // 销毁验证码服务
+      tac.destroyWindow();
+      // ！！！在这里调用业务接口！！！
+    },
+    // 验证失败的回调函数(可忽略，如果不自定义 validFail 方法时，会使用默认的)
+    validFail: (_: any, __: any, tac: any) => {
+      // 验证失败后重新拉取验证码
+      tac.reloadCaptcha();
+    },
+    // 刷新按钮回调事件
+    btnRefreshFun: (_: any, tac: any) => {
+      tac.reloadCaptcha();
+    },
+    // 关闭按钮回调事件
+    btnCloseFun: (_: any, tac: any) => {
+      tac.destroyWindow();
+    },
+  };
+  const style = {
+    logoUrl: null, // 去除logo
+    // logoUrl: "/xx/xx/xxx.png" // 替换成自定义的logo
+    btnUrl: '/tac-btn.png',
+  };
+  window
+    // @ts-ignore
+    .initTAC('/tac', config, style)
+    .then((tac: any) => {
+      tac.init(); // 调用init则显示验证码
+    })
+    .catch((error: any) => {
+      console.error('初始化tac失败', error);
+    });
 }
-export default MyComponent;
 ```
+## 自定义图片
+
+AIFlowy 内置了十张验证码图片，你可以自行替换或者增加。
+
+在 `tech.aiflowy.common.captcha.tainai.CaptchaConfig` 类中配置。
+
+然后在 `starter` 的 `resources` 目录下添加你的图片，注意名字要和配置文件内对应，图片宽高为：600x360
