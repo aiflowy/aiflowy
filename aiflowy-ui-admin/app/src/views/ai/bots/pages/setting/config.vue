@@ -111,7 +111,7 @@ const getAiBotKnowledgeList = async () => {
           ...item.knowledge,
         };
       });
-      knowledgeIdsData.value = res.data.map((item: any) => item.knowledgeId);
+      knowledgeIdsData.value = res.data.map((item: any) => item.documentCollectionId);
     });
 };
 

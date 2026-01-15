@@ -144,17 +144,26 @@ const getMcpSelectedInfo = (): Record<number | string, string[][]>[] => {
 };
 
 const handleSubmitRun = () => {
-  if (selectedIds.value.length === 0) {
+  const hasSelected = props.isSelectMcp
+    ? Object.keys(selectedToolMap.value).some(
+        (parentId) => (selectedToolMap.value[parentId] ?? []).length > 0,
+      )
+    : selectedIds.value.length > 0;
+
+  // 未选中内容时提示并返回
+  if (!hasSelected) {
     ElMessage.error($t('message.selectTip'));
     return;
   }
-  if (props?.isSelectMcp) {
-    emit('getData', getMcpSelectedInfo());
-  } else {
-    emit('getData', selectedIds.value);
-  }
+
+  const submitData = props.isSelectMcp
+    ? getMcpSelectedInfo()
+    : selectedIds.value;
+  emit('getData', submitData);
+
+  // 关闭弹窗并返回数据
   dialogVisible.value = false;
-  return selectedIds.value;
+  return submitData;
 };
 
 const handleSearch = (query: string) => {
