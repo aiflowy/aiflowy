@@ -70,7 +70,7 @@ aiflowy:
     local:
       # 示例：windows【C:\aiflowy\attachment】 linux【/www/aiflowy/attachment】
       root: C:\aiflowy\attachment
-      # 后端接口地址
+      # 后端接口地址，用于拼接完整 url
       prefix: http://localhost:8080/attachment
 # xFileStorage存储文件配置
 dromara:

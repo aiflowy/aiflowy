@@ -85,7 +85,7 @@ aiflowy:
       local:
          # 示例：windows【C:\aiflowy\attachment】 linux【/www/aiflowy/attachment】
          root: /your/local/path
-         # URL 拼接地址
+         # 后端接口地址，用于拼接完整 url
          prefix: http://localhost:8080/attachment
 ```
 
