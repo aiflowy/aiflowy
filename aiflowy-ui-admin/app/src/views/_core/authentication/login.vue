@@ -79,6 +79,7 @@ function onSubmit(values: any) {
   const style = {
     logoUrl: null, // 去除logo
     // logoUrl: "/xx/xx/xxx.png" // 替换成自定义的logo
+    btnUrl: '/tac-btn.png',
   };
   window
     // @ts-ignore
@@ -119,6 +120,7 @@ function getAuthUrl(platform: PlatformType) {
   top: 30vh;
   left: 21vh;
 }
+
 .platform-icon {
   width: 30px;
   height: 30px;
