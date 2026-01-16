@@ -120,9 +120,11 @@ function sidebarDevelopment(): DefaultTheme.SidebarItem[] {
             items: [
                 // {
                 //     text: 'React', collapsed: false, items: [
+                        {text: '基础概念', link: 'front/concept'},
+                        {text: '前置准备', link: 'front/preparation'},
                         {text: '路由管理', link: 'front/routes'},
+                        {text: '图标', link: 'front/icons'},
                         {text: '状态管理', link: 'front/state'},
-                        {text: 'Hooks', link: 'front/hooks'},
                         {text: '组件使用', link: 'front/components'},
                         {text: '国际化', link: 'front/locales'}
                 //     ]

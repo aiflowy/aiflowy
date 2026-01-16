@@ -125,7 +125,13 @@ dromara:
 
 
 
-## 2. 启动前端控制台
+## 2. 运行前端部分
+
+在运行前端程序之前，需要您的电脑安装好 Node 环境，注意版本为 `v22+` 。
+
+后台管理目录：`aiflowy-ui-admin`
+
+用户中心目录：`aiflowy-ui-usercenter`
 
 ### 2.1 安装依赖
 
@@ -133,6 +139,8 @@ dromara:
 
 ```bash
 cd aiflowy-ui-admin
+# or
+cd aiflowy-ui-usercenter
 pnpm install
 ```
 
@@ -146,11 +154,16 @@ pnpm install
 
 ### 2.2 启动开发服务器
 
+启动前先检查开发环境配置，配置文件：`app/.env.development`
+
 ```bash
 pnpm dev
 ```
 
-成功启动后，终端将显示访问地址（默认 `http://localhost:5090`）：  
+成功启动后，终端将显示访问地址：
+
+后台管理默认：`http://localhost:5090`，用户中心默认：`http://localhost:5091`
+
 ![pnpm_dev.png](resource/pnpm_dev.png)
 
 打开浏览器访问该地址，看到登录页即表示前端启动成功：  
