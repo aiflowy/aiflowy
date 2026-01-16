@@ -86,6 +86,7 @@ catalog:
   dotenv: ^16.6.1
   echarts: ^6.0.0
   element-plus: ^2.10.2
+  es-toolkit: ^1.41.0
   eslint: ^9.30.1
   eslint-config-turbo: ^2.5.4
   eslint-plugin-command: ^3.3.1
@@ -188,4 +189,3 @@ catalog:
   watermark-js-plus: ^1.6.2
   zod: ^3.25.67
   zod-defaults: ^0.1.3
-  es-toolkit: ^1.41.0
