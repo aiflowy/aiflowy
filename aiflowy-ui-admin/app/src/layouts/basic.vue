@@ -89,6 +89,13 @@ const menus = computed(() => [
   },
   {
     handler: () => {
+      router.push({ name: 'Profile', query: { tab: 'password' } });
+    },
+    icon: 'lucide:lock',
+    text: $t('settingsConfig.updatePwd'),
+  },
+  {
+    handler: () => {
       openWindow(APP_DOC_URL, {
         target: '_blank',
       });

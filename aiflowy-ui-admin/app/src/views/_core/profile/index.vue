@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
 
 import { Profile } from '@aiflowy/common-ui';
 import { useUserStore } from '@aiflowy/stores';
@@ -11,11 +12,12 @@ import ProfileNotificationSetting from './notification-setting.vue';
 import ProfilePasswordSetting from './password-setting.vue';
 import ProfileSecuritySetting from './security-setting.vue';
 
+const route = useRoute();
 const userStore = useUserStore();
 
 const tabsValue = ref<string>('basic');
 
-const tabs = ref([
+const tabs = [
   {
     label: $t('settingsConfig.basic'),
     value: 'basic',
@@ -24,7 +26,13 @@ const tabs = ref([
     label: $t('settingsConfig.updatePwd'),
     value: 'password',
   },
-]);
+];
+
+onMounted(() => {
+  if (route.query.tab) {
+    tabsValue.value = route.query.tab as string;
+  }
+});
 </script>
 <template>
   <Profile
