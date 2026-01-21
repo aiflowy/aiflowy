@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { provide, ref, watch } from 'vue';
+import { nextTick, provide, ref, watch } from 'vue';
 
 import { IconifyIcon } from '@aiflowy/icons';
 import { cn } from '@aiflowy/utils';
@@ -65,13 +65,25 @@ function getSessionList(resetSession = false) {
 }
 provide('getSessionList', getSessionList);
 function addSession() {
+  const newSession = sessionList.value.find(
+    (session: any) => session.title === '新对话' && !session.created,
+  );
+
+  if (newSession) {
+    return;
+  }
+
   api.get('/userCenter/bot/generateConversationId').then((res) => {
     const data = {
       botId: props.bot.id,
       title: '新对话',
       id: res.data,
     };
-    sessionList.value.push(data);
+    sessionList.value.unshift(data);
+
+    nextTick(() => {
+      clickSession(data);
+    });
   });
 }
 function clickSession(session: any) {
