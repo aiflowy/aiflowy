@@ -84,7 +84,7 @@ const hiddenActions = computed(() => {
         <div :class="visibleActions.length > 2 ? 'footer-div' : ''">
           <template v-for="(action, idx) in visibleActions" :key="idx">
             <ElButton
-              :icon="action.icon"
+              :icon="typeof action.icon === 'string' ? undefined : action.icon"
               size="small"
               :style="{
                 '--el-button-text-color': 'hsl(220deg 9.68% 63.53%)',
@@ -93,6 +93,9 @@ const hiddenActions = computed(() => {
               link
               @click="action.onClick(item)"
             >
+              <template v-if="typeof action.icon === 'string'" #icon>
+                <IconifyIcon :icon="action.icon" />
+              </template>
               {{ action.text }}
             </ElButton>
             <ElDivider
