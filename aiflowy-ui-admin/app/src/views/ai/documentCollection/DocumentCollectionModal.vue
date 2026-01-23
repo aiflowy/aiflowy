@@ -19,6 +19,7 @@ import {
 } from 'element-plus';
 
 import { api } from '#/api/request';
+import DictSelect from '#/components/dict/DictSelect.vue';
 import UploadAvatar from '#/components/upload/UploadAvatar.vue';
 import { $t } from '#/locales';
 
@@ -71,6 +72,7 @@ const defaultEntity = {
   deptId: '',
   icon: '',
   title: '',
+  categoryId: '',
   description: '',
   slug: '',
   vectorStoreEnable: false,
@@ -78,6 +80,7 @@ const defaultEntity = {
   vectorStoreCollection: '',
   vectorStoreConfig: '',
   vectorEmbedModelId: '',
+  dimensionOfVectorModel: undefined,
   options: {
     canUpdateEmbeddingModel: true,
   },
@@ -197,6 +200,15 @@ defineExpose({
           :placeholder="$t('documentCollection.placeholder.title')"
         />
       </ElFormItem>
+      <ElFormItem
+        prop="categoryId"
+        :label="$t('documentCollection.categoryId')"
+      >
+        <DictSelect
+          v-model="entity.categoryId"
+          dict-code="aiDocumentCollectionCategory"
+        />
+      </ElFormItem>
       <ElFormItem prop="alias" :label="$t('documentCollection.alias')">
         <ElInput v-model.trim="entity.alias" />
       </ElFormItem>
@@ -295,6 +307,37 @@ defineExpose({
             :value="item.id || ''"
           />
         </ElSelect>
+      </ElFormItem>
+      <ElFormItem
+        prop="dimensionOfVectorModel"
+        :label="$t('documentCollection.dimensionOfVectorModel')"
+      >
+        <template #label>
+          <span style="display: flex; align-items: center">
+            {{ $t('documentCollection.dimensionOfVectorModel') }}
+            <ElTooltip
+              :content="$t('documentCollection.dimensionOfVectorModelTips')"
+              placement="top"
+              effect="light"
+            >
+              <ElIcon
+                style="
+                  margin-left: 4px;
+                  color: #909399;
+                  cursor: pointer;
+                  font-size: 14px;
+                "
+              >
+                <InfoFilled />
+              </ElIcon>
+            </ElTooltip>
+          </span>
+        </template>
+        <ElInput
+          :disabled="!entity?.options?.canUpdateEmbeddingModel"
+          v-model.trim="entity.dimensionOfVectorModel"
+          type="number"
+        />
       </ElFormItem>
       <ElFormItem
         prop="rerankModelId"

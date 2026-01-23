@@ -234,30 +234,49 @@ CREATE TABLE `tb_document_chunk`
 DROP TABLE IF EXISTS `tb_document_collection`;
 CREATE TABLE `tb_document_collection`
 (
-    `id`                      bigint UNSIGNED NOT NULL COMMENT 'Id',
-    `alias`                   varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '别名',
-    `dept_id`                 bigint UNSIGNED NOT NULL COMMENT '部门ID',
-    `tenant_id`               bigint UNSIGNED NOT NULL COMMENT '租户ID',
-    `icon`                    varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'ICON',
-    `title`                   varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '标题',
-    `description`             varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '描述',
-    `slug`                    varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'URL 别名',
-    `vector_store_enable`     tinyint(1) NULL DEFAULT NULL COMMENT '是否启用向量存储',
-    `vector_store_type`       varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '向量数据库类型',
-    `vector_store_collection` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '向量数据库集合',
-    `vector_store_config`     text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '向量数据库配置',
-    `vector_embed_model_id`   bigint UNSIGNED NULL DEFAULT NULL COMMENT 'Embedding 模型ID',
-    `created`                 datetime NULL DEFAULT NULL COMMENT '创建时间',
-    `created_by`              bigint UNSIGNED NULL DEFAULT NULL COMMENT '创建用户ID',
-    `modified`                datetime NULL DEFAULT NULL COMMENT '最后一次修改时间',
-    `modified_by`             bigint UNSIGNED NULL DEFAULT NULL COMMENT '最后一次修改用户ID',
-    `options`                 text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '其他配置',
-    `rerank_model_id`         bigint UNSIGNED NULL DEFAULT NULL COMMENT '重排模型id',
-    `search_engine_enable`    tinyint(1) NULL DEFAULT NULL COMMENT '是否启用搜索引擎',
-    `english_name`            varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '英文名称',
+    `id`                        bigint(0) UNSIGNED NOT NULL COMMENT 'Id',
+    `alias`                     varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '别名',
+    `dept_id`                   bigint(0) UNSIGNED NOT NULL COMMENT '部门ID',
+    `tenant_id`                 bigint(0) UNSIGNED NOT NULL COMMENT '租户ID',
+    `icon`                      varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'ICON',
+    `title`                     varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '标题',
+    `description`               varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '描述',
+    `slug`                      varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT 'URL 别名',
+    `vector_store_enable`       tinyint(1) NULL DEFAULT NULL COMMENT '是否启用向量存储',
+    `vector_store_type`         varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '向量数据库类型',
+    `vector_store_collection`   varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '向量数据库集合',
+    `vector_store_config`       text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '向量数据库配置',
+    `vector_embed_model_id`     bigint(0) UNSIGNED NULL DEFAULT NULL COMMENT 'Embedding 模型ID',
+    `dimension_of_vector_model` int(0) NULL DEFAULT NULL COMMENT '向量模型维度',
+    `created`                   datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+    `created_by`                bigint(0) UNSIGNED NULL DEFAULT NULL COMMENT '创建用户ID',
+    `modified`                  datetime(0) NULL DEFAULT NULL COMMENT '最后一次修改时间',
+    `modified_by`               bigint(0) UNSIGNED NULL DEFAULT NULL COMMENT '最后一次修改用户ID',
+    `options`                   text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '其他配置',
+    `rerank_model_id`           bigint(0) UNSIGNED NULL DEFAULT NULL COMMENT '重排模型id',
+    `search_engine_enable`      tinyint(1) NULL DEFAULT NULL COMMENT '是否启用搜索引擎',
+    `english_name`              varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '英文名称',
+    `category_id`               bigint(0) UNSIGNED NULL DEFAULT NULL COMMENT '分类ID',
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE INDEX `tb_ai_knowledge_alias_uindex`(`alias`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '知识库' ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '知识库' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for tb_document_collection_category
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_document_collection_category`;
+CREATE TABLE `tb_document_collection_category`
+(
+    `id`            bigint(0) UNSIGNED NOT NULL COMMENT '主键',
+    `category_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '分类名称',
+    `sort_no`       int(0) NULL DEFAULT 0 COMMENT '排序',
+    `status`        int(0) NOT NULL DEFAULT 0 COMMENT '数据状态',
+    `created`       datetime(0) NOT NULL COMMENT '创建时间',
+    `created_by`    bigint(0) UNSIGNED NOT NULL COMMENT '创建者',
+    `modified`      datetime(0) NOT NULL COMMENT '修改时间',
+    `modified_by`   bigint(0) UNSIGNED NOT NULL COMMENT '修改者',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for tb_document_history

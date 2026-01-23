@@ -94,6 +94,12 @@ public class DocumentCollectionBase extends DateEntity implements Serializable {
     private BigInteger vectorEmbedModelId;
 
     /**
+     * 向量模型维度
+     */
+    @Column(comment = "向量模型维度")
+    private Integer dimensionOfVectorModel;
+
+    /**
      * 创建时间
      */
     @Column(comment = "创建时间")
@@ -140,6 +146,12 @@ public class DocumentCollectionBase extends DateEntity implements Serializable {
      */
     @Column(comment = "英文名称")
     private String englishName;
+
+    /**
+     * 分类ID
+     */
+    @Column(comment = "分类ID")
+    private BigInteger categoryId;
 
     public BigInteger getId() {
         return id;
@@ -245,6 +257,14 @@ public class DocumentCollectionBase extends DateEntity implements Serializable {
         this.vectorEmbedModelId = vectorEmbedModelId;
     }
 
+    public Integer getDimensionOfVectorModel() {
+        return dimensionOfVectorModel;
+    }
+
+    public void setDimensionOfVectorModel(Integer dimensionOfVectorModel) {
+        this.dimensionOfVectorModel = dimensionOfVectorModel;
+    }
+
     public Date getCreated() {
         return created;
     }
@@ -307,6 +327,14 @@ public class DocumentCollectionBase extends DateEntity implements Serializable {
 
     public void setEnglishName(String englishName) {
         this.englishName = englishName;
+    }
+
+    public BigInteger getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(BigInteger categoryId) {
+        this.categoryId = categoryId;
     }
 
 }

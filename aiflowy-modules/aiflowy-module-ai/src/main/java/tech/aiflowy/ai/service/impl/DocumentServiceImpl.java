@@ -262,6 +262,7 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
         StoreOptions options = StoreOptions.ofCollectionName(knowledge.getVectorStoreCollection());
         EmbeddingOptions embeddingOptions = new EmbeddingOptions();
         embeddingOptions.setModel(model.getModelName());
+        embeddingOptions.setDimensions(knowledge.getDimensionOfVectorModel());
         options.setEmbeddingOptions(embeddingOptions);
         options.setIndexName(options.getCollectionName());
         List<com.agentsflex.core.document.Document> documents = new ArrayList<>();

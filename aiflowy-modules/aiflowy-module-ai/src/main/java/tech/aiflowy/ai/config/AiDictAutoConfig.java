@@ -3,10 +3,7 @@ package tech.aiflowy.ai.config;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
-import tech.aiflowy.ai.mapper.BotCategoryMapper;
-import tech.aiflowy.ai.mapper.ResourceCategoryMapper;
-import tech.aiflowy.ai.mapper.WorkflowCategoryMapper;
-import tech.aiflowy.ai.mapper.WorkflowMapper;
+import tech.aiflowy.ai.mapper.*;
 import tech.aiflowy.common.util.SpringContextUtil;
 import tech.aiflowy.common.dict.DictManager;
 import tech.aiflowy.common.dict.loader.DbDataLoader;
@@ -24,6 +21,8 @@ public class AiDictAutoConfig {
     private BotCategoryMapper botCategoryMapper;
     @Resource
     private ResourceCategoryMapper resourceCategoryMapper;
+    @Resource
+    private DocumentCollectionCategoryMapper documentCollectionCategoryMapper;
 
     @EventListener(ApplicationReadyEvent.class)
     public void onApplicationStartup() {
@@ -33,5 +32,7 @@ public class AiDictAutoConfig {
         dictManager.putLoader(new DbDataLoader<>("aiWorkFlowCategory", workflowCategoryMapper, "id", "category_name", null, null, false));
         dictManager.putLoader(new DbDataLoader<>("aiBotCategory", botCategoryMapper, "id", "category_name", null, null, false));
         dictManager.putLoader(new DbDataLoader<>("aiResourceCategory", resourceCategoryMapper, "id", "category_name", null, null, false));
+        dictManager.putLoader(new DbDataLoader<>("aiDocumentCollectionCategory", documentCollectionCategoryMapper, "id", "category_name", null, null, false));
+
     }
 }

@@ -5,6 +5,7 @@
   "tenantId": "TenantId",
   "icon": "Icon",
   "title": "Title",
+  "categoryId": "Category",
   "description": "Description",
   "slug": "Slug",
   "vectorStoreEnable": "VectorStoreEnable",
@@ -78,5 +79,8 @@
   "segments": "Segments",
   "similarityScore": "SimilarityScore",
   "alibabaCloud": "AlibabaCloud",
-  "tencentCloud": "tencentCloud"
+  "tencentCloud": "tencentCloud",
+  "vectorEmbedModelTips": "After successful vector data, it is not allowed to modify the vector model",
+  "dimensionOfVectorModelTips": "After successful vector data, it is not allowed to modify the dimensions of the vector model",
+  "dimensionOfVectorModel": "Dimension of vector model"
 }

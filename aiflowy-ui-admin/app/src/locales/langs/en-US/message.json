@@ -43,5 +43,6 @@
   "completeForm": "Please complete the form information",
   "notVideo": "Your browser does not support the video element.",
   "notAudio": "Your browser does not support the audio element.",
-  "selectTip": "Please select"
+  "selectTip": "Please select",
+  "mustBeNumber": "Please enter a valid number"
 }

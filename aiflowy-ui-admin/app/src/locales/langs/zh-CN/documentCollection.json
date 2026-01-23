@@ -5,6 +5,7 @@
   "tenantId": "租户ID",
   "icon": "ICON",
   "title": "名称",
+  "categoryId": "分类",
   "description": "描述",
   "slug": "URL 别名",
   "vectorStoreEnable": "是否启用向量数据库",
@@ -78,5 +79,8 @@
   "segments": "个分段",
   "similarityScore": "相似度",
   "alibabaCloud": "阿里云",
-  "tencentCloud": "腾讯云"
+  "tencentCloud": "腾讯云",
+  "vectorEmbedModelTips": "成功向量数据之后不允许修改向量模型",
+  "dimensionOfVectorModelTips": "成功向量数据之后不允许修改向量模型维度",
+  "dimensionOfVectorModel": "向量模型维度"
 }
