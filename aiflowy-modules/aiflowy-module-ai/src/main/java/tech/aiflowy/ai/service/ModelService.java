@@ -2,6 +2,7 @@ package tech.aiflowy.ai.service;
 
 import tech.aiflowy.ai.entity.Model;
 import com.mybatisflex.core.service.IService;
+import tech.aiflowy.common.domain.Result;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -17,7 +18,7 @@ public interface ModelService extends IService<Model> {
 
     boolean addAiLlm(Model entity);
 
-    void verifyModelConfig(Model llm);
+    Map<String, Object> verifyModelConfig(Model llm);
 
     Map<String, Map<String, List<Model>>> getList(Model entity);
 

@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import com.agentsflex.core.model.chat.ChatModel;
 import com.agentsflex.core.model.embedding.EmbeddingModel;
 import com.agentsflex.core.model.rerank.RerankModel;
+import com.agentsflex.core.store.VectorData;
 import com.agentsflex.embedding.ollama.OllamaEmbeddingConfig;
 import com.agentsflex.embedding.ollama.OllamaEmbeddingModel;
 import com.agentsflex.embedding.openai.OpenAIEmbeddingConfig;
@@ -133,6 +134,18 @@ public class Model extends ModelBase {
                 openAIEmbeddingConfig.setRequestPath(checkAndGetRequestPath());
                 return new OpenAIEmbeddingModel(openAIEmbeddingConfig);
         }
+    }
+
+    /**
+     * 获取模型向量的维度
+     * @return
+     */
+    public static int getEmbeddingDimension(EmbeddingModel embeddingModel) {
+        if (embeddingModel == null) {
+            throw new BusinessException("embeddingModel不能为空");
+        }
+        VectorData vectorData = embeddingModel.embed("测试向量维度");
+        return vectorData.getVector().length;
     }
 
     public String checkAndGetRequestPath() {

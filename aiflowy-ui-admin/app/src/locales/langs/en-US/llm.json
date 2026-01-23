@@ -75,5 +75,6 @@
     "supportImageB64Only": "ImageB64Only",
     "supportToolMessage": "SupportToolMessage"
   },
-  "requestPath": "RequestPath"
+  "requestPath": "RequestPath",
+  "modelToBeTested": "ModelToBeTested"
 }

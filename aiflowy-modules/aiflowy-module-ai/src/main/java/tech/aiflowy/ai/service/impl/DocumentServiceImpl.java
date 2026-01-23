@@ -292,6 +292,11 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
         knowledgeOptions.put(KEY_CAN_UPDATE_EMBEDDING_MODEL, false);
         documentCollection.setOptions(knowledgeOptions);
         knowledgeService.updateById(documentCollection);
+        if (knowledge.getDimensionOfVectorModel() == null) {
+            int dimension = Model.getEmbeddingDimension(embeddingModel);
+            knowledge.setDimensionOfVectorModel(dimension);
+            knowledgeService.updateById(knowledge);
+        }
         return true;
     }
 

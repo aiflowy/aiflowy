@@ -21,6 +21,7 @@ import tech.aiflowy.ai.entity.ModelProvider;
 import tech.aiflowy.ai.mapper.ModelMapper;
 import tech.aiflowy.ai.service.ModelProviderService;
 import tech.aiflowy.ai.service.ModelService;
+import tech.aiflowy.common.domain.Result;
 import tech.aiflowy.common.web.exceptions.BusinessException;
 
 import javax.annotation.Resource;
@@ -59,23 +60,24 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
     private static final Logger log = LoggerFactory.getLogger(ModelServiceImpl.class);
 
     @Override
-    public void verifyModelConfig(Model model) {
+    public Map<String, Object> verifyModelConfig(Model model) {
         String modelType = model.getModelType();
+        Map<String, Object> resMap = new HashMap<>();
         // 走聊天验证逻辑
         if (Model.MODEL_TYPES[0].equals(modelType)) {
             verifyChatLlm(model);
-            return;
+            return null;
         }
         // 走向量化验证逻辑
         if (Model.MODEL_TYPES[1].equals(modelType)) {
-            verifyEmbedLlm(model);
-            return;
-
+            int dimension = verifyEmbedLlm(model);
+            resMap.put("dimension", dimension);
+            return resMap;
         }
         // 走重排验证逻辑
         if (Model.MODEL_TYPES[2].equals(modelType)) {
             verifyRerankLlm(model);
-            return;
+            return null;
 
         }
 
@@ -134,7 +136,7 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
         }
     }
 
-    private void verifyEmbedLlm(Model model) {
+    private int verifyEmbedLlm(Model model) {
         try {
             EmbeddingModel embeddingModel = model.toEmbeddingModel();
             VectorData vectorData = embeddingModel.embed("这是一条校验模型配置的文本");
@@ -142,6 +144,7 @@ public class ModelServiceImpl extends ServiceImpl<ModelMapper, Model> implements
                 throw new BusinessException("校验未通过，请前往后端日志查看详情！");
             }
             log.info("取到向量数据，校验结果通过");
+            return vectorData.getVector().length;
         } catch (Exception e) {
             log.error("模型配置校验失败:{}", e.getMessage());
             throw new BusinessException("校验未通过，请前往后端日志查看详情！");

@@ -72,5 +72,7 @@
     "supportImageB64Only": "仅支持Base64图片",
     "supportToolMessage": "支持Tool消息"
   },
-  "requestPath": "请求路径"
+  "requestPath": "请求路径",
+  "modelToBeTested": "待检测模型"
+
 }

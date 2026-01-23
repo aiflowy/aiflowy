@@ -22,11 +22,15 @@ const getLlmList = (providerId: string) => {
     }
   });
 };
+const modelType = ref('');
+const vectorDimension = ref('');
 const formDataRef = ref();
 const dialogVisible = ref(false);
 defineExpose({
   openDialog(providerId: string) {
     formDataRef.value?.resetFields();
+    modelType.value = '';
+    vectorDimension.value = '';
     getLlmList(providerId);
     dialogVisible.value = true;
   },
@@ -53,6 +57,9 @@ const save = async () => {
     .then((res) => {
       if (res.errorCode === 0) {
         ElMessage.success($t('llm.testSuccess'));
+        if (modelType.value === 'embeddingModel' && res?.data?.dimension) {
+          vectorDimension.value = res?.data?.dimension;
+        }
       }
       btnLoading.value = false;
     });
@@ -60,6 +67,13 @@ const save = async () => {
 const btnLoading = ref(false);
 const closeDialog = () => {
   dialogVisible.value = false;
+};
+const getModelInfo = (id: string) => {
+  options.value.forEach((item: any) => {
+    if (item.id === id) {
+      modelType.value = item.modelType;
+    }
+  });
 };
 </script>
 
@@ -73,8 +87,8 @@ const closeDialog = () => {
     width="482"
   >
     <ElForm ref="formDataRef" :model="formData" status-icon :rules="rules">
-      <ElFormItem prop="llmId">
-        <ElSelect v-model="formData.llmId">
+      <ElFormItem prop="llmId" :label="$t('llm.modelToBeTested')">
+        <ElSelect v-model="formData.llmId" @change="getModelInfo">
           <ElOption
             v-for="item in options"
             :key="item.id"
@@ -82,6 +96,13 @@ const closeDialog = () => {
             :value="item.id || ''"
           />
         </ElSelect>
+      </ElFormItem>
+      <ElFormItem
+        v-if="modelType === 'embeddingModel' && vectorDimension"
+        :label="$t('documentCollection.dimensionOfVectorModel')"
+        label-width="100px"
+      >
+        {{ vectorDimension }}
       </ElFormItem>
     </ElForm>
     <template #footer>
