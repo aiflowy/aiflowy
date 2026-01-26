@@ -10,6 +10,7 @@ import com.agentsflex.core.model.client.StreamContext;
 import com.agentsflex.core.prompt.MemoryPrompt;
 import com.alibaba.fastjson.JSON;
 import org.apache.catalina.connector.ClientAbortException;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import tech.aiflowy.common.util.StringUtil;
 import tech.aiflowy.core.chat.protocol.ChatDomain;
 import tech.aiflowy.core.chat.protocol.ChatEnvelope;
@@ -17,6 +18,7 @@ import tech.aiflowy.core.chat.protocol.ChatType;
 import tech.aiflowy.core.chat.protocol.MessageRole;
 import tech.aiflowy.core.chat.protocol.sse.ChatSseEmitter;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,17 +67,16 @@ public class ChatStreamListener implements StreamResponseListener {
                 if (this.hasToolCall) {
                     this.canStop = true;
                 }
-                String delta = aiMessageResponse.getMessage().getContent();
-                if (delta != null) {
-                    ChatEnvelope<Map<String, String>> chatEnvelope = new ChatEnvelope<>();
-                    chatEnvelope.setDomain(ChatDomain.LLM);
-                    chatEnvelope.setType(ChatType.MESSAGE);
-                    Map<String, String> deletaMap = new HashMap<>();
-                    deletaMap.put("delta", delta);
-                    deletaMap.put("role", MessageRole.ASSISTANT.getValue());
-                    chatEnvelope.setPayload(deletaMap);
-                    sseEmitter.send(chatEnvelope);
+                String reasoningContent = aiMessage.getReasoningContent();
+                if (reasoningContent != null && !reasoningContent.isEmpty()) {
+                    sendChatEnvelope(sseEmitter, reasoningContent, ChatType.THINKING);
+                } else {
+                    String delta = aiMessage.getContent();
+                    if (delta != null && !delta.isEmpty()) {
+                        sendChatEnvelope(sseEmitter, delta, ChatType.MESSAGE);
+                    }
                 }
+
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -102,4 +103,22 @@ public class ChatStreamListener implements StreamResponseListener {
             sseEmitter.complete();
         }
     }
+
+    private void sendChatEnvelope(ChatSseEmitter sseEmitter, String deltaContent, ChatType chatType) throws IOException {
+        if (deltaContent == null || deltaContent.isEmpty()) {
+            return;
+        }
+
+        ChatEnvelope<Map<String, String>> chatEnvelope = new ChatEnvelope<>();
+        chatEnvelope.setDomain(ChatDomain.LLM);
+        chatEnvelope.setType(chatType);
+
+        Map<String, String> deltaMap = new HashMap<>();
+        deltaMap.put("delta", deltaContent);
+        deltaMap.put("role", MessageRole.ASSISTANT.getValue());
+        chatEnvelope.setPayload(deltaMap);
+
+        sseEmitter.send(chatEnvelope);
+    }
+
 }
