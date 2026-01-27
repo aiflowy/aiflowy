@@ -18,5 +18,14 @@
     }
   },
   "example": "示例：",
-  "restartMcpServer": "重启MCP服务"
+  "restartMcpServer": "重启MCP服务",
+  "message": {
+    "startupFail": "启动失败",
+    "startupSuccessful": "启动成功",
+    "stopSuccessful": "关闭成功"
+  },
+  "labels": {
+    "clientOnline": "客户端在线",
+    "clientOffline": "客户端离线"
+  }
 }

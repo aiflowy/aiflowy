@@ -191,14 +191,6 @@ const handleSearch = (query: string) => {
     ...tempParams,
   });
 };
-
-const handleButtonClick = (button: ButtonConfig) => {
-  // 重新启动MCP
-  if (button.key === 'restartMcpServer') {
-    pageDataRef.value.setQuery();
-  }
-  emit('buttonClick', button);
-};
 </script>
 
 <template>
@@ -332,17 +324,6 @@ const handleButtonClick = (button: ButtonConfig) => {
       </PageData>
     </div>
     <template #footer>
-      <template v-for="button in footerButtons" :key="button.key">
-        <ElButton
-          :type="button.type || 'default'"
-          :icon="button.icon"
-          :disabled="button.disabled"
-          v-access:code="button.permission"
-          @click="handleButtonClick(button)"
-        >
-          {{ button.text }}
-        </ElButton>
-      </template>
       <ElButton @click="dialogVisible = false">
         {{ $t('button.cancel') }}
       </ElButton>

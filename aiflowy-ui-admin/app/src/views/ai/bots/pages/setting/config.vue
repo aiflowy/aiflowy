@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import type { AiLlm, BotInfo } from '@aiflowy/types';
 
-import type { ButtonConfig } from '#/components/commonSelectModal/CommonSelectDataModal.vue';
-
 import { onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -442,14 +440,6 @@ const formatSelectedMcpData = () => {
 
   return formattedData;
 };
-
-const customMcpFooterButtons = ref<ButtonConfig[]>([
-  {
-    key: 'restartMcpServer',
-    text: $t('mcp.restartMcpServer'),
-    type: 'primary',
-  },
-]);
 </script>
 
 <template>
@@ -869,7 +859,6 @@ const customMcpFooterButtons = ref<ButtonConfig[]>([
       :has-parent="true"
       :is-select-mcp="true"
       @get-data="confirmUpdateAiBotMcp"
-      :footer-buttons="customMcpFooterButtons"
     />
 
     <!--预设问题-->

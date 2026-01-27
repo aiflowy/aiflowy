@@ -1,24 +1,22 @@
 package tech.aiflowy.ai.service.impl;
 
-import cn.dev33.satoken.stp.StpUtil;
 import com.agentsflex.core.model.chat.tool.Parameter;
 import com.agentsflex.core.model.chat.tool.Tool;
 import com.agentsflex.mcp.client.McpClientManager;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
-import com.jfinal.template.stat.ast.Return;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import io.modelcontextprotocol.client.McpSyncClient;
 import io.modelcontextprotocol.spec.McpSchema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 import tech.aiflowy.ai.agentsflex.tool.McpTool;
 import tech.aiflowy.ai.entity.BotMcp;
 import tech.aiflowy.ai.entity.Mcp;
 import tech.aiflowy.ai.mapper.McpMapper;
 import tech.aiflowy.ai.service.McpService;
-import org.springframework.stereotype.Service;
 import tech.aiflowy.ai.utils.CommonFiledUtil;
 import tech.aiflowy.common.constant.enums.EnumRes;
 import tech.aiflowy.common.domain.Result;
@@ -37,7 +35,7 @@ import java.util.*;
  * @since 2026-01-04
  */
 @Service
-public class McpServiceImpl extends ServiceImpl<McpMapper, Mcp>  implements McpService{
+public class McpServiceImpl extends ServiceImpl<McpMapper, Mcp>  implements McpService {
     private final McpClientManager mcpClientManager = McpClientManager.getInstance();
     protected Logger Log = LoggerFactory.getLogger(DocumentServiceImpl.class);
 
@@ -61,7 +59,7 @@ public class McpServiceImpl extends ServiceImpl<McpMapper, Mcp>  implements McpS
             getMcpClient(entity, mcpClientManager);
         } catch (Exception e) {
             Log.error("MCP服务名称：{} 启动失败", serverName, e);
-            return Result.fail("MCP服务名称：{} 启动失败", serverName);
+            return Result.fail("MCP服务名称：" + serverName + " 启动失败", serverName);
         }
         }
 
@@ -91,10 +89,11 @@ public class McpServiceImpl extends ServiceImpl<McpMapper, Mcp>  implements McpS
                 getMcpClient(entity, mcpClientManager);
             } catch (Exception e) {
                 Log.error("MCP服务名称：{} 启动失败", serverName, e);
-                return Result.fail("MCP服务名称：" + serverName + " 启动失败", serverName);
+                return Result.fail("MCP服务名称：" + serverName + " 启动失败," + "请尝试重新启动！");
             }
 
         } else {
+            entity.setClientOnline(false);
             if (StringUtil.hasText(serverName)) {
                 if (mcpClientManager.isClientOnline(serverName)) {
                     mcpClientManager.getMcpClient(serverName).close();
@@ -118,6 +117,13 @@ public class McpServiceImpl extends ServiceImpl<McpMapper, Mcp>  implements McpS
 
     @Override
     public Result<Page<Mcp>> pageMcp(Result<Page<Mcp>> page) {
+        List<Mcp> records = page.getData().getRecords();
+        records.forEach(mcp -> {
+            boolean clientOnline = mcpClientManager.isClientOnline(getFirstMcpServerName(mcp.getConfigJson()));
+            mcp.setClientOnline(clientOnline);
+                }
+        );
+        page.getData().setRecords(records);
         return page;
     }
 
@@ -126,7 +132,10 @@ public class McpServiceImpl extends ServiceImpl<McpMapper, Mcp>  implements McpS
         Mcp mcp = this.getById(id);
         if (mcp != null && mcp.getStatus()) {
             McpSyncClient mcpClient = getMcpClient(mcp, mcpClientManager);
-            List<McpSchema.Tool> tools = mcpClient.listTools().tools();
+            List<McpSchema.Tool> tools = null;
+            if (mcpClient != null) {
+                tools = mcpClient.listTools().tools();
+            }
             mcp.setTools(tools);
         }
         return mcp;

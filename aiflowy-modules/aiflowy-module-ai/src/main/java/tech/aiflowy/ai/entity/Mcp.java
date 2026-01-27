@@ -9,7 +9,7 @@ import java.util.List;
 
 
 /**
- *  实体类。
+ * 实体类。
  *
  * @author wangGangQiang
  * @since 2026-01-04
@@ -26,9 +26,19 @@ public class Mcp extends McpBase {
     @Column(ignore = true)
     private boolean alive;
 
-    public boolean isAlive() {return alive;}
+    /**
+     * 客户端健康状态
+     */
+    @Column(ignore = true)
+    private Boolean clientOnline;
 
-    public void setAlive(boolean alive) {this.alive = alive;}
+    public boolean isAlive() {
+        return alive;
+    }
+
+    public void setAlive(boolean alive) {
+        this.alive = alive;
+    }
 
     public List<McpSchema.Tool> getTools() {
         return tools;
@@ -36,5 +46,13 @@ public class Mcp extends McpBase {
 
     public void setTools(List<McpSchema.Tool> tools) {
         this.tools = tools;
+    }
+
+    public Boolean getClientOnline() {
+        return clientOnline;
+    }
+
+    public void setClientOnline(Boolean clientOnline) {
+        this.clientOnline = clientOnline;
     }
 }

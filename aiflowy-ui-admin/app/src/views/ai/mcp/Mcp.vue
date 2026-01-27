@@ -3,7 +3,7 @@ import type { FormInstance } from 'element-plus';
 
 import { markRaw, ref } from 'vue';
 
-import { Delete, MoreFilled, Plus } from '@element-plus/icons-vue';
+import { Delete, MoreFilled, Plus, Refresh } from '@element-plus/icons-vue';
 import {
   ElButton,
   ElDropdown,
@@ -14,6 +14,7 @@ import {
   ElSwitch,
   ElTable,
   ElTableColumn,
+  ElTooltip,
 } from 'element-plus';
 
 import { api } from '#/api/request';
@@ -60,13 +61,26 @@ function remove(row: any) {
     },
   }).catch(() => {});
 }
-const handleUpdate = (row: any) => {
+const handleUpdate = (row: any, isRefresh: boolean) => {
+  if (isRefresh) {
+    refreshLoadingMap.value[row.id] = true;
+  } else {
+    loadingMap.value[row.id] = true;
+  }
   api.post('/api/v1/mcp/update', { ...row }).then((res) => {
-    if (res.errorCode === 0) {
-      ElMessage.success($t('message.updateOkMessage'));
+    if (isRefresh) {
+      refreshLoadingMap.value[row.id] = false;
     } else {
-      pageDataRef.value.setQuery({});
+      loadingMap.value[row.id] = false;
     }
+    if (res.errorCode === 0) {
+      if (row.status) {
+        ElMessage.success($t('mcp.message.startupSuccessful'));
+      } else {
+        ElMessage.success($t('mcp.message.stopSuccessful'));
+      }
+    }
+    pageDataRef.value.setQuery({});
   });
 };
 const headerButtons = [
@@ -86,6 +100,8 @@ const handleHeaderButtonClick = (button: any) => {
     showDialog({});
   }
 };
+const loadingMap = ref<Record<number | string, boolean>>({});
+const refreshLoadingMap = ref<Record<number | string, boolean>>({});
 </script>
 
 <template>
@@ -102,6 +118,19 @@ const handleHeaderButtonClick = (button: any) => {
           <ElTable :data="pageList" border>
             <ElTableColumn prop="title" :label="$t('mcp.title')">
               <template #default="{ row }">
+                <ElTooltip
+                  :content="
+                    row.clientOnline
+                      ? $t('mcp.labels.clientOnline')
+                      : $t('mcp.labels.clientOffline')
+                  "
+                  placement="top"
+                >
+                  <span
+                    class="mr-2 inline-block h-2 w-2 rounded-full"
+                    :class="row.clientOnline ? 'bg-green-500' : 'bg-red-500'"
+                  ></span>
+                </ElTooltip>
                 {{ row.title }}
               </template>
             </ElTableColumn>
@@ -117,21 +146,38 @@ const handleHeaderButtonClick = (button: any) => {
             </ElTableColumn>
             <ElTableColumn prop="status" :label="$t('mcp.status')">
               <template #default="{ row }">
-                <ElSwitch v-model="row.status" @change="handleUpdate(row)" />
+                <ElSwitch
+                  v-model="row.status"
+                  @change="() => handleUpdate(row, false)"
+                  :loading="loadingMap[row.id]"
+                  :disabled="loadingMap[row.id]"
+                />
               </template>
             </ElTableColumn>
             <ElTableColumn
               :label="$t('common.handle')"
-              width="120"
+              width="150"
               align="right"
             >
               <template #default="{ row }">
                 <div class="flex items-center gap-3">
                   <div v-access:code="'/api/v1/mcp/save'">
+                    <ElButton
+                      @click="handleUpdate({ ...row, status: true }, true)"
+                      type="primary"
+                      link
+                      :icon="Refresh"
+                      :loading="refreshLoadingMap[row.id]"
+                    >
+                      {{ $t('重启') }}
+                    </ElButton>
+                  </div>
+                  <div v-access:code="'/api/v1/mcp/save'">
                     <ElButton type="primary" link @click="showDialog(row)">
                       {{ $t('button.edit') }}
                     </ElButton>
                   </div>
+
                   <ElDropdown>
                     <ElButton link :icon="MoreFilled" />
                     <template #dropdown>

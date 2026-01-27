@@ -18,5 +18,14 @@
     }
   },
   "example": "Example：",
-  "restartMcpServer": "RestartMcpServer"
+  "restartMcpServer": "RestartMcpServer",
+  "message": {
+    "startupFail": "StartupFail",
+    "startupSuccessful": "StartupSuccessful",
+    "stopSuccessful": "StopSuccessful"
+  },
+  "labels": {
+    "clientOnline": "ClientOnline",
+    "clientOffline": "ClientOffline"
+  }
 }
