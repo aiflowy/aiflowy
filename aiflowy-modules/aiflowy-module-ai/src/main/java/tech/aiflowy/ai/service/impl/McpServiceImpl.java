@@ -226,7 +226,6 @@ public class McpServiceImpl extends ServiceImpl<McpMapper, Mcp>  implements McpS
                     mcp.setTools(tools);
                 } catch (Exception e) {
                     Log.error("MCP服务名称：{} 启动失败", serverName, e);
-                    throw new BusinessException("MCP 服务名称：" + serverName + " 启动失败");
                 }
 
             } else {
