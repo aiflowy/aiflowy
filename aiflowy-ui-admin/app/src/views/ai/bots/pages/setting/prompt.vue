@@ -43,15 +43,17 @@ const handelReplacePrompt = (value: string) => {
 </script>
 
 <template>
-  <div class="flex h-full flex-col gap-2 rounded-lg bg-white p-3">
+  <div
+    class="bg-background dark:border-border flex h-full flex-col gap-2 rounded-lg p-3 dark:border"
+  >
     <div class="flex justify-between">
-      <h1 class="text-base font-medium text-[#1A1A1A]">
+      <h1 class="text-base font-medium">
         {{ $t('bot.systemPrompt') }}
       </h1>
       <button
         @click="promptChoreChatModalRef.open(props.bot?.id, systemPrompt)"
         type="button"
-        class="flex items-center gap-0.5 rounded-lg bg-[#F7F7F7] px-3 py-1"
+        class="flex items-center gap-0.5 rounded-lg bg-[#f7f7f7] px-3 py-1"
       >
         <ElIcon size="16"><MagicStaffIcon /></ElIcon>
         <span
@@ -81,14 +83,20 @@ const handelReplacePrompt = (value: string) => {
 
 <style lang="css" scoped>
 .el-textarea :deep(.el-textarea__inner) {
-  --el-input-text-color: #1a1a1a;
   --el-input-bg-color: #f7f7f7;
 
   height: 100%;
   padding: 12px;
-  font-size: 12px;
+  font-size: 14px;
+  font-weight: 500;
   line-height: 1.25;
   border-radius: 8px;
   box-shadow: none;
+}
+
+.dark .el-textarea :deep(.el-textarea__inner) {
+  --el-input-bg-color: hsl(var(--background-deep));
+
+  border: 1px solid hsl(var(--border));
 }
 </style>

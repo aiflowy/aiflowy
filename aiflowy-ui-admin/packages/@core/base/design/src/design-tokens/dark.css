@@ -104,8 +104,8 @@
   /* header */
   --header: 222.34deg 10.43% 12.27%;
   --bot-back-item: hsl(0deg 0% 91.76%);
-  --bot-collapse-itme-back: hsl(0deg 0% 96.08%);
-  --bot-chat-message-container: hsl(228deg 33.33% 97.06%);
+  --bot-collapse-itme-back: hsl(var(--background-deep));
+  --bot-chat-message-container: hsl(var(--background-deep));
   --bot-chat-message-item-back: hsl(0deg 0% 100%);
   --common-font-placeholder-color: hsl(220deg 1.45% 59.41%);
   --table-header-text-color: hsl(0deg 0% 91.76%);

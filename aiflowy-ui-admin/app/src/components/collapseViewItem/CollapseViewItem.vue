@@ -62,58 +62,57 @@ const handleDelete = (item: any) => {
 <style scoped>
 .el-list-item-max-container {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   padding: 12px 24px 12px 12px;
-  background-color: var(--el-bg-color);
+  background-color: hsl(var(--background));
   border-radius: 8px;
 }
+
 .collapse-item-container {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  background-color: #f5f5f5;
   padding: 10px;
+  background-color: var(--bot-collapse-itme-back);
 }
+
 .el-list-item-container {
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
   gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
 }
+
 .el-list-item-content {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
 }
+
 .el-list-item-delete-container {
   cursor: pointer;
 }
+
 .title {
-  font-family:
-    PingFangSC,
-    PingFang SC,
-    sans-serif;
-  font-weight: 500;
+  font-family: PingFangSC, 'PingFang SC', sans-serif;
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.85);
+  font-style: normal;
+  font-weight: 500;
   line-height: 24px;
   text-align: left;
-  font-style: normal;
   text-transform: none;
 }
+
 .description {
-  font-family:
-    PingFangSC,
-    PingFang SC,
-    sans-serif;
-  font-weight: 400;
+  font-family: PingFangSC, 'PingFang SC', sans-serif;
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.45);
+  font-style: normal;
+  font-weight: 400;
   line-height: 22px;
   text-align: left;
-  font-style: normal;
   text-transform: none;
+  opacity: 0.65;
 }
 </style>

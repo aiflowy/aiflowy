@@ -396,6 +396,10 @@ const handleRefresh = () => {
   border-radius: 8px;
 }
 
+.dark .message-container {
+  border: 1px solid hsl(var(--border));
+}
+
 :deep(.el-bubble-content-wrapper .el-bubble-content-filled[data-v-a52d8fe0]) {
   background-color: var(--bot-chat-message-item-back);
 }

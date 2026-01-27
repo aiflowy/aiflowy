@@ -338,7 +338,7 @@ const handleSearch = (query: string) => {
 .select-modal-container {
   /* height: 100%;
   overflow: auto; */
-  background-color: var(--bot-select-data-item-back);
+  background-color: var(--bot-collapse-itme-back);
   border-radius: 8px;
 }
 
@@ -366,7 +366,6 @@ const handleSearch = (query: string) => {
   font-style: normal;
   font-weight: 500;
   line-height: 24px;
-  color: rgb(0 0 0 / 85%);
   text-align: left;
   text-transform: none;
 }
@@ -396,9 +395,9 @@ const handleSearch = (query: string) => {
   font-style: normal;
   font-weight: 400;
   line-height: 22px;
-  color: rgb(0 0 0 / 45%);
   text-align: left;
   text-transform: none;
+  opacity: 0.65;
   -webkit-box-orient: vertical;
 }
 
@@ -450,36 +449,36 @@ const handleSearch = (query: string) => {
   padding: 12px;
   line-height: normal;
   color: #333;
-  background-color: #fff !important;
+  background-color: hsl(var(--background));
 }
 
 .select-modal-container :deep(.el-collapse-item__header:hover) {
-  background-color: #fff !important;
-  border-color: #e4e7ed;
+  background-color: hsl(var(--background));
+  border-color: hsl(var(--border));
 }
 
 .select-modal-container
   :deep(.el-collapse-item.is-active .el-collapse-item__header) {
   color: #1976d2;
-  background-color: #fff !important;
+  background-color: hsl(var(--background));
   border: none;
   border-bottom-color: transparent;
 }
 
 .select-modal-container :deep(.el-collapse-item__content) {
   padding: 12px;
-  background-color: #fff !important;
+  background-color: hsl(var(--background));
   border: none;
 }
 
 .select-modal-container :deep(.el-collapse-item__wrap) {
-  background-color: #fff;
+  background-color: hsl(var(--background));
   border: none;
 }
 
 .select-modal-container :deep(.el-collapse-item) {
-  margin-bottom: 8px;
-  background-color: #fff;
+  padding-bottom: 8px;
+  background-color: hsl(var(--background));
 }
 
 .select-modal-container
@@ -487,7 +486,7 @@ const handleSearch = (query: string) => {
   .content-title-wrapper {
   margin-top: 12px;
   margin-bottom: 8px;
-  background-color: #f9fafc;
+  background-color: var(--bot-collapse-itme-back);
   border: 1px solid hsl(var(--border));
   border-radius: 6px;
 }
@@ -495,17 +494,17 @@ const handleSearch = (query: string) => {
 .select-modal-container
   :deep(.el-collapse-item__content)
   .content-title-wrapper:hover {
-  background-color: #f8f9fa;
+  background-color: var(--bot-collapse-itme-back);
 }
 
 .select-modal-container :deep(.el-collapse) {
   overflow: hidden;
-  background-color: #fff;
+  background-color: hsl(var(--background));
   border: 1px solid hsl(var(--border));
   border-radius: 4px;
 }
 
 .select-modal-container :deep(.el-checkbox__inner) {
-  --el-checkbox-input-border: 1px solid #c7c7c7;
+  --el-checkbox-input-border: 1px solid hsl(var(--border));
 }
 </style>

@@ -14,9 +14,11 @@ const handleClear = () => {
 </script>
 
 <template>
-  <div class="flex h-full flex-col gap-3 rounded-lg bg-white p-3">
+  <div
+    class="bg-background dark:border-border flex h-full flex-col gap-3 rounded-lg p-3 dark:border"
+  >
     <div class="flex justify-between">
-      <h1 class="text-base font-medium text-[#1A1A1A]">
+      <h1 class="text-base font-medium">
         {{ $t('button.preview') }}
       </h1>
       <ElButton text @click="handleClear">

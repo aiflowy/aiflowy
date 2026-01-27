@@ -445,10 +445,12 @@ const formatSelectedMcpData = () => {
 <template>
   <div class="config-container flex flex-col gap-3">
     <!-- 大模型 -->
-    <div class="flex flex-col gap-3 rounded-lg bg-white p-3">
-      <h1 class="text-base font-medium text-[#1A1A1A]">{{ $t('bot.llm') }}</h1>
+    <div
+      class="bg-background dark:border-border flex flex-col gap-3 rounded-lg p-3 dark:border"
+    >
+      <h1 class="text-base font-medium">{{ $t('bot.llm') }}</h1>
       <div
-        class="llm-back-container flex w-full flex-col justify-between gap-1 rounded-lg p-3"
+        class="llm-back-container dark:border-border flex w-full flex-col justify-between gap-1 rounded-lg p-3 dark:border"
       >
         <ElSelect
           v-model="selectedId"
@@ -615,8 +617,10 @@ const formatSelectedMcpData = () => {
     </div>
 
     <!-- 技能 -->
-    <div class="flex flex-col gap-3 rounded-lg bg-white p-3">
-      <h1 class="text-base font-medium text-[#1A1A1A]">
+    <div
+      class="bg-background dark:border-border flex flex-col gap-3 rounded-lg p-3 dark:border"
+    >
+      <h1 class="text-base font-medium">
         {{ $t('bot.skill') }}
       </h1>
       <div class="flex w-full flex-col justify-between">
@@ -707,8 +711,10 @@ const formatSelectedMcpData = () => {
     </div>
 
     <!-- 对话设置 -->
-    <div class="flex flex-col gap-3 rounded-lg bg-white p-3">
-      <h1 class="text-base font-medium text-[#1A1A1A]">
+    <div
+      class="bg-background dark:border-border flex flex-col gap-3 rounded-lg p-3 dark:border"
+    >
+      <h1 class="text-base font-medium">
         {{ $t('bot.conversationSettings') }}
       </h1>
       <div class="flex w-full flex-col justify-between rounded-lg">
@@ -744,7 +750,7 @@ const formatSelectedMcpData = () => {
             </div>
           </ElCollapseItem>
           <ElCollapseItem :title="$t('bot.welcomeMessage')">
-            <div class="bg-[#f5f5f5] p-2.5">
+            <div class="bg-[var(--bot-collapse-itme-back)] p-2.5">
               <ElInput
                 v-model="dialogueSettings.welcomeMessage"
                 :placeholder="$t('bot.placeholder.welcome')"
@@ -773,8 +779,10 @@ const formatSelectedMcpData = () => {
     </div>
 
     <!-- 发布 -->
-    <div class="publish-container flex flex-col gap-3 rounded-lg bg-white p-3">
-      <h1 class="text-base font-medium text-[#1A1A1A]">
+    <div
+      class="publish-container bg-background dark:border-border flex flex-col gap-3 rounded-lg p-3 dark:border"
+    >
+      <h1 class="text-base font-medium">
         {{ $t('bot.publish') }}
       </h1>
       <div class="flex w-full flex-col justify-between rounded-lg">
@@ -961,12 +969,12 @@ const formatSelectedMcpData = () => {
   align-items: center;
   justify-content: space-between;
   padding: 0 12px 12px;
-  background-color: #f5f5f5 !important;
+  background-color: var(--bot-collapse-itme-back);
 }
 
 .publish-wx-container {
   padding: 12px;
-  background-color: #f5f5f5 !important;
+  background-color: var(--bot-collapse-itme-back);
 }
 
 .publish-wx {
@@ -994,19 +1002,21 @@ const formatSelectedMcpData = () => {
   justify-content: flex-end;
 }
 
-:deep(.el-collapse-item__header) {
-  background-color: var(--bot-collapse-itme-back);
-}
-
 :deep(.el-collapse) {
   box-sizing: border-box;
+  height: 100%;
   overflow: hidden !important;
   border-radius: 8px !important;
 }
 
 :deep(.el-collapse-item__header) {
+  background-color: var(--bot-collapse-itme-back);
   border-bottom: 1px solid #e4e7ed;
   border-radius: 0;
+}
+
+.dark .el-collapse :deep(.el-collapse-item__header) {
+  border-bottom: 1px solid hsl(var(--border));
 }
 
 :deep(.el-collapse-item:last-child .el-collapse-item__header) {
@@ -1041,10 +1051,6 @@ const formatSelectedMcpData = () => {
   width: 100%;
   height: auto;
   padding: 10px;
-  background-color: #f5f5f5 !important;
-}
-
-:deep(.el-collapse) {
-  height: 100%;
+  background-color: var(--bot-collapse-itme-back);
 }
 </style>
