@@ -141,6 +141,9 @@ function handleConfirm(node: any) {
           </div>
         </template>
         <div v-if="node.original.type === 'confirmNode'" class="p-2.5">
+          <div class="mb-2 text-[16px] font-bold">
+            {{ node.original.data.message }}
+          </div>
           <ElForm
             :ref="(el) => setFormRef(el, node.key)"
             label-position="top"
@@ -204,34 +207,37 @@ function handleConfirm(node: any) {
 .spinner {
   width: 18px;
   height: 18px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
+  border: 2px solid rgb(255 255 255 / 30%);
   border-top-color: var(--el-color-primary);
   border-right-color: var(--el-color-primary);
+  border-radius: 50%;
   animation: spin 1s linear infinite;
 }
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
 }
+
 .header-container {
-  font-weight: bold;
   display: flex;
   align-items: center;
+  font-weight: bold;
   word-break: break-all;
 }
 
 .blue-bar {
   display: inline-block;
   width: 2px;
-  border-radius: 1px;
   height: 16px;
   margin-right: 16px;
   background-color: var(--el-color-primary);
+  border-radius: 1px;
 }
 
 .description-container {
