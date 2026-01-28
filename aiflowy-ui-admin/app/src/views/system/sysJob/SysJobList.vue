@@ -45,7 +45,7 @@ const headerButtons = [
     icon: markRaw(Plus),
     type: 'primary',
     data: { action: 'create' },
-    permission: '/api/v1/sysRole/save',
+    permission: '/api/v1/sysJob/save',
   },
 ];
 
