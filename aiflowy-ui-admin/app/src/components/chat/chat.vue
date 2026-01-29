@@ -202,7 +202,6 @@ const handleSubmit = async (refreshContent: string) => {
           bubbleItems.value[bubbleItems.value.length - 1] = {
             ...lastBubbleItem,
             thinkingStatus: 'end',
-            thinlCollapse: false,
             content: (lastBubbleItem.content + delta).replaceAll(
               '```echartsoption',
               '```echarts\noption',
@@ -223,6 +222,14 @@ const handleSubmit = async (refreshContent: string) => {
     },
     onFinished() {
       sending.value = false;
+
+      const lastIndex = bubbleItems.value.length - 1;
+      if (lastIndex) {
+        bubbleItems.value[lastIndex] = {
+          ...bubbleItems.value[lastIndex]!,
+          thinlCollapse: false,
+        };
+      }
     },
     onError(err) {
       console.error(err);

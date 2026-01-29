@@ -99,7 +99,6 @@ function sendMessage() {
           ...assistantMsg,
           reasoning_content,
           thinkingStatus: 'end',
-          thinlCollapse: false,
           content: (content += delta),
           loading: content.length <= 0,
         });
@@ -112,6 +111,15 @@ function sendMessage() {
     onFinished() {
       senderValue.value = '';
       btnLoading.value = false;
+
+      props.addMessage?.({
+        ...assistantMsg,
+        content,
+        reasoning_content,
+        thinkingStatus: 'end',
+        thinlCollapse: false,
+        loading: false,
+      });
     },
   });
 }
