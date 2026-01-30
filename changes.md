@@ -1,5 +1,26 @@
 # AIFlowy 更新记录
 
+## v2.0.7 2026-01-30
+- feat：添加文件上传记录功能
+- feat：新增聊天思考过程显示功能
+- feat：聊天助手深度思考内容并返回前端
+- feat：添加 MCP 客户端在线状态显示与重启功能，优化 MCP 管理页面
+- fix：在拓扑排序中强制实施隐式父子依赖关系
+- fix：修正系统任务创建权限路径
+- fix：修复聊天助手配置可能存在的空指针问题
+- fix：修复 Rag.searcher.type 字段注入启动失败问题
+- chore：更新 thinking 组件样式（包括宽度、边距及完成时折叠）
+- chore：更新聊天气泡样式宽度
+- chore：优化工作流确认节点显示效果，改进加载动画
+- chore：更新聊天助手设置页深色模式样式
+- chore：更新子菜单底部边距样式
+- chore：在 ChatStreamListener的onFailure 方法中添加堆栈打印，便于排查SSE连接中断问题
+- chore：优化模型验证提示逻辑
+- chore：修复 MCP 服务启动失败时的异常处理
+- chore：升级 vue-element-plus-x 及相关依赖
+- chore：升级 agents-flex 版本
+- chore：升级 tinyflow-java 版本
+
 ## v2.0.6 2026-01-23
 - 新增: 模型校验为向量模型时返回向量维度
 - 新增: 知识库新增分类功能，支持向量模型维度动态配置

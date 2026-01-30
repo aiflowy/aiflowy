@@ -20,7 +20,7 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven-flatten.version>1.3.0</maven-flatten.version>
-        <revision>2.0.6</revision>
+        <revision>2.0.7</revision>
         <mybatis-flex.version>1.11.3</mybatis-flex.version>
         <agents-flex.version>2.0.0-rc.6</agents-flex.version>
         <tinyflow-java.version>2.0.0-rc.2</tinyflow-java.version>
