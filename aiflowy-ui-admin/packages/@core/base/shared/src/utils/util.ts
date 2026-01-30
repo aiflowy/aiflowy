@@ -120,7 +120,9 @@ export function sortNodes(nodesJson: any): any[] {
   const graph: any = {};
   const inDegree: any = {};
 
-  // 初始化
+  // 1. 预处理：建立节点映射并统计父子关系
+  const parentChildrenMap: Record<string, string[]> = {}; // 记录 { parentId: [childId, ...] }
+
   nodes.forEach((node: any) => {
     const nodeId = node.id;
     nodeMap[nodeId] = {
@@ -132,9 +134,18 @@ export function sortNodes(nodesJson: any): any[] {
     };
     graph[nodeId] = [];
     inDegree[nodeId] = 0;
+
+    // 收集子节点信息
+    if (node.parentId) {
+      if (!parentChildrenMap[node.parentId]) {
+        parentChildrenMap[node.parentId] = [];
+      }
+      // @ts-ignore - parentChildrenMap[node.parentId] is defined
+      parentChildrenMap[node.parentId].push(nodeId);
+    }
   });
 
-  // 处理参数依赖
+  // 2. 处理参数依赖 (保持不变)
   nodes.forEach((node: any) => {
     const parameters = node.data?.parameters || [];
     parameters.forEach((param: any) => {
@@ -148,16 +159,34 @@ export function sortNodes(nodesJson: any): any[] {
     });
   });
 
-  // 处理边依赖
+  // 3. 处理边依赖 (修改核心逻辑)
   edges.forEach((edge: any) => {
     const { source, target } = edge;
     if (nodeMap[source] && nodeMap[target]) {
+      // 建立显式的 Source -> Target 依赖
       graph[source].push(target);
       inDegree[target]++;
+
+      // 【新增逻辑】处理父子节点的隐含依赖
+      // 如果 Source 节点拥有子节点，且 Target 节点不是 Source 的子节点
+      // 那么 Target 必须等待 Source 的所有子节点执行完毕
+      // 场景：循环节点(Source) -> 结束节点(Target)。结束节点必须排在循环节点内部所有子节点之后。
+      if (parentChildrenMap[source]) {
+        const isTargetChildOfSource =
+          nodeMap[target].original.parentId === source;
+
+        if (!isTargetChildOfSource) {
+          parentChildrenMap[source].forEach((childId) => {
+            // 让子节点指向 Target，强制 Target 排在子节点后面
+            graph[childId].push(target);
+            inDegree[target]++;
+          });
+        }
+      }
     }
   });
 
-  // 拓扑排序
+  // 4. 拓扑排序 (保持不变)
   const queue = nodes
     .filter((node: any) => inDegree[node.id] === 0)
     .map((node: any) => node.id);
@@ -167,17 +196,20 @@ export function sortNodes(nodesJson: any): any[] {
     const nodeId = queue.shift();
     sortedNodes.push(nodeMap[nodeId]);
 
-    graph[nodeId].forEach((neighborId: any) => {
-      inDegree[neighborId]--;
-      if (inDegree[neighborId] === 0) {
-        queue.push(neighborId);
-      }
-    });
+    if (graph[nodeId]) {
+      graph[nodeId].forEach((neighborId: any) => {
+        inDegree[neighborId]--;
+        if (inDegree[neighborId] === 0) {
+          queue.push(neighborId);
+        }
+      });
+    }
   }
 
   // 检查循环依赖
   if (sortedNodes.length !== nodes.length) {
     console.error('检测到循环依赖，排序结果可能不完整');
+    // 如果有未被处理的节点，通常是因为成环，可以考虑把剩余节点按原始顺序补在后面，或者报错
   }
 
   // 只返回需要的格式

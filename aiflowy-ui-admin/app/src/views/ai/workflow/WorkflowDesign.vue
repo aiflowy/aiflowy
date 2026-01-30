@@ -141,8 +141,10 @@ function getRunningParams() {
   api
     .get(`/api/v1/workflow/getRunningParameters?id=${workflowId.value}`)
     .then((res) => {
-      runParams.value = res.data;
-      drawerVisible.value = true;
+      if (res.errorCode === 0) {
+        runParams.value = res.data;
+        drawerVisible.value = true;
+      }
     });
 }
 function onSubmit() {
