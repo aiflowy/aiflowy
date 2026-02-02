@@ -159,24 +159,33 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
             collapsed: false,
             items: [
                 {text: '什么是 AIFlowy？', link: 'info/what-is-aiflowy'},
-                {text: '5分钟快速入门', link: 'info/specifications'},
+                // {text: '5分钟快速入门', link: 'info/specifications'},
                 {text: '技术规格', link: 'info/specifications'},
                 {text: '更新记录', link: 'changes'},
             ]
         },
         {
-            text: '对话助手',
+            text: '5分钟快速入门',
             collapsed: false,
             items: [
-                {text: '什么是对话助手', link: 'bot-application/what-is-a-bot'},
+                {text: '用户登录', link: 'quick-start/login'},
+                {text: '修改密码', link: 'quick-start/update-password'},
+                {text: '中英文切换', link: 'quick-start/update_password'},
+            ]
+        },
+        {
+            text: '聊天助手',
+            collapsed: false,
+            items: [
+                {text: '什么是聊天助手', link: 'bot-application/what-is-a-bot'},
                 {text: '快速开始', link: 'bot-application/quick-start'},
                 {text: '挂载知识库', link: 'bot-application/mount-knowledge'},
                 {text: '挂载插件', link: 'bot-application/mount-plugins'},
                 {text: '挂载工作流', link: 'bot-application/mount-workflow'},
-                {text: 'Web 客户端', link: 'bot-application/bot-web-client'},
-                {text: 'IFrame 嵌入', link: 'system/iframe.md',},
+                // {text: 'Web 客户端', link: 'bot-application/bot-web-client'},
+                // {text: 'IFrame 嵌入', link: 'system/iframe.md',},
                 {text: '通过 ApiKey 请求 bot', link: 'bot-application/bot-api-key'},
-                {text: '实时语音播报', link: 'bot-application/bot-tts'},
+                // {text: '实时语音播报', link: 'bot-application/bot-tts'},
                 {text: 'bot 接入微信公众号', link: 'bot-application/wechat-mp'},
             ]
         },
