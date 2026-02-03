@@ -40,7 +40,7 @@ watch(
     const nodes = newVal.nodes;
     for (const nodeId in nodes) {
       nodeStatusMap.value[nodeId] = nodes[nodeId];
-      if (nodes[nodeId].status === 6) {
+      if (nodes[nodeId].status === 5) {
         activeName.value = nodeId;
       }
     }
@@ -131,7 +131,7 @@ function handleConfirm(node: any) {
               <ElIcon v-if="node.status === 10" color="red" size="20">
                 <CircleCloseFilled />
               </ElIcon>
-              <ElIcon v-if="node.status === 6" color="orange" size="20">
+              <ElIcon v-if="node.status === 5" color="orange" size="20">
                 <VideoPause />
               </ElIcon>
               <ElIcon v-if="isChainError" color="orange" size="20">
