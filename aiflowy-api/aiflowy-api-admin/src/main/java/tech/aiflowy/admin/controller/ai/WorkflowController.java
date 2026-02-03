@@ -194,6 +194,8 @@ public class WorkflowController extends BaseCurdController<WorkflowService, Work
             if (id.compareTo(workflow.getId()) != 0) {
                 throw new BusinessException("别名已存在！");
             }
+        } else {
+            entity.setAlias(null);
         }
         return null;
     }
