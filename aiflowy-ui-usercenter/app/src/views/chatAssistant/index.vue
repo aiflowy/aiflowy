@@ -36,13 +36,16 @@ function getAssistantList() {
 }
 const messageList = ref<any>([]);
 function addMessage(message: any) {
-  const index = messageList.value.findIndex(
-    (item: any) => item.key === message.key,
-  );
-  if (index === -1) {
-    messageList.value.push(message);
-  } else {
-    messageList.value[index] = message;
+  messageList.value.push(message);
+}
+function updateLastMessage(message: any) {
+  const lastIndex = messageList.value.length - 1;
+
+  if (lastIndex >= 0) {
+    messageList.value[lastIndex] = {
+      ...messageList.value[lastIndex],
+      ...message,
+    };
   }
 }
 function setMessageList(messages: any) {
@@ -73,6 +76,7 @@ const toggleFold = () => {
               <div class="mx-auto w-full max-w-[1000px]">
                 <ChatSender
                   :add-message="addMessage"
+                  :update-last-message="updateLastMessage"
                   :bot="currentBot"
                   :conversation-id="conversationId"
                 />

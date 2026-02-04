@@ -32,7 +32,8 @@ type MessageItem = BubbleProps & {
 interface Props {
   conversationId: string | undefined;
   bot: any;
-  addMessage?: (message: MessageItem) => void;
+  addMessage: (message: MessageItem) => void;
+  updateLastMessage: (message: any) => void;
 }
 
 const props = defineProps<Props>();
@@ -49,14 +50,14 @@ function sendMessage() {
     botId: props.bot.id,
   };
   btnLoading.value = true;
-  props.addMessage?.({
+  props.addMessage({
     key: uuid(),
     role: 'user',
     placement: 'end',
     content: senderValue.value,
     typing: true,
   });
-  const assistantMsg: MessageItem = {
+  props.addMessage({
     key: uuid(),
     role: 'assistant',
     placement: 'start',
@@ -64,8 +65,7 @@ function sendMessage() {
     loading: true,
     typing: true,
     thinlCollapse: true,
-  };
-  props.addMessage?.(assistantMsg);
+  });
   senderValue.value = '';
 
   let content = '';
@@ -91,8 +91,7 @@ function sendMessage() {
         sseData.payload?.code === 'SYSTEM_ERROR'
       ) {
         const errorMessage = sseData.payload.message;
-        props.addMessage?.({
-          ...assistantMsg,
+        props.updateLastMessage({
           content: errorMessage,
           loading: false,
           typing: false,
@@ -121,23 +120,20 @@ function sendMessage() {
               sseData?.type === 'TOOL_CALL' ? '{}' : sseData?.payload?.result,
           };
         }
-        props.addMessage?.({ ...assistantMsg, tools });
+        props.updateLastMessage({ tools });
         return;
       }
 
       if (sseData.type === 'THINKING') {
-        props.addMessage?.({
-          ...assistantMsg,
+        props.updateLastMessage({
           thinkingStatus: 'thinking',
           reasoning_content: (reasoning_content += delta),
         });
       } else if (sseData.type === 'MESSAGE') {
-        props.addMessage?.({
-          ...assistantMsg,
-          reasoning_content,
-          thinkingStatus: 'end',
+        props.updateLastMessage({
           content: (content += delta),
-          loading: content.length <= 0,
+          thinkingStatus: 'end',
+          loading: false,
         });
       }
     },
@@ -149,11 +145,7 @@ function sendMessage() {
       senderValue.value = '';
       btnLoading.value = false;
 
-      props.addMessage?.({
-        ...assistantMsg,
-        tools,
-        content,
-        reasoning_content,
+      props.updateLastMessage({
         thinkingStatus: 'end',
         thinlCollapse: false,
         loading: false,

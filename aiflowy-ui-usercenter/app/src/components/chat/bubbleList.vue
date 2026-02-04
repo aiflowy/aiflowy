@@ -102,17 +102,12 @@ function getUserAvatar() {
 </template>
 
 <style lang="css" scoped>
-.el-bubble-list :deep(.el-bubble) {
-  --bubble-content-max-width: calc(
-    100% -
-      calc(
-        var(--el-bubble-avatar-placeholder-gap) + var(--el-avatar-size, 40px)
-      )
-  ) !important;
-}
-
 :deep(.el-bubble-header) {
   width: 100%;
+}
+
+:deep(.el-bubble-content-wrapper .el-bubble-content) {
+  --bubble-content-max-width: 100%;
 }
 
 :deep(.el-thinking) {
@@ -120,13 +115,14 @@ function getUserAvatar() {
 }
 
 :deep(.el-thinking .content-wrapper) {
-  --el-thinking-content-wrapper-width: var(--bubble-content-max-width);
+  --el-thinking-content-wrapper-width: 100%;
 
   margin-bottom: 8px;
 }
 
-:deep(.el-collapse-item) {
+:deep(.el-collapse) {
   overflow: hidden;
+  border: 1px solid var(--el-collapse-border-color);
   border-radius: 8px;
 }
 

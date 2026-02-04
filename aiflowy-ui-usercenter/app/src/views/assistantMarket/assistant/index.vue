@@ -81,13 +81,16 @@ function removeBotFromRecentlyUsed(botId: any) {
 }
 const messageList = ref<any>([]);
 function addMessage(message: any) {
-  const index = messageList.value.findIndex(
-    (item: any) => item.key === message.key,
-  );
-  if (index === -1) {
-    messageList.value.push(message);
-  } else {
-    messageList.value[index] = message;
+  messageList.value.push(message);
+}
+function updateLastMessage(message: any) {
+  const lastIndex = messageList.value.length - 1;
+
+  if (lastIndex >= 0) {
+    messageList.value[lastIndex] = {
+      ...messageList.value[lastIndex],
+      ...message,
+    };
   }
 }
 </script>
@@ -121,6 +124,7 @@ function addMessage(message: any) {
         <ChatSender
           class="absolute bottom-5 left-0 w-full"
           :add-message="addMessage"
+          :update-last-message="updateLastMessage"
           :bot="botInfo"
           :conversation-id="conversationId"
         />
