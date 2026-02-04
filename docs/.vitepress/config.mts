@@ -220,6 +220,20 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
             ]
         },
         {
+            text: '素材库',
+            collapsed: false,
+            items: [
+                {text: '什么是素材库', link: 'resource/what_is_resource'},
+            ]
+        },
+        {
+            text: '数据中枢',
+            collapsed: false,
+            items: [
+                {text: '什么是数据中枢', link: 'datacenter/what_is_datacenter'},
+            ]
+        },
+        {
             text: '工作流',
             collapsed: false,
             items: [
