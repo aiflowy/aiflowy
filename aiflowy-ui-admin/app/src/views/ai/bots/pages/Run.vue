@@ -114,7 +114,7 @@ const updateActive = (_sessionId?: number | string) => {
         $t('common.history')
       }}</span>
       <div class="w-full max-w-[208px] flex-1 overflow-hidden">
-        <el-conversations
+        <ElConversations
           v-show="sessionList.length > 0"
           class="!w-full !shadow-none"
           v-model:active="sessionId"

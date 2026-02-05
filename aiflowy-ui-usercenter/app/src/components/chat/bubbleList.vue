@@ -25,7 +25,7 @@ function getUserAvatar() {
 </script>
 
 <template>
-  <el-bubble-list :list="messages" max-height="calc(100vh - 345px)">
+  <ElBubbleList :list="messages" max-height="calc(100vh - 345px)">
     <!-- 自定义头像 -->
     <template #avatar="{ item }">
       <ElAvatar
@@ -130,7 +130,7 @@ function getUserAvatar() {
 
     <!-- 自定义气泡内容 -->
     <template #content="{ item }">
-      <el-x-markdown :markdown="item.content" />
+      <ElXMarkdown :markdown="item.content" />
     </template>
 
     <!-- 自定义底部 -->
@@ -146,7 +146,7 @@ function getUserAvatar() {
         </template>
       </div>
     </template>-->
-  </el-bubble-list>
+  </ElBubbleList>
 </template>
 
 <style lang="css" scoped>

@@ -193,7 +193,7 @@ const stopSse = () => {
 </script>
 
 <template>
-  <el-sender
+  <ElSender
     v-model="senderValue"
     variant="updown"
     :auto-size="{ minRows: 2, maxRows: 5 }"
@@ -222,5 +222,5 @@ const stopSse = () => {
         />
       </div>
     </template>
-  </el-sender>
+  </ElSender>
 </template>

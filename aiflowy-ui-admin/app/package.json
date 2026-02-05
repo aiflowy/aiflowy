@@ -48,7 +48,7 @@
     "radash": "^12.1.1",
     "vue": "catalog:",
     "vue-cropper": "^1.1.4",
-    "vue-element-plus-x": "^1.3.98",
+    "vue-element-plus-x": "catalog:",
     "vue-router": "catalog:",
     "vue3-json-viewer": "^2.4.1"
   },

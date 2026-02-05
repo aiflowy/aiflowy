@@ -47,7 +47,7 @@ async function bootstrap(namespace: string) {
   app.component('ElBubbleList', BubbleList);
   app.component('ElConversations', Conversations);
   app.component('ElSender', Sender);
-  app.component('XMarkdown', XMarkdown);
+  app.component('ElXMarkdown', XMarkdown);
   app.component('ElThinking', Thinking);
 
   // 注册AIFlowy提供的v-loading和v-spinning指令

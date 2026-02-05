@@ -396,7 +396,12 @@ const handleRefresh = () => {
         v-if="localeConversationId || bubbleItems.length > 0"
         class="message-container w-full flex-1 overflow-hidden"
       >
-        <el-bubble-list :list="bubbleItems" @complete="handleComplete">
+        <ElBubbleList
+          class="!h-full"
+          max-height="none"
+          :list="bubbleItems"
+          @complete="handleComplete"
+        >
           <template #header="{ item }">
             <div class="flex flex-col">
               <span class="chat-bubble-item-time-style">
@@ -499,7 +504,7 @@ const handleRefresh = () => {
             />
           </template>
           <template #content="{ item }">
-            <XMarkdown :markdown="item.content" />
+            <ElXMarkdown :markdown="item.content" />
           </template>
           <!-- 自定义底部 -->
           <template #footer="{ item }">
@@ -518,7 +523,7 @@ const handleRefresh = () => {
               </ElSpace>
             </ElSpace>
           </template>
-        </el-bubble-list>
+        </ElBubbleList>
       </div>
 
       <!-- 新对话显示bot信息 -->
@@ -544,7 +549,7 @@ const handleRefresh = () => {
         </ElButton>
       </div>
       <!-- Sender -->
-      <el-sender
+      <ElSender
         ref="senderRef"
         class="w-full"
         v-model="senderValue"
@@ -583,7 +588,7 @@ const handleRefresh = () => {
             </template>
           </ElSpace>
         </template>
-      </el-sender>
+      </ElSender>
     </div>
   </div>
 </template>
