@@ -18,6 +18,8 @@ import java.util.List;
 @Table("tb_sys_api_key")
 public class SysApiKey extends SysApiKeyBase {
 
+    public static final String KEY_Apikey = "Apikey";
+
     @Column(ignore = true)
     List<BigInteger> permissionIds;
 

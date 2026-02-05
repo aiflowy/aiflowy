@@ -145,7 +145,7 @@ public class BotController extends BaseCurdController<BotService, Bot> {
         BotServiceImpl.ChatCheckResult chatCheckResult = new BotServiceImpl.ChatCheckResult();
 
         // 前置校验：失败则直接返回错误SseEmitter
-        SseEmitter errorEmitter = botService.checkChatBeforeStart(botId, prompt, conversationId, chatCheckResult);
+        SseEmitter errorEmitter = botService.checkChatBeforeStart(botId, prompt, conversationId.toString(), chatCheckResult);
         if (errorEmitter != null) {
             return errorEmitter;
         }

@@ -22,5 +22,6 @@
   "systemPrompt": "System Prompt",
   "aiOptimization": "AI Optimization",
   "weChatOfficialAccountConfiguration": "WeChat Official Account configuration",
-  "aiOptimizedPrompts": "AI Optimized Prompts"
+  "aiOptimizedPrompts": "AI Optimized Prompts",
+  "chatAssistant": "Chat Assistant"
 }

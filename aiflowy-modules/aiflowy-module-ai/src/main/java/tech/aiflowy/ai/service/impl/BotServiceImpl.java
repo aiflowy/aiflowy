@@ -2,6 +2,7 @@ package tech.aiflowy.ai.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import com.agentsflex.core.memory.ChatMemory;
+import com.agentsflex.core.message.Message;
 import com.agentsflex.core.message.SystemMessage;
 import com.agentsflex.core.message.UserMessage;
 import com.agentsflex.core.model.chat.ChatModel;
@@ -23,6 +24,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import tech.aiflowy.ai.agentsflex.listener.ChatStreamListener;
 import tech.aiflowy.ai.agentsflex.memory.BotMessageMemory;
 import tech.aiflowy.ai.agentsflex.memory.DefaultBotMessageMemory;
+import tech.aiflowy.ai.agentsflex.memory.PublicBotMessageMemory;
 import tech.aiflowy.ai.entity.*;
 import tech.aiflowy.ai.mapper.BotMapper;
 import tech.aiflowy.ai.service.*;
@@ -123,36 +125,38 @@ public class BotServiceImpl extends ServiceImpl<BotMapper, Bot> implements BotSe
         return getOne(queryWrapper);
     }
 
-    public SseEmitter checkChatBeforeStart(BigInteger botId, String prompt, BigInteger conversationId, ChatCheckResult chatCheckResult) {
+    public SseEmitter checkChatBeforeStart(BigInteger botId, String prompt, String conversationId, ChatCheckResult chatCheckResult) {
         if (!StringUtils.hasLength(prompt)) {
-            return ChatSseUtil.sendSystemError(conversationId.toString(), "提示词不能为空！");
+            return ChatSseUtil.sendSystemError(conversationId, "提示词不能为空");
+        }
+        if (!StringUtils.hasLength(conversationId)) {
+            return ChatSseUtil.sendSystemError(conversationId, "conversationId不能为空");
         }
         Bot aiBot = this.getById(botId);
-        String conversationIdStr = conversationId.toString();
         if (aiBot == null) {
-            return ChatSseUtil.sendSystemError(conversationIdStr, "聊天助手不存在");
+            return ChatSseUtil.sendSystemError(conversationId, "聊天助手不存在");
         }
         if (aiBot.getModelId() == null) {
-            return ChatSseUtil.sendSystemError(conversationIdStr, "请配置大模型!");
+            return ChatSseUtil.sendSystemError(conversationId, "请配置大模型!");
         }
         boolean login = StpUtil.isLogin();
         if (!login && !aiBot.isAnonymousEnabled()) {
-            return ChatSseUtil.sendSystemError(conversationIdStr, "此聊天助手不支持匿名访问");
+            return ChatSseUtil.sendSystemError(conversationId, "此聊天助手不支持匿名访问");
         }
         Map<String, Object> modelOptions = aiBot.getModelOptions();
         Model model = modelService.getModelInstance(aiBot.getModelId());
         if (model == null) {
-            return ChatSseUtil.sendSystemError(conversationIdStr, "模型不存在，请检查配置");
+            return ChatSseUtil.sendSystemError(conversationId, "模型不存在，请检查配置");
         }
         ChatModel chatModel = model.toChatModel();
         if (chatModel == null) {
-            return ChatSseUtil.sendSystemError(conversationIdStr, "对话模型获取失败，请检查配置");
+            return ChatSseUtil.sendSystemError(conversationId, "对话模型获取失败，请检查配置");
         }
 
         chatCheckResult.setAiBot(aiBot);
         chatCheckResult.setModelOptions(modelOptions);
         chatCheckResult.setChatModel(chatModel);
-        chatCheckResult.setConversationIdStr(conversationIdStr);
+        chatCheckResult.setConversationIdStr(conversationId);
         return null;
     }
 
@@ -189,7 +193,39 @@ public class BotServiceImpl extends ServiceImpl<BotMapper, Bot> implements BotSe
         threadPoolTaskExecutor.execute(() -> {
             ServletRequestAttributes sra = (ServletRequestAttributes) requestAttributes;
             RequestContextHolder.setRequestAttributes(sra, true);
-            StreamResponseListener streamResponseListener = new ChatStreamListener(chatModel, memoryPrompt, chatSseEmitter, chatOptions);
+            StreamResponseListener streamResponseListener = new ChatStreamListener(conversationId.toString(), chatModel, memoryPrompt, chatSseEmitter, chatOptions);
+            chatModel.chatStream(memoryPrompt, streamResponseListener, chatOptions);
+        });
+
+        return emitter;
+    }
+
+    /**
+     * 第三方使用Apikey访问聊天
+     * @param botId
+     * @return
+     */
+    @Override
+    public SseEmitter startPublicChat(BigInteger botId, String prompt,  List<Message> messages, BotServiceImpl.ChatCheckResult chatCheckResult) {
+        Map<String, Object> modelOptions = chatCheckResult.getModelOptions();
+        ChatOptions chatOptions = getChatOptions(modelOptions);
+        ChatModel chatModel = chatCheckResult.getChatModel();
+        UserMessage userMessage = new UserMessage(prompt);
+        userMessage.addTools(buildFunctionList(Maps.of("botId", botId)
+                .set("needEnglishName", false)
+                .set("needAccountId", false)
+        ));
+        ChatSseEmitter chatSseEmitter = new ChatSseEmitter();
+        SseEmitter emitter = chatSseEmitter.getEmitter();
+        ChatMemory defaultChatMemory = new PublicBotMessageMemory(chatSseEmitter, messages);
+        final MemoryPrompt memoryPrompt = new MemoryPrompt();
+        memoryPrompt.setMemory(defaultChatMemory);
+        memoryPrompt.addMessage(userMessage);
+        RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
+        ServletRequestAttributes sra = (ServletRequestAttributes) requestAttributes;
+        threadPoolTaskExecutor.execute(() -> {
+            RequestContextHolder.setRequestAttributes(sra, true);
+            StreamResponseListener streamResponseListener = new ChatStreamListener(chatCheckResult.getConversationIdStr(), chatModel, memoryPrompt, chatSseEmitter, chatOptions);
             chatModel.chatStream(memoryPrompt, streamResponseListener, chatOptions);
         });
 

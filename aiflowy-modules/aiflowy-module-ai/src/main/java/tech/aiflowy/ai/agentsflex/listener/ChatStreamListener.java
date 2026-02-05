@@ -8,10 +8,7 @@ import com.agentsflex.core.model.chat.StreamResponseListener;
 import com.agentsflex.core.model.chat.response.AiMessageResponse;
 import com.agentsflex.core.model.client.StreamContext;
 import com.agentsflex.core.prompt.MemoryPrompt;
-import com.alibaba.fastjson.JSON;
 import org.apache.catalina.connector.ClientAbortException;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import tech.aiflowy.common.util.StringUtil;
 import tech.aiflowy.core.chat.protocol.ChatDomain;
 import tech.aiflowy.core.chat.protocol.ChatEnvelope;
 import tech.aiflowy.core.chat.protocol.ChatType;
@@ -19,12 +16,13 @@ import tech.aiflowy.core.chat.protocol.MessageRole;
 import tech.aiflowy.core.chat.protocol.sse.ChatSseEmitter;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ChatStreamListener implements StreamResponseListener {
 
+    private final String conversationId;
     private final ChatModel chatModel;
     private final MemoryPrompt memoryPrompt;
     private final ChatSseEmitter sseEmitter;
@@ -34,7 +32,8 @@ public class ChatStreamListener implements StreamResponseListener {
     // 辅助标记：是否进入过工具调用（避免重复递归判断）
     private boolean hasToolCall = false;
 
-    public ChatStreamListener(ChatModel chatModel, MemoryPrompt memoryPrompt, ChatSseEmitter sseEmitter, ChatOptions chatOptions) {
+    public ChatStreamListener(String conversationId, ChatModel chatModel, MemoryPrompt memoryPrompt, ChatSseEmitter sseEmitter, ChatOptions chatOptions) {
+        this.conversationId = conversationId;
         this.chatModel = chatModel;
         this.memoryPrompt = memoryPrompt;
         this.sseEmitter = sseEmitter;
@@ -114,9 +113,10 @@ public class ChatStreamListener implements StreamResponseListener {
         chatEnvelope.setDomain(ChatDomain.LLM);
         chatEnvelope.setType(chatType);
 
-        Map<String, String> deltaMap = new HashMap<>();
-        deltaMap.put("delta", deltaContent);
+        Map<String, String> deltaMap = new LinkedHashMap<>();
+        deltaMap.put("conversation_id", this.conversationId);
         deltaMap.put("role", MessageRole.ASSISTANT.getValue());
+        deltaMap.put("delta", deltaContent);
         chatEnvelope.setPayload(deltaMap);
 
         sseEmitter.send(chatEnvelope);

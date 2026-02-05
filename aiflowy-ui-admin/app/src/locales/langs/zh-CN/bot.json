@@ -22,5 +22,6 @@
   "systemPrompt": "系统提示词",
   "aiOptimization": "AI优化",
   "weChatOfficialAccountConfiguration": "微信公众号配置",
-  "aiOptimizedPrompts": "AI优化提示词"
+  "aiOptimizedPrompts": "AI优化提示词",
+  "chatAssistant": "聊天助手"
 }

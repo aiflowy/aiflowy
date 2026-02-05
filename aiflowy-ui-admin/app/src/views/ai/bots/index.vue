@@ -61,7 +61,7 @@ const dictStore = useDictStore();
 const headerButtons = [
   {
     key: 'create',
-    text: `${$t('button.create')} Bot`,
+    text: `${$t('button.create')}${$t('bot.chatAssistant')}`,
     icon: markRaw(Plus),
     type: 'primary',
     data: { action: 'create' },

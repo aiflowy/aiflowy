@@ -15,6 +15,8 @@ public class PublicApiConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
 
         registry.addInterceptor(publicApiInterceptor)
-                .addPathPatterns("/public-api/**");
+                .addPathPatterns("/public-api/**")
+                .excludePathPatterns("/public-api/bot/chat")
+        ;
     }
 }
