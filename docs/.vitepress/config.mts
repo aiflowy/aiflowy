@@ -253,6 +253,7 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
             { text: "什么是知识库", link: "knowledge/what-is-knowledge" },
             { text: "创建知识库", link: "knowledge/create-knowledge" },
             { text: "管理知识库", link: "knowledge/management-knowledge" },
+            { text: "知识检索", link: "knowledge/document_search" },
             { text: "文档分片", link: "knowledge/splitter" },
             { text: "Embedding 模型", link: "knowledge/embedding" },
             {
