@@ -16,8 +16,8 @@ docker run -d -p 9200:9200 -p 9600:9600 -e "discovery.type=single-node" -e "OPEN
 
 出现以下内容则表示成功
 
-![oepn_search_success.png](../../../development/ai/resource/oepn_search_success.png)
+![openSearch_2.png](../resource/openSearch_2.png)
 
 ## 2. OpenSearch 知识库配置样例
 
-![open_search_config.png](../../../development/ai/resource/open_search_config.png)
+![openSearch_1.png](../resource/openSearch_1.png)

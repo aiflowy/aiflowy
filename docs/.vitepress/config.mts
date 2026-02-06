@@ -264,7 +264,6 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
                   text: "Redis-Stack",
                   link: "knowledge/vector-database/redis-stack.md",
                 },
-                { text: "Milvus", link: "knowledge/vector-database/milvus.md" },
                 {
                   text: "ElasticSearch",
                   link: "knowledge/vector-database/elasticsearch.md",
