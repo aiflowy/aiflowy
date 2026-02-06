@@ -37,6 +37,11 @@ AIFlowy 深度适配国产化软硬件生态，架构遵循等保 2.0 三级标�
 
 ![xc.png](docs/assets/images/xc.png)
 
+相关链接：
+
+- [小码科技 AIFlowy 通过 华为 鲲鹏信创兼容认证](https://aiflowy.tech/article/R9J1A2M8I4)
+- [小码科技 AIFlowy 通过 达梦 数据库信创兼容认证](https://aiflowy.tech/article/X7O0R1W1M0)
+
 
 ## 技术栈
 - **后端**：JDK 17 + SpringBoot v3 + Agents Flex + MyBatis Flex + Redis  + Quartz
