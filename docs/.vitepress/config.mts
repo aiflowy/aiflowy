@@ -326,10 +326,12 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
         {
           text: "数据标注",
           collapsed: true,
+          link: 'data-annotation/annotation-task'
         },
         {
           text: "数据集",
           collapsed: true,
+          link: 'data-annotation/dataset'
         },
       ],
     },
@@ -339,7 +341,7 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
       items: [
         {
           text: "敏感词库",
-          link: "localLlm/ollama.md",
+          link: "sensitive-vocabulary/sensitive-vocabulary",
         },
         {
           text: "预警管理",
@@ -373,7 +375,7 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
           },
           {
             text: "用户通知(商业版)",
-            link: "system/notification.md",
+            link: "user-notification/user-notification",
           }
         ],
     },
@@ -383,11 +385,11 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
         items: [
           {
             text: "租户管理(商业版)",
-            link: "system/tenant.md",
+            link: "system/tenant-management.md",
           },
           {
             text: "租户套餐(商业版)",
-            link: "system/tenant_package.md",
+            link: "system/tenant-package.md",
           },
           {
             text: "定时任务",
@@ -411,7 +413,7 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
           },
           {
             text: "系统设置",
-            link: "system/settings.md",
+            link: "system/system-settings.md",
           },
           {
             text: "外观设置(商业版)",
