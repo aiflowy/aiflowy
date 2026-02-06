@@ -63,7 +63,7 @@ watch(
 const embeddingLlmList = ref<any>([]);
 const rerankerLlmList = ref<any>([]);
 const vecotrDatabaseList = ref<any>([
-  { value: 'milvus', label: 'Milvus' },
+  // { value: 'milvus', label: 'Milvus' },
   { value: 'redis', label: 'Redis' },
   { value: 'opensearch', label: 'OpenSearch' },
   { value: 'elasticsearch', label: 'ElasticSearch' },
