@@ -321,7 +321,7 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
       ],
     },
     {
-      text: "数据标注(商业版)",
+      text: "数据标注(旗舰定制版)",
       collapsed: false,
       items: [
         {
@@ -385,11 +385,11 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
         collapsed: false,
         items: [
           {
-            text: "租户管理(商业版)",
+            text: "租户管理(旗舰定制版)",
             link: "system/tenant-management.md",
           },
           {
-            text: "租户套餐(商业版)",
+            text: "租户套餐(旗舰定制版)",
             link: "system/tenant-package.md",
           },
           {
