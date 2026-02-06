@@ -209,11 +209,11 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
             { text: "挂载知识库", link: "bot-application/mount-knowledge" },
             { text: "挂载插件", link: "bot-application/mount-plugins" },
             { text: "挂载工作流", link: "bot-application/mount-workflow" },
-            {
-              text: "通过 ApiKey 请求 bot",
-              link: "bot-application/bot-api-key",
-            },
-            { text: "bot 接入微信公众号", link: "bot-application/wechat-mp" },
+            // {
+            //   text: "通过 ApiKey 请求 bot",
+            //   link: "bot-application/bot-api-key",
+            // },
+            { text: "聊天助手接入微信公众号", link: "bot-application/wechat-mp" },
           ],
         },
         {

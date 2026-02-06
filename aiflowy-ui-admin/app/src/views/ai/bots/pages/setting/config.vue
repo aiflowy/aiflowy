@@ -397,7 +397,7 @@ const handleDeletePresetQuestion = (item: any) => {
     });
 };
 const handlePublishWx = () => {
-  publishWxRef.value.openDialog(botId.value, botInfo.value?.options);
+  publishWxRef.value.openDialog(botId.value, botInfo.value?.options || {});
 };
 const handleUpdatePublishWx = () => {
   api

@@ -1,15 +1,15 @@
-# bot 接入微信公众号
-## 配置 bot
-在 bot 设置页面中，配置微信公众号所需要的信息
-![img.png](resource/wechat-1.png)
+# 聊天助手 接入微信公众号
+## 配置 聊天助手
+在 聊天助手设置页面中，配置微信公众号所需要的信息
+![config_mp_wx_1.png](resource/config_mp_wx_1.png)
 
 **点击配置按钮，在弹窗中输入微信公众平台配置的 AppId 、 AppSecret 、 Token 、EncodingAESKey(如果启用加密模式)**
 
-![img.png](resource/wechat-2.png)
+![config_mp_weixin.png](resource/config_mp_weixin.png)
 
 ### 配置完成示例
 
-![img.png](resource/wechat-3.png)
+![config_mp_wx_2.png](resource/config_mp_wx_2.png)
 
 ## 配置微信公平平台
 在 AiFlowy 中配置完成后，将配置弹窗中的“接口地址”复制，进入微信公众平台 → 设置与开发 → 开发接口管理 → 服务器配置
