@@ -109,7 +109,7 @@ export function getOptions(labelKey: string, valueKey: string, options: any[]) {
 }
 
 /**
- * 工作流节点排序
+ * 工作流节点排序（支持多层嵌套）
  * @param nodesJson
  */
 export function sortNodes(nodesJson: any): any[] {
@@ -117,10 +117,11 @@ export function sortNodes(nodesJson: any): any[] {
 
   // 创建数据结构
   const nodeMap: any = {};
-  const graph: any = {};
-  const inDegree: any = {};
+  const graph: any = {}; // 邻接表
+  const inDegree: any = {}; // 入度表
+  const parentChildrenMap: Record<string, string[]> = {}; // 记录直接父子关系 { parentId: [childId, ...] }
 
-  // 初始化
+  // 1. 预处理：建立节点映射并统计直接父子关系
   nodes.forEach((node: any) => {
     const nodeId = node.id;
     nodeMap[nodeId] = {
@@ -132,15 +133,46 @@ export function sortNodes(nodesJson: any): any[] {
     };
     graph[nodeId] = [];
     inDegree[nodeId] = 0;
+
+    // 收集直接子节点信息
+    if (node.parentId) {
+      if (!parentChildrenMap[node.parentId]) {
+        parentChildrenMap[node.parentId] = [];
+      }
+      parentChildrenMap[node.parentId]?.push(nodeId);
+    }
   });
 
-  // 处理参数依赖
+  // --- 辅助函数：递归获取某个节点的所有后代 ID (包括子节点、孙子节点等) ---
+  const getAllDescendants = (parentId: string): string[] => {
+    let descendants: string[] = [];
+    const children = parentChildrenMap[parentId];
+    if (children && children.length > 0) {
+      children.forEach((childId) => {
+        descendants.push(childId);
+        // 递归收集子节点的后代
+        descendants = [...descendants, ...getAllDescendants(childId)];
+      });
+    }
+    return descendants;
+  };
+  // -------------------------------------------------------------
+
+  // 2. 处理参数依赖 (保持不变)
   nodes.forEach((node: any) => {
     const parameters = node.data?.parameters || [];
     parameters.forEach((param: any) => {
       if (param.ref) {
+        // 解析引用，例如 "someNodeId.output"
         const [sourceNodeId] = param.ref.split('.');
-        if (nodeMap[sourceNodeId]) {
+        // 确保 source 存在且不是指向自己（避免死锁）
+        if (
+          nodeMap[sourceNodeId] &&
+          sourceNodeId !== node.id && // 这里通常不需要处理父子层级，因为参数引用是数据流，
+          // 如果数据来自父容器，通常父容器已经 ready。
+          // 但为了保险，也可以考虑加入 graph，这里暂保持原逻辑。
+          !graph[sourceNodeId].includes(node.id)
+        ) {
           graph[sourceNodeId].push(node.id);
           inDegree[node.id]++;
         }
@@ -148,39 +180,81 @@ export function sortNodes(nodesJson: any): any[] {
     });
   });
 
-  // 处理边依赖
+  // 3. 处理边依赖 (修改核心逻辑，支持递归嵌套)
   edges.forEach((edge: any) => {
     const { source, target } = edge;
-    if (nodeMap[source] && nodeMap[target]) {
-      graph[source].push(target);
-      inDegree[target]++;
+
+    // 基础校验
+    if (!nodeMap[source] || !nodeMap[target]) return;
+
+    // A. 建立显式的 Source -> Target 依赖
+    graph[source].push(target);
+    inDegree[target]++;
+
+    // B. 处理父子节点的隐含依赖 (递归版)
+    // 如果 Source 是一个容器（有后代），且 Target 在容器外部，
+    // 那么 Target 必须等待 Source 的 **所有后代**（包括深层嵌套）执行完毕。
+
+    // 获取 Source 的所有层级后代
+    const sourceDescendants = getAllDescendants(source);
+
+    if (sourceDescendants.length > 0) {
+      // 判断 Target 是否是 Source 的后代（即边是在容器内部连接的）
+      const isTargetInsideSource = sourceDescendants.includes(target);
+
+      if (!isTargetInsideSource) {
+        // 如果 Target 在 Source 外部，则 Source 的所有后代都要指向 Target
+        // 这样可以确保 Target 排在整个 Source 容器及其内部所有节点之后
+        sourceDescendants.forEach((descendantId) => {
+          // 防止重复添加边
+          // 注意：这里可能会导致 graph 边很多，但对拓扑排序是必要的
+          // 如果数据量巨大，可以用 Set 优化，这里用数组演示
+          graph[descendantId].push(target);
+          inDegree[target]++;
+        });
+      }
     }
   });
 
-  // 拓扑排序
+  // 4. 拓扑排序 (Kahn算法)
   const queue = nodes
     .filter((node: any) => inDegree[node.id] === 0)
     .map((node: any) => node.id);
+
   const sortedNodes = [];
 
   while (queue.length > 0) {
     const nodeId = queue.shift();
     sortedNodes.push(nodeMap[nodeId]);
 
-    graph[nodeId].forEach((neighborId: any) => {
-      inDegree[neighborId]--;
-      if (inDegree[neighborId] === 0) {
-        queue.push(neighborId);
-      }
-    });
+    if (graph[nodeId]) {
+      graph[nodeId].forEach((neighborId: any) => {
+        inDegree[neighborId]--;
+        if (inDegree[neighborId] === 0) {
+          queue.push(neighborId);
+        }
+      });
+    }
   }
 
   // 检查循环依赖
   if (sortedNodes.length !== nodes.length) {
-    console.error('检测到循环依赖，排序结果可能不完整');
+    console.warn(
+      'Topological Sort: Circular dependency detected or nodes isolated.',
+      {
+        total: nodes.length,
+        sorted: sortedNodes.length,
+      },
+    );
+    // 兜底策略：将未排序的节点按原始顺序追加到末尾（可选）
+    const sortedIds = new Set(sortedNodes.map((n) => n.key));
+    const unsorted = nodes
+      .filter((n: any) => !sortedIds.has(n.id))
+      .map((n: any) => nodeMap[n.id]);
+    sortedNodes.push(...unsorted);
   }
 
-  // 只返回需要的格式
+  // 返回结果
   return sortedNodes.map((node) => ({
     key: node.key,
     label: node.label,
