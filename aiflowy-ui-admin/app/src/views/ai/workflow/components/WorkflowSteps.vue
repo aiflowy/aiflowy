@@ -10,6 +10,7 @@ import {
   WarningFilled,
 } from '@element-plus/icons-vue';
 import {
+  ElAlert,
   ElButton,
   ElCollapse,
   ElCollapseItem,
@@ -38,6 +39,10 @@ watch(
   () => props.pollingData,
   (newVal) => {
     const nodes = newVal.nodes;
+    if (newVal.status === 21) {
+      isChainError.value = true;
+      chainErrMsg.value = newVal.message;
+    }
     for (const nodeId in nodes) {
       nodeStatusMap.value[nodeId] = nodes[nodeId];
       if (nodes[nodeId].status === 5) {
@@ -53,6 +58,7 @@ watch(
     nodeStatusMap.value = {};
     isChainError.value = false;
     confirmBtnLoading.value = false;
+    chainErrMsg.value = '';
   },
 );
 watch(
@@ -81,6 +87,7 @@ const setFormRef = (el: any, key: string) => {
   }
 };
 const confirmBtnLoading = ref(false);
+const chainErrMsg = ref('');
 function getSelectMode(ops: any) {
   return ops.formType || 'radio';
 }
@@ -111,6 +118,9 @@ function handleConfirm(node: any) {
 
 <template>
   <div>
+    <div class="mb-1">
+      <ElAlert v-if="chainErrMsg" :title="chainErrMsg" type="error" />
+    </div>
     <ElCollapse v-model="activeName" accordion expand-icon-position="left">
       <ElCollapseItem
         v-for="node in displayNodes"
@@ -124,18 +134,26 @@ function handleConfirm(node: any) {
               {{ node.label }}
             </div>
             <div class="flex items-center">
-              <ElIcon v-if="node.status === 20" color="green" size="20">
+              <ElIcon
+                v-if="node.status === 20 && !isChainError"
+                color="green"
+                size="20"
+              >
                 <SuccessFilled />
               </ElIcon>
               <div v-if="node.status === 1" class="spinner"></div>
               <ElIcon
-                v-if="node.status === 10 || node.status === 21"
+                v-if="node.status === 21 && !isChainError"
                 color="red"
                 size="20"
               >
                 <CircleCloseFilled />
               </ElIcon>
-              <ElIcon v-if="node.status === 5" color="orange" size="20">
+              <ElIcon
+                v-if="node.status === 5 && !isChainError"
+                color="orange"
+                size="20"
+              >
                 <VideoPause />
               </ElIcon>
               <ElIcon v-if="isChainError" color="orange" size="20">

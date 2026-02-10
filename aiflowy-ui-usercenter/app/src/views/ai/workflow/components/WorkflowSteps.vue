@@ -10,6 +10,7 @@ import {
   WarningFilled,
 } from '@element-plus/icons-vue';
 import {
+  ElAlert,
   ElButton,
   ElCollapse,
   ElCollapseItem,
@@ -38,6 +39,10 @@ watch(
   () => props.pollingData,
   (newVal) => {
     const nodes = newVal.nodes;
+    if (newVal.status === 21) {
+      isChainError.value = true;
+      chainErrMsg.value = newVal.message;
+    }
     for (const nodeId in nodes) {
       nodeStatusMap.value[nodeId] = nodes[nodeId];
       if (nodes[nodeId].status === 5) {
@@ -53,6 +58,7 @@ watch(
     nodeStatusMap.value = {};
     isChainError.value = false;
     confirmBtnLoading.value = false;
+    chainErrMsg.value = '';
   },
 );
 watch(
@@ -81,6 +87,7 @@ const setFormRef = (el: any, key: string) => {
   }
 };
 const confirmBtnLoading = ref(false);
+const chainErrMsg = ref('');
 function getSelectMode(ops: any) {
   return ops.formType || 'radio';
 }
@@ -111,6 +118,9 @@ function handleConfirm(node: any) {
 
 <template>
   <div>
+    <div class="mb-1">
+      <ElAlert v-if="chainErrMsg" :title="chainErrMsg" type="error" />
+    </div>
     <ElCollapse v-model="activeName" accordion expand-icon-position="left">
       <ElCollapseItem
         v-for="node in displayNodes"
@@ -124,14 +134,26 @@ function handleConfirm(node: any) {
               {{ node.label }}
             </div>
             <div class="flex items-center">
-              <ElIcon v-if="node.status === 20" color="green" size="20">
+              <ElIcon
+                v-if="node.status === 20 && !isChainError"
+                color="green"
+                size="20"
+              >
                 <SuccessFilled />
               </ElIcon>
               <div v-if="node.status === 1" class="spinner"></div>
-              <ElIcon v-if="node.status === 10" color="red" size="20">
+              <ElIcon
+                v-if="node.status === 21 && !isChainError"
+                color="red"
+                size="20"
+              >
                 <CircleCloseFilled />
               </ElIcon>
-              <ElIcon v-if="node.status === 5" color="orange" size="20">
+              <ElIcon
+                v-if="node.status === 5 && !isChainError"
+                color="orange"
+                size="20"
+              >
                 <VideoPause />
               </ElIcon>
               <ElIcon v-if="isChainError" color="orange" size="20">
@@ -141,6 +163,9 @@ function handleConfirm(node: any) {
           </div>
         </template>
         <div v-if="node.original.type === 'confirmNode'" class="p-2.5">
+          <div class="mb-2 text-[16px] font-bold">
+            {{ node.original.data.message }}
+          </div>
           <ElForm
             :ref="(el) => setFormRef(el, node.key)"
             label-position="top"
@@ -152,7 +177,7 @@ function handleConfirm(node: any) {
             >
               <div class="header-container" v-if="ops.formType !== 'confirm'">
                 <div class="blue-bar">&nbsp;</div>
-                <span>{{ ops.formLabel }}</span>
+                <span>{{ ops.formLabel || $t('message.confirmItem') }}</span>
               </div>
               <div
                 class="description-container"
@@ -204,34 +229,37 @@ function handleConfirm(node: any) {
 .spinner {
   width: 18px;
   height: 18px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
+  border: 2px solid rgb(255 255 255 / 30%);
   border-top-color: var(--el-color-primary);
   border-right-color: var(--el-color-primary);
+  border-radius: 50%;
   animation: spin 1s linear infinite;
 }
+
 @keyframes spin {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
 }
+
 .header-container {
-  font-weight: bold;
   display: flex;
   align-items: center;
+  font-weight: bold;
   word-break: break-all;
 }
 
 .blue-bar {
   display: inline-block;
   width: 2px;
-  border-radius: 1px;
   height: 16px;
   margin-right: 16px;
   background-color: var(--el-color-primary);
+  border-radius: 1px;
 }
 
 .description-container {
