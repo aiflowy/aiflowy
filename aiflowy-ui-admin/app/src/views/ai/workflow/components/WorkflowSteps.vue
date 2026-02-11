@@ -43,6 +43,9 @@ watch(
       isChainError.value = true;
       chainErrMsg.value = newVal.message;
     }
+    if (![20, 21].includes(newVal.status)) {
+      confirmBtnLoading.value = false;
+    }
     for (const nodeId in nodes) {
       nodeStatusMap.value[nodeId] = nodes[nodeId];
       if (nodes[nodeId].status === 5) {
