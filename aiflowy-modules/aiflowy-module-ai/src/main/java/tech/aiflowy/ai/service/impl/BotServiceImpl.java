@@ -391,7 +391,6 @@ public class BotServiceImpl extends ServiceImpl<BotMapper, Bot> implements BotSe
                     }
                     messageBuilder.append("附件").append(i + 1).append("，文件名为：").append(PathGeneratorUtil.getPureFileName(fileUrl)).append("，内容为：  \n").append(result);
                 }
-                storageService.delete(fileUrl);
             }
         }
         return messageBuilder.toString();
