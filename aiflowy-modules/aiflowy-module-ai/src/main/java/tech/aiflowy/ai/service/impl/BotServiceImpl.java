@@ -37,6 +37,7 @@ import tech.aiflowy.common.filestorage.utils.PathGeneratorUtil;
 import tech.aiflowy.common.satoken.util.SaTokenUtil;
 import tech.aiflowy.common.util.MapUtil;
 import tech.aiflowy.common.util.Maps;
+import tech.aiflowy.common.util.UrlEncoderUtil;
 import tech.aiflowy.common.web.exceptions.BusinessException;
 import tech.aiflowy.core.chat.protocol.sse.ChatSseEmitter;
 import tech.aiflowy.core.chat.protocol.sse.ChatSseUtil;
@@ -182,7 +183,7 @@ public class BotServiceImpl extends ServiceImpl<BotMapper, Bot> implements BotSe
         }
         String attachmentsToString = attachmentsToString(attachments);
         if (StringUtils.hasLength(attachmentsToString)) {
-            prompt = "请基于用户上传的附件内容回答用户问题： \n\n" +  "【用户上传的附件内容】\n" + attachmentsToString + "\n\n"  + "\n\n【用户问题】：\n" + prompt;
+            prompt = "【用户问题】：\n" + prompt + "\n\n请基于用户上传的附件内容回答用户问题： \n" +  "【用户上传的附件内容】：\n" + attachmentsToString ;
         }
         UserMessage userMessage = new UserMessage(prompt);
         userMessage.addTools(buildFunctionList(Maps.of("botId", botId).set("needEnglishName", false)));
@@ -382,10 +383,11 @@ public class BotServiceImpl extends ServiceImpl<BotMapper, Bot> implements BotSe
             File2TextService fileTextService = new File2TextService();
             for (int i = 0; i < fileList.size(); i++) {
                 String fileUrl = fileList.get(i);
-                String result = fileTextService.extractTextFromSource(new HttpDocumentSource(fileUrl));
+                String encodedUrl = UrlEncoderUtil.getEncodedUrl(fileUrl);
+                String result = fileTextService.extractTextFromSource(new HttpDocumentSource(encodedUrl));
                 if (result != null) {
                     if (i > 0) {
-                        messageBuilder.append("\n");
+                        messageBuilder.append("\n\n");
                     }
                     messageBuilder.append("附件").append(i + 1).append("，文件名为：").append(PathGeneratorUtil.getPureFileName(fileUrl)).append("，内容为：  \n").append(result);
                 }

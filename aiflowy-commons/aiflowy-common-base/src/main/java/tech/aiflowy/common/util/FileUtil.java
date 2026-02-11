@@ -1,5 +1,10 @@
 package tech.aiflowy.common.util;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 public class FileUtil {
 
     public static String calcByte(Long sizeInBytes) {
@@ -46,6 +51,24 @@ public class FileUtil {
         }
         else {
             return null;
+        }
+    }
+
+    /**
+     * url解编码
+     * @param url
+     * @return
+     */
+    public static String getDecodedUrl(String url) {
+        String encodedUrl = URLEncoder.encode(url, StandardCharsets.UTF_8)
+                .replace("+", "%20") // 空格转 %20
+                .replace("%2F", "/"); // 保留路径分隔符 /
+
+        try {
+            URI validUri = new URI(encodedUrl);
+            return validUri.toString();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
         }
     }
 }
