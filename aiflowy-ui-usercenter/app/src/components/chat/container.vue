@@ -73,19 +73,23 @@ function addSession() {
     return;
   }
 
-  api.get('/userCenter/bot/generateConversationId').then((res) => {
-    const data = {
-      botId: props.bot.id,
-      title: '新对话',
-      id: res.data,
-    };
-    sessionList.value.unshift(data);
+  return new Promise((resolve) => {
+    api.get('/userCenter/bot/generateConversationId').then((res) => {
+      const data = {
+        botId: props.bot.id,
+        title: '新对话',
+        id: res.data,
+      };
+      sessionList.value.unshift(data);
 
-    nextTick(() => {
-      clickSession(data);
+      nextTick(() => {
+        currentSession.value = data;
+        resolve(res.data);
+      });
     });
   });
 }
+provide('addSession', addSession);
 function clickSession(session: any) {
   currentSession.value = session;
   getMessageList();

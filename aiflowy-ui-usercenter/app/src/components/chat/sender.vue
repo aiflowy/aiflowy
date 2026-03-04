@@ -46,17 +46,20 @@ const props = defineProps<Props>();
 const senderValue = ref('');
 const btnLoading = ref(false);
 const getSessionList = inject<any>('getSessionList');
+const addSession = inject<any>('addSession');
 const clearSenderFiles = () => {
   files.value = [];
   senderRef.value?.closeHeader();
   attachmentsRef.value?.clearFiles();
 };
-function sendMessage() {
-  if (getDisabled()) {
-    return;
+async function sendMessage() {
+  let conversationId = props.conversationId;
+  if (!conversationId) {
+    conversationId = await addSession();
   }
+
   const data = {
-    conversationId: props.conversationId,
+    conversationId,
     prompt: senderValue.value,
     botId: props.bot.id,
     attachments: attachmentsRef.value?.getFileList(),
@@ -187,7 +190,7 @@ const isThink = (item: Think | Tool): item is Think => {
   return !('id' in item);
 };
 function getDisabled() {
-  return !senderValue.value || !props.conversationId;
+  return !senderValue.value;
 }
 const stopSse = () => {
   sseClient.abort();
