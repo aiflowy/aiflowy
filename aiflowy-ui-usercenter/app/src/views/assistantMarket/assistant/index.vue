@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, useTemplateRef } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { cloneDeep } from '@aiflowy/utils';
@@ -82,6 +82,7 @@ function removeBotFromRecentlyUsed(botId: any) {
     });
 }
 const messageList = ref<any>([]);
+const bubbleListRef = useTemplateRef<any>('bubbleListRef');
 function addMessage(message: any) {
   messageList.value.push(message);
 }
@@ -109,11 +110,13 @@ const stopThinking = () => {
     for (const chain of chains) {
       if (!('id' in chain) && chain.thinkingStatus === 'thinking') {
         chain.thinkingStatus = 'end';
+        chain.thinkCollapse = false;
       }
     }
 
     messageList.value[lastIndex].chains = chains;
   }
+  bubbleListRef.value?.scrollBottom();
 };
 </script>
 
@@ -142,7 +145,12 @@ const stopThinking = () => {
             {{ botInfo.description }}
           </CardDescription>
         </Card>
-        <ChatBubbleList v-else :bot="botInfo" :messages="messageList" />
+        <ChatBubbleList
+          v-else
+          ref="bubbleListRef"
+          :bot="botInfo"
+          :messages="messageList"
+        />
         <ChatSender
           class="absolute bottom-5 left-0 w-full"
           :add-message="addMessage"

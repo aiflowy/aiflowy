@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, useTemplateRef } from 'vue';
 
 import { IconifyIcon } from '@aiflowy/icons';
 import { cloneDeep, cn } from '@aiflowy/utils';
@@ -35,6 +35,7 @@ function getAssistantList() {
   });
 }
 const messageList = ref<any>([]);
+const bubbleListRef = useTemplateRef<any>('bubbleListRef');
 function addMessage(message: any) {
   messageList.value.push(message);
 }
@@ -62,11 +63,13 @@ const stopThinking = () => {
     for (const chain of chains) {
       if (!('id' in chain) && chain.thinkingStatus === 'thinking') {
         chain.thinkingStatus = 'end';
+        chain.thinkCollapse = false;
       }
     }
 
     messageList.value[lastIndex].chains = chains;
   }
+  bubbleListRef.value?.scrollBottom();
 };
 function setMessageList(messages: any) {
   messageList.value = messages;
@@ -92,7 +95,11 @@ const toggleFold = () => {
         >
           <template #default="{ conversationId }">
             <div class="flex h-full flex-col justify-between">
-              <ChatBubbleList :bot="currentBot" :messages="messageList" />
+              <ChatBubbleList
+                ref="bubbleListRef"
+                :bot="currentBot"
+                :messages="messageList"
+              />
               <div class="mx-auto w-full max-w-[1000px]">
                 <ChatSender
                   :add-message="addMessage"

@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import type { BubbleListInstance } from 'vue-element-plus-x/types/BubbleList';
+
+import { useTemplateRef } from 'vue';
+
 import { IconifyIcon } from '@aiflowy/icons';
 import { useUserStore } from '@aiflowy/stores';
 
@@ -15,6 +19,7 @@ interface Props {
 }
 const props = defineProps<Props>();
 const store = useUserStore();
+const bubbleListRef = useTemplateRef<BubbleListInstance>('bubbleListRef');
 
 function getAssistantAvatar() {
   return props.bot.icon || defaultAssistantAvatar;
@@ -22,10 +27,19 @@ function getAssistantAvatar() {
 function getUserAvatar() {
   return store.userInfo?.avatar || defaultUserAvatar;
 }
+function scrollBottom() {
+  bubbleListRef.value?.scrollToBottom();
+}
+
+defineExpose({ scrollBottom });
 </script>
 
 <template>
-  <ElBubbleList :list="messages" max-height="calc(100vh - 345px)">
+  <ElBubbleList
+    ref="bubbleListRef"
+    :list="messages"
+    max-height="calc(100vh - 345px)"
+  >
     <!-- 自定义头像 -->
     <template #avatar="{ item }">
       <ElAvatar
@@ -50,7 +64,7 @@ function getUserAvatar() {
           >
             <ElThinking
               v-if="!('id' in chain)"
-              v-model="chain.thinlCollapse"
+              v-model="chain.thinkCollapse"
               :content="chain.reasoning_content"
               :status="chain.thinkingStatus"
             />
@@ -99,7 +113,7 @@ function getUserAvatar() {
 
         <!-- <ElThinking
           v-if="item.reasoning_content"
-          v-model="item.thinlCollapse"
+          v-model="item.thinkCollapse"
           :content="item.reasoning_content"
           :status="item.thinkingStatus"
         /> -->
