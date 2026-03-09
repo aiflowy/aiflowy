@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ChatStreamListener implements StreamResponseListener {
 
@@ -34,7 +35,7 @@ public class ChatStreamListener implements StreamResponseListener {
     // 辅助标记：是否进入过工具调用（避免重复递归判断）
     private boolean hasToolCall = false;
     // 工具最大调用次数限制
-    private int maxToolCallCount = 0;
+    private final AtomicInteger maxToolCallCount = new AtomicInteger(0);
 
     public ChatStreamListener(String conversationId, ChatModel chatModel, MemoryPrompt memoryPrompt, ChatSseEmitter sseEmitter, ChatOptions chatOptions) {
         this.conversationId = conversationId;
@@ -52,7 +53,7 @@ public class ChatStreamListener implements StreamResponseListener {
     @Override
     public void onMessage(StreamContext context, AiMessageResponse aiMessageResponse) {
         try {
-            if (maxToolCallCount >= 20 ) {
+            if (maxToolCallCount.get() >= 20) {
                 sendSystemError(sseEmitter, "工具调用次数超出限制，请重新开始会话。");
                 return;
             }
@@ -68,11 +69,9 @@ public class ChatStreamListener implements StreamResponseListener {
                     memoryPrompt.addMessage(toolMessage);
                 }
                 // 工具调用次数增加
-                maxToolCallCount++;
+                maxToolCallCount.incrementAndGet();
                 chatModel.chatStream(memoryPrompt, this, chatOptions);
             } else {
-                // 只要有会话输出，则重置工具调用次数
-                maxToolCallCount = 0;
                 if (this.hasToolCall) {
                     this.canStop = true;
                 }
@@ -92,6 +91,8 @@ public class ChatStreamListener implements StreamResponseListener {
                     }
                     String delta = aiMessage.getContent();
                     if (delta != null && !delta.isEmpty()) {
+                        // 只要有会话输出，则重置工具调用次数
+                        maxToolCallCount.set(0);
                         sendChatEnvelope(sseEmitter, delta, ChatType.MESSAGE);
                     }
                 }
