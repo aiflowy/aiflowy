@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, useTemplateRef } from 'vue';
+import { computed, onMounted, ref, useTemplateRef } from 'vue';
 
 import { IconifyIcon } from '@aiflowy/icons';
 import { cloneDeep, cn } from '@aiflowy/utils';
@@ -36,6 +36,36 @@ function getAssistantList() {
 }
 const messageList = ref<any>([]);
 const bubbleListRef = useTemplateRef<any>('bubbleListRef');
+const presetMessage = ref('');
+const presetSendTrigger = ref(0);
+const showQuestions = computed(() => {
+  const list = messageList.value.filter(
+    (message: any) => message?.content && message.content.length > 0,
+  );
+  return list.length === 0;
+});
+const getPerQuestions = (presetQuestions: any[]) => {
+  if (!presetQuestions) {
+    return [];
+  }
+  return presetQuestions
+    .filter((item: any) => {
+      return (
+        typeof item.description === 'string' && item.description.trim() !== ''
+      );
+    })
+    .map((item: any) => ({
+      key: item.key,
+      description: item.description,
+    }));
+};
+function handlePresetSubmit(content: string) {
+  if (!content?.trim()) {
+    return;
+  }
+  presetMessage.value = content;
+  presetSendTrigger.value += 1;
+}
 function addMessage(message: any) {
   messageList.value.push(message);
 }
@@ -94,19 +124,40 @@ const toggleFold = () => {
           :toggle-fold="toggleFold"
         >
           <template #default="{ conversationId }">
-            <div class="flex h-full flex-col justify-between">
+            <div
+              class="mx-auto flex h-full max-w-[1000px] flex-col justify-between"
+            >
               <ChatBubbleList
                 ref="bubbleListRef"
                 :bot="currentBot"
                 :messages="messageList"
               />
-              <div class="mx-auto w-full max-w-[1000px]">
+              <div class="w-full">
+                <div
+                  class="questions-preset-container"
+                  v-if="
+                    getPerQuestions(currentBot?.options?.presetQuestions)
+                      .length > 0 && showQuestions
+                  "
+                >
+                  <ElButton
+                    v-for="item in getPerQuestions(
+                      currentBot?.options?.presetQuestions,
+                    )"
+                    :key="item.key"
+                    @click="handlePresetSubmit(item.description)"
+                  >
+                    {{ item.description }}
+                  </ElButton>
+                </div>
                 <ChatSender
                   :add-message="addMessage"
                   :update-last-message="updateLastMessage"
                   :stop-thinking="stopThinking"
                   :bot="currentBot"
                   :conversation-id="conversationId"
+                  :external-send-message="presetMessage"
+                  :external-send-trigger="presetSendTrigger"
                 />
               </div>
             </div>
@@ -164,6 +215,20 @@ const toggleFold = () => {
 </template>
 
 <style lang="css" scoped>
+.questions-preset-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
+  width: 100%;
+  margin-bottom: 10px;
+  overflow: auto;
+}
+
+:deep(.el-button + .el-button) {
+  margin-left: 0;
+}
+
 .el-aside::-webkit-scrollbar {
   display: none;
 }

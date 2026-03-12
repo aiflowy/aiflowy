@@ -6,7 +6,7 @@ import type { TypewriterInstance } from 'vue-element-plus-x/types/Typewriter';
 
 import type { BotInfo, ChatMessage } from '@aiflowy/types';
 
-import { onMounted, ref, watchEffect } from 'vue';
+import { computed, onMounted, ref, watchEffect } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { IconifyIcon } from '@aiflowy/icons';
@@ -88,6 +88,12 @@ const getConversationId = async () => {
 const localeConversationId = ref<any>('');
 
 const presetQuestions = ref<presetQuestionsType[]>([]);
+const showQuestions = computed(() => {
+  const list = bubbleItems.value.filter(
+    (message) => message?.content && message.content.length > 0,
+  );
+  return list.length === 0;
+});
 defineExpose({
   clear() {
     bubbleItems.value = [];
@@ -569,7 +575,7 @@ function handlePasteFile(_: any, fileList: FileList) {
       <!--问题预设-->
       <div
         class="questions-preset-container"
-        v-if="botStore.presetQuestions.length > 0"
+        v-if="botStore.presetQuestions.length > 0 && showQuestions"
       >
         <ElButton
           v-for="item in getPerQuestions(botStore.presetQuestions)"
@@ -633,12 +639,15 @@ function handlePasteFile(_: any, fileList: FileList) {
 <style scoped>
 .questions-preset-container {
   display: flex;
-  flex-flow: row nowrap;
-  gap: 10px;
-  align-items: center;
-  justify-content: flex-start;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-start;
   width: 100%;
   overflow: auto;
+}
+
+:deep(.el-button + .el-button) {
+  margin-left: 0;
 }
 
 .message-container {

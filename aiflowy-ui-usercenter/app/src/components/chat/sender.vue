@@ -2,7 +2,7 @@
 import type { BubbleProps } from 'vue-element-plus-x/types/Bubble';
 import type { ThinkingStatus } from 'vue-element-plus-x/types/Thinking';
 
-import { inject, ref } from 'vue';
+import { inject, nextTick, ref, watch } from 'vue';
 
 import { cloneDeep, uuid } from '@aiflowy/utils';
 
@@ -40,6 +40,8 @@ interface Props {
   addMessage: (message: MessageItem) => void;
   updateLastMessage: (item: any) => void;
   stopThinking: () => void;
+  externalSendMessage?: string;
+  externalSendTrigger?: number;
 }
 
 const props = defineProps<Props>();
@@ -214,6 +216,18 @@ function openCloseHeader() {
   }
   showHeaderFlog.value = !showHeaderFlog.value;
 }
+watch(
+  () => props.externalSendTrigger,
+  () => {
+    if (!props.externalSendMessage?.trim()) {
+      return;
+    }
+    senderValue.value = props.externalSendMessage;
+    nextTick(() => {
+      sendMessage();
+    });
+  },
+);
 </script>
 
 <template>

@@ -172,7 +172,7 @@ defineExpose({ scrollBottom });
 
 <style lang="css" scoped>
 :deep(.el-bubble-header) {
-  width: 100%;
+  width: calc(100% - 48px);
 }
 
 :deep(.el-bubble-end .el-bubble-header) {
@@ -180,7 +180,7 @@ defineExpose({ scrollBottom });
 }
 
 :deep(.el-bubble-content-wrapper .el-bubble-content) {
-  --bubble-content-max-width: 100%;
+  --bubble-content-max-width: calc(100% - 48px);
 }
 
 :deep(.el-thinking) {
