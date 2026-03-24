@@ -14,7 +14,7 @@
     "oauth": "OAuth"
   },
   "ai": {
-    "bots": "ChatAssistant",
+    "bots": "Bots",
     "title": "AI",
     "resources": "Resources",
     "datacenter": "Datacenter",

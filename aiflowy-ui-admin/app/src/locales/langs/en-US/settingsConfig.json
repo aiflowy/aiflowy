@@ -6,5 +6,5 @@
   "basic": "BasicInformation",
   "updatePwd": "UpdatePassword",
   "systemAIFunctionSettings": "System AI Function Settings",
-  "note": "Note: This config only applies to system AI features, not [Chat Assistant]."
+  "note": "Note: This config only applies to system AI features, not [Bot]."
 }

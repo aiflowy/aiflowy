@@ -1,12 +1,14 @@
 import type { RouteRecordRaw } from 'vue-router';
 
+import { $t } from '#/locales';
+
 const routes: RouteRecordRaw[] = [
   {
     name: 'BotRun',
     path: '/ai/bots/run/:botId/:sessionId?',
     component: () => import('#/views/ai/bots/pages/Run.vue'),
     meta: {
-      title: 'Bots',
+      title: $t('menus.ai.bots'),
       noBasicLayout: true,
       openInNewWindow: true,
       hideInMenu: true,
@@ -19,7 +21,7 @@ const routes: RouteRecordRaw[] = [
     path: '/ai/bots/setting/:id',
     component: () => import('#/views/ai/bots/pages/setting/index.vue'),
     meta: {
-      title: 'Bots',
+      title: $t('menus.ai.bots'),
       openInNewWindow: true,
       hideInMenu: true,
       hideInBreadcrumb: true,
