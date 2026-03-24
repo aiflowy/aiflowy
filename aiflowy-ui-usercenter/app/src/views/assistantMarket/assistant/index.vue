@@ -176,7 +176,7 @@ const stopThinking = () => {
           :icon="Plus"
           @click="addBotToRecentlyUsed(botInfo.id)"
         >
-          添加到聊天助理
+          添加到我的智能体
         </ElButton>
         <ElButton
           v-else
@@ -186,7 +186,7 @@ const stopThinking = () => {
           :icon="Minus"
           @click="removeBotFromRecentlyUsed(botInfo.id)"
         >
-          从聊天助理中移除
+          从我的智能体移除
         </ElButton>
       </Card>
     </ElAside>

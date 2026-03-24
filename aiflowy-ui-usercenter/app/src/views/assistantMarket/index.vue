@@ -110,7 +110,7 @@ function removeBotFromRecentlyUsed(botId: any) {
   <ElContainer class="bg-background-deep h-full">
     <ElHeader class="!h-auto !p-8 !pb-0">
       <ElSpace direction="vertical" :size="24" alignment="flex-start">
-        <h1 class="text-2xl font-medium">助理市场</h1>
+        <h1 class="text-2xl font-medium">智能体中心</h1>
         <ElSpace :size="20">
           <ElInput
             placeholder="搜索"
@@ -170,32 +170,29 @@ function removeBotFromRecentlyUsed(botId: any) {
             <ElButton
               v-if="!usedList.includes(assistant.id)"
               :loading="btnLoading"
-              class="w-full"
+              class="w-full !border-none"
               type="primary"
-              style="--el-border: none"
               :icon="Plus"
               plain
               @click="addBotToRecentlyUsed(assistant.id)"
             >
-              添加到聊天助理
+              添加到我的智能体
             </ElButton>
             <ElButton
               v-else
               :loading="btnLoading"
-              class="w-full"
+              class="w-full !border-none"
               type="primary"
-              style="--el-border: none"
               :icon="Minus"
               plain
               @click="removeBotFromRecentlyUsed(assistant.id)"
             >
-              从聊天助理中移除
+              从我的智能体移除
             </ElButton>
 
             <ElButton
-              class="w-full"
+              class="w-full !border-none"
               type="primary"
-              style="--el-border: none"
               plain
               @click="router.push(`/assistantMarket/${assistant.id}`)"
             >

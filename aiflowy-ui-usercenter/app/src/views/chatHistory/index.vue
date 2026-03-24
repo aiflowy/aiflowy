@@ -22,7 +22,7 @@ import { tryit } from 'radash';
 import { api } from '#/api/request';
 import PageData from '#/components/page/PageData.vue';
 
-const listTitles = ['聊天助理名称', '话题', '创建时间', '操作'];
+const listTitles = ['智能体名称', '话题', '创建时间', '操作'];
 
 const router = useRouter();
 const assistantList = ref<any[]>([]);
@@ -72,12 +72,12 @@ async function handleDelete(id: string) {
         <h1 class="text-2xl font-medium">聊天记录</h1>
         <div class="flex items-center gap-5">
           <div class="flex items-center gap-4">
-            <span class="text-nowrap text-sm">聊天助理</span>
+            <span class="text-nowrap text-sm">智能体</span>
             <ElSelect
               clearable
               v-model="queryParams.botId"
               :options="assistantList"
-              placeholder="请选择聊天助理"
+              placeholder="请选择智能体"
               @change="search"
             />
           </div>

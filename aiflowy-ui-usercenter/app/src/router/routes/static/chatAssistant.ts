@@ -8,7 +8,7 @@ const routes: RouteRecordRaw[] = [
     meta: {
       icon: 'svg:chat-assistant',
       order: 22,
-      title: '聊天助理',
+      title: '我的智能体',
     },
   },
 ];
