@@ -222,7 +222,23 @@ const toggleFold = () => {
   align-items: flex-start;
   width: 100%;
   margin-bottom: 10px;
-  overflow: auto;
+  overflow: hidden;
+}
+
+.questions-preset-container :deep(.el-button) {
+  max-width: 100%;
+  height: auto;
+}
+
+.questions-preset-container :deep(.el-button span) {
+  display: -webkit-box;
+  max-height: 33.59px;
+  overflow: hidden;
+  -webkit-line-clamp: 2;
+  line-height: 1.2;
+  text-align: left;
+  text-wrap: wrap;
+  -webkit-box-orient: vertical;
 }
 
 :deep(.el-button + .el-button) {
