@@ -207,15 +207,15 @@ public class DocumentCollectionServiceImpl extends ServiceImpl<DocumentCollectio
         return documents.stream()
                 // 过滤掉分数为空 或 分数低于最小值的文档
                 .filter(document -> {
-                    Double score = document.getScore();
+                    Float score = document.getScore();
                     return score != null && score >= minSimilarity;
                 })
                 // 格式化保留四位小数
                 .map(document -> {
-                    Double score = document.getScore();
+                    Float score = document.getScore();
                     BigDecimal bd = new BigDecimal(score.toString());
                     bd = bd.setScale(4, RoundingMode.HALF_UP);
-                    Double roundedScore = bd.doubleValue();
+                    Float roundedScore = bd.floatValue();
                     document.setScore(roundedScore);
                     return document;
                 })
