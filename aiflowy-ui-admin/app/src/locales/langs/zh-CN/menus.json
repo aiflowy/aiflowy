@@ -23,7 +23,8 @@
     "model": "模型管理",
     "documentCollection": "知识库",
     "knowledge": "知识管理",
-    "mcp": "MCP"
+    "mcp": "MCP",
+    "vectorDatabase": "向量数据库"
   },
   "settings": {
     "title": "系统配置",

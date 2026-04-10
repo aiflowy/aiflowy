@@ -17,6 +17,9 @@ public class SearcherFactory {
     @Autowired
     private AiEsConfig aiEsConfig;
 
+    @Value("${rag.searcher.type}")
+    private String defaultSearcherType;
+
     @Bean
     public LuceneSearcher luceneSearcher() {
         return new LuceneSearcher(luceneConfig);
@@ -28,7 +31,7 @@ public class SearcherFactory {
     }
 
 
-    public DocumentSearcher getSearcher(String defaultSearcherType) {
+    public DocumentSearcher getSearcher(String type) {
         switch (defaultSearcherType) {
             case "elasticSearch":
                 return new ElasticSearcher(aiEsConfig);

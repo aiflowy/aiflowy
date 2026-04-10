@@ -26,6 +26,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static tech.aiflowy.ai.entity.DocumentCollection.*;
+import static tech.aiflowy.ai.entity.DocumentCollection.KEY_SEARCHER_WEIGHT;
+
 /**
  * 控制层。
  *
@@ -38,6 +41,8 @@ public class DocumentCollectionController extends BaseCurdController<DocumentCol
 
     private final DocumentChunkService chunkService;
     private final ModelService llmService;
+    @Resource
+    private DocumentCollectionService documentCollectionService;
 
     @Resource
     private BotDocumentCollectionService botDocumentCollectionService;
@@ -74,7 +79,11 @@ public class DocumentCollectionController extends BaseCurdController<DocumentCol
             if (entity.getSearchEngineEnable() == null){
                 entity.setSearchEngineEnable(false);
             }
-            options.put("canUpdateEmbeddingModel", true);
+            options.put(KEY_CAN_UPDATE_EMBEDDING_MODEL, true);
+            options.put(KEY_DOC_RECALL_MAX_NUM, 5);
+            options.put(KEY_MIXED_SIMILARITY_THRESHOLD, 0.2);
+            options.put(KEY_VECTOR_WEIGHT, 0.7);
+            options.put(KEY_SEARCHER_WEIGHT, 0.3);
             entity.setOptions(options);
         }
         return super.onSaveOrUpdateBefore(entity, isSave);
@@ -97,6 +106,8 @@ public class DocumentCollectionController extends BaseCurdController<DocumentCol
         if (exists){
             throw new BusinessException("此知识库还关联着bot，请先取消关联！");
         }
+
+        documentCollectionService.beforeRemove(ids);
 
         return null;
     }

@@ -91,6 +91,10 @@ INSERT INTO `tb_sys_menu` (`id`, `parent_id`, `menu_type`, `menu_title`, `menu_u
 INSERT INTO `tb_sys_menu` (`id`, `parent_id`, `menu_type`, `menu_title`, `menu_url`, `component`, `menu_icon`, `is_show`, `permission_tag`, `sort_no`, `status`, `created`, `created_by`, `modified`, `modified_by`, `remark`) VALUES (365314158356467712, 365312682481553408, 1, '查询', '', '', '', 0, '/api/v1/mcp/query', 1, 0, '2026-01-04 14:49:03', 1, '2026-01-04 14:49:03', 1, '');
 INSERT INTO `tb_sys_menu` (`id`, `parent_id`, `menu_type`, `menu_title`, `menu_url`, `component`, `menu_icon`, `is_show`, `permission_tag`, `sort_no`, `status`, `created`, `created_by`, `modified`, `modified_by`, `remark`) VALUES (365314258952654848, 365312682481553408, 1, '保存', '', '', '', 0, '/api/v1/mcp/save', 2, 0, '2026-01-04 14:49:27', 1, '2026-01-04 14:49:27', 1, '');
 INSERT INTO `tb_sys_menu` (`id`, `parent_id`, `menu_type`, `menu_title`, `menu_url`, `component`, `menu_icon`, `is_show`, `permission_tag`, `sort_no`, `status`, `created`, `created_by`, `modified`, `modified_by`, `remark`) VALUES (365314364238073856, 365312682481553408, 1, '删除', '', '', '', 0, '/api/v1/mcp/remove', 3, 0, '2026-01-04 14:49:52', 1, '2026-01-04 14:49:52', 1, '');
+INSERT INTO `tb_sys_menu` (`id`, `parent_id`, `menu_type`, `menu_title`, `menu_url`, `component`, `menu_icon`, `is_show`, `permission_tag`, `sort_no`, `status`, `created`, `created_by`, `modified`, `modified_by`, `remark`) VALUES (383808444358189056, 0, 0, '向量数据库', '/ai/vectordatabase', '/ai/vectorDatabase/VectorDatabaseList', 'svg:vector-database', 1, '', 90, 0, '2026-02-24 15:38:44', 1, '2026-04-10 10:56:10', 1, '');
+INSERT INTO `tb_sys_menu` (`id`, `parent_id`, `menu_type`, `menu_title`, `menu_url`, `component`, `menu_icon`, `is_show`, `permission_tag`, `sort_no`, `status`, `created`, `created_by`, `modified`, `modified_by`, `remark`) VALUES (383808702941224960, 383808444358189056, 0, '保存', '', '', '', 0, '/api/v1/vectorDatabase/save', 1, 0, '2026-02-24 15:39:46', 1, '2026-02-24 15:39:46', 1, '');
+INSERT INTO `tb_sys_menu` (`id`, `parent_id`, `menu_type`, `menu_title`, `menu_url`, `component`, `menu_icon`, `is_show`, `permission_tag`, `sort_no`, `status`, `created`, `created_by`, `modified`, `modified_by`, `remark`) VALUES (383808787234152448, 383808444358189056, 1, '查询', '', '', '', 0, '/api/v1/vectorDatabase/query', 2, 0, '2026-02-24 15:40:06', 1, '2026-02-24 15:40:06', 1, '');
+INSERT INTO `tb_sys_menu` (`id`, `parent_id`, `menu_type`, `menu_title`, `menu_url`, `component`, `menu_icon`, `is_show`, `permission_tag`, `sort_no`, `status`, `created`, `created_by`, `modified`, `modified_by`, `remark`) VALUES (383808856998010880, 383808444358189056, 1, '删除', '', '', '', 0, '/api/v1/vectorDatabase/remove', 3, 0, '2026-02-24 15:40:22', 1, '2026-02-24 15:40:22', 1, '');
 
 -- ----------------------------
 -- Records of tb_sys_role
@@ -171,6 +175,10 @@ INSERT INTO `tb_sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES (365312682603
 INSERT INTO `tb_sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES (365314158469713920, 1, 365314158356467712);
 INSERT INTO `tb_sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES (365314259057512448, 1, 365314258952654848);
 INSERT INTO `tb_sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES (365314364334542848, 1, 365314364238073856);
+INSERT INTO `tb_sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES (383808444484018176, 1, 383808444358189056);
+INSERT INTO `tb_sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES (383808703020916736, 1, 383808702941224960);
+INSERT INTO `tb_sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES (383808787355787264, 1, 383808787234152448);
+INSERT INTO `tb_sys_role_menu` (`id`, `role_id`, `menu_id`) VALUES (383808857111257088, 1, 383808856998010880);
 
 
 -- ----------------------------

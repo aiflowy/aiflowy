@@ -6,6 +6,7 @@ import com.agentsflex.core.model.rerank.RerankModel;
 import com.agentsflex.core.store.DocumentStore;
 import com.agentsflex.core.store.SearchWrapper;
 import com.agentsflex.core.store.StoreOptions;
+import com.agentsflex.core.util.CollectionUtil;
 import com.agentsflex.search.engine.service.DocumentSearcher;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
@@ -15,13 +16,16 @@ import tech.aiflowy.ai.config.SearcherFactory;
 import tech.aiflowy.ai.entity.DocumentChunk;
 import tech.aiflowy.ai.entity.DocumentCollection;
 import tech.aiflowy.ai.entity.Model;
+import tech.aiflowy.ai.entity.VectorDatabase;
 import tech.aiflowy.ai.mapper.DocumentChunkMapper;
 import tech.aiflowy.ai.mapper.DocumentCollectionMapper;
-import tech.aiflowy.ai.service.DocumentChunkService;
 import tech.aiflowy.ai.service.DocumentCollectionService;
 import tech.aiflowy.ai.service.ModelService;
+import tech.aiflowy.ai.service.VectorDatabaseService;
 import tech.aiflowy.ai.utils.CustomBeanUtils;
+import tech.aiflowy.ai.utils.DocumentScoreCalculator;
 import tech.aiflowy.ai.utils.RegexUtils;
+import tech.aiflowy.common.domain.Result;
 import tech.aiflowy.common.util.StringUtil;
 import tech.aiflowy.common.web.exceptions.BusinessException;
 
@@ -36,6 +40,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import static tech.aiflowy.ai.entity.DocumentCollection.*;
+import static tech.aiflowy.ai.entity.DocumentCollection.KEY_SEARCHER_WEIGHT;
+import static tech.aiflowy.ai.entity.DocumentCollection.KEY_VECTOR_WEIGHT;
 
 /**
  * 服务层实现。
@@ -48,16 +54,14 @@ public class DocumentCollectionServiceImpl extends ServiceImpl<DocumentCollectio
 
     @Resource
     private ModelService llmService;
-
-    @Resource
-    private DocumentChunkService chunkService;
-
     @Autowired
     private SearcherFactory searcherFactory;
-
     @Autowired
     private DocumentChunkMapper documentChunkMapper;
+    @Resource
+    private VectorDatabaseService vectorDatabaseService;
 
+    private static final Integer MAX_RECALL_DOC_NUM = 10;
 
     @Override
     public List<Document> search(BigInteger id, String keyword) {
@@ -65,8 +69,12 @@ public class DocumentCollectionServiceImpl extends ServiceImpl<DocumentCollectio
         if (documentCollection == null) {
             throw new BusinessException("知识库不存在");
         }
-
-        DocumentStore documentStore = documentCollection.toDocumentStore();
+        BigInteger vectorDatabaseId = documentCollection.getVectorDatabaseId();
+        VectorDatabase vectorDatabase = vectorDatabaseService.getById(vectorDatabaseId);
+        if (vectorDatabase == null) {
+            throw new BusinessException("向量数据库没有配置");
+        }
+        DocumentStore documentStore = vectorDatabase.toDocumentStore(documentCollection.getVectorOtherConfig());
         if (documentStore == null) {
             throw new BusinessException("知识库没有配置向量库");
         }
@@ -79,13 +87,15 @@ public class DocumentCollectionServiceImpl extends ServiceImpl<DocumentCollectio
         documentStore.setEmbeddingModel(model.toEmbeddingModel());
         // 最大召回知识条数
         Integer docRecallMaxNum = (Integer) documentCollection.getOptionsByKey(KEY_DOC_RECALL_MAX_NUM);
-        // 最低相似度
-        float minSimilarity = (float) documentCollection.getOptionsByKey(KEY_SIMILARITY_THRESHOLD);
+        // 混合最低相似度最小值
+        float minMixedSimilarity = (float) documentCollection.getOptionsByKey(KEY_MIXED_SIMILARITY_THRESHOLD);
         SearchWrapper wrapper = new SearchWrapper();
         wrapper.setMaxResults(docRecallMaxNum);
-        wrapper.setMinScore((double) minSimilarity);
+        wrapper.setMinScore((double) minMixedSimilarity);
         wrapper.setText(keyword);
-        wrapper.eq(KEY_DOCUMENT_ID, documentCollection.getId());
+        // 过滤知识库
+        Map<String, Object> metadataFilters = new HashMap<>();
+        metadataFilters.put(KEY_DOCUMENT_ID, String.valueOf(documentCollection.getId()));
         StoreOptions options = StoreOptions.ofCollectionName(documentCollection.getVectorStoreCollection());
         options.setIndexName(documentCollection.getVectorStoreCollection());
 
@@ -96,55 +106,73 @@ public class DocumentCollectionServiceImpl extends ServiceImpl<DocumentCollectio
 
         CompletableFuture<List<Document>> searcherFuture = CompletableFuture.supplyAsync(() -> {
             DocumentSearcher searcher = searcherFactory.getSearcher((String) documentCollection.getOptionsByKey(KEY_SEARCH_ENGINE_TYPE));
-            if (searcher == null || !documentCollection.isSearchEngineEnabled()) {
+            if (searcher == null) {
                 return Collections.emptyList();
             }
-            List<Document> documents = searcher.searchDocuments(keyword);
+            List<Document> documents = searcher.searchDocuments(keyword, MAX_RECALL_DOC_NUM, metadataFilters);
             return documents == null ? Collections.emptyList() : documents;
         });
 
-        // 合并两个查询结果
-        CompletableFuture<Map<String, Document>> combinedFuture = vectorFuture.thenCombine(
-                searcherFuture,
-                (vectorDocs, searcherDocs) -> {
-                    Map<String, Document> uniqueDocs = new HashMap<>();
-                    vectorDocs.forEach(doc -> uniqueDocs.putIfAbsent(doc.getId().toString(), doc));
-                    searcherDocs.forEach(doc -> uniqueDocs.putIfAbsent(doc.getId().toString(), doc));
-                    return uniqueDocs;
-                }
-        );
-
+        CompletableFuture<Void> combinedFuture = CompletableFuture.allOf(vectorFuture, searcherFuture);
         try {
-            Map<String, Document> uniqueDocs = combinedFuture.get(); // 阻塞等待所有查询完成
-            List<Document> searchDocuments = new ArrayList<>(uniqueDocs.values());
-            searchDocuments.sort((doc1, doc2) -> Double.compare(doc2.getScore(), doc1.getScore()));
-            searchDocuments.forEach(item ->{
-                DocumentChunk documentChunk = documentChunkMapper.selectOneById((Serializable) item.getId());
-                if (documentChunk != null && !StringUtil.noText(documentChunk.getContent())){
-                    item.setContent(documentChunk.getContent());
+            combinedFuture.get();
+            List<Document> vectorDocuments = vectorFuture.get();
+            List<Document> searcherDocuments = searcherFuture.get();
+            Double vectorWeight = (Double) documentCollection.getOptionsByKey(KEY_VECTOR_WEIGHT);
+            Double searcherWeight = (Double) documentCollection.getOptionsByKey(KEY_SEARCHER_WEIGHT);
+            List<Document> documents = DocumentScoreCalculator.calculateTotalScore(vectorDocuments, searcherDocuments, vectorWeight, searcherWeight);
+            List<BigInteger> chunkIds = documents.stream().map(item -> new BigInteger(String.valueOf(item.getId()))).toList();
+            if (!CollectionUtil.hasItems(chunkIds)) {
+                return Collections.emptyList();
+            }
+            List<DocumentChunk> documentChunks = documentChunkMapper.selectListByIds(chunkIds);
+            documents.forEach(item -> {
+                if (documentChunks != null) {
+                    documentChunks.forEach(documentChunk -> {
+                        if (new BigInteger((String.valueOf(item.getId())) ).equals(documentChunk.getId())) {
+                            item.setContent(documentChunk.getContent());
+                        }
+                    });
                 }
-
             });
-            if (searchDocuments.isEmpty()) {
+            if (documents.isEmpty()) {
                 return Collections.emptyList();
             }
             if (documentCollection.getRerankModelId() == null) {
-                return formatDocuments(searchDocuments, minSimilarity, docRecallMaxNum);
+                return processDocuments(documents, minMixedSimilarity, docRecallMaxNum);
             }
 
             Model modelRerank = llmService.getModelInstance(documentCollection.getRerankModelId());
 
             RerankModel rerankModel = modelRerank.toRerankModel();
             if (rerankModel == null) {
-                return formatDocuments(searchDocuments, minSimilarity, docRecallMaxNum);
+                return processDocuments(documents, minMixedSimilarity, docRecallMaxNum);
             }
 
-            searchDocuments.forEach(item -> item.setScore(null));
-            List<Document> rerankDocuments = rerankModel.rerank(keyword, searchDocuments);
-            return formatDocuments(rerankDocuments, minSimilarity, docRecallMaxNum);
+            documents.forEach(item -> item.setScore(null));
+            List<Document> rerankDocs = rerankModel.rerank(keyword, documents);
+
+            // 对score扩大100倍并保留两位小数，同时过滤掉低于最小相似度的文档
+            List<Document> filteredRerankDocs = rerankDocs.stream()
+                    .filter(document -> {
+                        Float score = document.getScore();
+                        if (score != null) {
+                            // 扩大100倍
+                            double scaledScore = score * 100;
+                            // 保留两位小数
+                            BigDecimal bd = new BigDecimal(scaledScore);
+                            bd = bd.setScale(2, RoundingMode.HALF_UP);
+                            float finalScore = bd.floatValue();
+                            document.setScore(finalScore);
+                            // 过滤掉低于最小相似度的文档
+                            return finalScore >= minMixedSimilarity*100;
+                        }
+                        return false;
+                    })
+                    .collect(Collectors.toList());
+
+            return processDocuments(filteredRerankDocs, minMixedSimilarity, docRecallMaxNum);
         } catch (InterruptedException | ExecutionException e) {
-            Thread.currentThread().interrupt();
-            e.printStackTrace();
             throw new RuntimeException(e);
         }
     }
@@ -197,32 +225,58 @@ public class DocumentCollectionServiceImpl extends ServiceImpl<DocumentCollectio
     }
 
     /**
-     * 格式化文档列表
-     *
+     * 处理文档列表：过滤低分数记录并截取指定数量
      * @param documents 文档列表
-     * @param minSimilarity 最小相似度
-     * @return 格式化后的文档列表
+     * @param minSimilarity 最小相似度阈值
+     * @param maxResults 最大结果数
+     * @return 处理后的文档列表
      */
-    public List<Document> formatDocuments(List<Document> documents, float minSimilarity, int maxResults) {
+    public List<Document> processDocuments(List<Document> documents, float minSimilarity, int maxResults) {
         return documents.stream()
-                // 过滤掉分数为空 或 分数低于最小值的文档
+                // 1. 先过滤掉分数为空 或 分数低于最小值的文档
                 .filter(document -> {
                     Float score = document.getScore();
                     return score != null && score >= minSimilarity;
                 })
-                // 格式化保留四位小数
-                .map(document -> {
-                    Float score = document.getScore();
-                    BigDecimal bd = new BigDecimal(score.toString());
-                    bd = bd.setScale(4, RoundingMode.HALF_UP);
-                    Float roundedScore = bd.floatValue();
-                    document.setScore(roundedScore);
-                    return document;
-                })
-                // 按score降序排序（分数最高的排前面）
+                // 2. 按score降序排序（分数最高的排前面）
                 .sorted(Comparator.comparing(Document::getScore, Comparator.reverseOrder()))
-                // 限制只保留前maxResults条
+                // 3. 限制只保留前maxResults条
                 .limit(maxResults)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Result<?> beforeRemove(Collection<Serializable> ids) {
+//        if (ids == null || ids.isEmpty()) {
+//            throw new BusinessException("知识库id 不能为空");
+//        }
+//        for (Serializable id : ids) {
+//            DocumentCollection documentCollection = getById(id);
+//            if (documentCollection == null) {
+//                return Result.fail(2, "知识库不存在");
+//            }
+//            QueryWrapper queryWrapper = QueryWrapper.create().eq(DocumentChunk::getDocumentCollectionId, id);
+//            List<DocumentChunk> documentChunks = documentChunkMapper.selectListByQuery(queryWrapper);
+//            List<BigInteger> chunkIds = new ArrayList<>();
+//            if (documentChunks != null) {
+//                documentChunks.forEach(item -> {
+//                    chunkIds.add(item.getId());
+//                });
+//            }
+//            DocumentStore documentStore = documentCollection.toDocumentStore();
+//            StoreOptions options = StoreOptions.ofCollectionName(documentCollection.getVectorStoreCollection());
+//
+//            if (documentStore != null) {
+//                // 删除向量数据库中的数据
+//                documentStore.delete(chunkIds, options);
+//            }
+//
+//            // 删除数据库中的文档块数据
+//            documentChunkMapper.deleteBatchByIds(chunkIds);
+//            QueryWrapper documentQueryWrapper = QueryWrapper.create().eq(tech.aiflowy.ai.entity.Document::getCollectionId, id);
+//            // 删除数据库中的文档数据
+//            documentMapper.deleteByQuery(documentQueryWrapper);
+//        }
+        return null;
     }
 }

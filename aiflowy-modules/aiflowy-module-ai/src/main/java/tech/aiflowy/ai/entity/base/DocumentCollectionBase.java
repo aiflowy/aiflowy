@@ -153,6 +153,12 @@ public class DocumentCollectionBase extends DateEntity implements Serializable {
     @Column(comment = "分类ID")
     private BigInteger categoryId;
 
+    /**
+     * 向量数据库id
+     */
+    @Column(comment = "向量数据库id")
+    private BigInteger vectorDatabaseId;
+
     public BigInteger getId() {
         return id;
     }
@@ -335,6 +341,14 @@ public class DocumentCollectionBase extends DateEntity implements Serializable {
 
     public void setCategoryId(BigInteger categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public BigInteger getVectorDatabaseId() {
+        return vectorDatabaseId;
+    }
+
+    public void setVectorDatabaseId(BigInteger vectorDatabaseId) {
+        this.vectorDatabaseId = vectorDatabaseId;
     }
 
 }

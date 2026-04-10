@@ -5,9 +5,11 @@ import com.agentsflex.core.model.embedding.EmbeddingModel;
 import tech.aiflowy.ai.entity.DocumentChunk;
 import tech.aiflowy.ai.entity.DocumentCollection;
 import tech.aiflowy.ai.entity.Model;
+import tech.aiflowy.ai.entity.VectorDatabase;
 import tech.aiflowy.ai.service.DocumentChunkService;
 import tech.aiflowy.ai.service.DocumentCollectionService;
 import tech.aiflowy.ai.service.ModelService;
+import tech.aiflowy.ai.service.VectorDatabaseService;
 import tech.aiflowy.common.annotation.UsePermission;
 import tech.aiflowy.common.domain.Result;
 import tech.aiflowy.common.web.controller.BaseCurdController;
@@ -47,6 +49,9 @@ public class DocumentChunkController extends BaseCurdController<DocumentChunkSer
     @Resource
     DocumentChunkService documentChunkService;
 
+    @Resource
+    private VectorDatabaseService vectorDatabaseService;
+
     public DocumentChunkController(DocumentChunkService service) {
         super(service);
     }
@@ -57,22 +62,30 @@ public class DocumentChunkController extends BaseCurdController<DocumentChunkSer
         boolean success = service.updateById(documentChunk);
         if (success){
             DocumentChunk record = documentChunkService.getById(documentChunk.getId());
-            DocumentCollection knowledge = documentCollectionService.getById(record.getDocumentCollectionId());
-            if (knowledge == null) {
+            DocumentCollection documentCollection = null;
+            if (record != null) {
+                documentCollection = documentCollectionService.getById(record.getDocumentCollectionId());
+            }
+            if (documentCollection == null) {
                 return Result.fail(1, "知识库不存在");
             }
-            DocumentStore documentStore = knowledge.toDocumentStore();
-            if (documentStore == null) {
+            BigInteger vectorDatabaseId = documentCollection.getVectorDatabaseId();
+            VectorDatabase vectorDatabase = vectorDatabaseService.getById(vectorDatabaseId);
+            if (vectorDatabase == null) {
                 return Result.fail(2, "知识库没有配置向量库");
             }
+            DocumentStore documentStore = vectorDatabase.toDocumentStore(documentCollection.getVectorOtherConfig());
+            if (documentStore == null) {
+                return Result.fail(3, "知识库没有配置向量库");
+            }
             // 设置向量模型
-            Model model = modelService.getModelInstance(knowledge.getVectorEmbedModelId());
+            Model model = modelService.getModelInstance(documentCollection.getVectorEmbedModelId());
             if (model == null) {
-                return Result.fail(3, "知识库没有配置向量模型");
+                return Result.fail(4, "知识库没有配置向量模型");
             }
             EmbeddingModel embeddingModel = model.toEmbeddingModel();
             documentStore.setEmbeddingModel(embeddingModel);
-            StoreOptions options = StoreOptions.ofCollectionName(knowledge.getVectorStoreCollection());
+            StoreOptions options = StoreOptions.ofCollectionName(documentCollection.getVectorStoreCollection());
             Document document = Document.of(documentChunk.getContent());
             document.setId(documentChunk.getId());
             Map<String, Object> metadata = new HashMap<>();
@@ -96,14 +109,22 @@ public class DocumentChunkController extends BaseCurdController<DocumentChunkSer
         if (knowledge == null) {
             return Result.fail(2, "知识库不存在");
         }
-        DocumentStore documentStore = knowledge.toDocumentStore();
-        if (documentStore == null) {
+        BigInteger vectorDatabaseId = knowledge.getVectorDatabaseId();
+        VectorDatabase vectorDatabase = vectorDatabaseService.getById(vectorDatabaseId);
+        DocumentStore documentStore = null;
+        if (vectorDatabase != null) {
+            documentStore = vectorDatabase.toDocumentStore(knowledge.getVectorOtherConfig());
+        }
+        if (vectorDatabase == null) {
             return Result.fail(3, "知识库没有配置向量库");
+        }
+        if (documentStore == null) {
+            return Result.fail(4, "知识库没有配置向量库");
         }
         // 设置向量模型
         Model model = modelService.getModelInstance(knowledge.getVectorEmbedModelId());
         if (model == null) {
-            return Result.fail(4, "知识库没有配置向量模型");
+            return Result.fail(5, "知识库没有配置向量模型");
         }
         EmbeddingModel embeddingModel = model.toEmbeddingModel();
         documentStore.setEmbeddingModel(embeddingModel);

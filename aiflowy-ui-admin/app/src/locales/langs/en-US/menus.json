@@ -23,7 +23,8 @@
     "model": "Model",
     "documentCollection": "DocumentCollection",
     "knowledge": "DocumentManagement",
-    "mcp": "MCP"
+    "mcp": "MCP",
+    "vectorDatabase": "VectorDatabase"
   },
   "settings": {
     "title": "SettingsConfiguration",

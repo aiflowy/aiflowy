@@ -258,6 +258,7 @@ CREATE TABLE `tb_document_collection`
     `search_engine_enable`      tinyint(1) NULL DEFAULT NULL COMMENT '是否启用搜索引擎',
     `english_name`              varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '英文名称',
     `category_id`               bigint(0) UNSIGNED NULL DEFAULT NULL COMMENT '分类ID',
+    `vector_database_id`        bigint(0) UNSIGNED NULL DEFAULT NULL COMMENT '向量数据库id',
     PRIMARY KEY (`id`) USING BTREE,
     UNIQUE INDEX `tb_ai_knowledge_alias_uindex`(`alias`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '知识库' ROW_FORMAT = Dynamic;
@@ -1142,6 +1143,26 @@ CREATE TABLE `tb_bot_mcp`
     `mcp_tool_description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT 'mcp工具描述',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for tb_vector_database
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_vector_database`;
+CREATE TABLE `tb_vector_database`
+(
+    `id`             bigint UNSIGNED NOT NULL COMMENT '主键ID',
+    `dept_id`        bigint UNSIGNED NOT NULL COMMENT '部门ID',
+    `tenant_id`      bigint UNSIGNED NOT NULL COMMENT '租户ID',
+    `title`          varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '名称',
+    `type`           varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT '0' COMMENT '向量数据库类型',
+    `config_options` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '向量数据库配置',
+    `options`        text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL COMMENT '选项',
+    `created`        datetime NULL DEFAULT NULL COMMENT '创建时间',
+    `created_by`     bigint UNSIGNED NULL DEFAULT NULL COMMENT '创建者ID',
+    `modified`       datetime NULL DEFAULT NULL COMMENT '修改时间',
+    `modified_by`    bigint UNSIGNED NULL DEFAULT NULL COMMENT '修改者ID',
+    PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '向量数据库表' ROW_FORMAT = Dynamic;
 
 SET
 FOREIGN_KEY_CHECKS = 1;

@@ -10,6 +10,7 @@
   "slug": "URL 别名",
   "vectorStoreEnable": "是否启用向量数据库",
   "vectorStoreType": "向量数据库类型",
+  "vectorDatabaseId": "向量数据库",
   "vectorStoreCollection": "向量数据库集合",
   "vectorStoreConfig": "向量数据库配置",
   "vectorEmbedLlmId": "向量模型",

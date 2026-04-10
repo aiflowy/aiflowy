@@ -25,6 +25,14 @@
   "unit": {
     "count": "条"
   },
+  "vectorWeight": {
+    "label": "向量相似度权重",
+    "tooltip": "向量相似度权重"
+  },
+  "searcherWeight": {
+    "label": "关键词相似度权重",
+    "tooltip": "关键词相似度权重"
+  },
   "searchEngineType": {
     "label": "搜索引擎类型",
     "placeholder": "请选择搜索引擎类型",

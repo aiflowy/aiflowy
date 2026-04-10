@@ -20,6 +20,7 @@ import tech.aiflowy.common.util.StringUtil;
 import tech.aiflowy.common.web.exceptions.BusinessException;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -38,14 +39,24 @@ public class DocumentCollection extends DocumentCollectionBase {
     public static final String KEY_DOCUMENT_ID = "documentCollectionId";
 
     /**
-     * 文档块问题集合配置key
+     * 向量相似度权重
      */
-    public static final String KEY_CHUNK_QUESTION_VECTOR_STORE_COLLECTION = "chunkQuestionVectorStoreCollection";
+    public static final String KEY_VECTOR_WEIGHT = "vectorWeight";
 
     /**
-     * 文档块摘要集合配置key
+     * 混合相似度最小值
      */
-    public static final String KEY_CHUNK_SUMMARY_VECTOR_STORE_COLLECTION = "chunkSummaryVectorStoreCollection";
+    public static final String KEY_MIXED_SIMILARITY_THRESHOLD = "mixedSimThreshold";
+
+    /**
+     * 是否允许更新向量模型
+     */
+    public static final String KEY_CAN_UPDATE_EMBEDDING_MODEL = "canUpdateEmbeddingModel";
+
+    /**
+     * 搜索引擎权重
+     */
+    public static final String KEY_SEARCHER_WEIGHT = "searcherWeight";
 
     /**
      * 知识召回最大条数
@@ -62,77 +73,17 @@ public class DocumentCollection extends DocumentCollectionBase {
      */
     public static final String KEY_SEARCH_ENGINE_TYPE = "searchEngineType";
 
-    /**
-     * 是否允许更新向量模型
-     */
-    public static final String KEY_CAN_UPDATE_EMBEDDING_MODEL = "canUpdateEmbeddingModel";
-
-    public DocumentStore toDocumentStore() {
-        String storeType = this.getVectorStoreType();
-        if (StringUtil.noText(storeType)) {
-            throw new BusinessException("向量数据库类型未设置");
-        }
-        if (storeType == null) {
-            return null;
-        }
-        switch (storeType.toLowerCase()) {
-            case "redis":
-                return redisStore();
-//            case "milvus":
-//                return milvusStore();
-            case "opensearch":
-                return openSearchStore();
-            case "elasticsearch":
-                return elasticSearchStore();
-            case "aliyun":
-                return aliyunStore();
-            case "qcloud":
-                return qcloudStore();
-        }
-        return null;
-    }
-
-    public boolean isVectorStoreEnabled() {
-        return this.getVectorStoreEnable() != null && this.getVectorStoreEnable();
-    }
+    public static final String KEY_COLLECTION_NAME = "collectionName";
 
     public boolean isSearchEngineEnabled() {
         return this.getSearchEngineEnable() != null && this.getSearchEngineEnable();
     }
 
-
-    private DocumentStore redisStore() {
-        RedisVectorStoreConfig redisVectorStoreConfig = getStoreConfig(RedisVectorStoreConfig.class);
-        return new RedisVectorStore(redisVectorStoreConfig);
-    }
-
-//    private DocumentStore milvusStore() {
-//        MilvusVectorStoreConfig milvusVectorStoreConfig = getStoreConfig(MilvusVectorStoreConfig.class);
-//        return new MilvusVectorStore(milvusVectorStoreConfig);
-//    }
-
-    private DocumentStore openSearchStore() {
-        OpenSearchVectorStoreConfig openSearchVectorStoreConfig = getStoreConfig(OpenSearchVectorStoreConfig.class);
-        return new OpenSearchVectorStore(openSearchVectorStoreConfig);
-    }
-
-    private DocumentStore elasticSearchStore() {
-        ElasticSearchVectorStoreConfig elasticSearchVectorStoreConfig = getStoreConfig(ElasticSearchVectorStoreConfig.class);
-        return new ElasticSearchVectorStore(elasticSearchVectorStoreConfig);
-    }
-
-    private DocumentStore aliyunStore() {
-        AliyunVectorStoreConfig aliyunVectorStoreConfig = getStoreConfig(AliyunVectorStoreConfig.class);
-        return new AliyunVectorStore(aliyunVectorStoreConfig);
-    }
-
-    private DocumentStore qcloudStore() {
-        QCloudVectorStoreConfig qCloudVectorStoreConfig = getStoreConfig(QCloudVectorStoreConfig.class);
-        return new QCloudVectorStore(qCloudVectorStoreConfig);
-    }
-
-    private <T> T getStoreConfig(Class<T> clazz) {
-        return PropertiesUtil.propertiesTextToEntity(this.getVectorStoreConfig(), clazz);
+    // 获取向量数据库的其他数据配置
+    public Map<String, Object> getVectorOtherConfig  (){
+        Map<String, Object> config = new HashMap<>();
+        config.put(KEY_COLLECTION_NAME, this.getVectorStoreCollection());
+        return config;
     }
 
     public Tool toFunction(boolean needEnglishName) {
@@ -158,6 +109,32 @@ public class DocumentCollection extends DocumentCollectionBase {
         if (KEY_SEARCH_ENGINE_TYPE.equals(key)) {
             if (!options.containsKey(KEY_SEARCH_ENGINE_TYPE)) {
                 return "lucene";
+            }
+        }
+        if (KEY_MIXED_SIMILARITY_THRESHOLD.equals(key)) {
+            if (!options.containsKey(KEY_MIXED_SIMILARITY_THRESHOLD)) {
+                return 0.2f;
+            } else {
+                BigDecimal score = (BigDecimal) options.get(key);
+                return (float) score.doubleValue();
+            }
+        }
+        if (KEY_VECTOR_WEIGHT.equals(key)) {
+            if (!options.containsKey(KEY_VECTOR_WEIGHT)) {
+                return 0.7;
+            } else {
+                Object obj = options.get(key);
+                BigDecimal score = (obj == null) ? BigDecimal.ZERO : new BigDecimal(obj.toString());
+                return score.doubleValue();
+            }
+        }
+        if (KEY_SEARCHER_WEIGHT.equals(key)) {
+            if (!options.containsKey(KEY_SEARCHER_WEIGHT)) {
+                return 0.3;
+            } else {
+                Object obj = options.get(key);
+                BigDecimal score = (obj == null) ? BigDecimal.ZERO : new BigDecimal(obj.toString());
+                return score.doubleValue();
             }
         }
         return options.get(key);

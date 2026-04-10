@@ -105,6 +105,7 @@ watchDebounced(
         'svg:user-feedback',
         'svg:oauth',
         'svg:mcp',
+        'svg:vector-database',
         ...(await fetchIconsData(prefix)),
       ];
     }

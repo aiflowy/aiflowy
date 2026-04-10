@@ -30,7 +30,7 @@ public class AIModuleGen {
 
     public static GlobalConfig createGlobalConfig() {
 
-        String optionsColumns = "options,vector_store_options,model_options";
+        String optionsColumns = "options,vector_store_options,model_options,config_options";
 
         //创建配置内容
         GlobalConfig globalConfig = Util.createBaseConfig(optionsColumns);
@@ -44,7 +44,7 @@ public class AIModuleGen {
                 , "tb_model", "tb_model_provider"
                 , "tb_plugin", "tb_plugin_category", "tb_plugin_category_mapping", "tb_plugin_item"
                 , "tb_resource", "tb_resource_category"
-                , "tb_workflow", "tb_workflow_category", "tb_workflow_exec_result", "tb_workflow_exec_step", "tb_mcp", "tb_bot_mcp"
+                , "tb_workflow", "tb_workflow_category", "tb_workflow_exec_result", "tb_workflow_exec_step", "tb_mcp", "tb_bot_mcp", "tb_vector_database"
         );
 
         String sourceDir = System.getProperty("user.dir") + "/aiflowy-modules/aiflowy-module-ai/src/main/java";

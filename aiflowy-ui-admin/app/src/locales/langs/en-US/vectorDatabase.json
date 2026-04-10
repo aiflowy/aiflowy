@@ -1,0 +1,23 @@
+{
+  "id": "Id",
+  "deptId": "DeptId",
+  "tenantId": "TenantId",
+  "title": "Title",
+  "type": "Type",
+  "options": "Options",
+  "created": "Created",
+  "createdBy": "CreatedBy",
+  "modified": "Modified",
+  "modifiedBy": "ModifiedBy",
+  "host": "Host",
+  "port": "Port",
+  "username": "Username",
+  "password": "Password",
+  "apiKey": "ApiKey",
+  "endpoint": "Endpoint",
+  "agreement": "Agreement",
+  "configurationCheck": "ConfigurationCheck",
+  "chooseVectorModel": "ChooseVectorModel",
+  "embeddingModel": "EmbeddingModel",
+  "collectionName": "CollectionName"
+}

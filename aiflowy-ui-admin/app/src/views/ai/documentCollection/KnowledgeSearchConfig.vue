@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 
 import { $t } from '@aiflowy/locales';
 
@@ -12,7 +12,7 @@ import {
   ElMessage,
   ElOption,
   ElSelect,
-  ElSwitch,
+  ElTag,
   ElTooltip,
 } from 'element-plus';
 
@@ -29,17 +29,25 @@ onMounted(() => {
   getDocumentCollectionConfig();
 });
 const searchEngineEnable = ref(false);
+const documentCollectionInfo = ref<any>(null);
 const getDocumentCollectionConfig = () => {
   api
     .get(`/api/v1/documentCollection/detail?id=${props.documentCollectionId}`)
     .then((res) => {
       const { data } = res;
-      searchConfig.docRecallMaxNum = data.options.docRecallMaxNum
-        ? Number(data.options.docRecallMaxNum)
-        : 5;
-      searchConfig.simThreshold = data.options.simThreshold
-        ? Number(data.options.simThreshold)
-        : 0.5;
+      documentCollectionInfo.value = res.data;
+      searchConfig.docRecallMaxNum =
+        data.options.docRecallMaxNum === null
+          ? 5
+          : Number(data.options.docRecallMaxNum);
+      searchConfig.vectorWeight =
+        data.options.vectorWeight === null
+          ? 0.6
+          : Number(data.options.vectorWeight);
+      searchConfig.searcherWeight =
+        data.options.searcherWeight === null
+          ? 0.3
+          : Number(data.options.searcherWeight);
       searchConfig.searchEngineType = data.options.searchEngineType || 'lucene';
       searchEngineEnable.value = !!data.searchEngineEnable;
     });
@@ -47,16 +55,37 @@ const getDocumentCollectionConfig = () => {
 
 const searchConfig = reactive({
   docRecallMaxNum: 5,
-  simThreshold: 0.5,
+  // 向量相似度权重
+  vectorWeight: 0.7,
+  searcherWeight: 0.3,
   searchEngineType: 'lucene',
 });
 
+const weightTotal = computed(
+  () =>
+    Number(searchConfig.vectorWeight || 0) +
+    Number(searchConfig.searcherWeight || 0),
+);
+computed(() => {
+  const total = weightTotal.value;
+  if (Math.abs(total - 1) < 0.0001) return 'success';
+  if (total < 1) return 'warning';
+  return 'danger';
+});
 const submitConfig = () => {
+  if (Math.abs(weightTotal.value - 1) > 0.0001) {
+    ElMessage.error('向量、关键词权重之和必须等于 1');
+    return;
+  }
+  // 提交时可根据需要决定是否传递 searchEngineEnable
   const submitData = {
     id: props.documentCollectionId,
+    ...documentCollectionInfo.value,
     options: {
       docRecallMaxNum: searchConfig.docRecallMaxNum,
-      simThreshold: searchConfig.simThreshold,
+      // 向量权重
+      vectorWeight: searchConfig.vectorWeight,
+      searcherWeight: searchConfig.searcherWeight,
       searchEngineType: searchConfig.searchEngineType,
     },
     searchEngineEnable: searchEngineEnable.value,
@@ -83,12 +112,6 @@ const searchEngineOptions = [
     value: 'elasticSearch',
   },
 ];
-const handleSearchEngineEnableChange = () => {
-  api.post('/api/v1/documentCollection/update', {
-    id: props.documentCollectionId,
-    searchEngineEnable: searchEngineEnable.value,
-  });
-};
 </script>
 
 <template>
@@ -133,11 +156,37 @@ const handleSearchEngineEnableChange = () => {
         </div>
       </ElFormItem>
 
-      <ElFormItem prop="simThreshold" class="form-item">
+      <!--      <ElFormItem prop="mixedSimThreshold" class="form-item">-->
+      <!--        <div class="form-item-label">-->
+      <!--          <span>{{-->
+      <!--            $t('documentCollectionSearch.mixedSimThreshold.label')-->
+      <!--          }}</span>-->
+      <!--          <ElTooltip-->
+      <!--            :content="$t('documentCollectionSearch.mixedSimThreshold.tooltip')"-->
+      <!--            placement="top"-->
+      <!--            effect="dark"-->
+      <!--            class="label-tooltip"-->
+      <!--          >-->
+      <!--            <InfoFilled class="info-icon" />-->
+      <!--          </ElTooltip>-->
+      <!--        </div>-->
+      <!--        <div class="form-item-content">-->
+      <!--          <ElInputNumber-->
+      <!--            v-model="searchConfig.mixedSimThreshold"-->
+      <!--            :min="0"-->
+      <!--            :max="1"-->
+      <!--            :step="0.01"-->
+      <!--            show-input-->
+      <!--            class="form-control"-->
+      <!--          />-->
+      <!--        </div>-->
+      <!--      </ElFormItem>-->
+
+      <ElFormItem prop="vectorWeight" class="form-item">
         <div class="form-item-label">
-          <span>{{ $t('documentCollectionSearch.simThreshold.label') }}</span>
+          <span>{{ $t('documentCollectionSearch.vectorWeight.label') }}</span>
           <ElTooltip
-            :content="$t('documentCollectionSearch.simThreshold.tooltip')"
+            :content="$t('documentCollectionSearch.vectorWeight.tooltip')"
             placement="top"
             effect="dark"
             class="label-tooltip"
@@ -147,7 +196,7 @@ const handleSearchEngineEnableChange = () => {
         </div>
         <div class="form-item-content">
           <ElInputNumber
-            v-model="searchConfig.simThreshold"
+            v-model="searchConfig.vectorWeight"
             :min="0"
             :max="1"
             :step="0.01"
@@ -157,14 +206,11 @@ const handleSearchEngineEnableChange = () => {
         </div>
       </ElFormItem>
 
-      <!-- 搜索引擎启用开关 -->
-      <ElFormItem class="form-item">
+      <ElFormItem prop="searcherWeight" class="form-item">
         <div class="form-item-label">
-          <span>{{
-            $t('documentCollectionSearch.searchEngineEnable.label')
-          }}</span>
+          <span>{{ $t('documentCollectionSearch.searcherWeight.label') }}</span>
           <ElTooltip
-            :content="$t('documentCollectionSearch.searchEngineEnable.tooltip')"
+            :content="$t('documentCollectionSearch.searcherWeight.tooltip')"
             placement="top"
             effect="dark"
             class="label-tooltip"
@@ -173,17 +219,45 @@ const handleSearchEngineEnableChange = () => {
           </ElTooltip>
         </div>
         <div class="form-item-content">
-          <ElSwitch
-            v-model="searchEngineEnable"
-            @change="handleSearchEngineEnableChange"
-            :active-text="$t('documentCollectionSearch.switch.on')"
-            :inactive-text="$t('documentCollectionSearch.switch.off')"
-            class="form-control switch-control"
+          <ElInputNumber
+            v-model="searchConfig.searcherWeight"
+            :min="0"
+            :max="1"
+            :step="0.01"
+            show-input
+            class="form-control"
           />
         </div>
       </ElFormItem>
 
-      <!-- 通过 searchEngineEnable 控制显示/隐藏 -->
+      <ElFormItem class="form-item weight-total-item">
+        <div class="form-item-label">
+          <span>权重总和</span>
+          <ElTooltip
+            content="向量、关键词权重之和必须等于1"
+            placement="top"
+            effect="dark"
+            class="label-tooltip"
+          >
+            <InfoFilled class="info-icon" />
+          </ElTooltip>
+        </div>
+        <div class="form-item-content weight-total-content">
+          <ElTag
+            size="large"
+            effect="dark"
+            class="weight-total-tag"
+            :style="{
+              backgroundColor: 'var(--el-color-primary)',
+              borderColor: 'var(--el-color-primary)',
+              color: '#fff',
+            }"
+          >
+            {{ weightTotal.toFixed(2) }}
+          </ElTag>
+        </div>
+      </ElFormItem>
+
       <ElFormItem
         v-if="searchEngineEnable"
         prop="searchEngineType"
@@ -299,6 +373,37 @@ const handleSearchEngineEnableChange = () => {
   width: auto;
   flex: none;
   min-width: 80px;
+}
+
+.weight-total-item {
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+}
+
+.weight-total-item .form-item-label {
+  margin: 0;
+  flex: 1;
+}
+
+.weight-total-item .form-item-content {
+  margin-top: 0;
+  flex: 1;
+  width: auto;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.weight-total-content {
+  justify-content: flex-end;
+}
+
+.weight-total-tag {
+  margin-left: auto;
+  min-width: 90px;
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
 .info-icon {

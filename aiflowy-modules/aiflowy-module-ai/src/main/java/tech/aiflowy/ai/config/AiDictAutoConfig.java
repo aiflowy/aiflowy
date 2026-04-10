@@ -23,6 +23,8 @@ public class AiDictAutoConfig {
     private ResourceCategoryMapper resourceCategoryMapper;
     @Resource
     private DocumentCollectionCategoryMapper documentCollectionCategoryMapper;
+    @Resource
+    private VectorDatabaseMapper vectorDatabaseMapper;
 
     @EventListener(ApplicationReadyEvent.class)
     public void onApplicationStartup() {
@@ -33,6 +35,7 @@ public class AiDictAutoConfig {
         dictManager.putLoader(new DbDataLoader<>("aiBotCategory", botCategoryMapper, "id", "category_name", null, null, false));
         dictManager.putLoader(new DbDataLoader<>("aiResourceCategory", resourceCategoryMapper, "id", "category_name", null, null, false));
         dictManager.putLoader(new DbDataLoader<>("aiDocumentCollectionCategory", documentCollectionCategoryMapper, "id", "category_name", null, null, false));
+        dictManager.putLoader(new DbDataLoader<>("vectorDatabase", vectorDatabaseMapper, "id", "title", null, null, false));
 
     }
 }

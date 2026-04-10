@@ -10,6 +10,7 @@
   "slug": "Slug",
   "vectorStoreEnable": "VectorStoreEnable",
   "vectorStoreType": "VectorStoreType",
+  "vectorDatabaseId": "VectorDatabase",
   "vectorStoreCollection": "VectorStoreCollection",
   "vectorStoreConfig": "VectorStoreConfig",
   "vectorEmbedLlmId": "VectorEmbedLlm",

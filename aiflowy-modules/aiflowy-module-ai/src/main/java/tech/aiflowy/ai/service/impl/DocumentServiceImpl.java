@@ -32,10 +32,7 @@ import static tech.aiflowy.ai.entity.table.DocumentChunkTableDef.DOCUMENT_CHUNK;
 import static tech.aiflowy.ai.entity.table.DocumentTableDef.DOCUMENT;
 import tech.aiflowy.ai.mapper.DocumentChunkMapper;
 import tech.aiflowy.ai.mapper.DocumentMapper;
-import tech.aiflowy.ai.service.DocumentChunkService;
-import tech.aiflowy.ai.service.DocumentService;
-import tech.aiflowy.ai.service.DocumentCollectionService;
-import tech.aiflowy.ai.service.ModelService;
+import tech.aiflowy.ai.service.*;
 import tech.aiflowy.common.ai.rag.ExcelDocumentSplitter;
 import tech.aiflowy.common.domain.Result;
 import tech.aiflowy.common.filestorage.FileStorageService;
@@ -81,6 +78,9 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
     @Autowired
     private SearcherFactory searcherFactory;
 
+    @Resource
+    private VectorDatabaseService vectorDatabaseService;
+
     @Override
     public Page<Document> getDocumentList(String knowledgeId, int pageSize, int pageNum, String fileName) {
         QueryWrapper queryWrapper=QueryWrapper.create()
@@ -120,7 +120,12 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
         }
 
         // 存储到知识库
-        DocumentStore documentStore = knowledge.toDocumentStore();
+        BigInteger vectorDatabaseId = knowledge.getVectorDatabaseId();
+        VectorDatabase vectorDatabase = vectorDatabaseService.getById(vectorDatabaseId);
+        if (vectorDatabase == null) {
+            return false;
+        }
+        DocumentStore documentStore = vectorDatabase.toDocumentStore(knowledge.getVectorOtherConfig());
         if (documentStore == null) {
             return false;
         }
@@ -251,7 +256,12 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
         }
         DocumentStore documentStore = null;
         try {
-            documentStore = knowledge.toDocumentStore();
+            BigInteger vectorDatabaseId = knowledge.getVectorDatabaseId();
+            VectorDatabase vectorDatabase = vectorDatabaseService.getById(vectorDatabaseId);
+            if (vectorDatabase == null) {
+                throw new BusinessException("向量数据库不存在");
+            }
+            documentStore = vectorDatabase.toDocumentStore(knowledge.getVectorOtherConfig());
         } catch (Exception e) {
             Log.error(e.getMessage());
             throw new BusinessException("向量数据库配置错误");
@@ -278,7 +288,7 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
         List<com.agentsflex.core.document.Document> documents = new ArrayList<>();
         documentChunks.forEach(item -> {
                     com.agentsflex.core.document.Document document = new com.agentsflex.core.document.Document();
-                    document.setId(item.getId());
+                    document.setId(String.valueOf(item.getId()));
                     document.setContent(item.getContent());
                     Map<String, Object> metadata = new HashMap<>();
                     metadata.put(DocumentCollection.KEY_DOCUMENT_ID, knowledge.getId());
@@ -295,15 +305,17 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
         }
         if  (result == null || !result.isSuccess()) {
             Log.error("DocumentStore.store failed: " + result);
-            throw new BusinessException("DocumentStore.store failed");
+            if (result != null) {
+                throw new BusinessException("DocumentStore.store failed" + result.getMessage());
+            } else {
+                throw new BusinessException("DocumentStore.store failed");
+            }
         }
 
-        if (knowledge.isSearchEngineEnabled()) {
-            // 获取搜索引擎
-            DocumentSearcher searcher = searcherFactory.getSearcher((String) knowledge.getOptionsByKey(KEY_SEARCH_ENGINE_TYPE));
-            // 添加到搜索引擎
-            documents.forEach(searcher::addDocument);
-        }
+        // 获取搜索引擎
+        DocumentSearcher searcher = searcherFactory.getSearcher((String) knowledge.getOptionsByKey(KEY_SEARCH_ENGINE_TYPE));
+        // 添加到搜索引擎
+        documents.forEach(searcher::addDocument);
 
         DocumentCollection documentCollection = new DocumentCollection();
         documentCollection.setId(entity.getCollectionId());
