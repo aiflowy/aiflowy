@@ -198,6 +198,14 @@ public class BaseCurdController<S extends IService<M>, M> extends BaseController
 
         Map<String, String> propertyColumnMapping = TableInfoFactory.ofEntityClass(getEntityClass())
                 .getPropertyColumnMapping();
+
+        // 统一的“数据状态”默认过滤：如果实体存在 status 字段且前端未显式传 status，则默认查询 status=0。
+        // 典型场景：软删除（删除时将 status 置为非 0）后，分页接口仍能查到已删除数据。
+        if (!parameterMap.containsKey("status") && propertyColumnMapping.containsKey("status")) {
+            String statusColumn = propertyColumnMapping.get("status");
+            queryWrapper.eq(statusColumn, 0);
+        }
+
         for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
             String paramKey = entry.getKey();
             if (StringUtil.hasText(paramKey) && !paramKey.endsWith(OperatorBuilder.operatorSuffix) && propertyColumnMapping.containsKey(paramKey)) {
