@@ -12,6 +12,7 @@ import com.agentsflex.core.model.embedding.EmbeddingOptions;
 import com.agentsflex.core.store.DocumentStore;
 import com.agentsflex.core.store.StoreOptions;
 import com.agentsflex.core.store.StoreResult;
+import com.agentsflex.core.util.CollectionUtil;
 import com.agentsflex.search.engine.service.DocumentSearcher;
 import com.mybatisflex.core.keygen.impl.FlexIDKeyGenerator;
 import com.mybatisflex.core.paginate.Page;
@@ -46,6 +47,7 @@ import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * 服务层实现。
@@ -144,20 +146,27 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
         QueryWrapper queryWrapper = QueryWrapper.create()
                 .select(DOCUMENT_CHUNK.ID).eq(DocumentChunk::getDocumentId, id);
         List<BigInteger> chunkIds = documentChunkMapper.selectListByQueryAs(queryWrapper, BigInteger.class);
-        documentStore.delete(chunkIds, options);
-        // 删除搜索引擎中的数据
-        String searchEngineType = (String) knowledge.getOptionsByKey(KEY_SEARCH_ENGINE_TYPE);
-        DocumentSearcher searcher = searcherFactory.getSearcher(searchEngineType, knowledge.getId());
-        if (searcher != null) {
-            chunkIds.forEach(searcher::deleteDocument);
+        if (CollectionUtil.hasItems(chunkIds)) {
+            List<String> stringChunkIds = chunkIds.stream()
+                    .map(BigInteger::toString)
+                    .toList();
+            documentStore.delete(stringChunkIds, options);
+            // 删除搜索引擎中的数据
+            DocumentSearcher searcher = searcherFactory.getSearcher(knowledge.getId());
+            if (searcher != null) {
+                chunkIds.forEach(searcher::deleteDocument);
+            }
         }
+
         int ck = documentChunkMapper.deleteByQuery(QueryWrapper.create().eq(DocumentChunk::getDocumentId, id));
         if (ck < 0) {
             return false;
         }
         // 再删除指定路径下的文件
         Document document = documentMapper.selectOneByQuery(queryWrapperDocument);
-        storageService.delete(document.getDocumentPath());
+        if (document != null) {
+            storageService.delete(document.getDocumentPath());
+        }
         return true;
     }
 
@@ -314,7 +323,7 @@ public class DocumentServiceImpl extends ServiceImpl<DocumentMapper, Document> i
         }
 
         // 获取搜索引擎（传入知识库ID以使用独立的索引目录）
-        DocumentSearcher searcher = searcherFactory.getSearcher((String) knowledge.getOptionsByKey(KEY_SEARCH_ENGINE_TYPE), knowledge.getId());
+        DocumentSearcher searcher = searcherFactory.getSearcher(knowledge.getId());
         // 添加到搜索引擎
         if (searcher != null) {
             documents.forEach(searcher::addDocument);

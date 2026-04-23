@@ -10,6 +10,7 @@
   "embeddingModel": "向量模型",
   "chatModel": "对话模型",
   "rerankModel": "重排模型",
+  "ocrModel": "OCR模型",
   "model": "模型",
   "apiType": "API类型"
 }

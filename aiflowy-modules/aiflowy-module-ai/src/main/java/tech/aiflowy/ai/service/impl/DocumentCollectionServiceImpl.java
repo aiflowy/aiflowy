@@ -11,6 +11,7 @@ import com.agentsflex.search.engine.service.DocumentSearcher;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import tech.aiflowy.ai.config.SearcherFactory;
 import tech.aiflowy.ai.entity.DocumentChunk;
@@ -63,6 +64,8 @@ public class DocumentCollectionServiceImpl extends ServiceImpl<DocumentCollectio
     private VectorDatabaseService vectorDatabaseService;
     @Resource
     private DocumentMapper documentMapper;
+    @Value("${rag.searcher.type}")
+    private String defaultSearcherType;
     private static final Integer MAX_RECALL_DOC_NUM = 10;
 
     @Override
@@ -95,9 +98,6 @@ public class DocumentCollectionServiceImpl extends ServiceImpl<DocumentCollectio
         wrapper.setMaxResults(docRecallMaxNum);
         wrapper.setMinScore((double) minMixedSimilarity);
         wrapper.setText(keyword);
-        // 过滤知识库
-        Map<String, Object> metadataFilters = new HashMap<>();
-        metadataFilters.put(KEY_DOCUMENT_ID, String.valueOf(documentCollection.getId()));
         StoreOptions options = StoreOptions.ofCollectionName(documentCollection.getVectorStoreCollection());
         options.setIndexName(documentCollection.getVectorStoreCollection());
 
@@ -107,13 +107,11 @@ public class DocumentCollectionServiceImpl extends ServiceImpl<DocumentCollectio
         );
 
         CompletableFuture<List<Document>> searcherFuture = CompletableFuture.supplyAsync(() -> {
-            DocumentSearcher searcher = searcherFactory.getSearcher(
-                    (String) documentCollection.getOptionsByKey(KEY_SEARCH_ENGINE_TYPE),
-                    documentCollection.getId());
+            DocumentSearcher searcher = searcherFactory.getSearcher(documentCollection.getId());
             if (searcher == null) {
                 return Collections.emptyList();
             }
-            List<Document> documents = searcher.searchDocuments(keyword, MAX_RECALL_DOC_NUM, metadataFilters);
+            List<Document> documents = searcher.searchDocuments(keyword, MAX_RECALL_DOC_NUM);
             return documents == null ? Collections.emptyList() : documents;
         });
 
@@ -285,11 +283,10 @@ public class DocumentCollectionServiceImpl extends ServiceImpl<DocumentCollectio
                 documentStore.delete(stringDocIds, options);
             }
             // 删除搜索引擎中的数据 - 直接删除整个知识库目录
-            String searchEngineType = (String) documentCollection.getOptionsByKey(KEY_SEARCH_ENGINE_TYPE);
-            if ("lucene".equals(searchEngineType)) {
+            if ("lucene".equals(defaultSearcherType)) {
                 searcherFactory.deleteCollectionIndex(documentCollectionId);
             } else {
-                DocumentSearcher searcher = searcherFactory.getSearcher(searchEngineType);
+                DocumentSearcher searcher = searcherFactory.getSearcher(documentCollectionId);
                 if (searcher != null) {
                     chunkIds.forEach(searcher::deleteDocument);
                 }

@@ -41,6 +41,12 @@
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-core</artifactId>
         </dependency>
+
+        <!--pdf： wkhtmltopdf-->
+        <dependency>
+            <groupId>com.github.jhonnymertz</groupId>
+            <artifactId>java-wkhtmltopdf-wrapper</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

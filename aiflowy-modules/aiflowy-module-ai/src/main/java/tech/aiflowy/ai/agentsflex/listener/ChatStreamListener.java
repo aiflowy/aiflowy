@@ -64,10 +64,7 @@ public class ChatStreamListener implements StreamResponseListener {
             if (aiMessage.isFinalDelta() && aiMessageResponse.hasToolCalls()) {
                 this.canStop = false; // 工具调用期间，禁止执行onStop
                 this.hasToolCall = true; // 标记已进入过工具调用
-                List<ToolCall> toolCalls = aiMessageResponse.getMessage().getToolCalls();
-                AiMessage aiMessageToolCalls = new AiMessage();
-                aiMessageToolCalls.setToolCalls(toolCalls);
-                memoryPrompt.addMessage(aiMessageToolCalls);
+                    memoryPrompt.addMessage(aiMessage);
                 List<ToolMessage> toolMessages = aiMessageResponse.executeToolCallsAndGetToolMessages();
                 for (ToolMessage toolMessage : toolMessages) {
                     memoryPrompt.addMessage(toolMessage);

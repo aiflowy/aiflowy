@@ -13,4 +13,8 @@ export const modelTypes = [
     label: $t('llmProvider.rerankModel'),
     value: 'rerankModel',
   },
+  {
+    label: $t('llmProvider.ocrModel'),
+    value: 'ocrModel',
+  },
 ];

@@ -50,6 +50,7 @@ const checkAndFillDefaultIcon = (list) => {
 const chatModelListData = ref([]);
 const embeddingModelListData = ref([]);
 const rerankModelListData = ref([]);
+const ocrModelListData = ref([]);
 
 const getLlmDetailList = (providerId) => {
   api
@@ -82,6 +83,15 @@ const getLlmDetailList = (providerId) => {
         // 处理rerankModel数据
         const rerankModelMap = res.data.rerankModel || {};
         rerankModelListData.value = Object.entries(rerankModelMap).map(
+          ([groupName, llmList]) => ({
+            groupName,
+            llmList,
+          }),
+        );
+
+        // 处理ocrModel数据
+        const ocrModelMap = res.data.ocrModel || {};
+        ocrModelListData.value = Object.entries(ocrModelMap).map(
           ([groupName, llmList]) => ({
             groupName,
             llmList,
@@ -442,6 +452,42 @@ const handleUpdateLlm = (id) => {
               <ElCollapse expand-icon-position="left">
                 <ElCollapseItem
                   v-for="group in rerankModelListData"
+                  :key="group.groupName"
+                  :title="group.groupName"
+                  :name="group.groupName"
+                >
+                  <template #title>
+                    <div class="flex items-center justify-between pr-2">
+                      <span>{{ group.groupName }}</span>
+                      <span
+                        @click.stop="
+                          handleGroupNameUpdateModel(group.groupName)
+                        "
+                      >
+                        <ElIcon>
+                          <Minus />
+                        </ElIcon>
+                      </span>
+                    </div>
+                  </template>
+                  <ModelViewItemOperation
+                    :llm-list="group.llmList"
+                    :icon="defaultIcon"
+                    @delete-llm="handleDeleteLlm"
+                    @edit-llm="handleEditLlm"
+                    @update-with-used="handleUpdateLlm"
+                  />
+                </ElCollapseItem>
+              </ElCollapse>
+            </div>
+
+            <!-- ocr模型（ocrModel）遍历-->
+            <div
+              v-if="model.value === 'ocrModel' && ocrModelListData.length > 0"
+            >
+              <ElCollapse expand-icon-position="left">
+                <ElCollapseItem
+                  v-for="group in ocrModelListData"
                   :key="group.groupName"
                   :title="group.groupName"
                   :name="group.groupName"

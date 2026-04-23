@@ -22,6 +22,9 @@ import com.agentsflex.rerank.gitee.GiteeRerankModel;
 import com.agentsflex.rerank.gitee.GiteeRerankModelConfig;
 import com.mybatisflex.annotation.RelationManyToOne;
 import com.mybatisflex.annotation.Table;
+import tech.aiflowy.ai.agentsflex.ocrModel.GiteeOcrModel;
+import tech.aiflowy.ai.agentsflex.ocrModel.GiteeOcrModelConfig;
+import tech.aiflowy.ai.agentsflex.ocrModel.OcrModel;
 import tech.aiflowy.ai.entity.base.ModelBase;
 import tech.aiflowy.common.util.StringUtil;
 import tech.aiflowy.common.web.exceptions.BusinessException;
@@ -42,8 +45,7 @@ public class Model extends ModelBase {
     /**
      * 模型类型
      */
-    public final static String[] MODEL_TYPES = {"chatModel", "embeddingModel", "rerankModel"};
-
+    public final static String[] MODEL_TYPES = {"chatModel", "embeddingModel", "rerankModel", "ocrModel"};
 
     public ModelProvider getModelProvider() {
         return modelProvider;
@@ -139,6 +141,20 @@ public class Model extends ModelBase {
             throw new BusinessException("向量模型配置失败：" + e.getMessage());
         }
 
+    }
+
+    public OcrModel toOcrModel() {
+        switch (modelProvider.getProviderType().toLowerCase()) {
+            case "gitee":
+                GiteeOcrModelConfig giteeOcrModelConfig = new GiteeOcrModelConfig();
+                GiteeOcrModel giteeOcrModel = new GiteeOcrModel(giteeOcrModelConfig);
+                giteeOcrModel.setApiKey(checkAndGetApiKey());
+                giteeOcrModel.setEndpoint(checkAndGetEndpoint());
+                giteeOcrModel.setRequestPath(checkAndGetRequestPath());
+                giteeOcrModel.setModel(checkAndGetModelName());
+                return giteeOcrModel;
+        }
+        return null;
     }
 
     /**

@@ -129,9 +129,9 @@ public class DocumentChunkController extends BaseCurdController<DocumentChunkSer
         EmbeddingModel embeddingModel = model.toEmbeddingModel();
         documentStore.setEmbeddingModel(embeddingModel);
         StoreOptions options = StoreOptions.ofCollectionName(knowledge.getVectorStoreCollection());
-        List<BigInteger> deleteList = new ArrayList<>();
-        deleteList.add(chunkId);
-        documentStore.doDelete(deleteList, options);
+        List<String> deleteList = new ArrayList<>();
+        deleteList.add(chunkId.toString());
+        documentStore.delete(deleteList, options);
         documentChunkService.removeChunk(knowledge, chunkId);
 
         return super.remove(chunkId);

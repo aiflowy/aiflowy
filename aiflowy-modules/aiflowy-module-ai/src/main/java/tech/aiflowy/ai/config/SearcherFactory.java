@@ -1,5 +1,6 @@
 package tech.aiflowy.ai.config;
 
+import com.agentsflex.engine.es.ESConfig;
 import com.agentsflex.engine.es.ElasticSearcher;
 import com.agentsflex.search.engine.lucene.LuceneSearcher;
 import com.agentsflex.search.engine.service.DocumentSearcher;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import tech.aiflowy.common.web.exceptions.BusinessException;
 
 import java.io.File;
 import java.math.BigInteger;
@@ -36,26 +38,27 @@ public class SearcherFactory {
         return new ElasticSearcher(aiEsConfig);
     }
 
-    public DocumentSearcher getSearcher(String type) {
-        return getSearcher(type, null);
-    }
+    public DocumentSearcher getSearcher(BigInteger collectionId) {
 
-    public DocumentSearcher getSearcher(String type, BigInteger collectionId) {
-        if (type == null || type.isEmpty()) {
-            type = defaultSearcherType;
+        if (collectionId == null) {
+            throw new BusinessException("知识库ID不能为空");
         }
-        switch (type) {
-            case "elasticSearch":
-                return new ElasticSearcher(aiEsConfig);
+        switch (defaultSearcherType) {
+            case "elasticSearch": {
+                // 动态构建索引名称
+                ESConfig dynamicConfig = new ESConfig();
+                dynamicConfig.setHost(aiEsConfig.getHost());
+                dynamicConfig.setUserName(aiEsConfig.getUserName());
+                dynamicConfig.setPassword(aiEsConfig.getPassword());
+                dynamicConfig.setIndexName("rag_" + collectionId);
+                return new ElasticSearcher(dynamicConfig);
+            }
             case "lucene":
             default:
-                if (collectionId != null) {
-                    // 动态构建索引路径
-                    AiLuceneConfig dynamicConfig = new AiLuceneConfig();
-                    dynamicConfig.setIndexDirPath(baseIndexDirPath + "/" + collectionId);
-                    return new LuceneSearcher(dynamicConfig);
-                }
-                return new LuceneSearcher(luceneConfig);
+                // 动态构建索引路径
+                AiLuceneConfig dynamicConfig = new AiLuceneConfig();
+                dynamicConfig.setIndexDirPath(baseIndexDirPath + "/" + collectionId);
+                return new LuceneSearcher(dynamicConfig);
         }
     }
 

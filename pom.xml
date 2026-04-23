@@ -41,6 +41,8 @@
         <x-file-storage.version>2.2.1</x-file-storage.version>
         <aliyun-oss.version>3.16.1</aliyun-oss.version>
         <netty.version>4.1.130.Final</netty.version>
+        <netty.version>4.1.130.Final</netty.version>
+        <java-wkhtmltopdf-wrapper.version>1.3.0-RELEASE</java-wkhtmltopdf-wrapper.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -426,6 +428,13 @@
                 <groupId>com.agentsflex</groupId>
                 <artifactId>agents-flex-mcp</artifactId>
                 <version>${agents-flex.version}</version>
+            </dependency>
+
+            <!--pdf： wkhtmltopdf-->
+            <dependency>
+                <groupId>com.github.jhonnymertz</groupId>
+                <artifactId>java-wkhtmltopdf-wrapper</artifactId>
+                <version>${java-wkhtmltopdf-wrapper.version}</version>
             </dependency>
 
         </dependencies>

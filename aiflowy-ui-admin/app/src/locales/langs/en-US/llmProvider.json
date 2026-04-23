@@ -10,6 +10,7 @@
   "embeddingModel": "EmbeddingModel",
   "chatModel": "ChatModel",
   "rerankModel": "RerankModel",
+  "ocrModel": "OcrModel",
   "model": "Model",
   "apiType": "ApiType"
 }

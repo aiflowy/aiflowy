@@ -240,6 +240,16 @@ public class OkHttpUtil {
         return getOkHttpClient().newCall(request).execute();
     }
 
+    public static Response multipart(String url, Map<String, String> headers, MultipartBody multipartBody) throws IOException {
+        Request.Builder builder = new Request.Builder().url(url);
+
+        if (headers != null && !headers.isEmpty()) {
+            headers.forEach(builder::addHeader);
+        }
+
+        Request request = builder.post(multipartBody).build();
+        return getOkHttpClient().newCall(request).execute();
+    }
 
     public static class InputStreamRequestBody extends RequestBody {
         private final InputStream inputStream;
