@@ -55,6 +55,13 @@ const rerankModelTabList = [
     name: 'rerankModel',
   },
 ];
+
+const ocrModelTabList = [
+  {
+    label: $t('llmProvider.ocrModel'),
+    name: 'ocrModel',
+  },
+];
 const formDataRef = ref();
 const providerInfo = ref<any>();
 const getProviderInfo = (id: string) => {
@@ -95,6 +102,10 @@ defineExpose({
       }
       case 'embeddingModel': {
         tabList.value = [...embeddingModelTabList];
+        break;
+      }
+      case 'ocrModel': {
+        tabList.value = [...ocrModelTabList];
         break;
       }
       case 'rerankModel': {
