@@ -29,7 +29,9 @@ interface Props {
   bot: any;
   isFold?: boolean;
   onMessageList?: (list: any[]) => void;
+  onSessionChange?: (session: any) => void;
   toggleFold?: () => void;
+  getUrlParams?: () => any;
 }
 const props = defineProps<Props>();
 const sessionList = ref<any>([]);
@@ -66,6 +68,18 @@ function getSessionList(resetSession = false) {
         if (resetSession) {
           currentSession.value = {};
         }
+
+        const query = props.getUrlParams?.() || {};
+        if (resetSession && query.sessionId) {
+          const session = sessionList.value.find(
+            (session: any) => session.id === (query.sessionId as string),
+          );
+          if (session) {
+            nextTick(() => {
+              clickSession(session);
+            });
+          }
+        }
       }
     });
 }
@@ -90,6 +104,7 @@ function addSession() {
 
       nextTick(() => {
         currentSession.value = data;
+        props.onSessionChange?.(data);
         resolve(res.data);
       });
     });
@@ -98,6 +113,7 @@ function addSession() {
 provide('addSession', addSession);
 function clickSession(session: any) {
   currentSession.value = session;
+  props.onSessionChange?.(session);
   getMessageList();
 }
 function getMessageList() {
