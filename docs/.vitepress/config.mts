@@ -180,6 +180,13 @@ function sidebarDevelopment(): DefaultTheme.SidebarItem[] {
                 // {text: '其他', link: '/backend/other'}
             ],
         },
+        {
+            text: "WebSDK",
+            collapsed: false,
+            items: [
+                {text: "使用指南", link: "websdk/websdk"},
+            ],
+        },
     ];
 }
 
