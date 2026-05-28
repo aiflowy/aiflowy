@@ -297,6 +297,11 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
                     ],
                 },
                 {
+                    text: "Wiki",
+                    collapsed: true,
+                    link: "wiki/what_is_wiki"
+                },
+                {
                     text: "素材库",
                     collapsed: true,
                     link: "resource/what_is_resource"
@@ -304,7 +309,15 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
                 {
                     text: "数据中枢",
                     collapsed: true,
-                    link: "datacenter/what_is_datacenter"
+                    items: [
+                        {text: "什么是数据中枢", link: "datacenter/what_is_datacenter"},
+                        {text: "数据中枢管理", link: "datacenter/datacenter-management"},
+                    ]
+                },
+                {
+                    text: "数据源 (商业版)",
+                    collapsed: true,
+                    link: "datasource/what_is_datasource"
                 },
                 {
                     text: "模型管理",
@@ -332,11 +345,6 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
                     ],
                 },
                 {
-                    text: "Wiki",
-                    collapsed: true,
-                    link: "wiki/what_is_wiki"
-                },
-                {
                     text: "MCP商店 (商业版)",
                     collapsed: true,
                     link: 'mcp/mcp-store'
@@ -347,6 +355,11 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
             text: "数据标注(旗舰定制版)",
             collapsed: false,
             items: [
+                {
+                    text: "点赞点踩",
+                    collapsed: true,
+                    link: 'data-annotation/like-or-dislike'
+                },
                 {
                     text: "数据标注",
                     collapsed: true,
@@ -400,6 +413,10 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
                 {
                     text: "用户通知(商业版)",
                     link: "user-notification/user-notification",
+                },
+                {
+                    text: "对话记录(商业版)",
+                    link: "user-management/conversation-log",
                 }
             ],
         },
