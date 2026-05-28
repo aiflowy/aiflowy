@@ -230,6 +230,7 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
                         //   text: "通过 ApiKey 请求 bot",
                         //   link: "bot-application/bot-api-key",
                         // },
+                        {text: "挂载Wiki", link: "bot-application/mount-wiki"},
                         {text: "智能体接入微信公众号", link: "bot-application/wechat-mp"},
                         {text: "Bot 集成与嵌入", link: "bot-application/bot-integration"},
                     ],
@@ -309,7 +310,7 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
                     text: "模型管理",
                     collapsed: true,
                     items: [
-                        {text: "供应商管理", link: "llm/llmSuppliers.md"},
+                        {text: "供应商管理", link: "llm/llmSuppliers"},
                         {text: "模型管理", link: "llm/llmList"},
                     ],
                 },
@@ -329,6 +330,11 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
                         {text: "快速开始", link: "mcp/quick-start"},
                         {text: "MCP 配置详情", link: "mcp/config"},
                     ],
+                },
+                {
+                    text: "Wiki",
+                    collapsed: true,
+                    link: "wiki/what_is_wiki"
                 },
                 {
                     text: "MCP商店 (商业版)",
@@ -373,23 +379,23 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
             items: [
                 {
                     text: "用户管理",
-                    link: "system/user.md",
+                    link: "system/user",
                 },
                 {
                     text: "部门管理",
-                    link: "system/department.md",
+                    link: "system/department",
                 },
                 {
                     text: "岗位管理",
-                    link: "system/position.md",
+                    link: "system/position",
                 },
                 {
                     text: "角色管理",
-                    link: "system/role.md",
+                    link: "system/role",
                 },
                 {
                     text: "用户反馈",
-                    link: "system/feedback.md",
+                    link: "system/feedback",
                 },
                 {
                     text: "用户通知(商业版)",
@@ -403,39 +409,39 @@ function sidebarProduct(): DefaultTheme.SidebarItem[] {
             items: [
                 {
                     text: "租户管理(旗舰定制版)",
-                    link: "system/tenant-management.md",
+                    link: "system/tenant-management",
                 },
                 {
                     text: "租户套餐(旗舰定制版)",
-                    link: "system/tenant-package.md",
+                    link: "system/tenant-package",
                 },
                 {
                     text: "定时任务",
-                    link: "system/job.md",
+                    link: "system/job",
                 },
                 {
                     text: "认证设置(商业版)",
-                    link: "auth/oauth.md",
+                    link: "auth/oauth",
                 },
                 {
                     text: "访问令牌",
-                    link: "system/access_token.md",
+                    link: "system/access_token",
                 },
                 {
                     text: "菜单管理",
-                    link: "system/menu.md",
+                    link: "system/menu",
                 },
                 {
                     text: "日志管理",
-                    link: "system/log.md",
+                    link: "system/log",
                 },
                 {
                     text: "系统设置",
-                    link: "system/system-settings.md",
+                    link: "system/system-settings",
                 },
                 {
                     text: "外观设置(商业版)",
-                    link: "system/appearance.md",
+                    link: "system/appearance",
                 },
             ],
         }
