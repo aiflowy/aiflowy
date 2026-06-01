@@ -1,6 +1,6 @@
 ## 1. 创建Wiki
 
-创建Wiki请参考 [如何创建一个Wiki](/zh/product/wiki/wiki-management.html#二、创建-wiki)
+创建Wiki请参考 [如何创建一个Wiki](../wiki/what_is_wiki.md)
 
 ## 2. 挂载Wiki
 挂载Wiki首先点击左侧菜单栏的 **智能体** 进入 **设置页面**，点击**技能**模块下的Wiki右侧的 + 号，进入Wiki的挂载选择页面,
